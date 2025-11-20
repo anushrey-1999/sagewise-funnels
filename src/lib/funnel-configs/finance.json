@@ -1,0 +1,112 @@
+{
+  "id": "finance",
+  "title": "Personal Finance Solutions",
+  "subtitle": "Find the best financial products tailored to your needs.",
+  "steps": [
+    {
+      "id": "financial-goals",
+      "title": "What are your financial goals?",
+      "description": "Select all that apply to help us find the right solutions for you.",
+      "fields": [
+        {
+          "id": "debt-consolidation",
+          "type": "checkbox",
+          "label": "Debt Consolidation",
+          "required": false
+        },
+        {
+          "id": "home-loan",
+          "type": "checkbox",
+          "label": "Home Loan",
+          "required": false
+        },
+        {
+          "id": "personal-loan",
+          "type": "checkbox",
+          "label": "Personal Loan",
+          "required": false
+        },
+        {
+          "id": "credit-card",
+          "type": "checkbox",
+          "label": "Credit Card",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "financial-info",
+      "title": "Tell us about your financial situation",
+      "description": "This helps us match you with the best options.",
+      "fields": [
+        {
+          "id": "annual-income",
+          "type": "number",
+          "label": "Annual Income",
+          "placeholder": "50000",
+          "required": true
+        },
+        {
+          "id": "credit-score",
+          "type": "text",
+          "label": "Credit Score Range",
+          "placeholder": "700-750",
+          "required": true
+        },
+        {
+          "id": "employment-status",
+          "type": "radio",
+          "label": "Employment Status",
+          "required": true,
+          "options": [
+            { "value": "employed", "label": "Employed" },
+            { "value": "self-employed", "label": "Self-Employed" },
+            { "value": "unemployed", "label": "Unemployed" },
+            { "value": "retired", "label": "Retired" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact-details",
+      "title": "How can we reach you?",
+      "description": "We'll send you personalized quotes.",
+      "fields": [
+        {
+          "id": "firstName",
+          "type": "text",
+          "label": "First Name",
+          "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last Name",
+          "placeholder": "Doe",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "john.doe@email.com",
+          "required": true
+        },
+        {
+          "id": "phone",
+          "type": "tel",
+          "label": "Phone",
+          "placeholder": "(555) 555-5555",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "finalStep": {
+    "title": "Thank you!",
+    "description": "We're finding the best financial solutions for you. You'll receive quotes shortly.",
+    "buttonText": "Get My Quotes"
+  }
+}
+

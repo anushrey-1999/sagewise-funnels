@@ -1,0 +1,128 @@
+{
+  "id": "walk-in-bathtubs",
+  "title": "Walk-in Bathtubs",
+  "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "steps": [
+    {
+      "id": "features",
+      "title": "What walk-in bathtub features would you like?",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "fields": [
+        {
+          "id": "fast-filling",
+          "type": "checkbox",
+          "label": "Fast filling",
+          "required": false
+        },
+        {
+          "id": "quick-draining",
+          "type": "checkbox",
+          "label": "Quick draining",
+          "required": false
+        },
+        {
+          "id": "heated-seats",
+          "type": "checkbox",
+          "label": "Heated seats",
+          "required": false
+        },
+        {
+          "id": "handrails",
+          "type": "checkbox",
+          "label": "Handrails",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "location",
+      "title": "What is your location?",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "fields": [
+        {
+          "id": "zipCode",
+          "type": "text",
+          "label": "Zip Code",
+          "placeholder": "90210",
+          "required": true,
+          "validation": {
+            "pattern": "^\\d{5}(-\\d{4})?$",
+            "message": "Please enter a valid zip code"
+          }
+        },
+        {
+          "id": "city",
+          "type": "text",
+          "label": "City",
+          "placeholder": "Beverly Hills",
+          "required": true
+        },
+        {
+          "id": "state",
+          "type": "text",
+          "label": "State",
+          "placeholder": "California",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "What is your contact info?",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "fields": [
+        {
+          "id": "firstName",
+          "type": "text",
+          "label": "First Name",
+          "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last Name",
+          "placeholder": "Doe",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "john.doe@email.com",
+          "required": true
+        },
+        {
+          "id": "phone",
+          "type": "tel",
+          "label": "Phone",
+          "placeholder": "(555) 555-5555",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "title": "Do you own or rent your home?",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "fields": [
+        {
+          "id": "homeStatus",
+          "type": "radio",
+          "label": "Home Status",
+          "required": true,
+          "options": [
+            { "value": "own", "label": "I own my home" },
+            { "value": "rent", "label": "I rent my home" }
+          ]
+        }
+      ]
+    }
+  ],
+  "finalStep": {
+    "title": "Thank you!",
+    "description": "Your quotes are being prepared. You will receive a call from a Sagewise agent shortly.",
+    "buttonText": "Get My Quotes"
+  }
+}
+
