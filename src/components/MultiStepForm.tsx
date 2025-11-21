@@ -229,15 +229,68 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     }
   };
 
+  // Check if all fields in the step are filled and valid
+  const checkStepComplete = (stepData: Record<string, any>) => {
+    if (!currentStepData) return false;
+    
+    // Check all required fields are filled
+    for (const field of currentStepData.fields) {
+      if (field.required) {
+        const value = stepData[field.id];
+        
+        if (field.type === "checkbox") {
+          if (!Array.isArray(value) || value.length === 0) {
+            return false;
+          }
+        } else if (field.type === "radio") {
+          if (!value || value === "") {
+            return false;
+          }
+        } else if (field.type === "select") {
+          if (!value || value === "") {
+            return false;
+          }
+        } else {
+          // For text, email, tel, number
+          if (!value || (typeof value === "string" && value.trim() === "")) {
+            return false;
+          }
+        }
+      }
+    }
+    
+    // Validate with schema
+    const schema = createStepSchema(currentStepData);
+    const normalizedData = { ...stepData };
+    currentStepData.fields.forEach((f) => {
+      if (f.type === "checkbox" && !normalizedData[f.id]) {
+        normalizedData[f.id] = [];
+      }
+    });
+    
+    try {
+      schema.parse(normalizedData);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const handleFieldChange = (fieldId: string, value: any) => {
     if (!currentStepData) return;
     
+    const field = currentStepData.fields.find(f => f.id === fieldId);
+    if (!field) return;
+    
+    // Update form data with new value
+    const updatedStepData = {
+      ...(formData[currentStepData.id] || {}),
+      [fieldId]: value,
+    };
+    
     setFormData((prev) => ({
       ...prev,
-      [currentStepData.id]: {
-        ...(prev[currentStepData.id] || {}),
-        [fieldId]: value,
-      },
+      [currentStepData.id]: updatedStepData,
     }));
 
     // Clear error for this field
@@ -249,6 +302,14 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
         [currentStepData.id]: stepErrors,
       };
     });
+
+    // Check if all fields in the step are complete and valid, then auto-proceed
+    if (checkStepComplete(updatedStepData)) {
+      // Small delay for better UX
+      setTimeout(() => {
+        setCurrentStep((prev) => prev + 1);
+      }, 300);
+    }
   };
 
   // Render final step
