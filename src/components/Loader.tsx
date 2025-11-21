@@ -45,7 +45,7 @@ export function Loader({ onComplete }: LoaderProps) {
           <CardTitle className="text-xl md:text-2xl font-semibold text-primary-main tracking-[-0.4px] md:tracking-[-0.48px]">
             Sit tight while we secure your free quotes.
           </CardTitle>
-          <CardDescription className="flex items-center justify-center gap-1 text-xs md:text-base text-general-muted-foreground">
+          <CardDescription className="flex items-start lg:items-center justify-center gap-1 text-xs md:text-base text-general-muted-foreground">
             <Lock className="h-3 w-3 md:h-4 md:w-4" />
             <span>Your data is encrypted and kept confidential.</span>
           </CardDescription>
