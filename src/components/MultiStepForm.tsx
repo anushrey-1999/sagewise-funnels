@@ -14,9 +14,13 @@ function ProgressBar({ progress }: { progress: number }) {
   // Ensure progress is between 0 and 100
   const clampedProgress = Math.max(0, Math.min(100, progress));
   
+  // Calculate position for percentage text to follow the progress
+  // Position it at the end of the progress fill, but keep it within bounds
+  const percentagePosition = Math.max(0, Math.min(100, clampedProgress));
+  
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="h-2 overflow-visible relative rounded-[10px] w-full mb-2.5">
+      <div className="h-[8px] overflow-visible relative rounded-[10px] w-full mb-2.5">
         <div className="absolute bg-[#d4d4d4] inset-0 rounded-[10px]" />
         <div
           className="absolute bottom-0 left-0 top-0 bg-[#204c4b] rounded-[10px] transition-all duration-300"
@@ -26,19 +30,19 @@ function ProgressBar({ progress }: { progress: number }) {
         <div
           className="absolute top-[-28px] transition-all duration-300"
           style={{ 
-            left: clampedProgress <= 5 
+            left: percentagePosition <= 5 
               ? '0%' 
-              : clampedProgress >= 95 
+              : percentagePosition >= 95 
               ? '100%' 
-              : `${clampedProgress}%`,
-            transform: clampedProgress <= 5 
+              : `${percentagePosition}%`,
+            transform: percentagePosition <= 5 
               ? 'translateX(0)' 
-              : clampedProgress >= 95 
+              : percentagePosition >= 95 
               ? 'translateX(-100%)' 
               : 'translateX(-50%)'
           }}
         >
-          <p className="font-medium leading-normal text-[18px] text-[#204c4b] whitespace-nowrap">
+          <p className="font-medium leading-[1.5] text-[18px] text-[#204c4b] whitespace-nowrap">
             {clampedProgress}%
           </p>
         </div>
@@ -252,26 +256,26 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     return (
       <>
         <ProgressBar progress={progress} />
-        <div className="w-full flex flex-col items-center mt-8">
-        <Card className="w-full border border-gray-200">
-          <CardHeader className="text-center space-y-1 px-4 sm:px-5 md:px-6">
-            <CardTitle className="text-[20px] sm:text-[22px] md:text-2xl font-semibold text-foreground tracking-[-0.4px] sm:tracking-[-0.44px] md:tracking-[-0.48px]">
-              {config.finalStep.title}
-            </CardTitle>
-            <CardDescription className="text-base text-muted-foreground">
-              {config.finalStep.description}
-            </CardDescription>
-          </CardHeader>
-        </Card>
-        
-        <Button
-          onClick={handleNext}
-          className="bg-[#204c4b] hover:bg-[#204c4b]/90 text-white h-10 px-6 mt-8 sm:mt-10 md:mt-12 w-full sm:w-[400px] md:w-[445px]"
-        >
-          <span className="text-base font-medium">{config.finalStep.buttonText || "Continue"}</span>
-          <ArrowRight className="h-3.5 w-3.5 ml-2" />
-        </Button>
-      </div>
+        <div className="w-full flex flex-col gap-12 items-center">
+          <Card className="w-full border border-[#e5e5e5] rounded-lg p-6">
+            <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
+              <CardTitle className="text-2xl font-semibold text-foreground tracking-[-0.48px]">
+                {config.finalStep.title}
+              </CardTitle>
+              <CardDescription className="text-base text-muted-foreground">
+                {config.finalStep.description}
+              </CardDescription>
+            </CardHeader>
+          </Card>
+          
+          <Button
+            onClick={handleNext}
+            className="bg-[#204c4b] hover:bg-[#204c4b]/90 text-white min-h-[40px] px-6 py-[9.5px] w-full max-w-[445px] flex items-center justify-center gap-2"
+          >
+            <span className="text-base font-medium leading-[1.5]">{config.finalStep.buttonText || "Continue"}</span>
+            <ArrowRight className="h-[13.25px] w-[13.25px]" />
+          </Button>
+        </div>
       </>
     );
   }
@@ -282,17 +286,17 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
   return (
     <>
       <ProgressBar progress={progress} />
-      <div className="w-full flex flex-col items-center mt-8">
-        <Card className="w-full border border-gray-200">
-          <CardHeader className="text-center space-y-1 px-4 sm:px-5 md:px-6">
-            <CardTitle className="text-[20px] sm:text-[22px] md:text-2xl font-semibold text-foreground tracking-[-0.4px] sm:tracking-[-0.44px] md:tracking-[-0.48px]">
+      <div className="w-full flex flex-col gap-[48px] items-center">
+        <Card className="w-full border border-[#e5e5e5] rounded-lg p-6">
+          <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
+            <CardTitle className="text-2xl font-semibold text-foreground">
               {currentStepData.title}
             </CardTitle>
             <CardDescription className="text-base text-muted-foreground">
               {currentStepData.description}
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3 items-center px-4 sm:px-5 md:px-6">
+          <CardContent className="flex flex-col gap-3 items-center p-0 pt-6">
             {currentStepData.fields.map((field) => {
               const fieldValue = formData[currentStepData.id]?.[field.id];
               const fieldError = errors[currentStepData.id]?.[field.id];
@@ -310,16 +314,16 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
           </CardContent>
         </Card>
 
-        <div className="flex gap-3 mt-8 sm:mt-10 md:mt-12 w-full sm:w-[400px] md:w-[445px]">
+        <div className={`flex gap-3 w-full ${isFirstStep ? 'max-w-[445px]' : 'w-full'}`}>
           {!isFirstStep && (
             <Button
               type="button"
               variant="outline"
               onClick={handleBack}
-              className="flex-1 bg-white border border-gray-200 text-[#204c4b] hover:bg-gray-50 h-10"
+              className="flex-1 bg-white border border-[#e5e5e5] text-[#204c4b] hover:bg-gray-50 min-h-[40px] px-6 py-[9.5px] flex items-center justify-center gap-2"
             >
-              <ArrowLeft className="h-3.5 w-3.5 mr-2" />
-              <span className="text-base font-medium">Go Back</span>
+              <ArrowLeft className="h-[13.25px] w-[13.25px]" />
+              <span className="text-base font-medium leading-[1.5]">Go Back</span>
             </Button>
           )}
           <Button
@@ -327,14 +331,14 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
             onClick={handleNext}
             disabled={!isStepValid()}
             className={cn(
-              "bg-[#204c4b] hover:bg-[#204c4b]/90 text-white h-10 px-6 disabled:opacity-50 disabled:cursor-not-allowed",
+              "bg-[#204c4b] hover:bg-[#204c4b]/90 text-white min-h-[40px] px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
               isFirstStep ? "w-full" : "flex-1"
             )}
           >
-            <span className="text-base font-medium">
+            <span className="text-base font-medium leading-[1.5]">
               {isLastStep ? (config.finalStep?.buttonText || "Submit") : "Continue"}
             </span>
-            {!isLastStep && <ArrowRight className="h-3.5 w-3.5 ml-2" />}
+            {!isLastStep && <ArrowRight className="h-[13.25px] w-[13.25px]" />}
           </Button>
         </div>
       </div>

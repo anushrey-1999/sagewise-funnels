@@ -25,7 +25,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
           <Typography
             variant="h3"
             color="text-green-600"
-            className="flex  text-xl lg:gap-2 lg:text-center gap-2 justify-center mb-10"
+            className="flex  text-xl lg:gap-2 lg:text-center gap-2 justify-center mb-5 lg:mb-10"
           >
             <PartyPopper strokeWidth={1} size={30} /> We found 5 carrier matches
             for you in your area!
@@ -45,7 +45,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
           <Typography
             variant="h5"
             color="text-primary-main"
-            className="mt-8 mb-7 text-center"
+            className="mt-8 lg:mb-7 mb-6 text-center"
           >
             Here's a complete list of policies available:
           </Typography>

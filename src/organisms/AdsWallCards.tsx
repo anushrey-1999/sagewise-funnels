@@ -114,15 +114,15 @@ const AdsWallCards = ({
         </div>
       </div>
 
-      <div className="flex flex-col text-center h-fit">
+      <div className="flex flex-col lg:text-center h-fit">
         <Typography variant="h2" color="text-primary-main mb-6 hidden lg:block">
           eCoverage
         </Typography>
-        <Typography variant="p">
+        <Typography variant="p" className="text-xs">
           Thoughtfully designed policies for over 100 years:
         </Typography>
-        <Typography variant="ul" className="mt-3">
-          <ul className="list-disc text-left list-outside ml-6">
+        <Typography variant="ul" className="mt-3" color="text-xs">
+          <ul className="list-disc text-left list-outside lg:ml-6 text-xs">
             <li>Unique RAPIDecision® Final Expense products</li>
             <li>Coverage up-to $2 million, terms up-to 30 years</li>
             <li>Fast and easy online application</li>
@@ -131,18 +131,18 @@ const AdsWallCards = ({
         </Typography>
       </div>
 
-      <div className="bg-white rounded-[8px] p-3 flex flex-col gap-3 h-fit min-w-[220px]">
+      <div className="bg-white rounded-md p-3 flex flex-col gap-3 h-fit min-w-[220px]">
         {isGradientBox && (
-          <div className="rounded-lg overflow-hidden">
-            <div className="bg-linear-to-r from-green-700 to-[#2C9D56] py-3.5 flex items-center justify-center flex-col">
-              <Typography variant="h3" color="text-white">
+          <div className="rounded-md overflow-hidden flex lg:flex-col w-full border border-general-border">
+            <div className="bg-linear-to-r from-green-700 to-[#2C9D56] pb-1 lg:py-3.5 flex items-center justify-center flex-col w-1/2 lg:w-full rounded-md">
+              <Typography variant="h3" color="text-white" className="text-2xl">
                 AA++
               </Typography>
-              <Typography variant="monospaced" color="text-white">
+              <Typography variant="monospaced" color="text-white" className="text-sm lg:text-base">
                 SUPERIOR
               </Typography>
             </div>
-            <div className="border border-general-border rounded-br-lg rounded-bl-lg pt-1 pb-2 flex flex-col items-center justify-center">
+            <div className="rounded-br-lg rounded-bl-lg py-2.5 px-1 lg:pt-1 lg:pb-2 flex flex-col items-center justify-center w-1/2 lg:w-full">
               <Typography variant="p" size="text-xs" className="font-medium">
                 A.M. Best Rating
               </Typography>
@@ -176,7 +176,7 @@ const AdsWallCards = ({
         <div className="p-[2px] rounded-xl bg-linear-to-r from-primary-main via-[#D3FCFB] to-[#357F7D] w-full">
           <div
             className={cn(
-              "rounded-xl z-1 relative p-4 lg:p-6 w-full flex flex-col lg:flex-row justify-between gap-11",
+              "rounded-xl z-1 relative p-4 lg:p-6 w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
               cardBg
             )}
           >
@@ -186,7 +186,7 @@ const AdsWallCards = ({
       ) : (
         <div
           className={cn(
-            "border-2 z-1 relative border-general-border rounded-xl p-4 lg:p-6 w-full flex flex-col lg:flex-row justify-between gap-11",
+            "border-2 z-1 relative border-general-border rounded-xl p-4 lg:p-6 w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
             cardBg
           )}
         >

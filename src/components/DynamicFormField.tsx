@@ -21,7 +21,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
         return (
           <div
             className={cn(
-              "bg-white border border-gray-200 h-[43px] min-h-[40px] rounded-lg w-full sm:w-[380px] md:w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-colors",
+              "bg-white border border-[#e5e5e5] h-[43px] min-h-[40px] rounded-lg w-full max-w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-colors",
               Array.isArray(value) && value.includes(field.id) && "border-[#204c4b]",
               error && "border-red-500"
             )}
@@ -33,18 +33,20 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
               onChange(newValue);
             }}
           >
-            <Checkbox
-              checked={Array.isArray(value) && value.includes(field.id)}
-              onCheckedChange={(checked) => {
-                const currentValue = Array.isArray(value) ? value : [];
-                const newValue = checked
-                  ? [...currentValue, field.id]
-                  : currentValue.filter((id) => id !== field.id);
-                onChange(newValue);
-              }}
-              className="h-4 w-4 shrink-0"
-            />
-            <span className="text-base text-foreground">{field.label}</span>
+            <div className="relative shrink-0 size-5">
+              <Checkbox
+                checked={Array.isArray(value) && value.includes(field.id)}
+                onCheckedChange={(checked) => {
+                  const currentValue = Array.isArray(value) ? value : [];
+                  const newValue = checked
+                    ? [...currentValue, field.id]
+                    : currentValue.filter((id) => id !== field.id);
+                  onChange(newValue);
+                }}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4"
+              />
+            </div>
+            <span className="text-base text-foreground leading-[1.5] tracking-[0.08px]">{field.label}</span>
           </div>
         );
 
@@ -78,6 +80,17 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
       case "email":
       case "tel":
       case "number":
+        // Special handling for zip code field
+        const isZipCode = field.id === "zipCode";
+        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          let inputValue = e.target.value;
+          if (isZipCode) {
+            // Only allow digits and limit to 5 characters
+            inputValue = inputValue.replace(/\D/g, "").slice(0, 5);
+          }
+          onChange(inputValue);
+        };
+        
         return (
           <div className="w-full sm:w-[380px] md:w-[342px]">
             <Label htmlFor={field.id} className="text-base font-medium text-foreground mb-2 block">
@@ -88,13 +101,41 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
               type={field.type}
               placeholder={field.placeholder}
               value={value || ""}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={handleInputChange}
+              maxLength={isZipCode ? 5 : undefined}
               className={cn(
                 "h-[43px] min-h-[40px] rounded-lg",
                 error && "border-red-500"
               )}
               required={field.required}
             />
+            {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+          </div>
+        );
+
+      case "select":
+        return (
+          <div className="w-full sm:w-[380px] md:w-[342px]">
+            <Label htmlFor={field.id} className="text-base font-medium text-foreground mb-2 block">
+              {field.label}
+            </Label>
+            <select
+              id={field.id}
+              value={value || ""}
+              onChange={(e) => onChange(e.target.value)}
+              className={cn(
+                "h-[43px] min-h-[40px] w-full rounded-lg border border-[#e5e5e5] bg-white px-3 py-2 text-base text-foreground outline-none transition-colors hover:border-gray-300 focus-visible:border-[#204c4b] focus-visible:ring-2 focus-visible:ring-[#204c4b]/20 disabled:cursor-not-allowed disabled:opacity-50",
+                error && "border-red-500"
+              )}
+              required={field.required}
+            >
+              <option value="">Select an option...</option>
+              {field.options?.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
             {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
           </div>
         );

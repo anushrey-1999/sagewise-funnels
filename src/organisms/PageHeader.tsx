@@ -7,7 +7,7 @@ interface PageHeaderProps {
 }
 const PageHeader = ({ title, subtitle }: PageHeaderProps) => {
   return (
-    <div className="bg-primary-dark flex min-h-[200px] sm:min-h-[240px] md:h-[274px] items-center justify-center overflow-hidden relative rounded-bl-[24px] rounded-br-[24px] w-full py-8 px-8 sm:py-10 md:py-0">
+    <div className="bg-primary-dark flex  items-center justify-center overflow-hidden relative rounded-bl-[24px] rounded-br-[24px] w-full py-8 px-8 md:py-21">
       <div className="absolute left-0 top-0 h-full  sm:block">
         <Image
           src="/header-decorative.png"
