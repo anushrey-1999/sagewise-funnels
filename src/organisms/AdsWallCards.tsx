@@ -167,7 +167,7 @@ const AdsWallCards = ({
   return (
     <div className="relative w-full">
       {isBadge && (
-        <div className="relative top-4 left-0  bg-black flex items-center gap-1.5 uppercase rounded-tl-xl rounded-tr-xl rounded-bl-lg rounded-br-lg w-fit pt-2 px-4 pb-5 text-white">
+        <div className="relative top-4 text-xs lg:text-base left-0  bg-black flex items-center gap-1.5 uppercase rounded-tl-xl rounded-tr-xl rounded-bl-lg rounded-br-lg w-fit pt-2 px-4 pb-5 text-white">
           {badgeIcon}
           {badgeText}
         </div>

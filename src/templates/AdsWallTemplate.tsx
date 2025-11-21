@@ -20,14 +20,14 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       <PageHeader title={adsWallData.title} subtitle={adsWallData.subtitle} />
 
       {/* Cards */}
-      <div className="flex flex-col items-center w-full px-6 sm:px-6 md:px-16 py-9 sm:py-8 md:py-12">
+      <div className="flex flex-col items-center w-full px-6 sm:px-6 md:px-16 py-6 sm:py-8 md:py-12">
         <div className="w-full max-w-[970px] ">
           <Typography
             variant="h3"
             color="text-green-600"
-            className="flex  text-xl lg:gap-2 lg:text-center gap-2 justify-center mb-5 lg:mb-10"
+            className="flex text-sm items-center lg:gap-2 lg:text-center gap-2 justify-center mb-1 lg:mb-10"
           >
-            <PartyPopper strokeWidth={1} size={30} /> We found 5 carrier matches
+            <PartyPopper strokeWidth={1} size={30} className="w-5 h-5 lg:w-8 lg:h-8" /> We found 5 carrier matches
             for you in your area!
           </Typography>
 
@@ -38,14 +38,14 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
             isBadge={true}
             isSecondaryBtn={false}
             isGradientBox={true}
-            badgeIcon={<Trophy size={14} />}
+            badgeIcon={<Trophy size={14} className="w-3 h-3 lg:w-4 lg:h-4" />}
             badgeText="TOP PICK"
           />
 
           <Typography
             variant="h5"
             color="text-primary-main"
-            className="mt-8 lg:mb-7 mb-6 text-center"
+            className="mt-6 lg:mb-7 mb-2 text-center"
           >
             Here's a complete list of policies available:
           </Typography>
@@ -55,7 +55,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
               logo="/ads-logo.png"
               ratings={9.5}
               isBadge={true}
-              badgeIcon={<Zap size={14} />}
+              badgeIcon={<Zap size={14} className="w-3 h-3 lg:w-4 lg:h-4" />}
               badgeText="FAST APPLICATION"
             />
             <AdsWallCards logo="/ads-logo.png" ratings={9.5} />
