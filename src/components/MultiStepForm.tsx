@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FormConfig, FormData } from "@/types/form";
 import { DynamicFormField } from "./DynamicFormField";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ function ProgressBar({ progress }: { progress: number }) {
       <div className="h-[8px] overflow-visible relative rounded-[10px] w-full mb-2.5">
         <div className="absolute bg-[#d4d4d4] inset-0 rounded-[10px]" />
         <div
-          className="absolute bottom-0 left-0 top-0 bg-[#204c4b] rounded-[10px] transition-all duration-300"
+          className="absolute bottom-0 left-0 top-0 bg-primary-main rounded-[10px] transition-all duration-300"
           style={{ width: `${clampedProgress}%` }}
         />
         {/* Percentage label that moves with progress */}
@@ -42,7 +42,7 @@ function ProgressBar({ progress }: { progress: number }) {
               : 'translateX(-50%)'
           }}
         >
-          <p className="font-medium leading-[1.5] text-[18px] text-[#204c4b] whitespace-nowrap">
+          <p className="font-medium leading-[1.5] text-[18px] text-primary-main whitespace-nowrap">
             {clampedProgress}%
           </p>
         </div>
@@ -61,6 +61,9 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({});
   const [errors, setErrors] = useState<Record<string, Record<string, string>>>({});
+  const autoForwardTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const checkCompleteTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const currentStepRef = useRef(currentStep);
 
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === config.steps.length;
@@ -73,6 +76,35 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       onProgressChange(progress);
     }
   }, [progress, onProgressChange]);
+
+  // Keep currentStepRef in sync with currentStep
+  useEffect(() => {
+    currentStepRef.current = currentStep;
+    // Clear any pending auto-forward when step changes
+    if (autoForwardTimeoutRef.current) {
+      clearTimeout(autoForwardTimeoutRef.current);
+      autoForwardTimeoutRef.current = null;
+    }
+    // Clear any pending completion check when step changes
+    if (checkCompleteTimeoutRef.current) {
+      clearTimeout(checkCompleteTimeoutRef.current);
+      checkCompleteTimeoutRef.current = null;
+    }
+  }, [currentStep]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (autoForwardTimeoutRef.current) {
+        clearTimeout(autoForwardTimeoutRef.current);
+        autoForwardTimeoutRef.current = null;
+      }
+      if (checkCompleteTimeoutRef.current) {
+        clearTimeout(checkCompleteTimeoutRef.current);
+        checkCompleteTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   // Create validation schema for current step
   const createStepSchema = (step: typeof currentStepData) => {
@@ -233,6 +265,12 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
   const checkStepComplete = (stepData: Record<string, any>) => {
     if (!currentStepData) return false;
     
+    // If step has no required fields, it's always considered complete
+    const hasRequiredFields = currentStepData.fields.some(f => f.required);
+    if (!hasRequiredFields) {
+      return true;
+    }
+    
     // Check all required fields are filled
     for (const field of currentStepData.fields) {
       if (field.required) {
@@ -303,12 +341,64 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       };
     });
 
-    // Check if all fields in the step are complete and valid, then auto-proceed
-    if (checkStepComplete(updatedStepData)) {
-      // Small delay for better UX
-      setTimeout(() => {
-        setCurrentStep((prev) => prev + 1);
-      }, 300);
+    // Determine if this field should be debounced
+    // Only debounce text inputs (text, email, tel, number), but NOT zip code
+    const shouldDebounce = 
+      (field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "number") &&
+      field.id !== "zipCode";
+
+    // Capture current step data for use in timeout closure
+    const stepDataForCheck = currentStepData;
+    const stepIdForCheck = currentStepData.id;
+    const stepAtCheck = currentStep;
+
+    // Function to check step completion and auto-forward
+    const checkAndForward = () => {
+      // Check if all fields in the step are complete and valid, then auto-proceed
+      if (checkStepComplete(updatedStepData)) {
+        // Clear any existing auto-forward timeout to prevent multiple forwards
+        if (autoForwardTimeoutRef.current) {
+          clearTimeout(autoForwardTimeoutRef.current);
+          autoForwardTimeoutRef.current = null;
+        }
+        
+        // 500ms delay for better UX - gives user time to review what they typed
+        autoForwardTimeoutRef.current = setTimeout(() => {
+          // Only auto-forward if we're still on the same step (prevent skipping)
+          if (currentStepRef.current === stepAtCheck && stepDataForCheck?.id === stepIdForCheck) {
+            setCurrentStep((prev) => {
+              const nextStep = prev + 1;
+              // Don't go beyond the final step (which is at config.steps.length)
+              const maxStep = config.steps.length;
+              return Math.min(nextStep, maxStep);
+            });
+          }
+          autoForwardTimeoutRef.current = null;
+        }, 500);
+      }
+    };
+
+    if (shouldDebounce) {
+      // Debounce the step completion check to wait until user stops typing
+      // Clear any existing completion check timeout
+      if (checkCompleteTimeoutRef.current) {
+        clearTimeout(checkCompleteTimeoutRef.current);
+        checkCompleteTimeoutRef.current = null;
+      }
+
+      // Wait 500ms after user stops typing before checking if step is complete
+      checkCompleteTimeoutRef.current = setTimeout(() => {
+        checkAndForward();
+        checkCompleteTimeoutRef.current = null;
+      }, 500);
+    } else {
+      // For radio, checkbox, select, and zip code - check immediately (no debounce)
+      // Clear any pending debounce timeout
+      if (checkCompleteTimeoutRef.current) {
+        clearTimeout(checkCompleteTimeoutRef.current);
+        checkCompleteTimeoutRef.current = null;
+      }
+      checkAndForward();
     }
   };
 
@@ -318,7 +408,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       <>
         <ProgressBar progress={progress} />
         <div className="w-full flex flex-col gap-12 items-center">
-          <Card className="w-full border border-[#e5e5e5] rounded-lg p-6">
+          <Card className="w-full border border-general-border rounded-lg p-6">
             <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
               <CardTitle className="text-2xl font-semibold text-foreground tracking-[-0.48px]">
                 {config.finalStep.title}
@@ -331,9 +421,9 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
           
           <Button
             onClick={handleNext}
-            className="bg-[#204c4b] hover:bg-[#204c4b]/90 text-white min-h-[40px] px-6 py-[9.5px] w-full max-w-[445px] flex items-center justify-center gap-2"
+            className="bg-primary-main hover:bg-primary-main/90 text-white min-h-[40px] px-6 py-[9.5px] w-full max-w-[445px] flex items-center justify-center gap-2"
           >
-            <span className="text-base font-medium leading-[1.5]">{config.finalStep.buttonText || "Continue"}</span>
+            <span className="text-base font-medium leading-normal">{config.finalStep.buttonText || "Continue"}</span>
             <ArrowRight className="h-[13.25px] w-[13.25px]" />
           </Button>
         </div>
@@ -348,7 +438,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     <>
       <ProgressBar progress={progress} />
       <div className="w-full flex flex-col gap-[48px] items-center">
-        <Card className="w-full border border-[#e5e5e5] rounded-lg p-6">
+        <Card className="w-full border border-general-border rounded-lg p-6">
           <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
             <CardTitle className="text-2xl font-semibold text-foreground">
               {currentStepData.title}
@@ -381,10 +471,10 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
               type="button"
               variant="outline"
               onClick={handleBack}
-              className="flex-1 bg-white border border-[#e5e5e5] text-[#204c4b] hover:bg-gray-50 min-h-[40px] px-6 py-[9.5px] flex items-center justify-center gap-2"
+              className="flex-1 bg-white border border-general-border text-primary-main hover:bg-gray-50 min-h-[40px] px-6 py-[9.5px] flex items-center justify-center gap-2"
             >
               <ArrowLeft className="h-[13.25px] w-[13.25px]" />
-              <span className="text-base font-medium leading-[1.5]">Go Back</span>
+              <span className="text-base font-medium leading-normal">Go Back</span>
             </Button>
           )}
           <Button
@@ -392,11 +482,11 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
             onClick={handleNext}
             disabled={!isStepValid()}
             className={cn(
-              "bg-[#204c4b] hover:bg-[#204c4b]/90 text-white min-h-[40px] px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
+              "bg-primary-main hover:bg-primary-main/90 text-white min-h-[40px] px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
               isFirstStep ? "w-full" : "flex-1"
             )}
           >
-            <span className="text-base font-medium leading-[1.5]">
+            <span className="text-base font-medium leading-normal">
               {isLastStep ? (config.finalStep?.buttonText || "Submit") : "Continue"}
             </span>
             {!isLastStep && <ArrowRight className="h-[13.25px] w-[13.25px]" />}
