@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
-import { Phone, Trophy, Type } from "lucide-react";
+import { Phone, Rocket, Trophy, Type } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import React from "react";
@@ -10,129 +10,94 @@ interface AdsWallCardsProps {
   ratings?: number;
   cardBg?: string;
   isGradientBorder?: boolean;
-  logo: string;
   isBadge?: boolean;
   isSecondaryBtn?: boolean;
   isGradientBox?: boolean;
   badgeIcon?: React.ReactNode; // Accepts HTML/JSX content
   badgeText?: React.ReactNode; // Accepts HTML/JSX content
+
+  heading: string;
+  description: string;
+  features: string[];
+  buttonLink: string;
+  buttonText: string;
+  ratingsNumber: string;
+  ratingsCount: number;
+  logo: string;
+  creditCardImage: string;
+  logoWidth: string;
+  logoHeight: string;
 }
 
 const AdsWallCards = ({
   ratings,
   cardBg = "bg-white",
   isGradientBorder,
-  logo = "/ads-logo.png",
   isBadge = false,
   isSecondaryBtn = true,
   isGradientBox = false,
   badgeIcon,
   badgeText,
+  heading,
+  description,
+  features,
+  buttonLink,
+  buttonText,
+  ratingsNumber,
+  creditCardImage,
+  ratingsCount,
+  logo,
+  logoWidth,
+  logoHeight,
 }: AdsWallCardsProps) => {
   // Card content (shared between gradient and non-gradient borders)
   const cardContent = (
-    <>
-      <div className="flex flex-col">
-        <div className="flex gap-3 items-center mb-2 lg:mb-3">
-          <div className="bg-white w-30.5 h-13  lg:w-[14.688rem] lg:h-[9.188rem] relative overflow-hidden rounded-lg">
+    <div className="relative flex flex-col w-full gap-4">
+      <div>
+        <div className="text-xs font-medium p-2 bg-green-700 flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
+          {badgeIcon}
+          {badgeText}
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
+        {/* First Container */}
+        <div className="flex flex-col items-center gap-3 shrink-0">
+          <div 
+            className="relative overflow-hidden rounded-lg"
+            style={{ width: logoWidth, height: logoHeight }}
+          >
             <Image src={logo} alt="logo" layout="fill" />
           </div>
-          <Typography
-            variant="h3"
-            color="text-primary-main"
-            className="lg:hidden"
-          >
-            eCoverage
-          </Typography>
-        </div>
-        <div className="flex flex-row lg:flex-col justify-between gap-1 lg:gap-0">
-          {ratings && (
-            <div className="flex gap-2 lg:px-5.5 px-0 mb-0 lg:mb-2">
-              <Typography
-                variant="h3"
-                color="text-primary-main"
-                className="text-xl"
-              >
-                9.5
-              </Typography>
-              <div className="flex gap-1 justify-center items-center ">
-                <Image
-                  src={"/star.svg"}
-                  alt="star"
-                  width={100}
-                  height={100}
-                  className="w-3 h-3 lg:w-6 lg:h-6 "
-                />
-                <Image
-                  src={"/star.svg"}
-                  alt="star"
-                  width={100}
-                  height={100}
-                  className="w-3 h-3 lg:w-6 lg:h-6"
-                />
-                <Image
-                  src={"/star.svg"}
-                  alt="star"
-                  width={100}
-                  height={100}
-                  className="w-3 h-3 lg:w-6 lg:h-6"
-                />
-                <Image
-                  src={"/star.svg"}
-                  alt="star"
-                  width={100}
-                  height={100}
-                  className="w-3 h-3 lg:w-6 lg:h-6"
-                />
-                <Image
-                  src={"/star.svg"}
-                  alt="star"
-                  width={100}
-                  height={100}
-                  className="w-3 h-3 lg:w-6 lg:h-6"
-                />
-              </div>
-            </div>
-          )}
-          <div className="flex gap-1.5">
-            <Badge
-              variant="default"
-              bgColor="bg-green-700"
-              borderRadius="rounded-[8px]"
-            >
-              Excellent
-            </Badge>
-            <Badge
-              variant="outline"
-              textColor="text-green-700"
-              borderColor="border-green-700"
-              borderRadius="rounded-[8px]"
-            >
-              51,237+ families covered
-            </Badge>
+          <div className="w-46 h-30 lg:w-76 lg:h-44 relative overflow-hidden rounded-lg">
+            <Image
+              src={creditCardImage}
+              alt="credit-card"
+              layout="fill"
+            />
           </div>
         </div>
-      </div>
 
-      <div className="flex flex-col lg:text-center h-fit">
-        <Typography variant="h2" color="text-primary-main mb-6 hidden lg:block">
-          eCoverage
-        </Typography>
-        <Typography variant="p" className="text-xs">
-          Thoughtfully designed policies for over 100 years:
-        </Typography>
-        <Typography variant="ul" className="mt-3" color="text-xs">
-          <ul className="list-disc text-left list-outside lg:ml-6 text-xs">
-            <li>Unique RAPIDecision® Final Expense products</li>
-            <li>Coverage up-to $2 million, terms up-to 30 years</li>
-            <li>Fast and easy online application</li>
-            <li>Multiple options with no medical exam required</li>
-          </ul>
-        </Typography>
-      </div>
+        {/* Second Container */}
+        <div className="flex flex-col gap-2 flex-1 h-full">
+          <Typography variant="h3" color="text-primary-main text-xl">
+            {heading}
+          </Typography>
+          <Typography variant="p" className="text-sm">
+            {description}
+          </Typography>
+          <Typography variant="ul" className="">
+            <ul className="list-disc text-left lg:ml-0 text-sm flex flex-col gap-1">
+              {features.map((feature, index) => (
+                <li key={index}>{feature}</li>
+              ))}
+            </ul>
+          </Typography>
+        </div>
 
-      <div className="bg-white rounded-md p-3 flex flex-col gap-3 h-fit min-w-[220px]">
-        {isGradientBox && (
+        {/* Third Container */}
+        <div className=" rounded-md flex justify-between items-center lg:justify-start lg:flex-col gap-3 lg:min-w-[200px] w-full lg:w-fit shrink-0">
+          {/* {isGradientBox && (
           <div className="rounded-md overflow-hidden flex lg:flex-col w-full border border-general-border">
             <div className="bg-linear-to-r from-green-700 to-[#2C9D56] pb-1 lg:py-3.5 flex items-center justify-center flex-col w-1/2 lg:w-full rounded-md">
               <Typography variant="h3" color="text-white" className="text-2xl">
@@ -151,28 +116,55 @@ const AdsWallCards = ({
               </Typography>
             </div>
           </div>
-        )}
-        <Button variant="secondary" size="lg" className="w-full">
-          Get Quote
-        </Button>
-        {isSecondaryBtn && (
-          <Button variant="outline" size="lg" icon={Phone} className="w-full">
-            1-833-906-2737
+        )} */}
+
+          <div className="flex gap-2 items-center lg:items-end justify-center shrink-0">
+            <Typography
+              variant="h3"
+              color="text-black"
+              className="text-xl lg:text-3xl leading-none"
+            >
+              {ratingsNumber}
+            </Typography>
+            <div className="flex flex-col gap-0.5">
+              <div className="flex gap-1 justify-center items-center ">
+                {Array.from({ length: ratingsCount || 5 }, (_, index) => (
+                  <Image
+                    key={index}
+                    src={"/star.svg"}
+                    alt="star"
+                    width={100}
+                    height={100}
+                    className="w-3 h-3"
+                  />
+                ))}
+              </div>
+              <Typography variant="p" className="text-xs">
+                User Ratings
+              </Typography>
+            </div>
+          </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="lg:w-full h-11 font-semibold lg:flex-none flex-1"
+            onClick={() => window.open(buttonLink, "_blank")}
+          >
+            {buttonText}
           </Button>
-        )}
+          {/* {isSecondaryBtn && (
+            <Button variant="outline" size="lg" icon={Phone} className="w-full">
+              1-833-906-2737
+            </Button>
+          )} */}
+        </div>
       </div>
-    </>
+    </div>
   );
 
   return (
     <div className="relative w-full">
-      {isBadge && (
-        <div className="relative top-4 text-xs lg:text-base left-0  bg-black flex items-center gap-1.5 uppercase rounded-tl-xl rounded-tr-xl rounded-bl-lg rounded-br-lg w-fit pt-2 px-4 pb-5 text-white">
-          {badgeIcon}
-          {badgeText}
-        </div>
-      )}
-      {isGradientBorder ? (
+      {/* {isGradientBorder ? (
         <div className="p-[2px] rounded-xl bg-linear-to-r from-primary-main via-[#D3FCFB] to-[#357F7D] w-full">
           <div
             className={cn(
@@ -192,7 +184,16 @@ const AdsWallCards = ({
         >
           {cardContent}
         </div>
-      )}
+      )} */}
+
+      <div
+        className={cn(
+          "border-2 z-1 relative border-general-border rounded-xl w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
+          cardBg
+        )}
+      >
+        {cardContent}
+      </div>
     </div>
   );
 };
