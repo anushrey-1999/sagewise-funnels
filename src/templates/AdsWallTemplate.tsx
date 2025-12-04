@@ -90,7 +90,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       buttonText: "View Offer",
       ratingsNumber: "9.0",
       ratingsCount: 5,
-      logo: "/logo/chime-logo.avif",
+      logo: "/logos/chime-logo.avif",
       logoWidth: "120px",
       logoHeight: "40px",
       creditCardImage: "/credit-cards/chime-credit-card.avif",
