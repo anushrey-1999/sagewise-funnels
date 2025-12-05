@@ -42,6 +42,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   icon?: LucideIcon // Lucide icon component
+  iconClass?: string // Custom classes for icon (size, color, etc.)
 }
 
 function Button({
@@ -50,10 +51,19 @@ function Button({
   size,
   asChild = false,
   icon: Icon,
+  iconClass,
   children,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button"
+
+  // When iconClass is provided, add a class containing 'size-' to prevent 
+  // the default [&_svg:not([class*='size-'])]:size-4 from applying.
+  // The 'size-[inherit]' class contains 'size-' so the selector won't match,
+  // but it won't override the user's w-1 h-1 classes since those come after.
+  const iconClassName = iconClass 
+    ? cn("shrink-0", "size-[inherit]", iconClass) // size-[inherit] prevents default, user classes apply
+    : "shrink-0"
 
   return (
     <Comp
@@ -61,8 +71,8 @@ function Button({
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     >
-      {Icon && <Icon className="shrink-0" />}
       {children}
+      {Icon && <Icon className={iconClassName} />}
     </Comp>
   )
 }

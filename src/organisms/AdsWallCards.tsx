@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
-import { Phone, Rocket, Trophy, Type } from "lucide-react";
+import { Lock, Phone, Rocket, Trophy, Type } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import React from "react";
@@ -152,6 +152,8 @@ const AdsWallCards = ({
               size="sm"
               className="lg:w-full h-11 font-semibold"
               onClick={() => window.open(buttonLink, "_blank")}
+              icon={Lock}
+              iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"
             >
               {buttonText}
             </Button>
