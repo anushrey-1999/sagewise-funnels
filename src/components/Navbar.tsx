@@ -69,7 +69,7 @@ export function Navbar() {
         <Typography 
           ref={triggerRef}
           variant="p" 
-          className="text-general-border hover:text-white transition-all duration-300 cursor-pointer"
+          className="text-general-border hover:text-white transition-all duration-300 cursor-pointer text-xs"
           onClick={(e) => {
             e.stopPropagation();
             setIsMobileOpen(!isMobileOpen);
