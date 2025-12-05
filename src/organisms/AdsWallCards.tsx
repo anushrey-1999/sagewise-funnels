@@ -27,6 +27,7 @@ interface AdsWallCardsProps {
   creditCardImage: string;
   logoWidth: string;
   logoHeight: string;
+  advertiserName: string;
 }
 
 const AdsWallCards = ({
@@ -49,6 +50,7 @@ const AdsWallCards = ({
   logo,
   logoWidth,
   logoHeight,
+  advertiserName,
 }: AdsWallCardsProps) => {
   // Card content (shared between gradient and non-gradient borders)
   const cardContent = (
@@ -63,33 +65,33 @@ const AdsWallCards = ({
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
         {/* First Container */}
         <div className="flex flex-col items-center gap-3 shrink-0">
-          <div 
+          {/* <div 
             className="relative overflow-hidden rounded-lg"
             style={{ width: logoWidth, height: logoHeight }}
           >
             <Image src={logo} alt="logo" layout="fill" />
-          </div>
-          <div className="w-46 h-30 lg:w-76 lg:h-44 relative overflow-hidden rounded-lg">
-            <Image
-              src={creditCardImage}
-              alt="credit-card"
-              layout="fill"
-            />
+          </div> */}
+          <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
+            <Image src={creditCardImage} alt="credit-card" layout="fill" />
           </div>
         </div>
 
         {/* Second Container */}
         <div className="flex flex-col gap-2 flex-1 h-full">
-          <Typography variant="h3" color="text-primary-main text-xl">
-            {heading}
-          </Typography>
-          <Typography variant="p" className="text-sm">
-            {description}
-          </Typography>
+          <Typography 
+            variant="h4" 
+            color="text-primary-main text-xl"
+            dangerouslySetInnerHTML={{ __html: heading }}
+          />
+          <Typography 
+            variant="p" 
+            className="text-sm"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
           <Typography variant="ul" className="">
             <ul className="list-disc text-left lg:ml-0 text-sm flex flex-col gap-1">
               {features.map((feature, index) => (
-                <li key={index}>{feature}</li>
+                <li key={index} dangerouslySetInnerHTML={{ __html: feature }} />
               ))}
             </ul>
           </Typography>
@@ -144,14 +146,19 @@ const AdsWallCards = ({
               </Typography>
             </div>
           </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            className="lg:w-full h-11 font-semibold lg:flex-none flex-1"
-            onClick={() => window.open(buttonLink, "_blank")}
-          >
-            {buttonText}
-          </Button>
+          <div className="flex flex-col gap-1 items-center">
+            <Button
+              variant="secondary"
+              size="sm"
+              className="lg:w-full h-11 font-semibold"
+              onClick={() => window.open(buttonLink, "_blank")}
+            >
+              {buttonText}
+            </Button>
+            <Typography variant="p" className="text-xs text-center" color="text-general-muted-foreground">
+              on {advertiserName} secure site
+            </Typography>
+          </div>
           {/* {isSecondaryBtn && (
             <Button variant="outline" size="lg" icon={Phone} className="w-full">
               1-833-906-2737
