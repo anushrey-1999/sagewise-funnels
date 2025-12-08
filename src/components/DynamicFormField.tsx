@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckIcon } from "lucide-react";
-import { useId } from "react";
+import { useId, useState } from "react";
 
 interface DynamicFormFieldProps {
   field: FormField;
@@ -78,16 +78,22 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
     switch (field.type) {
       case "checkbox":
         const isChecked = Array.isArray(value) && value.includes(field.id);
-        const isCheckboxValid = isValidValue(field, value);
+        // Only show green border and checkmark when checkbox is actually checked AND valid
+        const isCheckboxValid = isChecked && isValidValue(field, value);
+        const [isCheckboxFocused, setIsCheckboxFocused] = useState(false);
         
         return (
           <div
             className={cn(
-              "bg-white border border-[#e5e5e5] h-[43px] min-h-[40px] rounded-lg w-full max-w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-[border-color,background-color,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
-              "focus-within:border-[var(--sw-green-accent)] focus-within:bg-[var(--sw-input-bg)]",
-              isCheckboxValid && "border-[var(--sw-green-accent)]",
+              "border border-[#e5e5e5] h-[43px] min-h-[40px] rounded-lg w-full max-w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-[border-color,background-color,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
+              isCheckboxFocused 
+                ? "!bg-[var(--sw-input-bg)] !border-[var(--sw-green-accent)]" 
+                : "!bg-white",
+              isCheckboxValid && !isCheckboxFocused && "border-[var(--sw-green-accent)]",
               error && "border-red-500"
             )}
+            onFocus={() => setIsCheckboxFocused(true)}
+            onBlur={() => setIsCheckboxFocused(false)}
             onClick={() => {
               const currentValue = Array.isArray(value) ? value : [];
               const newValue = currentValue.includes(field.id)
@@ -95,6 +101,8 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 : [...currentValue, field.id];
               onChange(newValue);
             }}
+            onMouseDown={(e) => e.preventDefault()}
+            tabIndex={0}
             role="checkbox"
             aria-checked={isChecked}
             aria-label={field.label || field.id}
@@ -125,6 +133,36 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
         );
 
       case "radio":
+        // Radio option component with focus state
+        const RadioOption = ({ option, isSelected, isValid }: { option: { value: string; label: string }, isSelected: boolean, isValid: boolean }) => {
+          const [isFocused, setIsFocused] = useState(false);
+          return (
+            <div
+              className={cn(
+                "border border-gray-200 h-[43px] min-h-[40px] rounded-lg flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-[border-color,background-color,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto mb-3 relative",
+                isFocused 
+                  ? "!bg-[var(--sw-input-bg)] !border-[var(--sw-green-accent)]" 
+                  : "!bg-white",
+                isValid && !isFocused && "border-[var(--sw-green-accent)]",
+                error && "border-red-500"
+              )}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              onClick={() => onChange(option.value)}
+              onMouseDown={(e) => e.preventDefault()}
+              tabIndex={0}
+            >
+              <RadioGroupItem value={option.value} id={option.value} className="h-4 w-4" />
+              <Label htmlFor={option.value} className="text-base text-foreground cursor-pointer flex-1">
+                {option.label}
+              </Label>
+              {isValid && (
+                <CheckIcon className="size-5 text-[var(--sw-success-green)] pointer-events-none shrink-0" />
+              )}
+            </div>
+          );
+        };
+        
         return (
           <RadioGroup
             value={value || ""}
@@ -138,24 +176,12 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
               const isSelected = value === option.value;
               const isValid = isSelected && isValidValue(field, value);
               return (
-                <div
+                <RadioOption 
                   key={option.value}
-                  className={cn(
-                    "bg-white border border-gray-200 h-[43px] min-h-[40px] rounded-lg flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-[border-color,background-color,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto mb-3 relative",
-                    "focus-within:border-[var(--sw-green-accent)] focus-within:bg-[var(--sw-input-bg)]",
-                    isValid && "border-[var(--sw-green-accent)]",
-                    error && "border-red-500"
-                  )}
-                  onClick={() => onChange(option.value)}
-                >
-                  <RadioGroupItem value={option.value} id={option.value} className="h-4 w-4" />
-                  <Label htmlFor={option.value} className="text-base text-foreground cursor-pointer flex-1">
-                    {option.label}
-                  </Label>
-                  {isValid && (
-                    <CheckIcon className="size-5 text-[var(--sw-success-green)] pointer-events-none shrink-0" />
-                  )}
-                </div>
+                  option={option}
+                  isSelected={isSelected}
+                  isValid={isValid}
+                />
               );
             })}
           </RadioGroup>
@@ -227,8 +253,9 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
           </div>
         );
 
-      case "select":
+      case "select": {
         const isSelectValid = isValidValue(field, value);
+        const [isSelectFocused, setIsSelectFocused] = useState(false);
         
         return (
           <div className="w-full sm:w-[380px] md:w-[342px]">
@@ -243,9 +270,14 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 id={field.id}
                 value={value || ""}
                 onChange={(e) => onChange(e.target.value)}
+                onFocus={() => setIsSelectFocused(true)}
+                onBlur={() => setIsSelectFocused(false)}
                 className={cn(
-                  "h-[43px] min-h-[40px] w-full rounded-lg border border-[#e5e5e5] bg-white px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-gray-300 focus:border-[var(--sw-green-accent)] focus:bg-[var(--sw-input-bg)] focus-visible:border-[var(--sw-green-accent)] focus-visible:bg-[var(--sw-input-bg)] disabled:cursor-not-allowed disabled:opacity-50",
-                  isSelectValid && "border-[var(--sw-green-accent)]",
+                  "h-[43px] min-h-[40px] w-full rounded-lg border border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-gray-300 disabled:cursor-not-allowed disabled:opacity-50",
+                  isSelectFocused 
+                    ? "!bg-[var(--sw-input-bg)] !border-[var(--sw-green-accent)]" 
+                    : "!bg-white",
+                  isSelectValid && !isSelectFocused && "border-[var(--sw-green-accent)]",
                   error && "border-red-500"
                 )}
                 required={field.required}
@@ -277,6 +309,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
             )}
           </div>
         );
+      }
 
       default:
         return null;

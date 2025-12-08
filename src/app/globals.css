@@ -232,6 +232,17 @@
     -moz-appearance: textfield;
   }
   
+  /* Override browser autofill styling - default to white background */
+  /* Note: Focus state is handled by JavaScript in Input component */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: inherit !important;
+    background-color: white !important;
+    background-clip: content-box !important;
+  }
+  
   /* Screen reader only utility */
   .sr-only {
     position: absolute;
