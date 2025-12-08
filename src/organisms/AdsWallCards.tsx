@@ -57,8 +57,10 @@ const AdsWallCards = ({
   const cardContent = (
     <div className="relative flex flex-col w-full gap-4">
       <div>
-        <div className="text-xs font-medium p-2 bg-green-700 flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
-          {badgeIcon}
+        <div className="text-xs font-medium p-2 bg-green-700  flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
+          <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
+          <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
+          </div>
           {badgeText}
         </div>
       </div>

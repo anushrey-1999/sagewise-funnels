@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { getFunnelConfig } from "@/lib/funnel-loader";
 import PageHeader from "@/organisms/PageHeader";
 import { Typography } from "@/components/ui/typography";
+import PlainPageHeader from "@/organisms/PlainPageHeader";
 
 // Provider logos - using placeholder images from Figma
 const providerLogos = [
@@ -56,10 +57,10 @@ function FormPageContent() {
 
   return (
     <div className="flex flex-col items-start  w-full">
-      <PageHeader title={formConfig.title} subtitle={formConfig.subtitle} />
+      <PlainPageHeader title={formConfig.title}  />
 
       {/* Main Container with 64px padding - Contains form, separator, and logos */}
-      <div className="flex flex-col items-start w-full pb-9 pt-12 px-6 md:p-16  justify-between">
+      <div className="flex flex-col items-start w-full pb-9 pt-5 px-6 md:p-16 md:pt-5  justify-between">
         <div className=" flex flex-col w-full flex-1 justify-between ">
           {/* Form Section */}
           <div className="flex flex-col  items-center justify-center w-full">
@@ -71,10 +72,10 @@ function FormPageContent() {
             </div>
           </div>
 
-          <Separator className="w-full border-[0.5] border-[#e5e5e5] my-9 md:my-12" />
+          {/* <Separator className="w-full border-[0.5] border-[#e5e5e5] my-9 md:my-12" /> */}
 
           {/* Provider Logos Section - Before Footer */}
-          <div className="flex flex-col gap-6 items-center w-full">
+          {/* <div className="flex flex-col gap-6 items-center w-full">
             <Typography
               variant="h5"
               color="text-general-foreground"
@@ -82,7 +83,7 @@ function FormPageContent() {
             >
               Discover quotes from 12 providers, including:
             </Typography>
-            {/* Desktop & Tablet: Single row */}
+          
             <div className="hidden sm:flex gap-6 sm:gap-7 md:gap-8 items-center flex-wrap justify-center">
               {providerLogos.map((logo, index) => (
                 <div
@@ -103,7 +104,7 @@ function FormPageContent() {
               ))}
             </div>
 
-            {/* Mobile:*/}
+         
             <div className="grid grid-cols-3 gap-4 items-center justify-items-center w-full sm:hidden">
               {providerLogos.map((logo, index) => (
                 <div
@@ -120,7 +121,8 @@ function FormPageContent() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
+          
         </div>
       </div>
     </div>

@@ -341,64 +341,86 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       };
     });
 
+    // Determine if this field should trigger auto-forward
+    // Check field.autoForward property first (manual control)
+    // If not set, default to true only for radio, checkbox, and select
+    // All other types (text, email, tel, number) default to false unless explicitly set
+    const shouldAutoForward = field.autoForward !== undefined 
+      ? field.autoForward 
+      : (field.type === "radio" || field.type === "checkbox" || field.type === "select");
+
     // Determine if this field should be debounced
     // Only debounce text inputs (text, email, tel, number), but NOT zip code
     const shouldDebounce = 
       (field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "number") &&
       field.id !== "zipCode";
 
-    // Capture current step data for use in timeout closure
-    const stepDataForCheck = currentStepData;
-    const stepIdForCheck = currentStepData.id;
-    const stepAtCheck = currentStep;
+    // Only proceed with auto-forward logic if this field should auto-forward
+    if (shouldAutoForward) {
+      // Capture current step data for use in timeout closure
+      const stepDataForCheck = currentStepData;
+      const stepIdForCheck = currentStepData.id;
+      const stepAtCheck = currentStep;
 
-    // Function to check step completion and auto-forward
-    const checkAndForward = () => {
-      // Check if all fields in the step are complete and valid, then auto-proceed
-      if (checkStepComplete(updatedStepData)) {
-        // Clear any existing auto-forward timeout to prevent multiple forwards
-        if (autoForwardTimeoutRef.current) {
-          clearTimeout(autoForwardTimeoutRef.current);
-          autoForwardTimeoutRef.current = null;
-        }
-        
-        // 500ms delay for better UX - gives user time to review what they typed
-        autoForwardTimeoutRef.current = setTimeout(() => {
-          // Only auto-forward if we're still on the same step (prevent skipping)
-          if (currentStepRef.current === stepAtCheck && stepDataForCheck?.id === stepIdForCheck) {
-            setCurrentStep((prev) => {
-              const nextStep = prev + 1;
-              // Don't go beyond the final step (which is at config.steps.length)
-              const maxStep = config.steps.length;
-              return Math.min(nextStep, maxStep);
-            });
+      // Function to check step completion and auto-forward
+      const checkAndForward = () => {
+        // Check if all fields in the step are complete and valid, then auto-proceed
+        if (checkStepComplete(updatedStepData)) {
+          // Clear any existing auto-forward timeout to prevent multiple forwards
+          if (autoForwardTimeoutRef.current) {
+            clearTimeout(autoForwardTimeoutRef.current);
+            autoForwardTimeoutRef.current = null;
           }
-          autoForwardTimeoutRef.current = null;
+          
+          // 500ms delay for better UX - gives user time to review what they typed
+          autoForwardTimeoutRef.current = setTimeout(() => {
+            // Only auto-forward if we're still on the same step (prevent skipping)
+            if (currentStepRef.current === stepAtCheck && stepDataForCheck?.id === stepIdForCheck) {
+              setCurrentStep((prev) => {
+                const nextStep = prev + 1;
+                // Don't go beyond the final step (which is at config.steps.length)
+                const maxStep = config.steps.length;
+                return Math.min(nextStep, maxStep);
+              });
+            }
+            autoForwardTimeoutRef.current = null;
+          }, 500);
+        }
+      };
+
+      if (shouldDebounce) {
+        // Debounce the step completion check to wait until user stops typing
+        // Clear any existing completion check timeout
+        if (checkCompleteTimeoutRef.current) {
+          clearTimeout(checkCompleteTimeoutRef.current);
+          checkCompleteTimeoutRef.current = null;
+        }
+
+        // Wait 500ms after user stops typing before checking if step is complete
+        checkCompleteTimeoutRef.current = setTimeout(() => {
+          checkAndForward();
+          checkCompleteTimeoutRef.current = null;
         }, 500);
-      }
-    };
-
-    if (shouldDebounce) {
-      // Debounce the step completion check to wait until user stops typing
-      // Clear any existing completion check timeout
-      if (checkCompleteTimeoutRef.current) {
-        clearTimeout(checkCompleteTimeoutRef.current);
-        checkCompleteTimeoutRef.current = null;
-      }
-
-      // Wait 500ms after user stops typing before checking if step is complete
-      checkCompleteTimeoutRef.current = setTimeout(() => {
+      } else {
+        // For radio, checkbox, select, tel, number, and zip code - check immediately (no debounce)
+        // Clear any pending debounce timeout
+        if (checkCompleteTimeoutRef.current) {
+          clearTimeout(checkCompleteTimeoutRef.current);
+          checkCompleteTimeoutRef.current = null;
+        }
         checkAndForward();
-        checkCompleteTimeoutRef.current = null;
-      }, 500);
+      }
     } else {
-      // For radio, checkbox, select, and zip code - check immediately (no debounce)
-      // Clear any pending debounce timeout
+      // For text and email fields, clear any pending timeouts but don't auto-forward
+      // User must manually click Continue button
       if (checkCompleteTimeoutRef.current) {
         clearTimeout(checkCompleteTimeoutRef.current);
         checkCompleteTimeoutRef.current = null;
       }
-      checkAndForward();
+      if (autoForwardTimeoutRef.current) {
+        clearTimeout(autoForwardTimeoutRef.current);
+        autoForwardTimeoutRef.current = null;
+      }
     }
   };
 
@@ -410,12 +432,12 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
         <div className="w-full flex flex-col gap-12 items-center">
           <Card className="w-full border border-general-border rounded-lg p-6">
             <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
-              <CardTitle className="text-2xl font-semibold text-foreground tracking-[-0.48px]">
+              <CardTitle className="text-5xl font-semibold text-primary-dark tracking-[-0.48px]">
                 {config.finalStep.title}
               </CardTitle>
-              <CardDescription className="text-base text-muted-foreground">
+              {/* <CardDescription className="text-base text-muted-foreground">
                 {config.finalStep.description}
-              </CardDescription>
+              </CardDescription> */}
             </CardHeader>
           </Card>
           
@@ -440,12 +462,12 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       <div className="w-full flex flex-col gap-[48px] items-center">
         <Card className="w-full border border-general-border rounded-lg p-6">
           <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
-            <CardTitle className="text-2xl font-semibold text-foreground">
+            <CardTitle className="text-5xl font-semibold text-primary-dark">
               {currentStepData.title}
             </CardTitle>
-            <CardDescription className="text-base text-muted-foreground">
+            {/* <CardDescription className="text-base text-muted-foreground">
               {currentStepData.description}
-            </CardDescription>
+            </CardDescription> */}
           </CardHeader>
           <CardContent className="flex flex-col gap-3 items-center p-0 pt-6">
             {currentStepData.fields.map((field) => {

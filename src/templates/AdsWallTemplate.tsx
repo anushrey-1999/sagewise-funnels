@@ -33,7 +33,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       logoHeight: "40px",
       creditCardImage: "/credit-cards/chime-credit-card.avif",
       badgeText: "NO CREDIT CHECK",
-      badgeIcon: <Rocket size={14} className="w-3 h-3 lg:w-3.5 lg:h-3.5" />,
+      badgeIcon: 'no-card',
       advertiserName: "Chime",
     },
     {
@@ -55,7 +55,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       logoHeight: "35px",
       creditCardImage: "/credit-cards/indigo-credit-card.avif",
       badgeText: "UNSECURED CARD",
-      badgeIcon: <Rocket size={14} className="w-3 h-3 lg:w-3.5 lg:h-3.5" />,
+      badgeIcon: 'card',
       advertiserName: "Indigo",
     },
     {
@@ -77,7 +77,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       logoHeight: "28px",
       creditCardImage: "/credit-cards/milestone-credit-card.avif",
       badgeText: "NO CREDIT CHECK",
-      badgeIcon: <Rocket size={14} className="w-3 h-3 lg:w-3.5 lg:h-3.5" />,
+      badgeIcon: 'card-up',
       advertiserName: "Milestone",
     },
     {
@@ -100,7 +100,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       logoHeight: "40px",
       creditCardImage: "/credit-cards/chime-checking-debit-card.avif",
       badgeText: "$350 BONUS OFFER",
-      badgeIcon: <Rocket size={14} className="w-3 h-3 lg:w-3.5 lg:h-3.5" />,
+      badgeIcon: 'percentage',
       advertiserName: "Chime",
     },
     {
@@ -122,7 +122,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       logoHeight: "40px",
       creditCardImage: "/credit-cards/sofi-credit-card.avif",
       badgeText: "2% CASH BACK",
-      badgeIcon: <Rocket size={14} className="w-3 h-3 lg:w-3.5 lg:h-3.5" />,
+      badgeIcon: 'card-up',
       advertiserName: "SoFi",
     },
   ];
