@@ -13,9 +13,9 @@ interface AdsWallCardsProps {
   isBadge?: boolean;
   isSecondaryBtn?: boolean;
   isGradientBox?: boolean;
+  isDifferentBorder?: boolean; // Golden border for special cards
   badgeIcon?: React.ReactNode; // Accepts HTML/JSX content
   badgeText?: React.ReactNode; // Accepts HTML/JSX content
-
   heading: string;
   description: string;
   features: string[];
@@ -37,6 +37,7 @@ const AdsWallCards = ({
   isBadge = false,
   isSecondaryBtn = true,
   isGradientBox = false,
+  isDifferentBorder = false,
   badgeIcon,
   badgeText,
   heading,
@@ -78,13 +79,13 @@ const AdsWallCards = ({
 
         {/* Second Container */}
         <div className="flex flex-col gap-2 flex-1 h-full">
-          <Typography 
-            variant="h4" 
+          <Typography
+            variant="h4"
             color="text-primary-main text-xl"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
-          <Typography 
-            variant="p" 
+          <Typography
+            variant="p"
             className="text-sm"
             dangerouslySetInnerHTML={{ __html: description }}
           />
@@ -157,7 +158,11 @@ const AdsWallCards = ({
             >
               {buttonText}
             </Button>
-            <Typography variant="p" className="text-xs text-center" color="text-general-muted-foreground">
+            <Typography
+              variant="p"
+              className="text-[10px] text-center"
+              color="text-general-muted-foreground"
+            >
               on {advertiserName} secure site
             </Typography>
           </div>
@@ -197,7 +202,10 @@ const AdsWallCards = ({
 
       <div
         className={cn(
-          "border-2 z-1 relative border-general-border rounded-xl w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
+          "border-2 z-1 relative rounded-xl w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
+          isDifferentBorder 
+            ? "border-[#ffd32a]" // Golden border using CTA primary color
+            : "border-general-border", // Default border
           cardBg
         )}
       >
