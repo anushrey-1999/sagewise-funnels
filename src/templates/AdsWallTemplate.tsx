@@ -1,18 +1,9 @@
+"use client";
+
 import AdsWallCards from "@/organisms/AdsWallCards";
-import { Typography } from "@/components/ui/typography";
-import { PartyPopper, Rocket, Trophy, Zap } from "lucide-react";
-import PageHeader from "@/organisms/PageHeader";
 import PlainPageHeader from "@/organisms/PlainPageHeader";
 
-interface AdsWallTemplateProps {
-  adsWallData: AdsWallData;
-}
-interface AdsWallData {
-  title: string;
-  subtitle: string;
-}
-
-const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
+const AdsWallTemplate = () => {
   const cardData = [
     {
       heading: "Chime Card<sup>&trade;</sup>",
@@ -37,7 +28,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       advertiserName: "Chime",
     },
     {
-      heading: "Indigo Platinum Mastercard",
+      heading: "Indigo Platinum Mastercard&reg;",
       description:
         "Unsecured credit card for rebuilding credit with no security deposit required.",
       features: [
@@ -59,7 +50,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       advertiserName: "Indigo",
     },
     {
-      heading: "Milestone Mastercard",
+      heading: "Milestone Mastercard&reg;",
       description:
         "Build credit history with an unsecured card designed for limited credit profiles.",
       features: [
@@ -81,14 +72,14 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       advertiserName: "Milestone",
     },
     {
-      heading: "Chime Checking Account and Chime Visa Debit Card",
+      heading: "Chime&reg; Checking Account and Chime Visa Debit Card",
       description:
         "New Account Sign Up Bonus - Get up to $350 with a new Chime Checking Account",
       features: [
         "No monthly fees",
         "No overdraft fees",
         "No minimum balance requirement",
-        "No foreign transactions fees",
+        "No foreign transaction fees",
       ],
       buttonLink: "https://rdtrk.net/?E=1egYypV%2bSugQJBKPOGc8fsz6l05hPQ0P&s1=",
       buttonText: "Open Account",
@@ -136,7 +127,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
       <div className="flex flex-col items-center w-full px-6 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
           <div className="flex flex-col gap-4">
-            {cardData.map((item, index) => (
+            {cardData?.map((item, index) => (
               <AdsWallCards key={index} {...item} />
             ))}
           </div>
@@ -190,7 +181,7 @@ const AdsWallTemplate = ({ adsWallData }: AdsWallTemplateProps) => {
               <div>
                 <strong>How we make money</strong>
                 <p class="mt-2">
-                  <a href="https://sagewise.com" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline;">Sagewise.com</a> is an independent, advertising-supported publisher and comparison service. Our websites may earn compensation when a customer clicks on a link, when an application is approved, or when an account is opened. Therefore, this compensation may impact what products appear and how, where, and in what order they appear within listing categories, except where prohibited by law for our mortgage, home equity and other home lending products. Other factors, such as our proprietary website rules and whether a product is offered in your area or at your self-selected credit score range, can also impact how and where products appear on this site. While we strive to provide a wide range of offers, Bankrate does not include information about every financial or credit product or service.
+                  <a href="https://sagewise.net" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline;">Sagewise.net</a> is an independent, advertising-supported publisher and comparison service. Our websites may earn compensation when a customer clicks on a link, when an application is approved, or when an account is opened. Therefore, this compensation may impact what products appear and how, where, and in what order they appear within listing categories, except where prohibited by law for our mortgage, home equity and other home lending products. Other factors, such as our proprietary website rules and whether a product is offered in your area or at your self-selected credit score range, can also impact how and where products appear on this site. While we strive to provide a wide range of offers, Sagewise does not include information about every financial or credit product or service.
                 </p>
               </div>
             `,
