@@ -62,7 +62,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
     // Redirect to Ads Wall page with mock ads data
     const adsParam = encodeURIComponent(JSON.stringify(mockAdsWall));
     console.log("Redirecting to ads-wall with mock data");
-    router.push(`/ads-wall?ads=${adsParam}`);
+    router.push(`/creditcards-adwall?ads=${adsParam}`);
   };
 
   if (isLoading) {

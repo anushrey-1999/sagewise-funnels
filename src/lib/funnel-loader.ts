@@ -1,7 +1,6 @@
 import { FormConfig } from "@/types/form";
 
 // Import funnel configs
-import walkInBathtubsConfig from "./form-config.example.json";
 import financeConfig from "./funnel-configs/finance.json";
 import faConfig from "./funnel-configs/fa.json";
 // Add more funnel configs as they are created
@@ -9,7 +8,6 @@ import faConfig from "./funnel-configs/fa.json";
 
 // Map of funnel IDs to their configs
 const funnelConfigs: Record<string, FormConfig> = {
-  "walk-in-bathtubs": walkInBathtubsConfig as FormConfig,
   "finance": financeConfig as FormConfig,
   "fa": faConfig as FormConfig,
   // Add more funnels here as they are created
@@ -24,7 +22,7 @@ const funnelConfigs: Record<string, FormConfig> = {
 export function getFunnelConfig(funnelId: string | null): FormConfig | null {
   if (!funnelId) {
     // Default to walk-in-bathtubs if no funnel specified
-    return funnelConfigs["walk-in-bathtubs"] || null;
+    return funnelConfigs["fa"] || null;
   }
 
   return funnelConfigs[funnelId] || null;
