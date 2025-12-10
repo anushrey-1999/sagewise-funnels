@@ -2,8 +2,23 @@
 
 import AdsWallCards from "@/organisms/AdsWallCards";
 import PlainPageHeader from "@/organisms/PlainPageHeader";
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 
 const AdsWallTemplate = () => {
+  const searchParams = useSearchParams();
+
+  // Extract and clean the IDs from URL parameters
+  const affiliateId = useMemo(() => {
+    const id = searchParams.get("affiliate_id");
+    return id?.replace(/^["']|["']$/g, "") || null;
+  }, [searchParams]);
+
+  const transactionId = useMemo(() => {
+    const id = searchParams.get("transaction_id");
+    return id?.replace(/^["']|["']$/g, "") || null;
+  }, [searchParams]);
+
   const cardData = [
     {
       heading: "Chime Card<sup>&trade;</sup>",
@@ -128,7 +143,12 @@ const AdsWallTemplate = () => {
         <div className="w-full max-w-[970px] ">
           <div className="flex flex-col gap-4">
             {cardData?.map((item, index) => (
-              <AdsWallCards key={index} {...item} />
+              <AdsWallCards 
+                key={index} 
+                {...item} 
+                affiliateId={affiliateId}
+                transactionId={transactionId}
+              />
             ))}
           </div>
         </div>

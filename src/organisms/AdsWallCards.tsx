@@ -28,6 +28,8 @@ interface AdsWallCardsProps {
   logoWidth: string;
   logoHeight: string;
   advertiserName: string;
+  affiliateId?: string | null;
+  transactionId?: string | null;
 }
 
 const AdsWallCards = ({
@@ -52,7 +54,41 @@ const AdsWallCards = ({
   logoWidth,
   logoHeight,
   advertiserName,
+  affiliateId,
+  transactionId,
 }: AdsWallCardsProps) => {
+  // Function to append affiliate_id and transaction_id to the button link
+  const handleButtonClick = () => {
+    try {
+      const url = new URL(buttonLink);
+      
+      if (affiliateId) {
+        url.searchParams.set("affiliate_id", affiliateId);
+      }
+      if (transactionId) {
+        url.searchParams.set("transaction_id", transactionId);
+      }
+      
+      window.open(url.toString(), "_blank");
+    } catch (error) {
+      // If buttonLink is not a valid absolute URL, append params manually
+      const separator = buttonLink.includes("?") ? "&" : "?";
+      const params: string[] = [];
+      
+      if (affiliateId) {
+        params.push(`affiliate_id=${encodeURIComponent(affiliateId)}`);
+      }
+      if (transactionId) {
+        params.push(`transaction_id=${encodeURIComponent(transactionId)}`);
+      }
+      
+      const finalUrl = params.length > 0 
+        ? `${buttonLink}${separator}${params.join("&")}`
+        : buttonLink;
+      
+      window.open(finalUrl, "_blank");
+    }
+  };
   // Card content (shared between gradient and non-gradient borders)
   const cardContent = (
     <div className="relative flex flex-col w-full gap-4">
@@ -154,7 +190,7 @@ const AdsWallCards = ({
               variant="secondary"
               size="sm"
               className="lg:w-full h-11 font-semibold"
-              onClick={() => window.open(buttonLink, "_blank")}
+              onClick={handleButtonClick}
               icon={Lock}
               iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"
             >
