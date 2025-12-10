@@ -23,13 +23,45 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       setIsLoading(true);
 
       // Extract user details from form data
-      const contactInfo = data["contact"] || {};
+      // The form data structure is: { [stepId]: { [fieldId]: value } }
+      // Contact fields can be in steps like "contact-info", "contact-details", etc.
+      let firstName: string | undefined;
+      let lastName: string | undefined;
+      let email: string | undefined;
+      let phone: string | undefined;
+
+      // Search through all steps to find contact fields
+      for (const stepId in data) {
+        const stepData = data[stepId];
+        if (stepData) {
+          // Extract values, converting to string and trimming whitespace
+          const getValue = (value: string | string[] | number | boolean | undefined): string | undefined => {
+            if (value === undefined || value === null) return undefined;
+            const str = String(value).trim();
+            return str.length > 0 ? str : undefined;
+          };
+
+          if (!firstName && stepData.firstName) firstName = getValue(stepData.firstName);
+          if (!lastName && stepData.lastName) lastName = getValue(stepData.lastName);
+          if (!email && stepData.email) email = getValue(stepData.email);
+          if (!phone && stepData.phone) phone = getValue(stepData.phone);
+        }
+      }
+
       const userData = {
-        firstName: contactInfo.firstName,
-        lastName: contactInfo.lastName,
-        email: contactInfo.email,
-        phone: contactInfo.phone,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        email: email || null,
+        phone: phone || null,
       };
+
+      console.log("Extracted user data:", userData);
+
+      // Validate that we have at least email or phone
+      if (!email && !phone) {
+        throw new Error("Email or phone is required to submit the form");
+      }
+
       const response = await fetch("/api/users", {
         method: "POST",
         headers: {
