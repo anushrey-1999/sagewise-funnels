@@ -121,7 +121,7 @@ const AdsWallTemplate = () => {
   return (
     <div className="bg-white flex flex-col items-start min-h-screen w-full">
       {/* Header */}
-      <PlainPageHeader title={'Best credit cards of December 2025'} headingFont="text-3xl text-center lg:text-[44px] font-bold" subtitle={'Updated December 05, 2025'} />
+      <PlainPageHeader title={'Best credit cards of December 2025'} headingFont="text-3xl text-center lg:text-[48px] font-bold" subtitle={'Updated December 05, 2025'} />
 
       {/* Cards */}
       <div className="flex flex-col items-center w-full px-6 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
