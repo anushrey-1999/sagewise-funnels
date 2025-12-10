@@ -18,11 +18,33 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
   const handleFormSubmit = async (data: FormData) => {
     try {
       console.log("Submitting form data:", { funnelId, data });
-      
+
       // Show loader
       setIsLoading(true);
-      
-      // The loader will call handleLoaderComplete after 2 seconds
+
+      // Extract user details from form data
+      const contactInfo = data["contact"] || {};
+      const userData = {
+        firstName: contactInfo.firstName,
+        lastName: contactInfo.lastName,
+        email: contactInfo.email,
+        phone: contactInfo.phone,
+      };
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save user data");
+      }
+
+      const user = await response.json();
+      console.log("User created:", user);
+
     } catch (error) {
       console.error("Error submitting form:", error);
       setIsLoading(false);
