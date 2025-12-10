@@ -21,10 +21,10 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <div className="bg-[#204c4b] flex flex-col gap-4 sm:gap-4 md:gap-4 p-8 sm:p-10 md:p-16 w-full">
+    <div className="bg-[#204c4b] flex flex-col gap-4 sm:gap-4 md:gap-4 p-6 sm:p-10 md:p-16 w-full">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4">
         <Logo color="white" />
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
           {[Facebook, Linkedin, Twitter, Instagram, Youtube].map(
             (Icon, index) => (
               <Button
@@ -37,11 +37,11 @@ export function Footer() {
               </Button>
             )
           )}
-        </div>
+        </div> */}
       </div>
 
-      <div className="h-px bg-primary-light w-full hidden md:block" />
-
+      {/* <div className="h-px bg-primary-light w-full hidden md:block" /> */}
+      {/* 
       <Typography
         variant="p"
         color="text-general-primary-foreground"
@@ -67,7 +67,27 @@ export function Footer() {
         "unsubscribe" link in any email to opt out of marketing emails. We
         maintain internal Do Not Call lists and honor applicable laws. If you
         opt out, we may still send transactional/service messages.
-      </Typography>
+      </Typography> */}
+
+      <div className="h-px bg-primary-light w-full " />
+
+      <div className="text-white text-xs leading-relaxed space-y-4">
+        {/* <h3 className="text-base font-semibold mb-4">Full Disclaimers</h3> */}
+        <div
+          className="space-y-4"
+          dangerouslySetInnerHTML={{
+            __html: `
+              <div>
+              Independent service. Sagewise is an independent, advertising-supported comparison service. We are not affiliated with, endorsed by, or acting on behalf of HUD, FHA, VA, or any government agency. Content is for educational purposes only and is not legal, tax, or financial advice. Rates, fees, terms, and product availability are subject to change without notice and may vary by lender and borrower profile. </br></br>
+
+              Sagewise is not a consumer reporting agency under the Fair Credit Reporting Act (FCRA) and does not furnish consumer reports. Lenders make credit decisions using their own criteria. </br></br>
+
+              Consent to contact. By submitting your information, you agree that Sagewise and participating lenders and affiliates may contact you at the phone number and email you provide using live agents, autodialers, artificial/prerecorded voice, SMS/MMS, instant messaging, or email, even if your number is on a Do Not Call list.Consent is not required to obtain credit or services. Message & data rates may apply. Frequency varies. Reply STOP to opt out of SMS; HELP for help. Use the “unsubscribe” link in any email to opt out of marketing emails. We maintain internal Do Not Call lists and honor applicable laws. If you opt out, we may still send transactional/service messages.
+              </div>
+            `,
+          }}
+        />
+      </div>
 
       <div className="h-px bg-primary-light w-full " />
       <div className="flex md:flex-col gap-6 md:gap-2">

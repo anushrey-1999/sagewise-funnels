@@ -42,23 +42,54 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   
-  /* Design System Colors */
+  /* Sagewise Design System Colors - Base Variables */
+  /* Green Colors */
+  --sw-green-primary: #2F4F4F; /* Dark green for selected states, text */
+  --sw-green-accent: #8FBC8F; /* Light green for borders, focus states */
+  --sw-success-green: #10B981; /* Checkmark icons, success indicators */
+  
+  /* CTA Colors */
+  --sw-cta-primary: #ECA400; /* Primary call-to-action buttons */
+  --sw-cta-hover: #D89400; /* Primary CTA hover state */
+  
+  /* Border & Input Colors */
+  --sw-border-gray: #D1D5DB; /* Default border color */
+  --sw-input-bg: #F0F9FF; /* Light blue input focus background */
+  
+  /* Text & Background Colors */
+  --sw-text-primary: #1F2937; /* Main text color */
+  --sw-bg-light: #F8F8F8; /* Page background color */
+  
+  /* Error Color */
+  --sw-error-red: #DC2626; /* Error states, validation messages */
+  
+  /* Sagewise Design System Colors - Tailwind Utilities */
+  --color-sw-green-primary: var(--sw-green-primary);
+  --color-sw-green-accent: var(--sw-green-accent);
+  --color-sw-success-green: var(--sw-success-green);
+  --color-sw-cta-primary: var(--sw-cta-primary);
+  --color-sw-cta-hover: var(--sw-cta-hover);
+  --color-sw-border-gray: var(--sw-border-gray);
+  --color-sw-input-bg: var(--sw-input-bg);
+  --color-sw-text-primary: var(--sw-text-primary);
+  --color-sw-bg-light: var(--sw-bg-light);
+  --color-sw-error-red: var(--sw-error-red);
+  
+  /* Legacy/Compatibility Colors (keeping for backward compatibility) */
   --color-white: #ffffff;
   --color-black: #000000;
-  --color-primary-main: #204C4B;
+  --color-primary-main: var(--sw-green-primary);
   --color-primary-dark: #001918;
   --color-primary-light: #4D706F;
-  --color-general-primary: #171717;
-  --color-general-secondary: #F5F5F5;
+  --color-secondary-main: var(--sw-cta-primary);
+  --color-secondary-light: #FCD34D;
+  --color-general-border: var(--sw-border-gray);
+  --color-general-border-three: #D4D4D4;
+  --color-general-primary: var(--sw-text-primary);
+  --color-general-secondary: var(--sw-bg-light);
   --color-general-foreground: #0A0A0A;
   --color-general-muted-foreground: #737373;
   --color-general-primary-foreground: #FAFAFA;
-  --color-general-border: #E5E5E5;
-  --color-general-border-three: #D4D4D4;
-  --color-green-600: #16A34A;
-  --color-green-700: #15803D;
-  --color-secondary-main: #F59E0B;
-  --color-secondary-light: #FCD34D;
 }
 
 :root {
@@ -140,5 +171,101 @@
   }
   code, pre {
     font-family: var(--font-geist-mono), monospace;
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --border: oklch(0.5 0 0);
+      --input: oklch(1 0 0);
+      --ring: oklch(0 0 0);
+    }
+    
+    input,
+    select,
+    textarea {
+      border-width: 2px;
+    }
+    
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 3px solid;
+      outline-offset: 2px;
+    }
+  }
+  
+  /* Cross-browser input styling normalization */
+  input,
+  select,
+  textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Remove default styling for number inputs */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  
+  /* Override browser autofill styling - default to white background */
+  /* Note: Focus state is handled by JavaScript in Input component */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: inherit !important;
+    background-color: white !important;
+    background-clip: content-box !important;
+  }
+  
+  /* Screen reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  /* Motion reduce utility */
+  .motion-reduce\:transition-none {
+    @media (prefers-reduced-motion: reduce) {
+      transition: none !important;
+    }
+  }
+  
+  .motion-reduce\:will-change-auto {
+    @media (prefers-reduced-motion: reduce) {
+      will-change: auto !important;
+    }
   }
 }

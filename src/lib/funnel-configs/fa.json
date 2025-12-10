@@ -10,10 +10,11 @@
       "fields": [
         {
           "id": "zipCode",
-          "type": "text",
-          "label": "Zip code",
+          "type": "number",
+          "label": "",
           "placeholder": "12345",
           "required": true,
+          "autoForward": true,
           "validation": {
             "pattern": "^\\d{5}$",
             "message": "Zip code must be exactly 5 digits"
@@ -46,7 +47,7 @@
         {
           "id": "age",
           "type": "select",
-          "label": "Age",
+          "label": "",
           "required": true,
           "options": [
             { "value": "under-45", "label": "Under 45" },
@@ -71,7 +72,7 @@
         {
           "id": "coverage",
           "type": "select",
-          "label": "How much coverage do you need?",
+          "label": "",
           "required": true,
           "options": [
             { "value": "0-4999", "label": "$0 - $4,999" },
