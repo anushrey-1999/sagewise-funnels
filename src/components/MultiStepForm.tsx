@@ -510,39 +510,75 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
                 />
               );
             })}
+            
+            {/* For last step, render Continue button inside card after checkbox */}
+            {isLastStep && (
+              <>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleNext}
+                  disabled={!isStepValid()}
+                  className="w-full sm:w-[380px] md:w-[342px] px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-3"
+                >
+                  <span className="text-base font-medium leading-none">
+                    See Instant Quotes
+                  </span>
+                </Button>
+                <p className="text-xs text-general-muted-foreground text-left w-full sm:w-[380px] md:w-[342px] mt-3">
+                  By pressing "See Instant Quotes" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
 
-        <div className={`flex gap-3 w-full ${isFirstStep ? 'max-w-[445px]' : 'w-full'}`}>
-          {!isFirstStep && (
+        {/* Buttons outside card for non-last steps, Go Back button for last step */}
+        {!isLastStep && (
+          <div className={`flex gap-3 w-full ${isFirstStep ? 'max-w-[445px]' : 'w-full'}`}>
+            {!isFirstStep && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleBack}
+                className="flex-1 bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
+              >
+                <ArrowLeft className="h-[13.25px] w-[13.25px]" />
+                <span className="text-base font-medium leading-none">Go Back</span>
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="default"
+              onClick={handleNext}
+              disabled={!isStepValid()}
+              className={cn(
+                "bg-primary-main hover:bg-primary-main/90 text-white px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
+                isFirstStep ? "w-full" : "flex-1"
+              )}
+            >
+              <span className="text-base font-medium leading-none">
+                Continue
+              </span>
+              <ArrowRight className="h-[13.25px] w-[13.25px]" />
+            </Button>
+          </div>
+        )}
+        
+        {/* Go Back button for last step (outside card) */}
+        {isLastStep && !isFirstStep && (
+          <div className="flex gap-3 w-full justify-start">
             <Button
               type="button"
               variant="outline"
               onClick={handleBack}
-              className="flex-1 bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
+              className="bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
             >
               <ArrowLeft className="h-[13.25px] w-[13.25px]" />
               <span className="text-base font-medium leading-none">Go Back</span>
             </Button>
-          )}
-          <Button
-            type="button"
-            variant={isLastStep ? "secondary" : "default"}
-            onClick={handleNext}
-            disabled={!isStepValid()}
-            className={cn(
-              isLastStep 
-                ? "px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                : "bg-primary-main hover:bg-primary-main/90 text-white px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
-              isFirstStep ? "w-full" : "flex-1"
-            )}
-          >
-            <span className="text-base font-medium leading-none">
-              {isLastStep ? "See Instant Quotes" : "Continue"}
-            </span>
-            {!isLastStep && <ArrowRight className="h-[13.25px] w-[13.25px]" />}
-          </Button>
-        </div>
+          </div>
+        )}
       </div>
     </>
   );

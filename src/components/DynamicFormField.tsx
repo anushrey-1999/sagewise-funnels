@@ -129,11 +129,6 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
                   </label>
                 )}
               </div>
-              {isLastStep && isLastField && (
-                <p className="text-xs text-general-muted-foreground text-left">
-                  By pressing "See Instant Quotes" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.
-                </p>
-              )}
             </div>
           );
         }
