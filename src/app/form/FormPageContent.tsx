@@ -55,7 +55,7 @@ export function FormPageContent() {
   }
 
   return (
-    <div className="flex flex-col items-start  w-full bg-[#F8F8F8] h-[90vh]">
+    <div className="flex flex-col items-start  w-full bg-[#F8F8F8] min-h-[90vh]">
       <PlainPageHeader title={formConfig.title} headingFont="lg:text-[25px] font-bold text-primary-dark text-primary-main" />
 
       {/* Main Container with 64px padding - Contains form, separator, and logos */}
