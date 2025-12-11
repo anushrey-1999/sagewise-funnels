@@ -94,6 +94,12 @@
           "required": true
         },
         {
+          "id": "newsletter",
+          "type": "checkbox",
+          "label": "Yes, I want the Sagewise Retirement Newsletter!",
+          "required": false
+        },
+        {
           "id": "phone",
           "type": "tel",
           "label": "Phone",
@@ -102,11 +108,6 @@
         }
       ]
     }
-  ],
-  "finalStep": {
-    "title": "Thank you!",
-    "description": "We're finding the best financial solutions for you. You'll receive quotes shortly.",
-    "buttonText": "Get My Quotes"
-  }
+  ]
 }
 

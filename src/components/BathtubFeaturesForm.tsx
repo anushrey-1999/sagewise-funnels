@@ -96,7 +96,7 @@ export function BathtubFeaturesForm() {
           <Button
             type="submit"
             disabled={!hasFeatures || isSubmitting}
-            className="bg-[#204c4b] hover:bg-[#204c4b]/90 text-white h-10 px-6 mt-8 sm:mt-10 md:mt-12 w-full sm:w-[400px] md:w-[445px] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#204c4b] hover:bg-[#204c4b]/90 text-white px-6 mt-8 sm:mt-10 md:mt-12 w-full sm:w-[400px] md:w-[445px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="text-base font-medium">Continue</span>
             <ArrowRight className="h-3.5 w-3.5 ml-2" />

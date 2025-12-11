@@ -8,6 +8,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
+import { Loader } from "./Loader";
+import { useRouter } from "next/navigation";
 
 // Progress bar component
 function ProgressBar({ progress }: { progress: number }) {
@@ -20,8 +22,8 @@ function ProgressBar({ progress }: { progress: number }) {
   
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="h-[8px] overflow-visible relative rounded-[10px] w-full mb-2.5">
-        <div className="absolute bg-[#d4d4d4] inset-0 rounded-[10px]" />
+      <div className="h-[20px] overflow-visible relative rounded-[10px] w-full mb-2.5">
+        <div className="absolute bg-[#DEF1F1] inset-0 rounded-[10px]" />
         <div
           className="absolute bottom-0 left-0 top-0 bg-primary-main rounded-[10px] transition-all duration-300"
           style={{ width: `${clampedProgress}%` }}
@@ -42,7 +44,7 @@ function ProgressBar({ progress }: { progress: number }) {
               : 'translateX(-50%)'
           }}
         >
-          <p className="font-medium leading-[1.5] text-[18px] text-primary-main whitespace-nowrap">
+          <p className="font-medium leading-normal text-[18px] text-primary-main whitespace-nowrap">
             {clampedProgress}%
           </p>
         </div>
@@ -58,17 +60,19 @@ interface MultiStepFormProps {
 }
 
 export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepFormProps) {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({});
   const [errors, setErrors] = useState<Record<string, Record<string, string>>>({});
+  const [showLoader, setShowLoader] = useState(false);
   const autoForwardTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const checkCompleteTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const currentStepRef = useRef(currentStep);
 
   const isFirstStep = currentStep === 0;
-  const isLastStep = currentStep === config.steps.length;
-  const currentStepData = isLastStep ? null : config.steps[currentStep];
-  const totalSteps = config.steps.length + (config.finalStep ? 1 : 0);
+  const isLastStep = currentStep === config.steps.length - 1;
+  const currentStepData = config.steps[currentStep];
+  const totalSteps = config.steps.length;
   const progress = Math.round(((currentStep + 1) / totalSteps) * 100);
 
   useEffect(() => {
@@ -90,6 +94,27 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       clearTimeout(checkCompleteTimeoutRef.current);
       checkCompleteTimeoutRef.current = null;
     }
+  }, [currentStep]);
+
+  // Initialize newsletter checkbox as checked by default when step loads
+  useEffect(() => {
+    if (currentStepData) {
+      const newsletterField = currentStepData.fields.find(f => f.id === "newsletter" && f.type === "checkbox");
+      if (newsletterField) {
+        const stepData = formData[currentStepData.id] || {};
+        // Only initialize if not already set
+        if (!stepData.newsletter) {
+          setFormData((prev) => ({
+            ...prev,
+            [currentStepData.id]: {
+              ...(prev[currentStepData.id] || {}),
+              newsletter: [newsletterField.id], // Checkbox values are arrays
+            },
+          }));
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep]);
 
   // Cleanup timeouts on unmount
@@ -233,15 +258,37 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     return true;
   };
 
+  // Generate affiliate_id and transaction_id
+  const generateIds = () => {
+    // Generate random IDs - you can replace this with actual ID generation logic
+    const affiliateId = Math.random().toString(36).substring(2, 11);
+    const transactionId = Math.random().toString(36).substring(2, 11);
+    return { affiliateId, transactionId };
+  };
+
+  const handleLoaderComplete = () => {
+    // Generate IDs for s1 and s2
+    const { affiliateId, transactionId } = generateIds();
+    
+    // Redirect to ad wall page with s1 and s2 params
+    router.push(`/creditcards-adwall?s1=${affiliateId}&s2=${transactionId}`);
+  };
+
   const handleNext = () => {
-    // If we're on the final step, submit the form
+    // If we're on the last step, show loader and then redirect
     if (isLastStep) {
-      console.log("Final step - submitting form with data:", formData);
+      // Validate the last step first
+      if (!currentStepData || !validateStep()) {
+        return;
+      }
+      
+      // Submit form data if handler provided
       if (onSubmit) {
         onSubmit(formData);
-      } else {
-        console.warn("No onSubmit handler provided");
       }
+      
+      // Show loader which will redirect to ad wall on completion
+      setShowLoader(true);
       return;
     }
 
@@ -374,12 +421,12 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
           
           // 500ms delay for better UX - gives user time to review what they typed
           autoForwardTimeoutRef.current = setTimeout(() => {
-            // Only auto-forward if we're still on the same step (prevent skipping)
+              // Only auto-forward if we're still on the same step (prevent skipping)
             if (currentStepRef.current === stepAtCheck && stepDataForCheck?.id === stepIdForCheck) {
               setCurrentStep((prev) => {
                 const nextStep = prev + 1;
-                // Don't go beyond the final step (which is at config.steps.length)
-                const maxStep = config.steps.length;
+                // Don't go beyond the last step (which is at config.steps.length - 1)
+                const maxStep = config.steps.length - 1;
                 return Math.min(nextStep, maxStep);
               });
             }
@@ -424,33 +471,9 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     }
   };
 
-  // Render final step
-  if (isLastStep && config.finalStep) {
-    return (
-      <>
-        <ProgressBar progress={progress} />
-        <div className="w-full flex flex-col gap-12 items-center">
-          <Card className="w-full border border-general-border rounded-lg p-6">
-            <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
-              <CardTitle className="text-5xl font-semibold text-primary-dark tracking-[-0.48px]">
-                {config.finalStep.title}
-              </CardTitle>
-              {/* <CardDescription className="text-base text-muted-foreground">
-                {config.finalStep.description}
-              </CardDescription> */}
-            </CardHeader>
-          </Card>
-          
-          <Button
-            onClick={handleNext}
-            className="bg-primary-main hover:bg-primary-main/90 text-white min-h-[40px] px-6 py-[9.5px] w-full max-w-[445px] flex items-center justify-center gap-2"
-          >
-            <span className="text-base font-medium leading-normal">{config.finalStep.buttonText || "Continue"}</span>
-            <ArrowRight className="h-[13.25px] w-[13.25px]" />
-          </Button>
-        </div>
-      </>
-    );
+  // Show loader if on last step and button was clicked
+  if (showLoader) {
+    return <Loader onComplete={handleLoaderComplete} />;
   }
 
   // Render form step
@@ -460,9 +483,9 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     <>
       <ProgressBar progress={progress} />
       <div className="w-full flex flex-col gap-[48px] items-center">
-        <Card className="w-full border border-general-border rounded-lg p-6">
+        <Card className="w-full border-none rounded-lg pt-6 pb-10 px-6 shadow-xl">
           <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
-            <CardTitle className="text-5xl font-semibold text-primary-dark">
+            <CardTitle className="text-3xl lg:text-[40px] font-bold text-primary-main">
               {currentStepData.title}
             </CardTitle>
             {/* <CardDescription className="text-base text-muted-foreground">
@@ -470,9 +493,10 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
             </CardDescription> */}
           </CardHeader>
           <CardContent className="flex flex-col gap-3 items-center p-0 pt-6">
-            {currentStepData.fields.map((field) => {
+            {currentStepData.fields.map((field, index) => {
               const fieldValue = formData[currentStepData.id]?.[field.id];
               const fieldError = errors[currentStepData.id]?.[field.id];
+              const isLastField = index === currentStepData.fields.length - 1;
               
               return (
                 <DynamicFormField
@@ -481,6 +505,8 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
                   value={fieldValue}
                   onChange={(value) => handleFieldChange(field.id, value)}
                   error={fieldError}
+                  isLastStep={isLastStep}
+                  isLastField={isLastField}
                 />
               );
             })}
@@ -493,23 +519,26 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
               type="button"
               variant="outline"
               onClick={handleBack}
-              className="flex-1 bg-white border border-general-border text-primary-main hover:bg-gray-50 min-h-[40px] px-6 py-[9.5px] flex items-center justify-center gap-2"
+              className="flex-1 bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
             >
               <ArrowLeft className="h-[13.25px] w-[13.25px]" />
-              <span className="text-base font-medium leading-normal">Go Back</span>
+              <span className="text-base font-medium leading-none">Go Back</span>
             </Button>
           )}
           <Button
             type="button"
+            variant={isLastStep ? "secondary" : "default"}
             onClick={handleNext}
             disabled={!isStepValid()}
             className={cn(
-              "bg-primary-main hover:bg-primary-main/90 text-white min-h-[40px] px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
+              isLastStep 
+                ? "px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                : "bg-primary-main hover:bg-primary-main/90 text-white px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
               isFirstStep ? "w-full" : "flex-1"
             )}
           >
-            <span className="text-base font-medium leading-normal">
-              {isLastStep ? (config.finalStep?.buttonText || "Submit") : "Continue"}
+            <span className="text-base font-medium leading-none">
+              {isLastStep ? "See Instant Quotes" : "Continue"}
             </span>
             {!isLastStep && <ArrowRight className="h-[13.25px] w-[13.25px]" />}
           </Button>

@@ -14,9 +14,11 @@ interface DynamicFormFieldProps {
   value: any;
   onChange: (value: any) => void;
   error?: string;
+  isLastStep?: boolean;
+  isLastField?: boolean;
 }
 
-export function DynamicFormField({ field, value, onChange, error }: DynamicFormFieldProps) {
+export function DynamicFormField({ field, value, onChange, error, isLastStep = false, isLastField = false }: DynamicFormFieldProps) {
   const errorId = useId();
   const descriptionId = useId();
   
@@ -82,10 +84,65 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
         const isCheckboxValid = isChecked && isValidValue(field, value);
         const [isCheckboxFocused, setIsCheckboxFocused] = useState(false);
         
+        // Check if this is the newsletter checkbox (plain style, no container)
+        const isNewsletter = field.id === "newsletter";
+        
+        // Plain checkbox style for newsletter
+        if (isNewsletter) {
+          return (
+            <div className="w-full sm:w-[380px] md:w-[342px] flex flex-col gap-3 mt-3">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  checked={isChecked}
+                  onCheckedChange={(checked) => {
+                    const currentValue = Array.isArray(value) ? value : [];
+                    const newValue = checked
+                      ? [...currentValue, field.id]
+                      : currentValue.filter((id) => id !== field.id);
+                    onChange(newValue);
+                  }}
+                  className="h-4 w-4 border-2 border-gray-500 rounded data-[state=checked]:bg-gray-600 data-[state=checked]:border-gray-600 data-[state=checked]:text-white shadow-none outline-none focus:ring-0 focus-visible:ring-0"
+                  aria-label={field.label || field.id}
+                  aria-invalid={!!error}
+                  aria-describedby={error ? errorId : undefined}
+                />
+                {field.label && (
+                  <label 
+                    htmlFor={field.id}
+                    className="text-xs text-foreground cursor-pointer select-none"
+                    onClick={() => {
+                      const currentValue = Array.isArray(value) ? value : [];
+                      const newValue = currentValue.includes(field.id)
+                        ? currentValue.filter((id) => id !== field.id)
+                        : [...currentValue, field.id];
+                      onChange(newValue);
+                    }}
+                  >
+                    {field.label.startsWith("Yes,") ? (
+                      <>
+                        <span className="font-bold">Yes,</span>
+                        <span className="font-normal">{field.label.substring(4)}</span>
+                      </>
+                    ) : (
+                      field.label
+                    )}
+                  </label>
+                )}
+              </div>
+              {isLastStep && isLastField && (
+                <p className="text-xs text-general-muted-foreground text-left">
+                  By pressing "See Instant Quotes" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.
+                </p>
+              )}
+            </div>
+          );
+        }
+        
+        // Regular checkbox with container styling
         return (
           <div
             className={cn(
-              "border border-[#e5e5e5] h-[43px] min-h-[40px] rounded-lg w-full max-w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-[border-color,background-color,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
+              "border-[3px] border-[#e5e5e5] h-[55px] min-h-[55px] rounded-lg w-full max-w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
               isCheckboxFocused 
                 ? "!bg-[var(--sw-input-bg)] !border-[var(--sw-green-accent)]" 
                 : "!bg-white",
@@ -139,7 +196,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
           return (
             <div
               className={cn(
-                "border border-gray-200 h-[43px] min-h-[40px] rounded-lg flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-[border-color,background-color,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto mb-3 relative",
+                "border-[3px] border-gray-200 h-[55px] min-h-[55px] rounded-lg flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto mb-3 relative",
                 isFocused 
                   ? "!bg-[var(--sw-input-bg)] !border-[var(--sw-green-accent)]" 
                   : "!bg-white",
@@ -221,7 +278,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 onChange={handleInputChange}
                 maxLength={isZipCode ? 5 : undefined}
                 className={cn(
-                  "h-[43px] min-h-[40px] rounded-lg pr-10",
+                  "h-[55px] min-h-[55px] rounded-lg pr-10",
                   isValid && "border-[var(--sw-green-accent)]",
                   error && "border-red-500"
                 )}
@@ -273,7 +330,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 onFocus={() => setIsSelectFocused(true)}
                 onBlur={() => setIsSelectFocused(false)}
                 className={cn(
-                  "h-[43px] min-h-[40px] w-full rounded-lg border border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-gray-300 disabled:cursor-not-allowed disabled:opacity-50",
+                  "h-[55px] min-h-[55px] w-full rounded-lg border-[3px] border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-[var(--sw-green-accent)] hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
                   isSelectFocused 
                     ? "!bg-[var(--sw-input-bg)] !border-[var(--sw-green-accent)]" 
                     : "!bg-white",

@@ -39,7 +39,7 @@ export function FormPageContent() {
   // If funnel config not found, show error
   if (!formConfig) {
     return (
-      <div className="bg-white flex flex-col items-center justify-center min-h-screen w-full px-4">
+      <div className="bg-[#F8F8F8] flex flex-col items-center justify-center min-h-screen w-full px-4">
         <div className="text-center max-w-md">
           <h1 className="text-2xl font-semibold mb-4">Funnel Not Found</h1>
           <p className="text-muted-foreground mb-6">
@@ -55,8 +55,8 @@ export function FormPageContent() {
   }
 
   return (
-    <div className="flex flex-col items-start  w-full">
-      <PlainPageHeader title={formConfig.title}  />
+    <div className="flex flex-col items-start  w-full bg-[#F8F8F8] h-[90vh]">
+      <PlainPageHeader title={formConfig.title} headingFont="lg:text-[25px] font-bold text-primary-dark text-primary-main" />
 
       {/* Main Container with 64px padding - Contains form, separator, and logos */}
       <div className="flex flex-col items-start w-full pb-9 pt-5 px-6 md:p-16 md:pt-5  justify-between">

@@ -110,14 +110,15 @@
           "label": "Email",
           "placeholder": "john.doe@email.com",
           "required": true
+        },
+        {
+          "id": "newsletter",
+          "type": "checkbox",
+          "label": "Yes, I want the Sagewise Retirement Newsletter!",
+          "required": false
         }
       ]
     }
-  ],
-  "finalStep": {
-    "title": "Thank you!",
-    "description": "We're processing your information. You'll receive quotes shortly.",
-    "buttonText": "Submit"
-  }
+  ]
 }
 

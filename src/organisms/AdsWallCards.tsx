@@ -189,7 +189,7 @@ const AdsWallCards = ({
             <Button
               variant="secondary"
               size="sm"
-              className="lg:w-full h-11 font-semibold"
+              className="lg:w-full font-semibold"
               onClick={handleButtonClick}
               icon={Lock}
               iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"

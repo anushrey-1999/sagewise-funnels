@@ -32,7 +32,7 @@ export function Home() {
         </p>
         <Button
           onClick={handleGetQuote}
-          className="bg-[#204c4b] hover:bg-[#204c4b]/90 text-white h-12 px-8 text-lg font-medium"
+          className="bg-[#204c4b] hover:bg-[#204c4b]/90 text-white px-8 text-lg font-medium"
         >
           <span>Get your quote</span>
           <ArrowRight className="h-5 w-5 ml-2" />
