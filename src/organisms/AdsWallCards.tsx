@@ -57,16 +57,16 @@ const AdsWallCards = ({
   affiliateId,
   transactionId,
 }: AdsWallCardsProps) => {
-  // Function to append affiliate_id and transaction_id to the button link
+  // Function to append s1 (affiliate_id) and s2 (transaction_id) to the button link
   const handleButtonClick = () => {
     try {
       const url = new URL(buttonLink);
       
       if (affiliateId) {
-        url.searchParams.set("affiliate_id", affiliateId);
+        url.searchParams.set("s1", affiliateId);
       }
       if (transactionId) {
-        url.searchParams.set("transaction_id", transactionId);
+        url.searchParams.set("s2", transactionId);
       }
       
       window.open(url.toString(), "_blank");
@@ -76,10 +76,10 @@ const AdsWallCards = ({
       const params: string[] = [];
       
       if (affiliateId) {
-        params.push(`affiliate_id=${encodeURIComponent(affiliateId)}`);
+        params.push(`s1=${encodeURIComponent(affiliateId)}`);
       }
       if (transactionId) {
-        params.push(`transaction_id=${encodeURIComponent(transactionId)}`);
+        params.push(`s2=${encodeURIComponent(transactionId)}`);
       }
       
       const finalUrl = params.length > 0 

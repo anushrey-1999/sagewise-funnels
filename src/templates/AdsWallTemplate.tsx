@@ -10,12 +10,12 @@ const AdsWallTemplate = () => {
 
   // Extract and clean the IDs from URL parameters
   const affiliateId = useMemo(() => {
-    const id = searchParams.get("affiliate_id");
+    const id = searchParams.get("s1");
     return id?.replace(/^["']|["']$/g, "") || null;
   }, [searchParams]);
 
   const transactionId = useMemo(() => {
-    const id = searchParams.get("transaction_id");
+    const id = searchParams.get("s2");
     return id?.replace(/^["']|["']$/g, "") || null;
   }, [searchParams]);
 
