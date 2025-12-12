@@ -109,28 +109,28 @@ const AdsWallTemplate = () => {
       badgeIcon: 'percentage',
       advertiserName: "Chime",
     },
-    {
-      heading: "SoFi Unlimited 2% Credit Card",
-      description:
-        "Earn 2% unlimited cash back on all eligible purchases with no annual fee",
-      features: [
-        "Earn 2% cash back on all purchases",
-        "$0 annual fee and no foreign transaction fees",
-        "$200 welcome bonus after $2,000 spend",
-        "Cell phone protection up to $1,000",
-      ],
-      buttonLink: "https://rdtrk151.com/?E=mAOiPn8VlA4xno2yw2LWo8z6l05hPQ0P&s1=",
-      buttonText: "View Offer",
-      ratingsNumber: "9.0",
-      ratingsCount: 5,
-      logo: "/logos/chime-logo.avif",
-      logoWidth: "120px",
-      logoHeight: "40px",
-      creditCardImage: "/credit-cards/sofi-credit-card.avif",
-      badgeText: "2% CASH BACK",
-      badgeIcon: 'card-up',
-      advertiserName: "SoFi",
-    },
+    // {
+    //   heading: "SoFi Unlimited 2% Credit Card",
+    //   description:
+    //     "Earn 2% unlimited cash back on all eligible purchases with no annual fee",
+    //   features: [
+    //     "Earn 2% cash back on all purchases",
+    //     "$0 annual fee and no foreign transaction fees",
+    //     "$200 welcome bonus after $2,000 spend",
+    //     "Cell phone protection up to $1,000",
+    //   ],
+    //   buttonLink: "https://rdtrk151.com/?E=mAOiPn8VlA4xno2yw2LWo8z6l05hPQ0P&s1=",
+    //   buttonText: "View Offer",
+    //   ratingsNumber: "9.0",
+    //   ratingsCount: 5,
+    //   logo: "/logos/chime-logo.avif",
+    //   logoWidth: "120px",
+    //   logoHeight: "40px",
+    //   creditCardImage: "/credit-cards/sofi-credit-card.avif",
+    //   badgeText: "2% CASH BACK",
+    //   badgeIcon: 'card-up',
+    //   advertiserName: "SoFi",
+    // },
   ];
 
   return (
