@@ -30,7 +30,8 @@ const AdsWallTemplate = () => {
         "Earn 1.5% cash back on rotating categories with direct deposit",
         "No minimum security deposit required",
       ],
-      buttonLink: "https://lkd7vx3a.com/?E=BoniqlAkcXgZGXxI%2fhpBCsz6l05hPQ0P&s1=",
+      buttonLink:
+        "https://lkd7vx3a.com/?E=BoniqlAkcXgZGXxI%2fhpBCsz6l05hPQ0P&s1=",
       buttonText: "Apply Now",
       ratingsNumber: "8.2",
       ratingsCount: 5,
@@ -39,7 +40,7 @@ const AdsWallTemplate = () => {
       logoHeight: "40px",
       creditCardImage: "/credit-cards/chime-credit-card.avif",
       badgeText: "NO CREDIT CHECK",
-      badgeIcon: 'no-card',
+      badgeIcon: "no-card",
       advertiserName: "Chime",
     },
     {
@@ -61,7 +62,7 @@ const AdsWallTemplate = () => {
       logoHeight: "35px",
       creditCardImage: "/credit-cards/indigo-credit-card.avif",
       badgeText: "UNSECURED CARD",
-      badgeIcon: 'card',
+      badgeIcon: "card",
       advertiserName: "Indigo",
     },
     {
@@ -83,7 +84,7 @@ const AdsWallTemplate = () => {
       logoHeight: "28px",
       creditCardImage: "/credit-cards/milestone-credit-card.avif",
       badgeText: "NO CREDIT CHECK",
-      badgeIcon: 'card-up',
+      badgeIcon: "card-up",
       advertiserName: "Milestone",
     },
     {
@@ -106,8 +107,30 @@ const AdsWallTemplate = () => {
       logoHeight: "40px",
       creditCardImage: "/credit-cards/chime-checking-debit-card.avif",
       badgeText: "$350 BONUS OFFER",
-      badgeIcon: 'percentage',
+      badgeIcon: "percentage",
       advertiserName: "Chime",
+    },
+    {
+      heading: "The Secured Self Visa&reg; Credit Card",
+      description:
+        "$15 Welcome Bonus: Make your first purchase within 30 days of account activation and receive a $15 Statement Credit as a Welcome Bonus&ast;&ast;!",
+      features: [
+        "&ast;$0 annual fee for the first year, $25 annual fee thereafter",
+        "No hard credit check or credit score required",
+        "Reports to all 3 major credit bureaus to build credit history",
+      ],
+      buttonLink: "https://ir.self.inc/c/2191982/689941/10159",
+      buttonText: "Open Account",
+      isDifferentBorder: false,
+      ratingsNumber: "9.2",
+      ratingsCount: 5,
+      logo: "/logos/chime-logo.avif",
+      logoWidth: "120px",
+      logoHeight: "40px",
+      creditCardImage: "/credit-cards/self-credit-card.avif",
+      badgeText: "BONUS OFFER",
+      badgeIcon: "percentage",
+      advertiserName: "Self",
     },
     // {
     //   heading: "SoFi Unlimited 2% Credit Card",
@@ -136,16 +159,21 @@ const AdsWallTemplate = () => {
   return (
     <div className="bg-white flex flex-col items-start min-h-screen w-full ">
       {/* Header */}
-      <PlainPageHeader title={'Best credit cards of December 2025'} headingFont="text-3xl text-center lg:text-[48px] font-bold text-primary-main" subtitle={'Updated December 05, 2025'} />
+      <PlainPageHeader
+        title={"Best credit cards of December 2025"}
+        headingFont="text-3xl text-center lg:text-[48px] font-bold text-primary-main"
+        subtitle="High credit card interest can strain a fixed income. Compare 0% intro APR and balance transfer credit cards that may help reduce interest, consolidate debt, and manage monthly expenses."
+        updatedAt={"Updated December 05, 2025"}
+      />
 
       {/* Cards */}
       <div className="flex flex-col items-center w-full px-6 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
           <div className="flex flex-col gap-4">
             {cardData?.map((item, index) => (
-              <AdsWallCards 
-                key={index} 
-                {...item} 
+              <AdsWallCards
+                key={index}
+                {...item}
                 affiliateId={affiliateId}
                 transactionId={transactionId}
               />
@@ -159,7 +187,6 @@ const AdsWallTemplate = () => {
         <div
           className="space-y-4"
           dangerouslySetInnerHTML={{
-            
             __html: `
               <div>
                 <strong>Chime<sup>&reg;</sup> Checking Account</strong>

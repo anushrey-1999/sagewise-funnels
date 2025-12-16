@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
-import { Lock, Phone, Rocket, Trophy, Type } from "lucide-react";
+import { Lock, MoveUpRight, Phone, Rocket, Trophy, Type } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import React from "react";
@@ -191,17 +191,17 @@ const AdsWallCards = ({
               size="sm"
               className="lg:w-full font-semibold"
               onClick={handleButtonClick}
-              icon={Lock}
+              icon={MoveUpRight}
               iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"
             >
               {buttonText}
             </Button>
             <Typography
               variant="p"
-              className="text-[10px] text-center"
+              className="text-[10px] text-center flex items-center gap-1"
               color="text-general-muted-foreground"
             >
-              on {advertiserName} secure site
+              on {advertiserName} secure site <Lock className="w-3 h-3 lg:w-3 lg:h-3" />
             </Typography>
           </div>
           {/* {isSecondaryBtn && (
