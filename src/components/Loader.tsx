@@ -6,9 +6,10 @@ import { Lock } from "lucide-react";
 
 interface LoaderProps {
   onComplete?: () => void;
+  loaderText?: string;
 }
 
-export function Loader({ onComplete }: LoaderProps) {
+export function Loader({ onComplete, loaderText = "Sit tight while we secure your free quotes." }: LoaderProps) {
   const [fillProgress, setFillProgress] = useState(0);
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export function Loader({ onComplete }: LoaderProps) {
         <CardHeader className="text-center space-y-1 p-0 pb-6">
           {/* Desktop: text-2xl, Mobile: text-xl */}
           <CardTitle className="text-xl md:text-2xl font-semibold text-primary-main tracking-[-0.4px] md:tracking-[-0.48px]">
-            Sit tight while we secure your free quotes.
+            {loaderText}
           </CardTitle>
           <CardDescription className="flex items-start lg:items-center justify-center gap-1 text-xs md:text-base text-general-muted-foreground">
             <Lock className="h-3 w-3 md:h-4 md:w-4" />

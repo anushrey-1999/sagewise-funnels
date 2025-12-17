@@ -473,7 +473,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
 
   // Show loader if on last step and button was clicked
   if (showLoader) {
-    return <Loader onComplete={handleLoaderComplete} />;
+    return <Loader onComplete={handleLoaderComplete} loaderText={config.finalStep?.loaderText || "Sit tight while we secure your free quotes."} />;
   }
 
   // Render form step
@@ -522,11 +522,11 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
                   className="w-full sm:w-[380px] md:w-[342px] px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-3"
                 >
                   <span className="text-base font-medium leading-none">
-                    See Instant Quotes
+                    {config.finalStep?.buttonText || "See Instant Matches"}
                   </span>
                 </Button>
                 <p className="text-xs text-general-muted-foreground text-left w-full sm:w-[380px] md:w-[342px] mt-3">
-                  By pressing "See Instant Quotes" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.
+                  {config.finalStep?.disclaimerText || `By pressing "${config.finalStep?.buttonText || "See Instant Matches"}" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.`}
                 </p>
               </>
             )}

@@ -120,7 +120,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
   };
 
   if (isLoading) {
-    return <Loader onComplete={handleLoaderComplete} />;
+    return <Loader onComplete={handleLoaderComplete} loaderText={config.finalStep?.loaderText} />;
   }
 
   return <MultiStepForm config={config} onSubmit={handleFormSubmit} />;

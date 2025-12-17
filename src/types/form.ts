@@ -29,9 +29,9 @@ export interface FormConfig {
   subtitle: string; // Hero subtitle
   steps: FormStep[];
   finalStep?: {
-    title: string;
-    description: string;
-    buttonText?: string;
+    buttonText?: string; // Text for the final submit button
+    disclaimerText?: string; // Privacy disclaimer text
+    loaderText?: string; // Text shown in the loader screen
   };
 }
 

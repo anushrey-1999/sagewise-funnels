@@ -2,6 +2,11 @@
   "id": "finance",
   "title": "Personal Finance Solutions",
   "subtitle": "Find the best financial products tailored to your needs.",
+  "finalStep": {
+    "buttonText": "Get My Financial Matches",
+    "loaderText": "Finding the best financial solutions for you...",
+    "disclaimerText": "By pressing \"Get My Financial Matches\" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products."
+  },
   "steps": [
     {
       "id": "financial-goals",

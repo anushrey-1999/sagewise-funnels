@@ -3,6 +3,7 @@ import { FormConfig } from "@/types/form";
 // Import funnel configs
 import financeConfig from "./funnel-configs/finance.json";
 import faConfig from "./funnel-configs/fa.json";
+import ccConfig from "./funnel-configs/cc.json";
 // Add more funnel configs as they are created
 // import insuranceConfig from "./funnel-configs/insurance.json";
 
@@ -10,6 +11,7 @@ import faConfig from "./funnel-configs/fa.json";
 const funnelConfigs: Record<string, FormConfig> = {
   "finance": financeConfig as FormConfig,
   "fa": faConfig as FormConfig,
+  "cc": ccConfig as FormConfig,
   // Add more funnels here as they are created
   // "insurance": insuranceConfig as FormConfig,
 };
