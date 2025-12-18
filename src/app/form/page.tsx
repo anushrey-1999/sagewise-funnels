@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { FormPageContent } from "./FormPageContent";
 import type { Metadata } from "next";
+import { getFunnelConfig } from "@/lib/funnel-loader";
 
 export async function generateMetadata({
   searchParams,
@@ -11,10 +12,12 @@ export async function generateMetadata({
   const funnel = params?.funnel;
   
   if (funnel) {
+    const config = getFunnelConfig(funnel);
     // Capitalize first letter of funnel name
     const funnelName = funnel.charAt(0).toUpperCase() + funnel.slice(1);
     return {
       title: `Sagewise - ${funnelName}`,
+      description: config?.metaDescription || undefined,
     };
   }
   

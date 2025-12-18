@@ -2,6 +2,7 @@
   "id": "finance",
   "title": "Personal Finance Solutions",
   "subtitle": "Find the best financial products tailored to your needs.",
+  "metaDescription": "Compare personalized financial solutions including debt consolidation, home loans, personal loans, and credit cards. Get matched with the best options for your financial goals.",
   "finalStep": {
     "buttonText": "Get My Financial Matches",
     "loaderText": "Finding the best financial solutions for you...",

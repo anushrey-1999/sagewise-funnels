@@ -27,6 +27,7 @@ export interface FormConfig {
   id: string;
   title: string; // Hero title
   subtitle: string; // Hero subtitle
+  metaDescription?: string; // Meta description for SEO
   steps: FormStep[];
   finalStep?: {
     buttonText?: string; // Text for the final submit button
