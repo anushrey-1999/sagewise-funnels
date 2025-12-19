@@ -274,6 +274,72 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     router.push(`/creditcards-adwall?s1=${affiliateId}&s2=${transactionId}`);
   };
 
+  // Check if a step should be skipped based on skipIf condition
+  // Works with radio buttons, select/dropdown fields, and other field types
+  // Optionally accepts formDataOverride to use updated data that might not be in state yet
+  const shouldSkipStep = (stepIndex: number, formDataOverride?: FormData): boolean => {
+    if (stepIndex < 0 || stepIndex >= config.steps.length) {
+      return false;
+    }
+    
+    const step = config.steps[stepIndex];
+    if (!step.skipIf) {
+      return false;
+    }
+    
+    const { checkStepId, checkFieldId, whenValues } = step.skipIf;
+    
+    // Use override data if provided, otherwise use current formData state
+    const dataToCheck = formDataOverride || formData;
+    
+    // Get the step data for the step we need to check
+    const checkStepData = dataToCheck[checkStepId];
+    if (!checkStepData) {
+      return false;
+    }
+    
+    // Get the field value from the step we're checking
+    // This works with radio buttons (returns string), select/dropdown (returns string), 
+    // and other field types
+    const fieldValue = checkStepData[checkFieldId];
+    if (fieldValue === undefined || fieldValue === null) {
+      return false;
+    }
+    
+    // Convert to string for comparison (handles both string and array values)
+    // For radio and select/dropdown, this will be the selected option's value
+    const valueToCheck = Array.isArray(fieldValue) ? fieldValue[0] : String(fieldValue);
+    
+    // Check if the value matches any of the skip conditions
+    return whenValues.includes(valueToCheck);
+  };
+
+  // Get the next valid step index, skipping any steps that should be skipped
+  // Optionally accepts formDataOverride to use updated data that might not be in state yet
+  const getNextStepIndex = (fromStepIndex: number, formDataOverride?: FormData): number => {
+    let nextIndex = fromStepIndex + 1;
+    
+    // Keep skipping steps until we find one that shouldn't be skipped or reach the end
+    while (nextIndex < config.steps.length && shouldSkipStep(nextIndex, formDataOverride)) {
+      nextIndex++;
+    }
+    
+    return nextIndex;
+  };
+
+  // Get the previous valid step index, skipping any steps that should be skipped
+  // This ensures when going back, we skip over steps that were skipped when going forward
+  const getPreviousStepIndex = (fromStepIndex: number): number => {
+    let prevIndex = fromStepIndex - 1;
+    
+    // Keep going back until we find a step that shouldn't be skipped or reach the beginning
+    while (prevIndex >= 0 && shouldSkipStep(prevIndex)) {
+      prevIndex--;
+    }
+    
+    return Math.max(0, prevIndex);
+  };
+
   const handleNext = () => {
     // If we're on the last step, show loader and then redirect
     if (isLastStep) {
@@ -299,12 +365,15 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       return;
     }
 
-    setCurrentStep((prev) => prev + 1);
+    // Get the next step index, skipping any steps that should be skipped
+    const nextStepIndex = getNextStepIndex(currentStep);
+    setCurrentStep(nextStepIndex);
   };
 
   const handleBack = () => {
     if (!isFirstStep) {
-      setCurrentStep((prev) => prev - 1);
+      // Get the previous step index, skipping any steps that should be skipped
+      setCurrentStep((prev) => getPreviousStepIndex(prev));
     }
   };
 
@@ -361,31 +430,48 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     }
   };
 
+
   const handleFieldChange = (fieldId: string, value: any) => {
     if (!currentStepData) return;
     
     const field = currentStepData.fields.find(f => f.id === fieldId);
     if (!field) return;
     
-    // Update form data with new value
-    const updatedStepData = {
-      ...(formData[currentStepData.id] || {}),
-      [fieldId]: value,
-    };
-    
-    setFormData((prev) => ({
-      ...prev,
-      [currentStepData.id]: updatedStepData,
-    }));
-
-    // Clear error for this field
-    setErrors((prev) => {
-      const stepErrors = { ...(prev[currentStepData.id] || {}) };
-      delete stepErrors[fieldId];
-      return {
-        ...prev,
-        [currentStepData.id]: stepErrors,
+    // Update form data with new value and clear all subsequent steps' data
+    // This ensures skip conditions evaluate correctly based on current answers,
+    // not stale data from steps that should have been skipped
+    setFormData((prev) => {
+      const newFormData = { ...prev };
+      
+      // Update current step data
+      newFormData[currentStepData.id] = {
+        ...(newFormData[currentStepData.id] || {}),
+        [fieldId]: value,
       };
+      
+      // Clear data for all steps after the current step
+      for (let i = currentStep + 1; i < config.steps.length; i++) {
+        const stepId = config.steps[i].id;
+        delete newFormData[stepId];
+      }
+      
+      return newFormData;
+    });
+
+    // Clear error for this field and clear errors for subsequent steps
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      const stepErrors = { ...(newErrors[currentStepData.id] || {}) };
+      delete stepErrors[fieldId];
+      newErrors[currentStepData.id] = stepErrors;
+      
+      // Clear errors for all steps after the current step
+      for (let i = currentStep + 1; i < config.steps.length; i++) {
+        const stepId = config.steps[i].id;
+        delete newErrors[stepId];
+      }
+      
+      return newErrors;
     });
 
     // Determine if this field should trigger auto-forward
@@ -408,6 +494,12 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       const stepDataForCheck = currentStepData;
       const stepIdForCheck = currentStepData.id;
       const stepAtCheck = currentStep;
+      
+      // Create updated step data for use in closure
+      const updatedStepData = {
+        ...(formData[currentStepData.id] || {}),
+        [fieldId]: value,
+      };
 
       // Function to check step completion and auto-forward
       const checkAndForward = () => {
@@ -423,11 +515,27 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
           autoForwardTimeoutRef.current = setTimeout(() => {
               // Only auto-forward if we're still on the same step (prevent skipping)
             if (currentStepRef.current === stepAtCheck && stepDataForCheck?.id === stepIdForCheck) {
+              // Create updated form data with the current step's data for skip checking
+              // Also clear all subsequent steps' data to ensure skip conditions evaluate correctly
+              const updatedFormData: FormData = {
+                ...formData,
+                [stepIdForCheck]: updatedStepData,
+              };
+              
+              // Clear data for all steps after the current step in the updated form data
+              // This ensures skip conditions don't see stale data from steps that should be cleared
+              for (let i = stepAtCheck + 1; i < config.steps.length; i++) {
+                const stepId = config.steps[i].id;
+                delete updatedFormData[stepId];
+              }
+              
               setCurrentStep((prev) => {
-                const nextStep = prev + 1;
+                // Get the next step index, skipping any steps that should be skipped
+                // Pass updated form data so skip conditions can check the latest values
+                const nextStepIndex = getNextStepIndex(prev, updatedFormData);
                 // Don't go beyond the last step (which is at config.steps.length - 1)
                 const maxStep = config.steps.length - 1;
-                return Math.min(nextStep, maxStep);
+                return Math.min(nextStepIndex, maxStep);
               });
             }
             autoForwardTimeoutRef.current = null;

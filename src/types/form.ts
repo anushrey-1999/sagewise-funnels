@@ -16,11 +16,18 @@ export interface FormField {
   options?: Array<{ value: string; label: string }>; // For radio, select, checkbox
 }
 
+export interface SkipCondition {
+  checkStepId: string; // The step ID to check for the condition
+  checkFieldId: string; // The field ID in that step to check
+  whenValues: string[]; // Array of values that trigger the skip (if field value matches any of these, skip this step)
+}
+
 export interface FormStep {
   id: string;
   title: string;
   description: string;
   fields: FormField[];
+  skipIf?: SkipCondition; // Condition that determines if this step should be skipped
 }
 
 export interface FormConfig {

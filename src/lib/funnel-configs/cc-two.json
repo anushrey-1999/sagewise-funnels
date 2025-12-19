@@ -32,6 +32,11 @@
       "id": "new-credit-score",
       "title": "Why are you looking for a new credit card?",
       "description": "lorem ipsum dolor sit amet",
+      "skipIf": {
+        "checkStepId": "credit-score",
+        "checkFieldId": "credit-score",
+        "whenValues": ["fair", "bad"]
+      },
       "fields": [
         {
           "id": "new-credit-score",
@@ -40,7 +45,7 @@
           "required": true,
           "options": [
             { "value": "reward-perks", "label": "I want travel rewards and perks" },
-            { "value": "cash-back", "label": "I want to earn cash back on purchases" },
+            { "value": "cash-back", "label": "I want to earn cash back" },
             { "value": "debt", "label": "I want to pay down debt" },
             { "value": "big-purchase", "label": "I want to make a big purchase" }
           ]
@@ -51,6 +56,11 @@
       "id": "bank-account",
       "title": "Do you currently have a bank account?",
       "description": "lorem ipsum dolor sit amet",
+      "skipIf": {
+        "checkStepId": "new-credit-score",
+        "checkFieldId": "new-credit-score",
+        "whenValues": ["reward-perks", "cash-back", "debt", "big-purchase"]
+      },
       "fields": [
         {
           "id": "bank-account",
@@ -68,6 +78,11 @@
       "id": "income",
       "title": "Do you currently have $1,000+ per month in income?",
       "description": "lorem ipsum dolor sit amet",
+      "skipIf": {
+        "checkStepId": "new-credit-score",
+        "checkFieldId": "new-credit-score",
+        "whenValues": ["reward-perks", "cash-back", "debt", "big-purchase"]
+      },
       "fields": [
         {
           "id": "income",
