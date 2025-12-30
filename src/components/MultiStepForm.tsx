@@ -10,6 +10,7 @@ import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Loader } from "./Loader";
 import { useRouter } from "next/navigation";
+import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
 
 // Progress bar component
 function ProgressBar({ progress }: { progress: number }) {
@@ -269,9 +270,9 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
   const handleLoaderComplete = () => {
     // Generate IDs for s1 and s2
     const { affiliateId, transactionId } = generateIds();
-    
-    // Redirect to ad wall page with s1 and s2 params
-    router.push(`/creditcards-adwall?s1=${affiliateId}&s2=${transactionId}`);
+
+    const destination = resolvePostSubmitRedirect(config, formData);
+    router.push(`${destination}?s1=${encodeURIComponent(affiliateId)}&s2=${encodeURIComponent(transactionId)}`);
   };
 
   // Check if a step should be skipped based on skipIf condition
@@ -286,32 +287,37 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     if (!step.skipIf) {
       return false;
     }
-    
-    const { checkStepId, checkFieldId, whenValues } = step.skipIf;
-    
+
+    const conditions = Array.isArray(step.skipIf) ? step.skipIf : [step.skipIf];
+
     // Use override data if provided, otherwise use current formData state
     const dataToCheck = formDataOverride || formData;
-    
-    // Get the step data for the step we need to check
-    const checkStepData = dataToCheck[checkStepId];
-    if (!checkStepData) {
-      return false;
-    }
-    
-    // Get the field value from the step we're checking
-    // This works with radio buttons (returns string), select/dropdown (returns string), 
-    // and other field types
-    const fieldValue = checkStepData[checkFieldId];
-    if (fieldValue === undefined || fieldValue === null) {
-      return false;
-    }
-    
-    // Convert to string for comparison (handles both string and array values)
-    // For radio and select/dropdown, this will be the selected option's value
-    const valueToCheck = Array.isArray(fieldValue) ? fieldValue[0] : String(fieldValue);
-    
-    // Check if the value matches any of the skip conditions
-    return whenValues.includes(valueToCheck);
+
+    // Skip if ANY condition matches
+    return conditions.some((condition) => {
+      const { checkStepId, checkFieldId, whenValues } = condition;
+
+      // Get the step data for the step we need to check
+      const checkStepData = dataToCheck[checkStepId];
+      if (!checkStepData) {
+        return false;
+      }
+
+      // Get the field value from the step we're checking
+      // This works with radio buttons (returns string), select/dropdown (returns string),
+      // and other field types
+      const fieldValue = checkStepData[checkFieldId];
+      if (fieldValue === undefined || fieldValue === null) {
+        return false;
+      }
+
+      // Convert to string for comparison (handles both string and array values)
+      // For radio and select/dropdown, this will be the selected option's value
+      const valueToCheck = Array.isArray(fieldValue) ? fieldValue[0] : String(fieldValue);
+
+      // Check if the value matches any of the skip conditions
+      return whenValues.includes(valueToCheck);
+    });
   };
 
   // Get the next valid step index, skipping any steps that should be skipped
@@ -351,6 +357,8 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       // Submit form data if handler provided
       if (onSubmit) {
         onSubmit(formData);
+        // Parent is responsible for showing loader + redirect.
+        return;
       }
       
       // Show loader which will redirect to ad wall on completion
@@ -400,7 +408,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
           if (!value || value === "") {
             return false;
           }
-        } else if (field.type === "select") {
+        } else if (field.type === "select" || field.type === "dropdown") {
           if (!value || value === "") {
             return false;
           }
@@ -480,7 +488,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     // All other types (text, email, tel, number) default to false unless explicitly set
     const shouldAutoForward = field.autoForward !== undefined 
       ? field.autoForward 
-      : (field.type === "radio" || field.type === "checkbox" || field.type === "select");
+      : (field.type === "radio" || field.type === "checkbox" || field.type === "select" || field.type === "dropdown");
 
     // Determine if this field should be debounced
     // Only debounce text inputs (text, email, tel, number), but NOT zip code
@@ -596,9 +604,11 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
             <CardTitle className="text-3xl lg:text-[40px] font-bold text-primary-main">
               {currentStepData.title}
             </CardTitle>
-            {/* <CardDescription className="text-base text-muted-foreground">
-              {currentStepData.description}
-            </CardDescription> */}
+            {currentStepData.description?.trim() ? (
+              <CardDescription className="text-base text-muted-foreground">
+                {currentStepData.description}
+              </CardDescription>
+            ) : null}
           </CardHeader>
           <CardContent className="flex flex-col gap-3 items-center p-0 pt-6">
             {currentStepData.fields.map((field, index) => {

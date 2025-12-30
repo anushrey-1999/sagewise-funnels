@@ -12,7 +12,7 @@
     {
       "id": "credit-score",
       "title": "What's your is your credit score?",
-      "description": "lorem ipsum dolor sit amet",
+      "description": "",
       "fields": [
         {
           "id": "credit-score",
@@ -31,7 +31,7 @@
     {
       "id": "new-credit-score",
       "title": "Why are you looking for a new credit card?",
-      "description": "lorem ipsum dolor sit amet",
+      "description": "",
       "skipIf": {
         "checkStepId": "credit-score",
         "checkFieldId": "credit-score",
@@ -55,7 +55,7 @@
     {
       "id": "bank-account",
       "title": "Do you currently have a bank account?",
-      "description": "lorem ipsum dolor sit amet",
+      "description": "",
       "skipIf": {
         "checkStepId": "new-credit-score",
         "checkFieldId": "new-credit-score",
@@ -77,7 +77,7 @@
     {
       "id": "income",
       "title": "Do you currently have $1,000+ per month in income?",
-      "description": "lorem ipsum dolor sit amet",
+      "description": "",
       "skipIf": {
         "checkStepId": "new-credit-score",
         "checkFieldId": "new-credit-score",

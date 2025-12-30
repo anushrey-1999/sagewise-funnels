@@ -1,4 +1,4 @@
-import AdsWallTemplate from "@/templates/AdsWallTemplate";
+import AdsWallThreeTemplate from "@/templates/AdsWallThreeTemplate";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function AdsWallPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-white" />}>
-      <AdsWallTemplate />
+      <AdsWallThreeTemplate />
     </Suspense>
   );
 }

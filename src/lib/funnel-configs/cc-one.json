@@ -12,7 +12,7 @@
     {
       "id": "credit-score",
       "title": "What's your is your credit score?",
-      "description": "lorem ipsum dolor sit amet",
+      "description": "",
       "fields": [
         {
           "id": "credit-score",

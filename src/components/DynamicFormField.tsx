@@ -32,7 +32,7 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
       if (field.type === "checkbox") {
         const checked = Array.isArray(value) && value.includes(field.id);
         if (!checked) return false;
-      } else if (field.type === "radio" || field.type === "select") {
+      } else if (field.type === "radio" || field.type === "select" || field.type === "dropdown") {
         if (!value || value === "") return false;
       } else {
         if (!value || value.toString().trim() === "") return false;
@@ -305,7 +305,8 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
           </div>
         );
 
-      case "select": {
+      case "select":
+      case "dropdown": {
         const isSelectValid = isValidValue(field, value);
         const [isSelectFocused, setIsSelectFocused] = useState(false);
         

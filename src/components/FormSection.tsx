@@ -5,6 +5,7 @@ import { MultiStepForm } from "./MultiStepForm";
 import { FormConfig, FormData } from "@/types/form";
 import { useRouter } from "next/navigation";
 import { Loader } from "./Loader";
+import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
 
 interface FormSectionProps {
   config: FormConfig;
@@ -14,10 +15,13 @@ interface FormSectionProps {
 export function FormSection({ config, funnelId }: FormSectionProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [submittedData, setSubmittedData] = useState<FormData | null>(null);
 
   const handleFormSubmit = async (data: FormData) => {
     try {
       console.log("Submitting form data:", { funnelId, data });
+
+      setSubmittedData(data);
 
       // Show loader
       setIsLoading(true);
@@ -85,38 +89,13 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
   };
 
   const handleLoaderComplete = () => {
-    // Create mock ads data structure with funnel title and subtitle
-    const mockAdsWall = {
-      title: config.title || "Final Expense Insurance Quote Calculator",
-      subtitle: config.subtitle || "Compare quotes from top providers",
-      ads: [
-        {
-          id: "1",
-          title: "eCoverage",
-          description: "Thoughtfully designed policies for over 100 years",
-          image: "/ads-logo.png",
-          link: "#",
-          provider: "eCoverage",
-          rating: 9.5,
-          badges: ["Excellent", "51,237+ families covered"],
-          features: [
-            "Unique RAPIDecision® Final Expense products",
-            "Coverage up-to $2 million, terms up-to 30 years",
-            "Fast and easy online application",
-            "Multiple options with no medical exam required"
-          ],
-          phone: "1-833-906-2737",
-          amBestRating: "AA++",
-          isTopPick: true,
-          badgeLabel: "TOP PICK"
-        }
-      ]
-    };
+    const destination = resolvePostSubmitRedirect(config, submittedData || {});
 
-    // Redirect to Ads Wall page with mock ads data
-    const adsParam = encodeURIComponent(JSON.stringify(mockAdsWall));
-    console.log("Redirecting to ads-wall with mock data");
-    router.push(`/creditcards-adwall?ads=${adsParam}`);
+    // Generate IDs for s1 and s2
+    const affiliateId = Math.random().toString(36).substring(2, 11);
+    const transactionId = Math.random().toString(36).substring(2, 11);
+
+    router.push(`${destination}?s1=${encodeURIComponent(affiliateId)}&s2=${encodeURIComponent(transactionId)}`);
   };
 
   if (isLoading) {

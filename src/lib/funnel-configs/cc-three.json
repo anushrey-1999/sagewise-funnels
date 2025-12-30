@@ -1,0 +1,191 @@
+{
+  "id": "cc-three",
+  "title": "Sagewise Credit Card Quiz",
+  "subtitle": "Complete the form below to receive personalized quotes.",
+  "metaDescription": "Find the best credit cards of 2025 for cash back, travel rewards, 0% APR, credit building and more. Get personalized matches in seconds.",
+  "finalStep": {
+    "buttonText": "See Instant Matches",
+    "loaderText": "Finding your best credit card matches...",
+    "disclaimerText": "By pressing \"See Instant Matches\" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products."
+  },
+  "steps": [
+    {
+      "id": "credit-score",
+      "title": "What's your estimated credit score?",
+      "description": "Checking won't impact your score.",
+      "fields": [
+        {
+          "id": "credit-score",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "redirectOnAnswer": {
+            "rules": [
+              {
+                "whenValues": ["excellent", "good"],
+                "to": "/creditcards-adwall-one"
+              },
+              {
+                "whenValues": ["fair"],
+                "to": "/creditcards-adwall-two"
+              },
+              {
+                "whenValues": ["bad"],
+                "to": "/creditcards-adwall-three"
+              }
+            ]
+          },
+          "options": [
+            { "value": "excellent", "label": "Excellent (720-850)" },
+            { "value": "good", "label": "Good (690-719)" },
+            { "value": "fair", "label": "Fair (630-689)" },
+            { "value": "bad", "label": "Bad (350-629)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "new-credit-score",
+      "title": "Why do you need a new card? ",
+      "description": "Helps us find your best match.",
+      "skipIf": {
+        "checkStepId": "credit-score",
+        "checkFieldId": "credit-score",
+        "whenValues": ["fair", "bad"]
+      },
+      "fields": [
+        {
+          "id": "new-credit-score",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "reward-perks", "label": "Travel rewards & perks" },
+            { "value": "cash-back", "label": "Earn cash back" },
+            { "value": "debt", "label": "Pay down debt" },
+            { "value": "big-purchase", "label": "Large purchase" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "direct-deposit",
+      "title": "Do you get paid via Direct Deposit?",
+      "description": "Unlocks faster approval options.",
+      "skipIf": {
+        "checkStepId": "credit-score",
+        "checkFieldId": "credit-score",
+        "whenValues": ["excellent", "good", "bad"]
+      },
+      "fields": [
+        {
+          "id": "direct-deposit",
+          "type": "radio",
+          "label": "Do you get paid via Direct Deposit?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-deposit",
+      "title": "Can you fund a security deposit ($50+)?",
+      "description": "Helps you get approved today.",
+      "skipIf": {
+        "checkStepId": "credit-score",
+        "checkFieldId": "credit-score",
+        "whenValues": ["excellent", "good", "fair"]
+      },
+      "fields": [
+        {
+          "id": "security-deposit",
+          "type": "radio",
+          "label": "Can you fund a security deposit ($50+)?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes, I have funds ready" },
+            { "value": "no", "label": " No, I need $0 upfront" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bankruptcies",
+      "title": "Any bankruptcies in the last 2 years?",
+      "description": "Helps us find your best fit.",
+      "skipIf": {
+        "checkStepId": "credit-score",
+        "checkFieldId": "credit-score",
+        "whenValues": ["excellent", "good", "fair"]
+      },
+      "fields": [
+        {
+          "id": "bankruptcies",
+          "type": "radio",
+          "label": "Any bankruptcies in the last 2 years?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "monthly-income",
+      "title": "What's your monthly take-home income?",
+      "description": "Total from all sources.",
+      "fields": [
+        {
+          "id": "monthly-income",
+          "type": "dropdown",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "under-1000", "label": "Under $1,000" },
+            { "value": "1000-2499", "label": "$1,000 - $2,499" },
+            { "value": "2500-4999", "label": "$2,500 - $4,999" },
+            { "value": "5000+", "label": "$5,000+" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact-info",
+      "title": "Ready to see your matches? ",
+      "description": "Your data is safe and secure.",
+      "fields": [
+        {
+          "id": "firstName",
+          "type": "text",
+          "label": "First name",
+          "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last name",
+          "placeholder": "Doe",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "john.doe@email.com",
+          "required": true
+        },
+        {
+          "id": "newsletter",
+          "type": "checkbox",
+          "label": "Yes, I want the Sagewise Retirement Newsletter!",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

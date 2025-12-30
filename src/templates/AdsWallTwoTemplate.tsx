@@ -5,7 +5,7 @@ import PlainPageHeader from "@/organisms/PlainPageHeader";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 
-const AdsWallTemplate = () => {
+const AdsWallTwoTemplate = () => {
   const searchParams = useSearchParams();
 
   // Extract and clean the IDs from URL parameters
@@ -21,139 +21,72 @@ const AdsWallTemplate = () => {
 
   const cardData = [
     {
-      heading: "Chime Card<sup>&trade;</sup>",
+      heading: "Upgrade Cash Rewards Visa®",
       description:
-        "Help build credit with your own money. No credit check, no annual fee, and no interest.",
+        "Charge like a credit card, pay off like a loan with 1.5% cash back.",
       features: [
-        "No credit check to apply",
-        "No annual fees or interest",
-        "Earn 1.5% cash back on rotating categories with direct deposit",
-        "No minimum security deposit required",
+        "Earn unlimited 1.5% cash back on all purchases when you pay",
+        "No security deposit, annual fee, or hidden account costs",
+        "Fixed monthly payments make budgeting simple and predictable",
+        "Check for an unsecured line with no credit score impact",
       ],
       buttonLink:
-        "https://lkd7vx3a.com/?E=BoniqlAkcXgZGXxI%2fhpBCsz6l05hPQ0P&s1=",
+        "#",
       buttonText: "Apply Now",
-      ratingsNumber: "8.2",
+      ratingsNumber: "8.9",
       ratingsCount: 5,
       logo: "/logos/chime-logo.avif",
       logoWidth: "120px",
       logoHeight: "40px",
-      creditCardImage: "/credit-cards/chime-credit-card.avif",
-      badgeText: "NO CREDIT CHECK",
+      creditCardImage: "/credit-cards/upgrade-credit-card.avif",
+      badgeText: "UNSECURED CARD",
       badgeIcon: "no-card",
-      advertiserName: "Chime",
+      advertiserName: "Upgrade",
     },
     {
-      heading: "Indigo Platinum Mastercard&reg;",
+      heading: "Mission Lane Silver Line Visa®",
       description:
-        "Unsecured credit card for rebuilding credit with no security deposit required.",
+        "A premier unsecured card designed for those rebuilding their credit.",
       features: [
-        "No security deposit required",
-        "Reports to all three credit bureaus",
-        "Pre-qualification available",
-        "Quick online application process",
+        "Automatic reviews for credit limit increases in as little as 7 months",
+        "See if you're pre-approved instantly with no score impact",
+        "Reports to all three major bureaus to help grow your score",
+        "$0 - $39 annual fee based on your specific credit profile",
       ],
-      buttonLink: "https://rdtrk.net/?E=fhouR7k3k0Rgem%2b5T6869sz6l05hPQ0P&s1=",
+      buttonLink: "#",
       buttonText: "Check Pre-Approval",
-      ratingsNumber: "6.5",
+      ratingsNumber: "8.4",
       ratingsCount: 5,
       logo: "/logos/indigo-logo.avif",
       logoWidth: "100px",
       logoHeight: "35px",
-      creditCardImage: "/credit-cards/indigo-credit-card.avif",
-      badgeText: "UNSECURED CARD",
+      creditCardImage: "/credit-cards/mission-lane-credit-card.avif",
+      badgeText: "NO SECURITY DEPOSIT",
       badgeIcon: "card",
-      advertiserName: "Indigo",
+      advertiserName: "Mission Lane",
     },
     {
-      heading: "Milestone Mastercard&reg;",
+      heading: "Capital One Platinum Credit Card",
       description:
-        "Build credit history with an unsecured card designed for limited credit profiles.",
+        "The reliable, no annual fee choice for establishing your credit history.",
       features: [
-        "No security deposit required",
-        "Activity reported to major bureaus",
-        "Quick approval decision",
-        "Accepted where Mastercard is used",
+        "$0 annual fee and no hidden foreign transaction fees",
+        "Be considered for a higher credit limit in as little as 6 months",
+        "Includes free credit monitoring tools through CreditWise",
+        "Accepted at millions of locations worldwide via Mastercard",
       ],
-      buttonLink: "https://rdtrk.net/?E=fhouR7k3k0Qq1zozXKPcVcz6l05hPQ0P&s1=",
+      buttonLink: "#",
       buttonText: "Apply Now",
-      ratingsNumber: "6.8",
+      ratingsNumber: "7.8",
       ratingsCount: 5,
       logo: "/logos/milestone-logo.avif",
       logoWidth: "120px",
       logoHeight: "28px",
-      creditCardImage: "/credit-cards/milestone-credit-card.avif",
-      badgeText: "NO CREDIT CHECK",
+      creditCardImage: "/credit-cards/capital-one-credit-card.avif",
+      badgeText: "NO ANNUAL FEE",
       badgeIcon: "card-up",
-      advertiserName: "Milestone",
+      advertiserName: "Capital One",
     },
-    {
-      heading: "Chime&reg; Checking Account and Chime Visa Debit Card",
-      description:
-        "New Account Sign Up Bonus - Get up to $350 with a new Chime Checking Account",
-      features: [
-        "No monthly fees",
-        "No overdraft fees",
-        "No minimum balance requirement",
-        "No foreign transaction fees",
-      ],
-      buttonLink: "https://rdtrk.net/?E=1egYypV%2bSugQJBKPOGc8fsz6l05hPQ0P&s1=",
-      buttonText: "Open Account",
-      isDifferentBorder: true,
-      ratingsNumber: "9.5",
-      ratingsCount: 5,
-      logo: "/logos/chime-logo.avif",
-      logoWidth: "120px",
-      logoHeight: "40px",
-      creditCardImage: "/credit-cards/chime-checking-debit-card.avif",
-      badgeText: "$350 BONUS OFFER",
-      badgeIcon: "percentage",
-      advertiserName: "Chime",
-    },
-    {
-      heading: "The Secured Self Visa&reg; Credit Card",
-      description:
-        "$15 Welcome Bonus: Make your first purchase within 30 days of account activation and receive a $15 Statement Credit as a Welcome Bonus&ast;&ast;!",
-      features: [
-        "&ast;$0 annual fee for the first year, $25 annual fee thereafter",
-        "No hard credit check or credit score required",
-        "Reports to all 3 major credit bureaus to build credit history",
-      ],
-      buttonLink: "https://ir.self.inc/c/2191982/689941/10159",
-      buttonText: "Open Account",
-      isDifferentBorder: false,
-      ratingsNumber: "9.2",
-      ratingsCount: 5,
-      logo: "/logos/chime-logo.avif",
-      logoWidth: "120px",
-      logoHeight: "40px",
-      creditCardImage: "/credit-cards/self-credit-card.avif",
-      badgeText: "BONUS OFFER",
-      badgeIcon: "percentage",
-      advertiserName: "Self",
-    },
-    // {
-    //   heading: "SoFi Unlimited 2% Credit Card",
-    //   description:
-    //     "Earn 2% unlimited cash back on all eligible purchases with no annual fee",
-    //   features: [
-    //     "Earn 2% cash back on all purchases",
-    //     "$0 annual fee and no foreign transaction fees",
-    //     "$200 welcome bonus after $2,000 spend",
-    //     "Cell phone protection up to $1,000",
-    //   ],
-    //   buttonLink: "https://rdtrk151.com/?E=mAOiPn8VlA4xno2yw2LWo8z6l05hPQ0P&s1=",
-    //   buttonText: "View Offer",
-    //   ratingsNumber: "9.0",
-    //   ratingsCount: 5,
-    //   logo: "/logos/chime-logo.avif",
-    //   logoWidth: "120px",
-    //   logoHeight: "40px",
-    //   creditCardImage: "/credit-cards/sofi-credit-card.avif",
-    //   badgeText: "2% CASH BACK",
-    //   badgeIcon: 'card-up',
-    //   advertiserName: "SoFi",
-    // },
   ];
 
   return (
@@ -163,7 +96,7 @@ const AdsWallTemplate = () => {
         title={"Best credit cards of December 2025"}
         headingFont="text-3xl text-center lg:text-[48px] font-bold text-primary-main"
         subtitle="High credit card interest can strain a fixed income. Compare 0% intro APR and balance transfer credit cards that may help reduce interest, consolidate debt, and manage monthly expenses."
-        updatedAt={"Updated December 05, 2025"}
+        updatedAt={"Updated December 30, 2025"}
       />
 
       {/* Cards */}
@@ -182,7 +115,7 @@ const AdsWallTemplate = () => {
         </div>
       </div>
 
-      <div className="text-general-muted-foreground text-xs leading-relaxed space-y-4 max-w-[970px] mx-auto mb-10 px-6 lg:px-0">
+      {/* <div className="text-general-muted-foreground text-xs leading-relaxed space-y-4 max-w-[970px] mx-auto mb-10 px-6 lg:px-0">
         <h3 className="text-base font-semibold mb-4">Full Disclaimers</h3>
         <div
           className="space-y-4"
@@ -234,9 +167,9 @@ const AdsWallTemplate = () => {
             `,
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default AdsWallTemplate;
+export default AdsWallTwoTemplate;
