@@ -22,7 +22,7 @@
           "redirectOnAnswer": {
             "rules": [
               {
-                "whenValues": ["excellent", "good"],
+                "whenValues": ["bad"],
                 "to": "/creditcards-adwall-one"
               },
               {
@@ -30,7 +30,7 @@
                 "to": "/creditcards-adwall-two"
               },
               {
-                "whenValues": ["bad"],
+                "whenValues": ["excellent", "good"],
                 "to": "/creditcards-adwall-three"
               }
             ]
