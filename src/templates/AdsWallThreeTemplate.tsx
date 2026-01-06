@@ -116,10 +116,10 @@ const AdsWallThreeTemplate = () => {
     <div className="bg-white flex flex-col items-start min-h-screen w-full ">
       {/* Header */}
       <PlainPageHeader
-        title={"Best credit cards of December 2025"}
+        title={"Best credit cards of January 2026"}
         headingFont="text-3xl text-center lg:text-[48px] font-bold text-primary-main"
         subtitle="High credit card interest can strain a fixed income. Compare 0% intro APR and balance transfer credit cards that may help reduce interest, consolidate debt, and manage monthly expenses."
-        updatedAt={"Updated December 30, 2025"}
+        updatedAt={"Updated January 6, 2026"}
       />
 
       {/* Cards */}

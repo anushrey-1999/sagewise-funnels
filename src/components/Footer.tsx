@@ -113,7 +113,7 @@ export function Footer() {
         color="text-primary-light"
         className="text-[10px] md:text-xs  tracking-[0.5px]"
       >
-        © Copyright 2025, Sagewise® • All Rights Reserved • 4376 Forestdale
+        © Copyright 2026, Sagewise® • All Rights Reserved • 4376 Forestdale
         Drive #4, Park City, UT 84098 US
       </Typography>
     </div>

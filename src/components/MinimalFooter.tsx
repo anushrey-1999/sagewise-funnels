@@ -63,7 +63,7 @@ const MinimalFooter = () => {
         color="text-primary-light"
         className="text-[10px] md:text-xs  tracking-[0.5px]"
       >
-        © Copyright 2025, Sagewise® • All Rights Reserved
+        © Copyright 2026, Sagewise® • All Rights Reserved
       </Typography>
         </div>
         <div className="flex flex-col gap-3 items-center">

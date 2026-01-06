@@ -113,7 +113,7 @@ const AdsWallOneTemplate = () => {
     {
       heading: "The Secured Self Visa&reg; Credit Card",
       description:
-        "$15 Welcome Bonus: Make your first purchase within 30 days of account activation and receive a $15 Statement Credit as a Welcome Bonus&ast;&ast;!",
+        "The Secured Card for Better Credit",
       features: [
         "&ast;$0 annual fee for the first year, $25 annual fee thereafter",
         "No hard credit check or credit score required",
@@ -128,7 +128,7 @@ const AdsWallOneTemplate = () => {
       logoWidth: "120px",
       logoHeight: "40px",
       creditCardImage: "/credit-cards/self-credit-card.avif",
-      badgeText: "BONUS OFFER",
+      badgeText: "No Credit Check",
       badgeIcon: "percentage",
       advertiserName: "Self",
     },
@@ -160,10 +160,10 @@ const AdsWallOneTemplate = () => {
     <div className="bg-white flex flex-col items-start min-h-screen w-full ">
       {/* Header */}
       <PlainPageHeader
-        title={"Best credit cards of December 2025"}
+        title={"Best credit cards of January 2026"}
         headingFont="text-3xl text-center lg:text-[48px] font-bold text-primary-main"
         subtitle="High credit card interest can strain a fixed income. Compare 0% intro APR and balance transfer credit cards that may help reduce interest, consolidate debt, and manage monthly expenses."
-        updatedAt={"Updated December 05, 2025"}
+        updatedAt={"Updated January 06, 2026"}
       />
 
       {/* Cards */}
