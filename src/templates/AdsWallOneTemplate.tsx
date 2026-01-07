@@ -88,6 +88,50 @@ const AdsWallOneTemplate = () => {
       advertiserName: "Milestone",
     },
     {
+      heading: "Aspire&reg; Cash Back Rewards Mastercard",
+      description:
+        "Earn Cash Back Rewards - 3% on Eligible Gas, Groceries, and Utilities, and 1% on All Other Eligible Purchases",
+      features: [
+        "Up to $1,000 Credit Limit Subject to Credit Approval",
+        "No Security Deposit",
+        "Prequalify Without Affecting your Credit Score",
+      ],
+      buttonLink: "#",
+      buttonText: "See if you prequalify",
+      isDifferentBorder: false,
+      ratingsNumber: "9.2",
+      ratingsCount: 5,
+      logo: "/logos/chime-logo.avif",
+      logoWidth: "120px",
+      logoHeight: "40px",
+      creditCardImage: "/credit-cards/aspire-credit-card.avif",
+      badgeText: "No Security Deposit",
+      badgeIcon: "percentage",
+      advertiserName: "Aspire",
+    },
+    {
+      heading: "Fortiva&reg; Cash Back Rewards Mastercard",
+      description:
+        "Earn Cash Back Rewards - 3% on Eligible Gas, Groceries, and Utilities, and 1% on All Other Eligible Purchases",
+      features: [
+        "Up to $1,000 Credit Limit Subject to Credit Approval",
+        "No Security Deposit",
+        "Prequalify Without Affecting your Credit Score",
+      ],
+      buttonLink: "#",
+      buttonText: "See if you prequalify",
+      isDifferentBorder: false,
+      ratingsNumber: "9.2",
+      ratingsCount: 5,
+      logo: "/logos/chime-logo.avif",
+      logoWidth: "120px",
+      logoHeight: "40px",
+      creditCardImage: "/credit-cards/fortiva-credit-card.avif",
+      badgeText: "No Security Deposit",
+      badgeIcon: "percentage",
+      advertiserName: "Fortiva",
+    },
+    {
       heading: "Chime&reg; Checking Account and Chime Visa Debit Card",
       description:
         "New Account Sign Up Bonus - Get up to $350 with a new Chime Checking Account",
@@ -112,8 +156,7 @@ const AdsWallOneTemplate = () => {
     },
     {
       heading: "The Secured Self Visa&reg; Credit Card",
-      description:
-        "The Secured Card for Better Credit",
+      description: "The Secured Card for Better Credit",
       features: [
         "&ast;$0 annual fee for the first year, $25 annual fee thereafter",
         "No hard credit check or credit score required",
