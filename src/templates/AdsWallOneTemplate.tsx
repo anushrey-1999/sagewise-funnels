@@ -256,6 +256,23 @@ const AdsWallOneTemplate = () => {
                   <li> The Indigo/Milestone Mastercard reports your payment and account history to the three major credit bureaus and can help you build your credit history. Credit bureaus reflect a variety of factors in your credit history, such as payment patterns, utilization, derogatory marks, account age, total number of accounts, and inquiries. Not all factors are equally weighted. Responsible use and a consistent history of good standing and on-time payments are often key components of good credit and what lenders look at to determine whom they approve for credit.</li>
                 </ul>
               </div>
+
+              <div>
+                <strong>Aspire<sup>&reg;</sup></strong>
+                <p>
+                Cash Back Rewards Disclosure: You will earn 3% cash back rewards when you use 
+                your credit card for eligible gas and grocery purchases and utility bill payments.
+                 You will earn 1% cash back rewards when you use your credit card for other eligible purchases of goods and services and bill payments. Rewards will be earned when the transaction posts to your account and will remain as long as the purchases and bill payments are not returned or credited. Purchases do NOT include fees or interest charges, balance transfers, cash advances, or purchases of other cash equivalents. Rewards are not earned for pending transactions. Review the Cash Back Rewards Program Terms for important information about the cash back rewards program.
+                </p>
+              </div>
+
+
+               <div>
+                <strong>Fortiva<sup>&reg;</sup></strong>
+                <p>
+                  Cash Back Rewards Disclosure: You will earn 3% cash back rewards when you use your credit card for eligible gas and grocery purchases and utility bill payments. You will earn 1% cash back rewards when you use your credit card for other eligible purchases of goods and services and bill payments. Rewards will be earned when the transaction posts to your account and will remain as long as the purchases and bill payments are not returned or credited. Purchases do NOT include fees or interest charges, balance transfers, cash advances, or purchases of other cash equivalents. Rewards are not earned for pending transactions. Review the Cash Back Rewards Program Terms for important information about the cash back rewards program.
+                </p>
+              </div>
               
               <div>
                 <strong>SoFi Unlimited 2% Credit Card</strong>
