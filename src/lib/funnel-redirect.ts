@@ -36,6 +36,12 @@ function matchRedirect(redirectOnAnswer: RedirectOnAnswer, selectedValues: strin
   return null;
 }
 
+export function resolveRedirectOnAnswer(redirectOnAnswer: RedirectOnAnswer, fieldType: string, value: unknown): string | null {
+  const selectedValues = getSelectedValues(fieldType, value);
+  if (selectedValues.length === 0) return null;
+  return matchRedirect(redirectOnAnswer, selectedValues);
+}
+
 /**
  * Computes where to send the user after submission.
  *

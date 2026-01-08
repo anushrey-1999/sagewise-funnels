@@ -1,0 +1,119 @@
+{
+  "id": "taxprep",
+  "title": "Sagewise Tax Prep Quiz",
+  "subtitle": "Answer a few questions to get matched with the right filing option.",
+  "metaDescription": "Quick tax prep questions to help match you to the right filing option.",
+  "finalStep": {
+    "buttonText": "See Options",
+    "loaderText": "Finding the best match for you...",
+    "redirectTo": "/creditcards-adwall-one",
+    "disclaimerText": "By pressing \"See Options\" you agree to our privacy policy and consent to be contacted by our partners at the email you provide. Consent isn't a condition to purchase any product or service."
+  },
+  "steps": [
+    {
+      "id": "filing-status",
+      "title": "How will you be filing for 2025?",
+      "description": "Helps us select the right tools for you.",
+      "fields": [
+        {
+          "id": "filingFor2025",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "w2", "label": "W2 Employee" },
+            { "value": "1099", "label": "1099/Freelance" },
+            { "value": "retiree", "label": "Retiree" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "age-65-plus",
+      "title": "Are you aged 65 or older?",
+      "description": "You may qualify for a larger deduction.",
+      "skipIf": {
+        "checkStepId": "filing-status",
+        "checkFieldId": "filingFor2025",
+        "whenValues": ["1099", "retiree"]
+      },
+      "fields": [
+        {
+          "id": "is65OrOlder",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "YES" },
+            { "value": "no", "label": "NO" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "complex-assets",
+      "title": "Do you have complex assets?",
+      "description": "Stocks, crypto, or rental properties.",
+      "skipIf": [
+        {
+          "checkStepId": "age-65-plus",
+          "checkFieldId": "is65OrOlder",
+          "whenValues": ["no"]
+        }
+      ],
+      "fields": [
+        {
+          "id": "assetTypes",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "stocks", "label": "Stocks" },
+            { "value": "crypto", "label": "Crypto" },
+            { "value": "rental-property", "label": "Rental Property" },
+            { "value": "none", "label": "None" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "household-income",
+      "title": "What's your household income?",
+      "description": "Total combined annual income.",
+      "fields": [
+        {
+          "id": "householdIncome",
+          "type": "dropdown",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "under-50k", "label": "<$50k" },
+            { "value": "50k-150k", "label": "$50k-$150k" },
+            { "value": "150k-plus", "label": "$150k+" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "Maximize your 2026 refund?",
+      "description": "Secure filing in 5 minutes.",
+      "fields": [
+        {
+          "id": "name",
+          "type": "text",
+          "label": "Name",
+          "placeholder": "John Doe",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "john.doe@email.com",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

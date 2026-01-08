@@ -10,7 +10,7 @@ import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Loader } from "./Loader";
 import { useRouter } from "next/navigation";
-import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
+import { resolvePostSubmitRedirect, resolveRedirectOnAnswer } from "@/lib/funnel-redirect";
 
 // Progress bar component
 function ProgressBar({ progress }: { progress: number }) {
@@ -481,6 +481,24 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       
       return newErrors;
     });
+
+    // Optional: immediately redirect based on this answer (opt-in per field)
+    if (field.redirectImmediately && field.redirectOnAnswer) {
+      const destination = resolveRedirectOnAnswer(field.redirectOnAnswer, field.type, value);
+      if (destination) {
+        if (autoForwardTimeoutRef.current) {
+          clearTimeout(autoForwardTimeoutRef.current);
+          autoForwardTimeoutRef.current = null;
+        }
+        if (checkCompleteTimeoutRef.current) {
+          clearTimeout(checkCompleteTimeoutRef.current);
+          checkCompleteTimeoutRef.current = null;
+        }
+
+        router.push(destination);
+        return;
+      }
+    }
 
     // Determine if this field should trigger auto-forward
     // Check field.autoForward property first (manual control)

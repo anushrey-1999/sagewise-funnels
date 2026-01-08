@@ -27,6 +27,7 @@ export interface FormField {
   required?: boolean;
   autoForward?: boolean; // Control whether this field triggers auto-forward when complete
   redirectOnAnswer?: RedirectOnAnswer; // Optional: redirect after submission based on this field's answer
+  redirectImmediately?: boolean; // Optional: if true, apply redirectOnAnswer immediately when this field is answered
   validation?: {
     pattern?: string;
     min?: number;

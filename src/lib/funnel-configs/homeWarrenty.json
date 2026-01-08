@@ -1,0 +1,177 @@
+{
+  "id": "homeWarrenty",
+  "title": "Sagewise Home Warranty Quiz",
+  "subtitle": "Complete the form below to receive personalized quotes.",
+  "metaDescription": "Answer a few questions to get matched with home warranty protection plans.",
+  "finalStep": {
+    "buttonText": "See Instant Matches",
+    "loaderText": "Searching 40+ Top Protection Plans... Analyzing national providers to find the best rate in [Zip].",
+    "disclaimerText": "By pressing \"See Instant Matches\" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products."
+  },
+  "steps": [
+    {
+      "id": "property-type",
+      "title": "What type of property needs protection?",
+      "description": "We match you with plans specializing in your specific home type.",
+      "fields": [
+        {
+          "id": "propertyType",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "single-family", "label": "Single Family" },
+            { "value": "condo-townhome", "label": "Condo/Townhome" },
+            { "value": "rental-property", "label": "Rental Property" },
+            { "value": "mobile-home", "label": "Mobile Home" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-age",
+      "title": "What is the approximate age of your home?",
+      "description": "Older homes often qualify for \"Senior Discount\" tiers on major systems.",
+      "fields": [
+        {
+          "id": "homeAge",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "under-10", "label": "Under 10 years" },
+            { "value": "10-25", "label": "10 - 25 years" },
+            { "value": "25-plus", "label": "25+ years" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-concern",
+      "title": "What is your biggest concern for repairs?",
+      "description": "Helps us prioritize coverage for the items most likely to break down.",
+      "fields": [
+        {
+          "id": "biggestConcern",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "hvac-heating", "label": "HVAC/Heating" },
+            {
+              "value": "plumbing-electrical",
+              "label": "Plumbing & Electrical"
+            },
+            { "value": "major-appliances", "label": "Major Appliances" },
+            { "value": "comprehensive", "label": "Comprehensive (All)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "appliance-count",
+      "title": "How many major appliances do you want covered?",
+      "description": "Including 5+ items can unlock \"Gold Tier\" pricing and higher caps.",
+      "fields": [
+        {
+          "id": "applianceCount",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "1-3", "label": "1 - 3 Items" },
+            { "value": "4-6", "label": "4 - 6 Items" },
+            { "value": "7-plus", "label": "7+ Items" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coverage-start",
+      "title": "How soon do you want coverage to begin?",
+      "description": "Most plans require a standard 30-day waiting period.",
+      "fields": [
+        {
+          "id": "coverageStart",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "asap", "label": "ASAP" },
+            { "value": "within-30", "label": "Within 30 days" },
+            { "value": "just-researching", "label": "Just researching" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "monthly-income",
+      "title": "What's your monthly take-home income?",
+      "description": "Helps us find a plan with a service fee that fits your budget ($65-$100).",
+      "skipIf": [
+        {
+          "checkStepId": "property-type",
+          "checkFieldId": "propertyType",
+          "whenValues": ["mobile-home"]
+        },
+        {
+          "checkStepId": "coverage-start",
+          "checkFieldId": "coverageStart",
+          "whenValues": ["asap"]
+        }
+      ],
+      "fields": [
+        {
+          "id": "monthlyIncome",
+          "type": "dropdown",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "under-2500", "label": "Under $2,500" },
+            { "value": "2500-4999", "label": "$2,500 - $4,999" },
+            { "value": "5000-plus", "label": "$5,000+" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact-info",
+      "title": "Ready to save $1,000s on annual home repairs?",
+      "description": "Your data is safe and secure. Match results are instant.",
+      "fields": [
+        {
+          "id": "firstName",
+          "type": "text",
+          "label": "First name",
+          "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last name",
+          "placeholder": "Doe",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "john.doe@email.com",
+          "required": true
+        },
+        {
+          "id": "zipCode",
+          "type": "text",
+          "label": "Zip code",
+          "placeholder": "12345",
+          "required": true,
+          "validation": {
+            "pattern": "^\\d{5}$",
+            "message": "Please enter a valid 5-digit zip code."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "id": "dental",
+  "title": "Dental Implant Match",
+  "subtitle": "Answer a few questions to compare plans.",
+  "metaDescription": "Compare dental implant plans and financing options. Answer a few questions to get matched.",
+  "finalStep": {
+    "buttonText": "Compare Plans",
+    "loaderText": "Finding your best deal...",
+    "redirectTo": "/creditcards-adwall-one",
+    "disclaimerText": "By pressing \"Compare Plans\" you agree to our privacy policy and consent to have an agent from one of our partners contact you by email, phone call, and/or text/SMS at the phone number and email you provide. Consent isn't a condition to purchase products."
+  },
+  "steps": [
+    {
+      "id": "zip-code",
+      "title": "What is your Zip Code?",
+      "description": "",
+      "fields": [
+        {
+          "id": "zipCode",
+          "type": "text",
+          "label": "",
+          "placeholder": "12345",
+          "required": true,
+          "autoForward": true,
+          "validation": {
+            "pattern": "^\\d{5}$",
+            "message": "Please enter a valid 5-digit zip code."
+          }
+        }
+      ]
+    },
+    {
+      "id": "teeth-replacement",
+      "title": "How many teeth need replacement?",
+      "description": "Restore a single tooth or full smile.",
+      "fields": [
+        {
+          "id": "teethReplacement",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "1-tooth", "label": "1 Tooth" },
+            { "value": "multiple", "label": "Multiple" },
+            { "value": "full-arch", "label": "Full Arch" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dental-insurance",
+      "title": "Do you have dental insurance?",
+      "description": "Many plans now cover implant costs.",
+      "skipIf": {
+        "checkStepId": "teeth-replacement",
+        "checkFieldId": "teethReplacement",
+        "whenValues": ["1-tooth", "multiple"]
+      },
+      "fields": [
+        {
+          "id": "hasDentalInsurance",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "YES" },
+            { "value": "no", "label": "NO" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "credit-score",
+      "title": "What is your estimated credit score?",
+      "description": "Helps us find the best financing rate.",
+      "fields": [
+        {
+          "id": "creditScore",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "excellent", "label": "Excellent (720-850)" },
+            { "value": "good", "label": "Good (690-719)" },
+            { "value": "fair", "label": "Fair (630-689)" },
+            { "value": "bad", "label": "Bad (350-629)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "monthly-take-home",
+      "title": "What is your monthly take-home?",
+      "description": "Combined household income.",
+      "fields": [
+        {
+          "id": "monthlyTakeHome",
+          "type": "dropdown",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "under-2500", "label": "<$2.5k" },
+            { "value": "2500-5000", "label": "$2.5k-$5k" },
+            { "value": "5000-plus", "label": "$5k+" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact-info",
+      "title": "Last Step to Compare Plans.",
+      "description": "Plans starting at $99/mo.",
+      "fields": [
+        {
+          "id": "firstName",
+          "type": "text",
+          "label": "First Name",
+          "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last Name",
+          "placeholder": "Doe",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "john.doe@email.com",
+          "required": true
+        },
+        {
+          "id": "phone",
+          "type": "tel",
+          "label": "Phone",
+          "placeholder": "(555) 555-5555",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

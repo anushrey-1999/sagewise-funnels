@@ -1,0 +1,120 @@
+{
+  "id": "reverse",
+  "title": "Sagewise Reverse Mortgage Estimate",
+  "subtitle": "Answer a few questions to get your no-obligation equity estimate.",
+  "metaDescription": "Check reverse mortgage eligibility and get a no-obligation home equity estimate. Compare 2026 FHA HECM and proprietary options.",
+  "finalStep": {
+    "buttonText": "GET EQUITY ESTIMATE",
+    "loaderText": "Calculating Equity Payout... Comparing 2026 FHA rates and proprietary options...",
+    "redirectTo": "/creditcards-adwall-one",
+    "disclaimerText": "By pressing \"GET EQUITY ESTIMATE\" you agree to our privacy policy and consent to have an agent from one of our partners contact you by email, phone call, and/or text/SMS at the phone number and email you provide. Consent isn't a condition to purchase products."
+  },
+  "steps": [
+    {
+      "id": "age-eligibility",
+      "title": "Are you (or a spouse) age 62 or older?",
+      "description": "FHA rules require a minimum age for HECM eligibility.",
+      "fields": [
+        {
+          "id": "isAgeEligible",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "redirectImmediately": true,
+          "options": [
+            { "value": "yes", "label": "YES" },
+            { "value": "no", "label": "NO" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "equity-purpose",
+      "title": "What is the purpose for tapping your equity?",
+      "description": "We match you with lenders specializing in your goals.",
+      "fields": [
+        {
+          "id": "purpose",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "supplement-income", "label": "Supplement Income" },
+            { "value": "home-repair-mod", "label": "Home Repair/Mod" },
+            { "value": "pay-off-existing-mortgage", "label": "Pay off existing Mortgage" },
+            { "value": "pay-medical-bills", "label": "Pay Medical Bills" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estimated-equity",
+      "title": "What is your estimated home equity?",
+      "description": "Having 50% or more equity unlocks the largest payout options.",
+      "fields": [
+        {
+          "id": "estimatedEquity",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "under-30", "label": "Under 30%" },
+            { "value": "30-50", "label": "30% - 50%" },
+            { "value": "50-plus", "label": "50%+" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-value",
+      "title": "What is your home's current estimated value?",
+      "description": "HECM lending limits have increased to $1.2M+ in 2026.",
+      "skipIf": {
+        "checkStepId": "estimated-equity",
+        "checkFieldId": "estimatedEquity",
+        "whenValues": ["30-50", "50-plus"]
+      },
+      "fields": [
+        {
+          "id": "homeValue",
+          "type": "dropdown",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "under-500k", "label": "Under $500k" },
+            { "value": "500k-1-2m", "label": "$500k - $1.2M" },
+            { "value": "1-2m-plus", "label": "$1.2M+" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "Get your free, no-obligation equity estimate?",
+      "description": "Your request for information is safe and secure.",
+      "fields": [
+        {
+          "id": "fullName",
+          "type": "text",
+          "label": "First Name",
+          "placeholder": "John Doe",
+          "required": true
+        },
+         {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last Name",
+          "placeholder": "Doe",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "john.doe@email.com",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

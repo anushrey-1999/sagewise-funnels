@@ -1,0 +1,126 @@
+{
+  "id": "cash4home",
+  "title": "Sagewise Cash for Home Quiz",
+  "subtitle": "Answer a few questions to get a no-obligation cash offer.",
+  "metaDescription": "Quick home condition and timing questions to help match you with a cash offer.",
+  "finalStep": {
+    "buttonText": "See My Offer Options",
+    "loaderText": "Checking local buyers...",
+    "redirectTo": "/creditcards-adwall-one",
+    "disclaimerText": "By pressing \"See My Offer Options\" you agree to our privacy policy and consent to be contacted by our partners at the phone number and email you provide. Consent isn't a condition to purchase any product or service."
+  },
+  "steps": [
+    {
+      "id": "home-condition",
+      "title": "Current condition of your home?",
+      "description": "We buy houses in any condition.",
+      "fields": [
+        {
+          "id": "condition",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "excellent", "label": "Excellent" },
+            { "value": "good", "label": "Good" },
+            { "value": "needs-repairs", "label": "Needs Repairs" },
+            { "value": "distressed", "label": "Distressed" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reason-for-selling",
+      "title": "Reason for selling?",
+      "description": "Helps our buyers provide the best offer.",
+      "skipIf": {
+        "checkStepId": "home-condition",
+        "checkFieldId": "condition",
+        "whenValues": ["excellent", "good", "needs-repairs"]
+      },
+      "fields": [
+        {
+          "id": "reason",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "downsizing", "label": "Downsizing" },
+            { "value": "relocation", "label": "Relocation" },
+            { "value": "financial", "label": "Financial" },
+            { "value": "inheritance", "label": "Inheritance" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sell-timing",
+      "title": "How fast do you need to sell?",
+      "description": "Cash offers can close in 7 days.",
+      "skipIf": {
+        "checkStepId": "home-condition",
+        "checkFieldId": "condition",
+        "whenValues": ["distressed"]
+      },
+      "fields": [
+        {
+          "id": "timing",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "lt-7-days", "label": "<7 Days" },
+            { "value": "1-4-weeks", "label": "1-4 Weeks" },
+            { "value": "exploring", "label": "Just exploring" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "property-value",
+      "title": "Estimated property value?",
+      "description": "Estimated value in today's market.",
+      "fields": [
+        {
+          "id": "estimatedValue",
+          "type": "dropdown",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "under-250k", "label": "<$250k" },
+            { "value": "250k-500k", "label": "$250k-$500k" },
+            { "value": "500k-plus", "label": "$500k+" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "Get your no-obligation offer?",
+      "description": "24-hour offer guarantee.",
+      "fields": [
+        {
+          "id": "address",
+          "type": "text",
+          "label": "Address",
+          "placeholder": "123 Main St",
+          "required": true
+        },
+        {
+          "id": "phone",
+          "type": "tel",
+          "label": "Phone",
+          "placeholder": "(555) 555-5555",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "you@email.com",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

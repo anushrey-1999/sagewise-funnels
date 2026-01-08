@@ -1,0 +1,223 @@
+{
+  "id": "autoins",
+  "title": "Sagewise Auto Insurance Quiz",
+  "subtitle": "Complete the form below to receive personalized quotes.",
+  "metaDescription": "Compare auto insurance options in seconds. Answer a few questions to see personalized matches.",
+  "finalStep": {
+    "buttonText": "See Matches",
+    "loaderText": "Searching 100+ top carriers...",
+    "disclaimerText": "By pressing \"See Matches\" you agree to our privacy policy and consent to have an agent from one of our partners contact you by email, phone call, and/or text/SMS at the phone number and email you provide. Consent isn't a condition to purchase products."
+  },
+  "steps": [
+    {
+      "id": "zip-code",
+      "title": "Enter Your Zip Code",
+      "description": "",
+      "fields": [
+        {
+          "id": "zipCode",
+          "type": "text",
+          "label": "",
+          "placeholder": "12345",
+          "required": true,
+          "autoForward": true,
+          "validation": {
+            "pattern": "^\\d{5}$",
+            "message": "Please enter a valid 5-digit zip code."
+          }
+        }
+      ]
+    },
+    {
+      "id": "credit-score",
+      "title": "What's your estimated credit score?",
+      "description": "Checking won't impact your score.",
+      "fields": [
+        {
+          "id": "credit-score",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "redirectOnAnswer": {
+            "rules": [
+              { "whenValues": ["bad"], "to": "/creditcards-adwall-one" },
+              { "whenValues": ["fair"], "to": "/creditcards-adwall-two" },
+              { "whenValues": ["excellent", "good"], "to": "/creditcards-adwall-three" }
+            ]
+          },
+          "options": [
+            { "value": "excellent", "label": "Excellent (720-850)" },
+            { "value": "good", "label": "Good (690-719)" },
+            { "value": "fair", "label": "Fair (630-689)" },
+            { "value": "bad", "label": "Bad (350-629)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-ownership",
+      "title": "Do you own your home?",
+      "description": "Helps us find multi-policy bundling discounts.",
+      "skipIf": {
+        "checkStepId": "credit-score",
+        "checkFieldId": "credit-score",
+        "whenValues": ["fair", "bad"]
+      },
+      "fields": [
+        {
+          "id": "homeOwner",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "current-carrier",
+      "title": "Who are you currently insured with?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "credit-score",
+        "checkFieldId": "credit-score",
+        "whenValues": ["bad"]
+      },
+      "fields": [
+        {
+          "id": "currentCarrier",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "allstate", "label": "Allstate" },
+            { "value": "american-family", "label": "American Family" },
+            { "value": "farmers", "label": "Farmers Insurance" },
+            { "value": "geico", "label": "GEICO" },
+            { "value": "liberty-mutual", "label": "Liberty Mutual" },
+            { "value": "nationwide", "label": "Nationwide" },
+            { "value": "progressive", "label": "Progressive" },
+            { "value": "state-farm", "label": "State Farm" },
+            { "value": "travelers", "label": "Travelers Insurance" },
+            { "value": "usaa", "label": "USAA" },
+            { "value": "other", "label": "Other (My insurer is not listed)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "currently-insured",
+      "title": "Are you currently insured?",
+      "description": "Unlocks loyalty and \"no-lapse\" savings.",
+      "skipIf": {
+        "checkStepId": "credit-score",
+        "checkFieldId": "credit-score",
+        "whenValues": ["bad"]
+      },
+      "fields": [
+        {
+          "id": "currentlyInsured",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sr-22",
+      "title": "Do you need an SR-22?",
+      "description": "Helps us find specialized high-risk carriers.",
+      "skipIf": {
+        "checkStepId": "currently-insured",
+        "checkFieldId": "currentlyInsured",
+        "whenValues": ["yes"]
+      },
+      "fields": [
+        {
+          "id": "needsSr22",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "major-violations",
+      "title": "Any major violations in the last 3 years?",
+      "description": "(DUI, At-fault, Reckless)",
+      "skipIf": [
+        {
+          "checkStepId": "sr-22",
+          "checkFieldId": "needsSr22",
+          "whenValues": ["no"]
+        },
+        {
+          "checkStepId": "currently-insured",
+          "checkFieldId": "currentlyInsured",
+          "whenValues": ["yes"]
+        }
+      ],
+      "fields": [
+        {
+          "id": "majorViolations",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vehicle-use",
+      "title": "What's your primary vehicle use?",
+      "description": "Helps us calculate accurate mileage rates.",
+      "fields": [
+        {
+          "id": "primaryVehicleUse",
+          "type": "dropdown",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "commute", "label": "Commute" },
+            { "value": "leisure", "label": "Leisure / Pleasure" },
+            { "value": "business", "label": "Business / Rideshare" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact-info",
+      "title": "Ready to see your matches?",
+      "description": "Your data is safe and secure.",
+      "fields": [
+        {
+          "id": "firstName",
+          "type": "text",
+          "label": "First name",
+          "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "john.doe@email.com",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
