@@ -15,7 +15,7 @@ const AdsWallTwoTemplate = () => {
   }, [searchParams]);
 
   const transactionId = useMemo(() => {
-    const id = searchParams.get("s2");
+    const id = searchParams.get("sub5");
     return id?.replace(/^["']|["']$/g, "") || null;
   }, [searchParams]);
 
