@@ -1,0 +1,80 @@
+{
+  "id": "mortgage-two",
+  "funnelId": "mortgage",
+  "adwallType": "two",
+  "title": "Lower your monthly payments in you city!",
+  "subtitle": "We've analyzed national lenders to find the best refinance rates for homes in {zip}.",
+  "updatedAt": "Updated January 06, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "s2"
+  },
+  "metadata": {
+    "title": "Best Mortgage Refinance Lenders - Sagewise",
+    "description": "Compare top mortgage refinance lenders. Find competitive rates, flexible terms, and cash-out options to lower your monthly payments."
+  },
+  "cards": [
+    {
+      "heading": "Freedom Mortgage",
+      "description": "Top VA & FHA Lender. Refinance to lower your monthly payments.",
+      "features": [
+        "Low Mortgage Rates",
+        "Fast Online Approval",
+        "Flexible Loan Terms (10-30 yr)"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "ratingsNumber": "7.0",
+      "logoText":"2767",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/freedom.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "Top VA Lender",
+      "badgeIcon": "card",
+      "advertiserName": "Freedom Mortgage",
+      "phoneNumber": "1-800-000-0000"
+    },
+    {
+      "heading": "Amerisave",
+      "description": "Quick Rate Quotes. Competitive fixed and variable refinance options.",
+      "features": [
+        "Refi up to 100% Home Value",
+        "Flexible Credit Guidelines",
+        "Decades of Lending Experience"
+      ],
+      "buttonLink": "#",
+      "buttonText": "GET QUOTE",
+      "logoText":"1168",
+      "ratingsNumber": "8.0",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/amerisave.avif",
+      "logoWidth": "120px",
+      "logoHeight": "70px",
+      "badgeText": "Low Rates",
+      "badgeIcon": "card",
+      "advertiserName": "Amerisave",
+      "phoneNumber": "1-800-000-0000"
+    },
+    {
+      "heading": "New American",
+      "description": "Personalized Refi Programs. Dedicated consultants for your goals.",
+      "features": [
+        "Refi up to 100% Home Value",
+        "Flexible Credit Guidelines",
+        "Decades of Lending Experience"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "ratingsNumber": "8.5",
+      "logoText":"6606",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/naf.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "Cash-Out Specialist",
+      "badgeIcon": "card",
+      "advertiserName": "New American"
+    }
+  ]
+}

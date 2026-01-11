@@ -1,16 +1,6 @@
-import AdsWallOneTemplate from "@/templates/AdsWallOneTemplate";
-import type { Metadata } from "next";
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Best credit cards- Sagewise",
-  description: "Browse the best credit cards of 2026 for cash back, travel rewards, 0% APR, credit building and more. Find the best one for you and apply in seconds.",
-};
-
-export default function AdsWallPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-white" />}>
-      <AdsWallOneTemplate />
-    </Suspense>
-  );
+// Redirect old route to new dynamic route structure
+export default function CreditCardsAdwallOnePage() {
+  redirect("/adwall/cc/one");
 }

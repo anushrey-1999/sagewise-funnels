@@ -6,7 +6,7 @@
   "finalStep": {
     "buttonText": "SEE MATCHES",
     "loaderText": "Searching 100+ top lenders... Finding your best matches...",
-    "redirectTo": "/creditcards-adwall-one",
+    "redirectTo": "/adwall/mortgage/one",
     "disclaimerText": "By pressing \"SEE MATCHES\" you agree to our privacy policy and consent to have an agent from one of our partners contact you by email, phone call, and/or text/SMS at the phone number and email you provide. Consent isn't a condition to purchase products."
   },
   "steps": [

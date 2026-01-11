@@ -1,0 +1,82 @@
+{
+  "id": "homeWarrenty-one",
+  "funnelId": "homeWarrenty",
+  "adwallType": "one",
+  "title": "{NAME}, we found lender matches for you in {zip}.",
+  "subtitle": "Compare top-rated purchase programs in your city with $0-down options for qualified buyers.",
+  "updatedAt": "Updated January 06, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "s2"
+  },
+  "metadata": {
+    "title": "Best Home Warranty Plans - Sagewise",
+    "description": "Compare top home warranty providers. Find affordable protection plans with comprehensive coverage for your home systems and appliances."
+  },
+  "cards": [
+    {
+      "heading": "Select Home Warranty",
+      "description": "Affordable home warranty plans with exclusive discounts and member benefits.",
+      "features": [
+        "Plans starting as low as $24.99/month",
+        "$150 Off + 2 Months Free + Free Roof Coverage",
+        "A+ Rated, Accredited Business by Online Business Bureau",
+        "Members save up to 75% at Amazon, Home Depot, Best Buy & more",
+        "Preferred home warranty partner for all Remax Realty listings"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE PLANS",
+      "ratingsNumber": "9.9",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warrenty/Select.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "A+ BBB RATED",
+      "badgeIcon": "card",
+      "advertiserName": "Select Home Warranty",
+      "phoneNumber": "800-000-0000"
+    },
+    {
+      "heading": "Choice Home Warranty",
+      "description": "Customizable home warranty plans tailored to your home and budget.",
+      "features": [
+        "Choose a plan tailored to your home and budget",
+        "Limited Time Offer: Get $100 OFF your first year of coverage",
+        "Highly Rated by thousands of satisfied customers",
+        "Dedicated Claims Team for faster service"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE PLANS",
+      "ratingsNumber": "9.8",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warrenty/Choice.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "$100 OFF PROMO",
+      "badgeIcon": "card",
+      "advertiserName": "Choice Home Warranty",
+      "phoneNumber": "800-000-0001"
+    },
+    {
+      "heading": "American Home Shield",
+      "description": "Trusted home warranty protection backed by over 50 years of industry leadership.",
+      "features": [
+        "Get 50% OFF select best-selling plans",
+        "Backed by Over 50 Years of Industry Leadership",
+        "24/7 Expert Support with Real-Time Video Chat",
+        "Exclusive: $150 Service Fee Rebate for New Customers"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE PLANS",
+      "ratingsNumber": "9.7",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warrenty/American Home Shield.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "50% SELECT PLANS",
+      "badgeIcon": "card",
+      "advertiserName": "American Home Shield",
+      "phoneNumber": "800-000-0002"
+    }
+  ]
+}

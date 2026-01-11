@@ -1,0 +1,75 @@
+{
+  "id": "autoins-one",
+  "funnelId": "autoins",
+  "adwallType": "one",
+  "title": "{NAME}, we found lender matches for you in {zip}.",
+  "subtitle": "Compare top-rated purchase programs in your city with $0-down options for qualified buyers.",
+  "updatedAt": "Updated January 06, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "s2"
+  },
+  "metadata": {
+    "title": "Best Auto Insurance Rates - Sagewise",
+    "description": "Compare auto insurance quotes from top carriers. Find affordable coverage with discounts for safe drivers, good credit, and multi-policy bundling."
+  },
+  "cards": [
+    {
+      "heading": "State Farm",
+      "description": "Save with State Farm&reg;.",
+      "features": [
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "ratingsNumber": "4.8",
+      "phoneNumber": "1-800-000-0000",
+      "ratingsCount": 5,
+      "logo": "/logos/autoins/statefarm.avif",
+      "logoWidth": "120px",
+      "logoHeight": "90px",
+      "badgeText": "TOP-RATED",
+      "badgeIcon": "card",
+      "advertiserName": "State Farm"
+    },
+    {
+      "heading": "USAA",
+      "description": "See why USAA is top-rated",
+      "features": [
+        "Exclusive savings for military members and their families",
+        "Superior claims service",
+        "Get your quote online in minutes"
+      ],
+      "buttonLink": "#",
+      "buttonText": "GET QUOTE",
+      "phoneNumber": "1-800-000-0000",
+      "ratingsNumber": "4.9",
+      "ratingsCount": 5,
+      "logo": "/logos/autoins/usaa.avif",
+      "logoWidth": "120px",
+      "logoHeight": "30px",
+      "badgeText": "TOP-RATED SERVICE",
+      "badgeIcon": "card",
+      "advertiserName": "USAA"
+    },
+    {
+      "heading": "Liberty Mutual",
+      "description": "Only pay for what you need.",
+      "features": [
+        "Customize your policy for maximum savings",
+        "24/7 claims support",
+        "Get a quote and compare rates today"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "ratingsNumber": "4.6",
+      "ratingsCount": 5,
+      "logo": "/logos/autoins/liberty-mutual.avif",
+      "logoWidth": "120px",
+      "logoHeight": "100px",
+      "badgeText": "",
+      "badgeIcon": "card",
+      "advertiserName": "Liberty Mutual"
+    }
+  ],
+  "disclaimers": ""
+}

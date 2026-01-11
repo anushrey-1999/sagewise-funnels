@@ -1,0 +1,99 @@
+{
+  "id": "cc-three",
+  "funnelId": "cc-one",
+  "adwallType": "three",
+  "title": "Best credit cards of January 2026",
+  "subtitle": "High credit card interest can strain a fixed income. Compare 0% intro APR and balance transfer credit cards that may help reduce interest, consolidate debt, and manage monthly expenses.",
+  "updatedAt": "Updated January 6, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "sub5"
+  },
+  "metadata": {
+    "title": "Best credit cards- Sagewise",
+    "description": "Browse the best credit cards of 2026 for cash back, travel rewards, 0% APR, credit building and more. Find the best one for you and apply in seconds."
+  },
+  "cards": [
+    {
+      "heading": "Citi&reg; Double Cash Card",
+      "description": "Earn 2% cash back on every purchase—1% when you buy and 1% as you pay.",
+      "features": [
+        "Earn unlimited 1.5% - 2% cash back on all eligible purchases",
+        "No categories to track and no caps on the amount you can earn",
+        "0% intro APR on balance transfers for 18 months",
+        "$0 annual fee gives you a premium rewards rate for free"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Apply Now",
+      "ratingsNumber": "9.5",
+      "ratingsCount": 5,
+      "logoWidth": "120px",
+      "logoHeight": "40px",
+      "creditCardImage": "/credit-cards/citibank-double-cash-credit-card.avif",
+      "badgeText": "UNLIMITED CASH BACK",
+      "badgeIcon": "no-card",
+      "advertiserName": "Citi"
+    },
+    {
+      "heading": "Wells Fargo Active Cash&reg;",
+      "description": "A simple, unlimited 2% cash rewards card with no categories to track.",
+      "features": [
+        "Earn a $200 cash rewards bonus after you spend $500 in 3 months",
+        "Unlimited 2% cash rewards on every purchase, everywhere",
+        "Up to $600 of cell phone protection against damage or theft",
+        "0% intro APR on purchases and balance transfers for 12 months"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Check Pre-Approval",
+      "ratingsNumber": "9.3",
+      "ratingsCount": 5,
+      "logoWidth": "100px",
+      "logoHeight": "35px",
+      "creditCardImage": "/credit-cards/active-cash-credit-card.avif",
+      "badgeText": "TOP RATED: 2% BACK",
+      "badgeIcon": "card",
+      "advertiserName": "Active"
+    },
+    {
+      "heading": "Blue Cash Everyday&reg; (Amex)",
+      "description": "Earn 3% cash back on daily essentials like groceries and online shopping.",
+      "features": [
+        "3% cash back at U.S. supermarkets and U.S. online retail stores",
+        "Earn a $200 statement credit after spending $2,000 in 6 months",
+        "Up to $154 in annual credits for Disney Bundle and Home Chef",
+        "Check if you are approved with no impact to your credit score"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Apply Now",
+      "ratingsNumber": "9.1",
+      "ratingsCount": 5,
+      "logoWidth": "120px",
+      "logoHeight": "28px",
+      "creditCardImage": "/credit-cards/amex-credit-card.avif",
+      "badgeText": "APPLY WITH CONFIDENCE",
+      "badgeIcon": "card-up",
+      "advertiserName": "Amex"
+    },
+    {
+      "heading": "Citi Simplicity&reg; Card",
+      "description": "The ideal card for debt consolidation with no late fees and 0% interest.",
+      "features": [
+        "0% intro APR on balance transfers for 21 months from opening",
+        "Never pay a late fee or penalty APR, even if you miss a payment",
+        "Simple account management with $0 annual fee",
+        "Flexible payment due dates to help align with your paychecks"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Open Account",
+      "isDifferentBorder": false,
+      "ratingsNumber": "8.7",
+      "ratingsCount": 5,
+      "logoWidth": "120px",
+      "logoHeight": "40px",
+      "creditCardImage": "/credit-cards/citi-simplicity-credit-card.avif",
+      "badgeText": "0% APR: 21 MONTHS",
+      "badgeIcon": "percentage",
+      "advertiserName": "Citi"
+    }
+  ]
+}

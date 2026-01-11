@@ -23,15 +23,15 @@
             "rules": [
               {
                 "whenValues": ["bad"],
-                "to": "/creditcards-adwall-one"
+                "to": "/adwall/cc/one"
               },
               {
                 "whenValues": ["fair"],
-                "to": "/creditcards-adwall-two"
+                "to": "/adwall/cc/two"
               },
               {
                 "whenValues": ["excellent", "good"],
-                "to": "/creditcards-adwall-three"
+                "to": "/adwall/cc/three"
               }
             ]
           },
