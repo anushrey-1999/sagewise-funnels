@@ -131,50 +131,50 @@ const AdsWallOneTemplate = () => {
       badgeIcon: "percentage",
       advertiserName: "Fortiva",
     },
-    {
-      heading: "Chime&reg; Checking Account and Chime Visa Debit Card",
-      description:
-        "New Account Sign Up Bonus - Get up to $350 with a new Chime Checking Account",
-      features: [
-        "No monthly fees",
-        "No overdraft fees",
-        "No minimum balance requirement",
-        "No foreign transaction fees",
-      ],
-      buttonLink: "https://rdtrk.net/?E=1egYypV%2bSugQJBKPOGc8fsz6l05hPQ0P&s1=",
-      buttonText: "Open Account",
-      isDifferentBorder: true,
-      ratingsNumber: "9.5",
-      ratingsCount: 5,
-      logo: "/logos/chime-logo.avif",
-      logoWidth: "120px",
-      logoHeight: "40px",
-      creditCardImage: "/credit-cards/chime-checking-debit-card.avif",
-      badgeText: "$350 BONUS OFFER",
-      badgeIcon: "percentage",
-      advertiserName: "Chime",
-    },
-    {
-      heading: "The Secured Self Visa&reg; Credit Card",
-      description: "The Secured Card for Better Credit",
-      features: [
-        "&ast;$0 annual fee for the first year, $25 annual fee thereafter",
-        "No hard credit check or credit score required",
-        "Reports to all 3 major credit bureaus to build credit history",
-      ],
-      buttonLink: "https://ir.self.inc/c/2191982/689941/10159",
-      buttonText: "Open Account",
-      isDifferentBorder: false,
-      ratingsNumber: "9.2",
-      ratingsCount: 5,
-      logo: "/logos/chime-logo.avif",
-      logoWidth: "120px",
-      logoHeight: "40px",
-      creditCardImage: "/credit-cards/self-credit-card.avif",
-      badgeText: "No Credit Check",
-      badgeIcon: "percentage",
-      advertiserName: "Self",
-    },
+    // {
+    //   heading: "Chime&reg; Checking Account and Chime Visa Debit Card",
+    //   description:
+    //     "New Account Sign Up Bonus - Get up to $350 with a new Chime Checking Account",
+    //   features: [
+    //     "No monthly fees",
+    //     "No overdraft fees",
+    //     "No minimum balance requirement",
+    //     "No foreign transaction fees",
+    //   ],
+    //   buttonLink: "https://rdtrk.net/?E=1egYypV%2bSugQJBKPOGc8fsz6l05hPQ0P&s1=",
+    //   buttonText: "Open Account",
+    //   isDifferentBorder: true,
+    //   ratingsNumber: "9.5",
+    //   ratingsCount: 5,
+    //   logo: "/logos/chime-logo.avif",
+    //   logoWidth: "120px",
+    //   logoHeight: "40px",
+    //   creditCardImage: "/credit-cards/chime-checking-debit-card.avif",
+    //   badgeText: "$350 BONUS OFFER",
+    //   badgeIcon: "percentage",
+    //   advertiserName: "Chime",
+    // },
+    // {
+    //   heading: "The Secured Self Visa&reg; Credit Card",
+    //   description: "The Secured Card for Better Credit",
+    //   features: [
+    //     "&ast;$0 annual fee for the first year, $25 annual fee thereafter",
+    //     "No hard credit check or credit score required",
+    //     "Reports to all 3 major credit bureaus to build credit history",
+    //   ],
+    //   buttonLink: "https://ir.self.inc/c/2191982/689941/10159",
+    //   buttonText: "Open Account",
+    //   isDifferentBorder: false,
+    //   ratingsNumber: "9.2",
+    //   ratingsCount: 5,
+    //   logo: "/logos/chime-logo.avif",
+    //   logoWidth: "120px",
+    //   logoHeight: "40px",
+    //   creditCardImage: "/credit-cards/self-credit-card.avif",
+    //   badgeText: "No Credit Check",
+    //   badgeIcon: "percentage",
+    //   advertiserName: "Self",
+    // },
     // {
     //   heading: "Fortiva&reg; Cash Back Rewards Mastercard",
     //   description:
@@ -232,16 +232,6 @@ const AdsWallOneTemplate = () => {
           dangerouslySetInnerHTML={{
             __html: `
               <div>
-                <strong>Chime<sup>&reg;</sup> Checking Account</strong>
-                <ul class="list-disc list-outside pl-5 mt-2 space-y-1">
-                  <li>Terms apply. Limited time only, must open the new account and complete qualifying activities to earn 3 individual rewards, up to a max of $350.00. See <a href="https://www.chime.com/policies/newmemberofferv3" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline;">https://www.chime.com/policies/newmemberofferv3</a> for details.</li>
-                  <li><strong>Chime is recommended by more of its users in the 2024 Qualtrics® NPS study when compared to top national banks and select fintechs. THE #1 MOST LOVED BANKING APP is a Registered Trademark of Chime Financial, Inc.</strong></li>
-                  <li>Early access to direct deposit funds depends on the timing of the submission of the payment file from the payer. We generally make these funds available on the day the payment file is received, which may be up to 2 days earlier than the scheduled payment date.</li>
-                  <li>SpotMe<sup>&reg;</sup> eligibility requires $200 or more in qualifying direct deposits to your Chime Checking Account each month. Qualifying members will be allowed to overdraw their account up to $20 in total, but may be eligible for a higher combined limit of up to $200 or more. Although there are no overdraft fees, there may be out-of-network or third-party fees associated with ATM transactions. See SpotMe Terms and Conditions for details.</li>
-                </ul>
-              </div>
-              
-              <div>
                 <strong>Chime Card<sup>&trade;</sup></strong>
                 <ul class="list-disc list-outside pl-5 mt-2 space-y-1">
                  <li>No minimum balance required. Must have $0.01 in savings to earn interest.</li>
@@ -272,17 +262,6 @@ const AdsWallOneTemplate = () => {
                 <p>
                   Cash Back Rewards Disclosure: You will earn 3% cash back rewards when you use your credit card for eligible gas and grocery purchases and utility bill payments. You will earn 1% cash back rewards when you use your credit card for other eligible purchases of goods and services and bill payments. Rewards will be earned when the transaction posts to your account and will remain as long as the purchases and bill payments are not returned or credited. Purchases do NOT include fees or interest charges, balance transfers, cash advances, or purchases of other cash equivalents. Rewards are not earned for pending transactions. Review the Cash Back Rewards Program Terms for important information about the cash back rewards program.
                 </p>
-              </div>
-              
-              <div>
-                <strong>SoFi Unlimited 2% Credit Card</strong>
-                <ul class="list-disc list-outside pl-5 mt-2 space-y-1">
-                 <li><strong>Earn a $200 statement credit welcome bonus after you spend $2,000 in purchases in the first 3 months of account opening.</strong></li>
-                 <li><strong>Cell Phone Insurance Protection, Mastercard ID Theft Protection™, Lyft and Other Partner Rewards have additional terms and conditions, which can all be accessed through the World Elite Mastercard<sup>&reg;</sup> Benefits portal.</strong></li>
-                 <li>Earn 2 points per $1 spent. Redeem at 1 cent per point value when deposited into SoFi Checking and Savings, invested, or applied to eligible SoFi loans. Redeem at 0.5 cent per point for statement credit.</li>
-                 <li>Chime<sup>&reg;</sup> is a financial technology company, not a bank. Banking services provided by The Bancorp Bank, N.A. or Stride Bank, N.A., Members FDIC.</li>
-                 <li>This is an advertisement. You are receiving this message because you opted in to receive information about financial products. Review terms and conditions carefully before applying.</li>
-                </ul>
               </div>
 
               <div>
