@@ -40,9 +40,9 @@
           "required": true,
           "redirectOnAnswer": {
             "rules": [
-              { "whenValues": ["bad"], "to": "/creditcards-adwall-one" },
-              { "whenValues": ["fair"], "to": "/creditcards-adwall-two" },
-              { "whenValues": ["excellent", "good"], "to": "/creditcards-adwall-three" }
+              { "whenValues": ["bad"], "to": "/adwall/autoins/one" },
+              { "whenValues": ["fair"], "to": "/adwall/autoins/two" },
+              { "whenValues": ["excellent", "good"], "to": "/adwall/autoins/three" }
             ]
           },
           "options": [

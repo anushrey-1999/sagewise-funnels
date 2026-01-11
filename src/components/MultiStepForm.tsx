@@ -484,7 +484,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
 
     // Optional: immediately redirect based on this answer (opt-in per field)
     if (field.redirectImmediately && field.redirectOnAnswer) {
-      const destination = resolveRedirectOnAnswer(field.redirectOnAnswer, field.type, value);
+      const destination = resolveRedirectOnAnswer(field.redirectOnAnswer, field.type, value, config.id);
       if (destination) {
         if (autoForwardTimeoutRef.current) {
           clearTimeout(autoForwardTimeoutRef.current);

@@ -6,7 +6,7 @@
   "finalStep": {
     "buttonText": "Compare Plans",
     "loaderText": "Finding your best deal...",
-    "redirectTo": "/creditcards-adwall-one",
+    "redirectTo": "/adwall/dental/one",
     "disclaimerText": "By pressing \"Compare Plans\" you agree to our privacy policy and consent to have an agent from one of our partners contact you by email, phone call, and/or text/SMS at the phone number and email you provide. Consent isn't a condition to purchase products."
   },
   "steps": [

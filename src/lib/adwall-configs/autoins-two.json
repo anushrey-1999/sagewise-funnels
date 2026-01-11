@@ -1,0 +1,76 @@
+{
+  "id": "autoins-two",
+  "funnelId": "autoins",
+  "adwallType": "two",
+  "title": "Lower your monthly payments in your city!",
+  "subtitle": "We've analyzed national lenders to find the best refinance rates for homes in {zip}.",
+  "updatedAt": "Updated January 6, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "sub5"
+  },
+  "metadata": {
+    "title": "Best Auto Insurance Rates - Sagewise",
+    "description": "Compare auto insurance quotes from top carriers. Find affordable coverage with discounts for safe drivers, good credit, and multi-policy bundling."
+  },
+  "cards": [
+    {
+      "heading": "Progressive",
+      "description": "Switch & Save an average of $700+",
+      "features": [
+        "Save big on car insurance with a fast, free quote",
+        "Trusted by millions for great rates and service",
+        "Easy-to-use mobile app for managing your policy"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "ratingsNumber": "4.8",
+      "ratingsCount": 5,
+      "logo": "/logos/autoins/progressive.avif",
+      "logoWidth": "120px",
+      "logoHeight": "90px",
+      "badgeText": "TOP-RATED",
+      "badgeIcon": "card",
+      "advertiserName": "Progressive"
+    },
+    {
+      "heading": "GEICO",
+      "description": "15 minutes could save you 15%",
+      "features": [
+        "Get a customized quote today and see if you could save",
+        "Fast, easy and reliable customer service available 24 hours a day",
+        "Trusted by millions of drivers to insure what's important"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "ratingsNumber": "4.9",
+      "ratingsCount": 5,
+      "logo": "/logos/autoins/geico.avif",
+      "logoWidth": "120px",
+      "logoHeight": "60px",
+      "badgeText": "BEST MOBILE APP",
+      "badgeIcon": "card",
+      "advertiserName": "GEICO"
+    },
+    {
+      "heading": "Root",
+      "description": "Save up to $700 with Root.",
+      "features": [
+        "Insurance based on how you actually drive",
+        "Better drivers get better rates",
+        "Download the app and take a test drive to see your savings"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "ratingsNumber": "4.6",
+      "ratingsCount": 5,
+      "logo": "/logos/autoins/root.avif",
+      "logoWidth": "120px",
+      "logoHeight": "50px",
+      "badgeText": "",
+      "badgeIcon": "card",
+      "advertiserName": "Root"
+    }
+  ],
+  "disclaimers": ""
+}

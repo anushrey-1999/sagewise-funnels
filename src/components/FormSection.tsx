@@ -95,7 +95,37 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
     const affiliateId = Math.random().toString(36).substring(2, 11);
     const transactionId = Math.random().toString(36).substring(2, 11);
 
-    router.push(`${destination}?s1=${encodeURIComponent(affiliateId)}&s2=${encodeURIComponent(transactionId)}`);
+    // Extract form data for adwall personalization
+    const formData = submittedData || {};
+    let firstName: string | undefined;
+    let zipCode: string | undefined;
+
+    // Search through all steps to find firstName and zipCode
+    for (const stepId in formData) {
+      const stepData = formData[stepId];
+      if (stepData) {
+        if (!firstName && stepData.firstName) {
+          firstName = String(stepData.firstName).trim();
+        }
+        if (!zipCode && stepData.zipCode) {
+          zipCode = String(stepData.zipCode).trim();
+        }
+      }
+    }
+
+    // Build query params
+    const params = new URLSearchParams();
+    params.set("s1", affiliateId);
+    params.set("s2", transactionId);
+    
+    if (firstName) {
+      params.set("name", firstName);
+    }
+    if (zipCode) {
+      params.set("zip", zipCode);
+    }
+
+    router.push(`${destination}?${params.toString()}`);
   };
 
   if (isLoading) {
