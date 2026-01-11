@@ -53,7 +53,7 @@
     {
       "id": "timeline",
       "title": "How soon do you need this project completed?",
-      "description": "Some partners offer next-day installation in [Zip].",
+      "description": "Some partners offer next-day installation",
       "fields": [
         {
           "id": "timeline",
@@ -94,8 +94,15 @@
         {
           "id": "firstName",
           "type": "text",
-          "label": "Name",
+          "label": "First Name",
           "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last Name",
+          "placeholder": "Doe",
           "required": true
         },
         {

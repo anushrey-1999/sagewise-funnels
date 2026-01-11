@@ -1,0 +1,77 @@
+{
+  "id": "tubs-one",
+  "funnelId": "tubs",
+  "adwallType": "one",
+  "title": "Walk-In Tubs",
+  "subtitle": "Maintain your independence at home safely.",
+  "updatedAt": "Updated January 06, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "s2"
+  },
+  "metadata": {
+    "title": "Best Walk-In Bathtubs - Sagewise",
+    "description": "Compare top walk-in bathtub brands. Find special discounts, financing options, and professional installation from trusted manufacturers."
+  },
+  "cards": [
+    {
+      "heading": "Safestep",
+      "description": "Premium walk-in bathtubs with lifetime guarantee and professional installation.",
+      "features": [
+        "Special discounts and financing available",
+        "Lifetime guarantee with installation included",
+        "Get a free quote",
+        "Low entry, grab bars & slip-resistant floor",
+        "Get $2,000 off + a free toilet & installation"
+      ],
+      "buttonLink": "#",
+      "buttonText": "VISIT SITE",
+      "ratingsNumber": "9.8",
+      "ratingsCount": 5,
+      "logo": "/logos/tubs/safestep.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "MOST POPULAR",
+      "badgeIcon": "card",
+      "advertiserName": "Safestep"
+    },
+    {
+      "heading": "KOHLER Walk-In Bath",
+      "description": "Premium walk-in bathtubs with advanced features and limited-time savings.",
+      "features": [
+        "Easy-to-grip handrails",
+        "Fast-drain technology",
+        "Limited-time sale: $1,000 off walk-in tubs"
+      ],
+      "buttonLink": "#",
+      "buttonText": "VISIT SITE",
+      "ratingsNumber": "9.4",
+      "ratingsCount": 5,
+      "logo": "/logos/tubs/Kohler.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "UP TO $1,000 OFF",
+      "badgeIcon": "card",
+      "advertiserName": "KOHLER"
+    },
+    {
+      "heading": "American Standard",
+      "description": "Quality walk-in bathtubs with advanced hydrotherapy and safety features.",
+      "features": [
+        "Advanced hydrotherapy jets",
+        "Built-in safety features",
+        "Limited-time offer: Get $1,500 in savings"
+      ],
+      "buttonLink": "#",
+      "buttonText": "VISIT SITE",
+      "ratingsNumber": "8.9",
+      "ratingsCount": 5,
+      "logo": "/logos/tubs/American Standard.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "BEST SELECTION",
+      "badgeIcon": "card",
+      "advertiserName": "American Standard"
+    }
+  ]
+}

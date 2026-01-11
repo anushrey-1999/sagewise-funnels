@@ -27,13 +27,12 @@
       "buttonText": "Apply Now",
       "ratingsNumber": "9.5",
       "ratingsCount": 5,
-      "logo": "/logos/chime-logo.avif",
       "logoWidth": "120px",
       "logoHeight": "40px",
       "creditCardImage": "/credit-cards/citibank-double-cash-credit-card.avif",
       "badgeText": "UNLIMITED CASH BACK",
       "badgeIcon": "no-card",
-      "advertiserName": "Chime"
+      "advertiserName": "Citi"
     },
     {
       "heading": "Wells Fargo Active Cash&reg;",
@@ -48,7 +47,6 @@
       "buttonText": "Check Pre-Approval",
       "ratingsNumber": "9.3",
       "ratingsCount": 5,
-      "logo": "/logos/indigo-logo.avif",
       "logoWidth": "100px",
       "logoHeight": "35px",
       "creditCardImage": "/credit-cards/active-cash-credit-card.avif",
@@ -69,7 +67,6 @@
       "buttonText": "Apply Now",
       "ratingsNumber": "9.1",
       "ratingsCount": 5,
-      "logo": "/logos/milestone-logo.avif",
       "logoWidth": "120px",
       "logoHeight": "28px",
       "creditCardImage": "/credit-cards/amex-credit-card.avif",
@@ -91,7 +88,6 @@
       "isDifferentBorder": false,
       "ratingsNumber": "8.7",
       "ratingsCount": 5,
-      "logo": "/logos/chime-logo.avif",
       "logoWidth": "120px",
       "logoHeight": "40px",
       "creditCardImage": "/credit-cards/citi-simplicity-credit-card.avif",

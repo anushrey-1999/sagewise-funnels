@@ -27,6 +27,7 @@ interface AdsWallCardsProps {
   creditCardImage: string;
   logoWidth: string;
   logoHeight: string;
+  logoText?: string; // Optional text to display below the logo
   advertiserName: string;
   phoneNumber?: string; // Optional phone number to display below CTA
   affiliateId?: string | null;
@@ -54,6 +55,7 @@ const AdsWallCards = ({
   logo,
   logoWidth,
   logoHeight,
+  logoText,
   advertiserName,
   phoneNumber,
   affiliateId,
@@ -122,6 +124,13 @@ const AdsWallCards = ({
             >
               <Image src={logo} alt="logo" layout="fill" />
             </div>
+          )}
+          {logoText && logoText.trim() !== "" && (
+            <Typography
+              variant="p"
+              className="text-sm text-general-muted-foreground"
+              dangerouslySetInnerHTML={{ __html: logoText }}
+            />
           )}
           {creditCardImage && creditCardImage.trim() !== "" && (
             <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">

@@ -9,6 +9,7 @@ export interface AdwallCard {
   logo: string;
   logoWidth: string;
   logoHeight: string;
+  logoText?: string; // Optional text to display below the logo
   creditCardImage: string;
   badgeText: string;
   badgeIcon: string;

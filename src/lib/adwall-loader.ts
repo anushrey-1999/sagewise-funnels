@@ -13,6 +13,11 @@ import ccAdwallThree from "./adwall-configs/cc-three.json";
 import autoinsAdwallOne from "./adwall-configs/autoins-one.json";
 import autoinsAdwallTwo from "./adwall-configs/autoins-two.json";
 import autoinsAdwallThree from "./adwall-configs/autoins-three.json";
+import mortgageAdwallOne from "./adwall-configs/mortgage-one.json";
+import mortgageAdwallTwo from "./adwall-configs/mortgage-two.json";
+import mortgageAdwallThree from "./adwall-configs/mortgage-three.json";
+import tubsAdwallOne from "./adwall-configs/tubs-one.json";
+import homeWarrentyAdwallOne from "./adwall-configs/homeWarrenty-one.json";
 
 // Map of [funnelId]-[adwallType] to their configs
 // Format: "funnelId-adwallType" -> config
@@ -25,9 +30,13 @@ const adwallConfigs: Record<string, AdwallConfig> = {
   "autoins-one": autoinsAdwallOne as AdwallConfig,
   "autoins-two": autoinsAdwallTwo as AdwallConfig,
   "autoins-three": autoinsAdwallThree as AdwallConfig,
+  "mortgage-one": mortgageAdwallOne as AdwallConfig,
+  "mortgage-two": mortgageAdwallTwo as AdwallConfig,
+  "mortgage-three": mortgageAdwallThree as AdwallConfig,
+  "tubs-one": tubsAdwallOne as AdwallConfig,
+  "homeWarrenty-one": homeWarrentyAdwallOne as AdwallConfig,
   // Add more adwall configs here as they are created
   // Format: "routePrefix-adwallType": config
-  // Example: "mortgage-one": mortgageAdwallOne as AdwallConfig,
 };
 
 /**

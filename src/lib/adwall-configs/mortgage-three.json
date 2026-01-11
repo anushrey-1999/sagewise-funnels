@@ -1,0 +1,78 @@
+{
+  "id": "mortgage-three",
+  "funnelId": "mortgage",
+  "adwallType": "three",
+  "title": "Tap into your home's value in your city.",
+  "subtitle": "Access cash for renovations or debt consolidation with these top-rated HELOC and Equity programs.",
+  "updatedAt": "Updated January 06, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "s2"
+  },
+  "metadata": {
+    "title": "Best Home Equity Lenders - Sagewise",
+    "description": "Compare top home equity lenders. Find competitive rates, fast funding, and flexible terms including HELOCs and home equity loans."
+  },
+  "cards": [
+    {
+      "heading": "Aven",
+      "description": "2% Cash Back HELOC. Use your equity anywhere Visa is accepted.",
+      "features": [
+        "No Annual or Notary Fees",
+        "Funding in as few as 5 Days",
+        "100% Online; No In-Person Appraisal"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "ratingsNumber": "8.0",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/aven.avif",
+      "logoWidth": "120px",
+      "logoHeight": "70px",
+      "badgeText": "2% Cash Back",
+      "badgeIcon": "card",
+      "advertiserName": "Aven",
+      "phoneNumber": "1-800-000-0000"
+    },
+    {
+      "heading": "Figure",
+      "description": "Fast Digital HELOC. Approval in as little as 5 minutes.",
+      "features": [
+        "Fixed Rates for Predictability",
+        "Funding in as few as 5 Days",
+        "100% Online; No In-Person Appraisal"
+      ],
+      "buttonLink": "#",
+      "buttonText": "GET QUOTE",
+      "ratingsNumber": "8.5",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/fihure.avif",
+      "logoText":"1717824",
+      "logoWidth": "120px",
+      "logoHeight": "70px",
+      "badgeText": "5-Day Funding",
+      "badgeIcon": "card",
+      "advertiserName": "Figure",
+      "phoneNumber": "1-800-000-0000"
+    },
+    {
+      "heading": "Hometap",
+      "description": "No Monthly Payments. Get cash now in exchange for future value.",
+      "features": [
+        "Not a Loan - No Interest",
+        "Settle When You Sell or Refi",
+        "No Minimum Income Requirement"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "ratingsNumber": "7.5",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/hometap.avif",
+      "logoWidth": "120px",
+      "logoHeight": "70px",
+      "badgeText": "No Income Requirement",
+      "badgeIcon": "card",
+      "advertiserName": "Hometap"
+    }
+  ]
+}
