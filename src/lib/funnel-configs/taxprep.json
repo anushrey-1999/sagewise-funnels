@@ -6,7 +6,7 @@
   "finalStep": {
     "buttonText": "See Options",
     "loaderText": "Finding the best match for you...",
-    "redirectTo": "/creditcards-adwall-one",
+    "redirectTo": "/adwall/taxprep/one",
     "disclaimerText": "By pressing \"See Options\" you agree to our privacy policy and consent to be contacted by our partners at the email you provide. Consent isn't a condition to purchase any product or service."
   },
   "steps": [

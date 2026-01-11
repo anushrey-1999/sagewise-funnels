@@ -27,7 +27,9 @@ interface AdsWallCardsProps {
   creditCardImage: string;
   logoWidth: string;
   logoHeight: string;
+  logoText?: string; // Optional text to display below the logo
   advertiserName: string;
+  phoneNumber?: string; // Optional phone number to display below CTA
   affiliateId?: string | null;
   transactionId?: string | null;
 }
@@ -53,7 +55,9 @@ const AdsWallCards = ({
   logo,
   logoWidth,
   logoHeight,
+  logoText,
   advertiserName,
+  phoneNumber,
   affiliateId,
   transactionId,
 }: AdsWallCardsProps) => {
@@ -89,30 +93,50 @@ const AdsWallCards = ({
       window.open(finalUrl, "_blank");
     }
   };
+  // Check if badge should be displayed
+  // Convert to string and check if non-empty
+  const badgeTextStr = typeof badgeText === "string" ? badgeText.trim() : "";
+  const badgeIconStr = typeof badgeIcon === "string" ? badgeIcon.trim() : "";
+  const shouldShowBadge = badgeTextStr !== "" && badgeIconStr !== "";
+
   // Card content (shared between gradient and non-gradient borders)
   const cardContent = (
     <div className="relative flex flex-col w-full gap-4">
-      <div>
-        <div className="text-xs font-medium p-2 bg-green-700  flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
-          <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
-          <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
+      {/* Badge container - always rendered to maintain spacing */}
+      <div className={shouldShowBadge ? "" : "h-[32px]"}>
+        {shouldShowBadge && (
+          <div className="text-xs font-medium p-2 bg-green-700  flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
+            <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
+              <Image src={`/icons/${badgeIconStr}.svg`} alt="badge-icon" layout="fill" />
+            </div>
+            {badgeText}
           </div>
-          {badgeText}
-        </div>
+        )}
       </div>
 
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
         {/* First Container */}
-        <div className="flex flex-col items-center gap-3 shrink-0">
-          {/* <div 
-            className="relative overflow-hidden rounded-lg"
-            style={{ width: logoWidth, height: logoHeight }}
-          >
-            <Image src={logo} alt="logo" layout="fill" />
-          </div> */}
-          <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
-            <Image src={creditCardImage} alt="credit-card" layout="fill" />
-          </div>
+        <div className={`flex flex-col items-center gap-3 shrink-0 ${logo && logo.trim() !== "" ? "h-full justify-center" : ""}`}>
+          {logo && logo.trim() !== "" && (
+            <div 
+              className="relative overflow-hidden rounded-lg"
+              style={{ width: logoWidth, height: logoHeight }}
+            >
+              <Image src={logo} alt="logo" layout="fill" />
+            </div>
+          )}
+          {logoText && logoText.trim() !== "" && (
+            <Typography
+              variant="p"
+              className="text-sm text-general-muted-foreground"
+              dangerouslySetInnerHTML={{ __html: logoText }}
+            />
+          )}
+          {creditCardImage && creditCardImage.trim() !== "" && (
+            <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
+              <Image src={creditCardImage} alt="credit-card" layout="fill" />
+            </div>
+          )}
         </div>
 
         {/* Second Container */}
@@ -203,6 +227,16 @@ const AdsWallCards = ({
             >
               on {advertiserName} secure site <Lock className="w-3 h-3 lg:w-3 lg:h-3" />
             </Typography>
+            {phoneNumber && (
+              <Button
+                variant="link"
+                size="sm"
+                className="lg:w-full font-semibold"
+                onClick={() => window.open(`tel:${phoneNumber.replace(/\D/g, "")}`, "_self")}
+              >
+                {phoneNumber}
+              </Button>
+            )}
           </div>
           {/* {isSecondaryBtn && (
             <Button variant="outline" size="lg" icon={Phone} className="w-full">

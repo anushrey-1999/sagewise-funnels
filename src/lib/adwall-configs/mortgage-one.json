@@ -1,0 +1,80 @@
+{
+  "id": "mortgage-one",
+  "funnelId": "mortgage",
+  "adwallType": "one",
+  "title": "{NAME}, we found lender matches for you in {zip}.",
+  "subtitle": "Compare top-rated purchase programs in your city with $0-down options for qualified buyers.",
+  "updatedAt": "Updated January 06, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "s2"
+  },
+  "metadata": {
+    "title": "Best Mortgage Lenders for Purchase - Sagewise",
+    "description": "Compare top mortgage lenders for home purchase. Find competitive rates, flexible terms, and $0-down options from trusted lenders."
+  },
+  "cards": [
+    {
+      "heading": "Rocket Mortgage",
+      "description": "America's Largest Digital Lender. Simple, fast home buying solutions.",
+      "features": [
+        "Get Prequalified in Minutes",
+        "Fully Online Application",
+        "Loans up to $5M Available"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "logoText": "3030",
+      "ratingsNumber": "9.0",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/rocket.avif",
+      "logoWidth": "120px",
+      "logoHeight": "70px",
+      "badgeText": "Top Digital Lender",
+      "badgeIcon": "card",
+      "advertiserName": "Rocket Mortgage",
+      "phoneNumber": "1-800-000-0000"
+    },
+    {
+      "heading": "Better",
+      "description": "Zero Commissions, No Lender Fees. Instant pre-approval in minutes.",
+      "features": [
+        "No Loan Officer Commissions",
+        "Transparent Online Tracking",
+        "Down Payments as low as 3%"
+      ],
+      "buttonLink": "#",
+      "buttonText": "GET QUOTE",
+      "ratingsNumber": "8.5",
+      "logoText":"330511",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/better.avif",
+      "logoWidth": "120px",
+      "logoHeight": "60px",
+      "badgeText": "No Lender Fees",
+      "badgeIcon": "card",
+      "advertiserName": "Better",
+      "phoneNumber": "1-800-000-0000"
+    },
+    {
+      "heading": "loanDepot",
+      "description": "Lifetime Guarantee. No lender fees on any future refinances.",
+      "features": [
+        "Specialized in VA & FHA Loans",
+        "Streamlined Refi Processes",
+        "Proactive Savings Monitoring"
+      ],
+      "buttonLink": "#",
+      "buttonText": "SEE MY RATE",
+      "logoText":"174457",
+      "ratingsNumber": "7.5",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/load-depot.avif",
+      "logoWidth": "120px",
+      "logoHeight": "70px",
+      "badgeText": "Lifetime Guarantee",
+      "badgeIcon": "card",
+      "advertiserName": "loanDepot"
+    }
+  ]
+}

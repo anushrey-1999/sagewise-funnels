@@ -6,7 +6,7 @@
   "finalStep": {
     "buttonText": "BOOK ASSESSMENT",
     "loaderText": "Verifying Local Installers... Checking licensed contractors in your area...",
-    "redirectTo": "/creditcards-adwall-one",
+    "redirectTo": "/adwall/tubs/one",
     "disclaimerText": "By pressing \"BOOK ASSESSMENT\" you agree to our privacy policy and consent to have an agent from one of our partners contact you by email, phone call, and/or text/SMS at the phone number and email you provide. Consent isn't a condition to purchase products."
   },
   "steps": [
@@ -53,7 +53,7 @@
     {
       "id": "timeline",
       "title": "How soon do you need this project completed?",
-      "description": "Some partners offer next-day installation in [Zip].",
+      "description": "Some partners offer next-day installation",
       "fields": [
         {
           "id": "timeline",
@@ -94,8 +94,15 @@
         {
           "id": "firstName",
           "type": "text",
-          "label": "Name",
+          "label": "First Name",
           "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last Name",
+          "placeholder": "Doe",
           "required": true
         },
         {

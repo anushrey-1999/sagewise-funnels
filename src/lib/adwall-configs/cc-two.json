@@ -1,0 +1,78 @@
+{
+  "id": "cc-two",
+  "funnelId": "cc-one",
+  "adwallType": "two",
+  "title": "Best credit cards of January 2026",
+  "subtitle": "High credit card interest can strain a fixed income. Compare 0% intro APR and balance transfer credit cards that may help reduce interest, consolidate debt, and manage monthly expenses.",
+  "updatedAt": "Updated January 6, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "sub5"
+  },
+  "metadata": {
+    "title": "Best credit cards- Sagewise",
+    "description": "Browse the best credit cards of 2026 for cash back, travel rewards, 0% APR, credit building and more. Find the best one for you and apply in seconds."
+  },
+  "cards": [
+    {
+      "heading": "Upgrade Cash Rewards Visa®",
+      "description": "Charge like a credit card, pay off like a loan with 1.5% cash back.",
+      "features": [
+        "Earn unlimited 1.5% cash back on all purchases when you pay",
+        "No security deposit, annual fee, or hidden account costs",
+        "Fixed monthly payments make budgeting simple and predictable",
+        "Check for an unsecured line with no credit score impact"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Apply Now",
+      "ratingsNumber": "8.9",
+      "ratingsCount": 5,
+      "logoWidth": "120px",
+      "logoHeight": "40px",
+      "creditCardImage": "/credit-cards/upgrade-credit-card.avif",
+      "badgeText": "UNSECURED CARD",
+      "badgeIcon": "no-card",
+      "advertiserName": "Upgrade"
+    },
+    {
+      "heading": "Mission Lane Silver Line Visa®",
+      "description": "A premier unsecured card designed for those rebuilding their credit.",
+      "features": [
+        "Automatic reviews for credit limit increases in as little as 7 months",
+        "See if you're pre-approved instantly with no score impact",
+        "Reports to all three major bureaus to help grow your score",
+        "$0 - $39 annual fee based on your specific credit profile"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Check Pre-Approval",
+      "ratingsNumber": "8.4",
+      "ratingsCount": 5,
+      "logoWidth": "100px",
+      "logoHeight": "35px",
+      "creditCardImage": "/credit-cards/mission-lane-credit-card.avif",
+      "badgeText": "NO SECURITY DEPOSIT",
+      "badgeIcon": "card",
+      "advertiserName": "Mission Lane"
+    },
+    {
+      "heading": "Capital One Platinum Credit Card",
+      "description": "The reliable, no annual fee choice for establishing your credit history.",
+      "features": [
+        "$0 annual fee and no hidden foreign transaction fees",
+        "Be considered for a higher credit limit in as little as 6 months",
+        "Includes free credit monitoring tools through CreditWise",
+        "Accepted at millions of locations worldwide via Mastercard"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Apply Now",
+      "ratingsNumber": "7.8",
+      "ratingsCount": 5,  
+      "logoWidth": "120px",
+      "logoHeight": "28px",
+      "creditCardImage": "/credit-cards/capital-one-credit-card.avif",
+      "badgeText": "NO ANNUAL FEE",
+      "badgeIcon": "card-up",
+      "advertiserName": "Capital One"
+    }
+  ]
+}

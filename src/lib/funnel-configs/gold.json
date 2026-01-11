@@ -6,7 +6,7 @@
   "finalStep": {
     "buttonText": "See Instant Matches",
     "loaderText": "Match Engine Searching... Searching 40+ accredited Gold dealers for your fit.",
-    "redirectTo": "/creditcards-adwall-one",
+    "redirectTo": "/adwall/gold/one",
     "disclaimerText": "By pressing \"See Instant Matches\" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products."
   },
   "steps": [
