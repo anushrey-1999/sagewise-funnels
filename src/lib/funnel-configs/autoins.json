@@ -3,6 +3,34 @@
   "title": "Sagewise Auto Insurance Quiz",
   "subtitle": "Complete the form below to receive personalized quotes.",
   "metaDescription": "Compare auto insurance options in seconds. Answer a few questions to see personalized matches.",
+  "navbar": {
+    "tagline": "Speak to a licensed agent:",
+    "phone": "1-833-906-2737"
+  },
+  "postFormInfoBar": {
+    "items": [
+      { "icon": "monitor", "text": "Won't affect credit score" },
+      { "icon": "lock", "text": "100% secure" },
+      { "icon": "clock", "text": "Takes 1 minute" }
+    ]
+  },
+  "providerLogos": {
+    "heading": "Some of our leading partners",
+    "logos": [
+      { "src": "/logos/StateFarm.png", "alt": "State Farm", "width": 132, "height": 34 },
+      { "src": "/logos/Aetna.png", "alt": "Aetna", "width": 175, "height": 34 },
+      { "src": "/logos/Aflac.png", "alt": "Aflac", "width": 106, "height": 34 },
+      { "src": "/logos/GlobeLife.png", "alt": "Globe Life", "width": 196, "height": 34 },
+      { "src": "/logos/MutualofOmaha.png", "alt": "Mutual of Omaha", "width": 192, "height": 34 },
+      { "src": "/logos/ColonialPenn.png", "alt": "Colonial Penn", "width": 102, "height": 34 }
+    ]
+  },
+  "belowLogosImage": {
+    "src": "/bottom-info-image/autoins-big-info-image.avif",
+    "alt": "Decorative banner",
+    "width": 1200,
+    "height": 200
+  },
   "finalStep": {
     "buttonText": "See Matches",
     "loaderText": "Searching 100+ top carriers...",
@@ -11,8 +39,8 @@
   "steps": [
     {
       "id": "zip-code",
-      "title": "Enter Your Zip Code",
-      "description": "",
+      "title": "Car insurance from $19 per month",
+      "description": "What's your Zip code?",
       "fields": [
         {
           "id": "zipCode",
@@ -40,16 +68,44 @@
           "required": true,
           "redirectOnAnswer": {
             "rules": [
-              { "whenValues": ["bad"], "to": "/adwall/autoins/one" },
-              { "whenValues": ["fair"], "to": "/adwall/autoins/two" },
-              { "whenValues": ["excellent", "good"], "to": "/adwall/autoins/three" }
+              {
+                "whenValues": [
+                  "bad"
+                ],
+                "to": "/adwall/autoins/one"
+              },
+              {
+                "whenValues": [
+                  "fair"
+                ],
+                "to": "/adwall/autoins/two"
+              },
+              {
+                "whenValues": [
+                  "excellent",
+                  "good"
+                ],
+                "to": "/adwall/autoins/three"
+              }
             ]
           },
           "options": [
-            { "value": "excellent", "label": "Excellent (720-850)" },
-            { "value": "good", "label": "Good (690-719)" },
-            { "value": "fair", "label": "Fair (630-689)" },
-            { "value": "bad", "label": "Bad (350-629)" }
+            {
+              "value": "excellent",
+              "label": "Excellent (720-850)"
+            },
+            {
+              "value": "good",
+              "label": "Good (690-719)"
+            },
+            {
+              "value": "fair",
+              "label": "Fair (630-689)"
+            },
+            {
+              "value": "bad",
+              "label": "Bad (350-629)"
+            }
           ]
         }
       ]
@@ -61,7 +117,10 @@
       "skipIf": {
         "checkStepId": "credit-score",
         "checkFieldId": "credit-score",
-        "whenValues": ["fair", "bad"]
+        "whenValues": [
+          "fair",
+          "bad"
+        ]
       },
       "fields": [
         {
@@ -70,39 +129,14 @@
           "label": "",
           "required": true,
           "options": [
-            { "value": "yes", "label": "Yes" },
-            { "value": "no", "label": "No" }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "current-carrier",
-      "title": "Who are you currently insured with?",
-      "description": "",
-      "skipIf": {
-        "checkStepId": "credit-score",
-        "checkFieldId": "credit-score",
-        "whenValues": ["bad"]
-      },
-      "fields": [
-        {
-          "id": "currentCarrier",
-          "type": "radio",
-          "label": "",
-          "required": true,
-          "options": [
-            { "value": "allstate", "label": "Allstate" },
-            { "value": "american-family", "label": "American Family" },
-            { "value": "farmers", "label": "Farmers Insurance" },
-            { "value": "geico", "label": "GEICO" },
-            { "value": "liberty-mutual", "label": "Liberty Mutual" },
-            { "value": "nationwide", "label": "Nationwide" },
-            { "value": "progressive", "label": "Progressive" },
-            { "value": "state-farm", "label": "State Farm" },
-            { "value": "travelers", "label": "Travelers Insurance" },
-            { "value": "usaa", "label": "USAA" },
-            { "value": "other", "label": "Other (My insurer is not listed)" }
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
           ]
         }
       ]
@@ -114,7 +148,9 @@
       "skipIf": {
         "checkStepId": "credit-score",
         "checkFieldId": "credit-score",
-        "whenValues": ["bad"]
+        "whenValues": [
+          "bad"
+        ]
       },
       "fields": [
         {
@@ -123,8 +159,89 @@
           "label": "",
           "required": true,
           "options": [
-            { "value": "yes", "label": "Yes" },
-            { "value": "no", "label": "No" }
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "current-carrier",
+      "title": "Who are you currently insured with?",
+      "description": "",
+      "skipIf": [
+        {
+          "checkStepId": "credit-score",
+          "checkFieldId": "credit-score",
+          "whenValues": [
+            "bad"
+          ]
+        },
+        {
+          "checkStepId": "currently-insured",
+          "checkFieldId": "currentlyInsured",
+          "whenValues": [
+            "no"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "id": "currentCarrier",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "allstate",
+              "label": "Allstate"
+            },
+            {
+              "value": "american-family",
+              "label": "American Family"
+            },
+            {
+              "value": "farmers",
+              "label": "Farmers Insurance"
+            },
+            {
+              "value": "geico",
+              "label": "GEICO"
+            },
+            {
+              "value": "liberty-mutual",
+              "label": "Liberty Mutual"
+            },
+            {
+              "value": "nationwide",
+              "label": "Nationwide"
+            },
+            {
+              "value": "progressive",
+              "label": "Progressive"
+            },
+            {
+              "value": "state-farm",
+              "label": "State Farm"
+            },
+            {
+              "value": "travelers",
+              "label": "Travelers Insurance"
+            },
+            {
+              "value": "usaa",
+              "label": "USAA"
+            },
+            {
+              "value": "other",
+              "label": "Other (My insurer is not listed)"
+            }
           ]
         }
       ]
@@ -136,7 +253,9 @@
       "skipIf": {
         "checkStepId": "currently-insured",
         "checkFieldId": "currentlyInsured",
-        "whenValues": ["yes"]
+        "whenValues": [
+          "yes"
+        ]
       },
       "fields": [
         {
@@ -145,8 +264,14 @@
           "label": "",
           "required": true,
           "options": [
-            { "value": "yes", "label": "Yes" },
-            { "value": "no", "label": "No" }
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
           ]
         }
       ]
@@ -159,12 +284,16 @@
         {
           "checkStepId": "sr-22",
           "checkFieldId": "needsSr22",
-          "whenValues": ["no"]
+          "whenValues": [
+            "no"
+          ]
         },
         {
           "checkStepId": "currently-insured",
           "checkFieldId": "currentlyInsured",
-          "whenValues": ["yes"]
+          "whenValues": [
+            "yes"
+          ]
         }
       ],
       "fields": [
@@ -174,8 +303,14 @@
           "label": "",
           "required": true,
           "options": [
-            { "value": "yes", "label": "Yes" },
-            { "value": "no", "label": "No" }
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
           ]
         }
       ]
@@ -191,9 +326,18 @@
           "label": "",
           "required": true,
           "options": [
-            { "value": "commute", "label": "Commute" },
-            { "value": "leisure", "label": "Leisure / Pleasure" },
-            { "value": "business", "label": "Business / Rideshare" }
+            {
+              "value": "commute",
+              "label": "Commute"
+            },
+            {
+              "value": "leisure",
+              "label": "Leisure / Pleasure"
+            },
+            {
+              "value": "business",
+              "label": "Business / Rideshare"
+            }
           ]
         }
       ]
@@ -208,6 +352,13 @@
           "type": "text",
           "label": "First name",
           "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last name",
+          "placeholder": "Doe",
           "required": true
         },
         {

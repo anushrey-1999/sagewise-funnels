@@ -20,6 +20,10 @@ function interpolateTemplate(template: string, variables: Record<string, string>
     .replace(/\{zip\}/g, variables.zip || "");
 }
 
+function stripHtml(input: string): string {
+  return input.replace(/<[^>]*>/g, "");
+}
+
 const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
   const searchParams = useSearchParams();
 
@@ -62,6 +66,14 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
     return interpolateTemplate(config.subtitle, templateVars);
   }, [config.subtitle, templateVars]);
 
+  // Make all CTA buttons the same width (based on the largest label on the page)
+  const ctaMinWidthCh = useMemo(() => {
+    const lengths = (config.cards || []).map((c) => stripHtml(c.buttonText || "").trim().length);
+    const maxLen = lengths.length ? Math.max(...lengths) : 0;
+    // Add a little buffer for padding/icon. Clamp to avoid extreme widths.
+    return Math.min(32, Math.max(14, maxLen + 6));
+  }, [config.cards]);
+
   return (
     <div className="bg-white flex flex-col items-start min-h-screen w-full ">
       {/* Header */}
@@ -82,6 +94,7 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
                 {...item}
                 affiliateId={affiliateId}
                 transactionId={transactionId}
+                ctaMinWidthCh={ctaMinWidthCh}
               />
             ))}
           </div>
