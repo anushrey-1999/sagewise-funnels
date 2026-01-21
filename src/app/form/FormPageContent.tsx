@@ -8,26 +8,14 @@ import { getFunnelConfig } from "@/lib/funnel-loader";
 import PageHeader from "@/organisms/PageHeader";
 import { Typography } from "@/components/ui/typography";
 import PlainPageHeader from "@/organisms/PlainPageHeader";
+import { Clock, Lock, Monitor, ShieldCheck } from "lucide-react";
 
-// Provider logos - using placeholder images from Figma
-const providerLogos = [
-  { src: "/logos/StateFarm.png", alt: "State Farm", width: 132, height: 34 },
-  {
-    src: "/logos/MutualOfOmaha.png",
-    alt: "Mutual of Omaha",
-    width: 192,
-    height: 34,
-  },
-  {
-    src: "/logos/ColonialPenn.png",
-    alt: "Colonial Penn",
-    width: 102,
-    height: 34,
-  },
-  { src: "/logos/GlobeLife.png", alt: "Globe Life", width: 196, height: 34 },
-  { src: "/logos/Aflac.png", alt: "Aflac", width: 106, height: 34 },
-  { src: "/logos/Aetna.png", alt: "Aetna", width: 175, height: 34 },
-];
+const INFO_BAR_ICONS = {
+  monitor: Monitor,
+  lock: Lock,
+  clock: Clock,
+  shield: ShieldCheck,
+} as const;
 
 export function FormPageContent() {
   const searchParams = useSearchParams();
@@ -71,58 +59,111 @@ export function FormPageContent() {
             </div>
           </div>
 
-          {/* <Separator className="w-full border-[0.5] border-[#e5e5e5] my-9 md:my-12" /> */}
-
-          {/* Provider Logos Section - Before Footer */}
-          {/* <div className="flex flex-col gap-6 items-center w-full">
-            <Typography
-              variant="h5"
-              color="text-general-foreground"
-              className="text-xl font-semibold text-center tracking-[-0.4px]"
-            >
-              Discover quotes from 12 providers, including:
-            </Typography>
-          
-            <div className="hidden sm:flex gap-6 sm:gap-7 md:gap-8 items-center flex-wrap justify-center">
-              {providerLogos.map((logo, index) => (
-                <div
-                  key={index}
-                  className="relative h-[34px] flex items-center justify-center"
-                  style={{
-                    width: logo.width + "px",
-                  }}
-                >
-                  <Image
-                    src={logo.src}
-                    alt={logo.alt}
-                    width={logo.width}
-                    height={logo.height}
-                    className="h-full w-auto object-contain"
-                  />
-                </div>
-              ))}
-            </div>
-
-         
-            <div className="grid grid-cols-3 gap-4 items-center justify-items-center w-full sm:hidden">
-              {providerLogos.map((logo, index) => (
-                <div
-                  key={index}
-                  className="h-[24px] relative flex items-center justify-center w-full"
-                >
-                  <Image
-                    src={logo.src}
-                    alt={logo.alt}
-                    width={logo.width}
-                    height={logo.height}
-                    className="h-full w-auto object-contain max-w-full"
-                  />
-                </div>
-              ))}
-            </div>
-          </div> */}
-          
         </div>
+      </div>
+
+      <div className="w-full">
+        {/* Post-form info bar (funnels only; configured per funnel JSON) */}
+        {formConfig.postFormInfoBar?.items?.length ? (
+          <div className="hidden sm:block w-full border-t border-[#e5e5e5] mt-12 max-w-[95vw] mx-auto">
+            <div className="w-full max-w-[890px] mx-auto px-6 md:px-0 pt-12 pb-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-3">
+              {formConfig.postFormInfoBar.items.slice(0, 3).map((item, idx) => {
+                const iconKey = item.icon?.toLowerCase?.() as keyof typeof INFO_BAR_ICONS;
+                const Icon = INFO_BAR_ICONS[iconKey];
+                const isImage = typeof item.icon === "string" && item.icon.startsWith("/");
+
+                return (
+                  <div
+                    key={`${item.text}-${idx}`}
+                    className="flex items-center gap-2 text-[#6b7c7c] text-sm font-medium"
+                  >
+                    {isImage ? (
+                      <Image
+                        src={item.icon}
+                        alt=""
+                        width={18}
+                        height={18}
+                        className="h-[18px] w-[18px] object-contain"
+                      />
+                    ) : Icon ? (
+                      <Icon className="h-[18px] w-[18px]" aria-hidden />
+                    ) : null}
+                    <span>{item.text}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
+
+
+        {/* Provider Logos Section - Before Footer (funnels only; configured per funnel JSON) */}
+        {formConfig.providerLogos?.logos?.length ? (
+          <div className="w-full bg-[#F5F5F5]">
+            <div className="w-full mx-auto flex flex-col gap-6 items-center px-6 md:px-0 py-7">
+              <Typography
+                variant="h3"
+                color="text-general-foreground"
+                className="font-semibold text-center"
+              >
+                {formConfig.providerLogos.heading ||
+                  "Discover quotes from 12 providers, including:"}
+              </Typography>
+
+              <div className="hidden sm:flex gap-6 sm:gap-7 md:gap-8 items-center flex-wrap justify-center">
+                {formConfig.providerLogos.logos.map((logo, index) => (
+                  <div
+                    key={`${logo.alt}-${index}`}
+                    className="relative h-[34px] flex items-center justify-center"
+                    style={{
+                      width: logo.width + "px",
+                    }}
+                  >
+                    <Image
+                      src={logo.src}
+                      alt={logo.alt}
+                      width={logo.width}
+                      height={logo.height}
+                      className="h-full w-auto object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 items-center justify-items-center w-full sm:hidden">
+                {formConfig.providerLogos.logos.map((logo, index) => (
+                  <div
+                    key={`${logo.alt}-${index}`}
+                    className="h-[24px] relative flex items-center justify-center w-full"
+                  >
+                    <Image
+                      src={logo.src}
+                      alt={logo.alt}
+                      width={logo.width}
+                      height={logo.height}
+                      className="h-full w-auto object-contain max-w-full"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {/* Below-logos image section (funnels only; configured per funnel JSON) */}
+        {formConfig.belowLogosImage?.src ? (
+          <div className="hidden sm:block w-full pt-12 pb-14">
+            <div className="w-full max-w-[890px] mx-auto px-6 md:px-0 flex justify-center">
+              <Image
+                src={formConfig.belowLogosImage.src}
+                alt={formConfig.belowLogosImage.alt || ""}
+                width={formConfig.belowLogosImage.width}
+                height={formConfig.belowLogosImage.height}
+                className="h-auto w-auto max-w-full object-contain"
+              />
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

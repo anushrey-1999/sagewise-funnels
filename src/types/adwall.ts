@@ -25,6 +25,10 @@ export interface AdwallConfig {
   title: string;
   subtitle: string;
   updatedAt: string;
+  navbar?: {
+    tagline?: string; // e.g., "Speak to a licensed agent:"
+    phone?: string; // display value, e.g., "1-833-906-2737"
+  };
   cards: AdwallCard[];
   disclaimers?: string;
   metadata?: {

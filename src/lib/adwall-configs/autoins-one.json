@@ -2,8 +2,8 @@
   "id": "autoins-one",
   "funnelId": "autoins",
   "adwallType": "one",
-  "title": "{NAME}, we found lender matches for you in {zip}.",
-  "subtitle": "Compare top-rated purchase programs in your city with $0-down options for qualified buyers.",
+  "title": "Compare Top Auto Insurance Rates in {zip}.",
+  "subtitle": "Drivers are saving up to $610/year by comparing these top-rated national and local carriers",
   "updatedAt": "Updated January 06, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",

@@ -32,6 +32,7 @@ interface AdsWallCardsProps {
   phoneNumber?: string; // Optional phone number to display below CTA
   affiliateId?: string | null;
   transactionId?: string | null;
+  ctaMinWidthCh?: number;
 }
 
 const AdsWallCards = ({
@@ -60,6 +61,7 @@ const AdsWallCards = ({
   phoneNumber,
   affiliateId,
   transactionId,
+  ctaMinWidthCh,
 }: AdsWallCardsProps) => {
   // Function to append s1 (affiliate_id) and sub5 (transaction_id) to the button link
   const handleButtonClick = () => {
@@ -205,7 +207,7 @@ const AdsWallCards = ({
                 ))}
               </div>
               <Typography variant="p" className="text-xs">
-                User Ratings
+              Sagewise Score
               </Typography>
             </div>
           </div>
@@ -213,10 +215,11 @@ const AdsWallCards = ({
             <Button
               variant="secondary"
               size="sm"
-              className="lg:w-full font-semibold"
+              className="font-semibold"
               onClick={handleButtonClick}
               icon={MoveUpRight}
               iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"
+              style={ctaMinWidthCh ? { minWidth: `${ctaMinWidthCh}ch` } : undefined}
             >
               {buttonText}
             </Button>
@@ -231,8 +234,9 @@ const AdsWallCards = ({
               <Button
                 variant="link"
                 size="sm"
-                className="lg:w-full font-semibold"
+                className="font-semibold"
                 onClick={() => window.open(`tel:${phoneNumber.replace(/\D/g, "")}`, "_self")}
+                style={ctaMinWidthCh ? { minWidth: `${ctaMinWidthCh}ch` } : undefined}
               >
                 {phoneNumber}
               </Button>

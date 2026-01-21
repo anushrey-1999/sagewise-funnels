@@ -58,6 +58,31 @@ export interface FormConfig {
   title: string; // Hero title
   subtitle: string; // Hero subtitle
   metaDescription?: string; // Meta description for SEO
+  navbar?: {
+    tagline?: string; // e.g., "Speak to a licensed agent:"
+    phone?: string; // display value, e.g., "1-833-906-2737"
+  };
+  postFormInfoBar?: {
+    items: Array<{
+      icon: string; // e.g., "monitor", "lock", "clock" (lucide key) or "/icons/..."
+      text: string;
+    }>;
+  };
+  providerLogos?: {
+    heading?: string;
+    logos: Array<{
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+    }>;
+  };
+  belowLogosImage?: {
+    src: string;
+    alt?: string;
+    width: number;
+    height: number;
+  };
   steps: FormStep[];
   finalStep?: {
     buttonText?: string; // Text for the final submit button
