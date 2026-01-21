@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import MinimalFooter from "@/components/MinimalFooter";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <div className="flex flex-col min-h-screen">
-          <Navbar />
+          <Suspense fallback={null}>
+            <Navbar />
+          </Suspense>
           <main className="flex-1 bg-[#F8F8F8]">
             {children}
           </main>
