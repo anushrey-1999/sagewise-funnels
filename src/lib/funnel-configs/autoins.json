@@ -28,7 +28,7 @@
       { "src": "/logos/autoins/amica.avif", "alt": "Amica", "width": 121, "height": 34 },
       { "src": "/logos/autoins/liberty-manual.avif", "alt": "Liberty Mutual", "width": 196, "height": 34 },
       { "src": "/logos/autoins/progressive.avif", "alt": "Progressive", "width": 192, "height": 34 },
-      { "src": "/logos/autoins/allstate.avif", "alt": "Allstate", "width": 141, "height": 30 }
+      { "src": "/logos/autoins/allState.avif", "alt": "Allstate", "width": 141, "height": 30 }
     ]
   },
   "belowLogosImage": {
