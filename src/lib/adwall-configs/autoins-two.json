@@ -28,7 +28,7 @@
       "ratingsCount": 5,
       "logo": "/logos/autoins/progressive.avif",
       "logoWidth": "120px",
-      "logoHeight": "90px",
+      "logoHeight": "35px",
       "badgeText": "TOP-RATED",
       "badgeIcon": "card",
       "advertiserName": "Progressive"
@@ -47,7 +47,7 @@
       "ratingsCount": 5,
       "logo": "/logos/autoins/geico.avif",
       "logoWidth": "120px",
-      "logoHeight": "60px",
+      "logoHeight": "40px",
       "badgeText": "BEST MOBILE APP",
       "badgeIcon": "card",
       "advertiserName": "GEICO"
