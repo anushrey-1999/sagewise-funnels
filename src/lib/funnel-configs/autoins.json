@@ -1,8 +1,14 @@
 {
   "id": "autoins",
-  "title": "Sagewise Auto Insurance Quiz",
+  "title": "",
   "subtitle": "Complete the form below to receive personalized quotes.",
   "metaDescription": "Compare auto insurance options in seconds. Answer a few questions to see personalized matches.",
+  "firstStepButton": {
+    "text": "Get free quotes",
+    "bgColor": "var(--sw-cta-primary)",
+    "hoverBgColor": "var(--sw-cta-hover)",
+    "textColor": "#0a0a0a0"
+  },
   "navbar": {
     "tagline": "Speak to a licensed agent:",
     "phone": "1-833-906-2737"
@@ -17,19 +23,338 @@
   "providerLogos": {
     "heading": "Some of our leading partners",
     "logos": [
-      { "src": "/logos/StateFarm.png", "alt": "State Farm", "width": 132, "height": 34 },
-      { "src": "/logos/Aetna.png", "alt": "Aetna", "width": 175, "height": 34 },
-      { "src": "/logos/Aflac.png", "alt": "Aflac", "width": 106, "height": 34 },
-      { "src": "/logos/GlobeLife.png", "alt": "Globe Life", "width": 196, "height": 34 },
-      { "src": "/logos/MutualofOmaha.png", "alt": "Mutual of Omaha", "width": 192, "height": 34 },
-      { "src": "/logos/ColonialPenn.png", "alt": "Colonial Penn", "width": 102, "height": 34 }
+      { "src": "/logos/autoins/statefarm.avif", "alt": "State Farm", "width": 132, "height": 34 },
+      { "src": "/logos/autoins/geico.avif", "alt": "Geico", "width": 175, "height": 34 },
+      { "src": "/logos/autoins/amica.avif", "alt": "Amica", "width": 121, "height": 34 },
+      { "src": "/logos/autoins/liberty-manual.avif", "alt": "Liberty Mutual", "width": 196, "height": 34 },
+      { "src": "/logos/autoins/progressive.avif", "alt": "Progressive", "width": 192, "height": 34 },
+      { "src": "/logos/autoins/allstate.avif", "alt": "Allstate", "width": 141, "height": 30 }
     ]
   },
   "belowLogosImage": {
     "src": "/bottom-info-image/autoins-big-info-image.avif",
     "alt": "Decorative banner",
-    "width": 1200,
-    "height": 200
+    "width": 624,
+    "height": 350
+  },
+  "postContent": {
+    "details": {
+      "blocks": [
+        { "type": "h2", "text": "Compare Top Car Insurance Providers & Save Today" },
+        {
+          "type": "pHtml",
+          "html": "Finding the right car insurance doesn’t have to be complicated. Sagewise makes it fast and easy by connecting you with trusted providers like State Farm, The General, Progressive, GEICO, Allstate, Liberty Mutual, and Bristol West—so you can compare rates and coverage in minutes."
+        },
+
+        { "type": "h3", "text": "Why compare with Sagewise?" },
+        {
+          "type": "iconList",
+          "items": [
+            { "icon": "DollarSign", "textHtml": "<strong>Save more:</strong> Drivers save an average of $762/year by switching." },
+            { "icon": "Zap", "textHtml": "<strong>Fast &amp; easy:</strong> Get personalized quotes in under 1 minute—no long forms." },
+            { "icon": "ShieldCheck", "textHtml": "<strong>Won't affect credit:</strong> Checking car insurance quotes won’t impact your credit score." },
+            { "icon": "Target", "textHtml": "<strong>100% free:</strong> Get matched with the right insurer for your needs, at no cost." },
+            { "icon": "Trophy", "textHtml": "<strong>Top providers:</strong> Sagewise only works with highly rated insurance partners." }
+          ]
+        },
+
+        { "type": "h3", "text": "Our leading partners" },
+        {
+          "type": "pHtml",
+          "html": "Since every insurance provider offers different coverage options and pricing, <strong>Sagewise brings the top-rated companies together in one place</strong>—so you can easily compare and choose the policy that fits your needs."
+        },
+        {
+          "type": "pHtml",
+          "html": "Our partners may include: </br> Allstate, GEICO, Progressive, Farmers Insurance, Gainsco, Liberty Mutual, The General, Nationwide, AAA, Amica, Root, USAA, State Farm, Bristol West, Costco, Mercury, Travelers, American Family, Freeway, Elephant, Experian, Direct Auto, Erie, Farm Bureau, and Dairyland."
+        },
+
+        { "type": "h3", "text": "Understanding car insurance basics" },
+        {
+          "type": "pHtml",
+          "html": "Car insurance is legally required in most states—except for New Hampshire and Virginia. Whether you need basic liability or full coverage, here are the most common policy types:"
+        },
+        {
+          "type": "bulletsHtml",
+          "itemsHtml": [
+            "<strong>Liability Insurance:</strong> Covers damages if you're at fault in an accident.",
+            "<strong>Collision Insurance:</strong> Pays for vehicle repairs after a crash.",
+            "<strong>Comprehensive Insurance:</strong> Protects against theft, vandalism, and weather damage.",
+            "<strong>Uninsured/Underinsured Motorist:</strong> Covers you if the other driver lacks insurance.",
+            "<strong>Medical Payments (MedPay):</strong> Covers medical expenses for you and passengers.",
+            "<strong>Personal Injury Protection (PIP):</strong> Broader medical coverage regardless of fault."
+          ]
+        },
+        {
+          "type": "pHtml",
+          "html": "<strong data-accent=\"true\">Not sure what you need? Take the Sagewise quiz above to find coverage tailored to your situation.</strong>"
+        },
+
+        { "type": "h3", "text": "Choosing the right car insurance coverage" },
+        {
+          "type": "pHtml",
+          "html": "Every driver's situation is different, which means coverage needs vary. Before choosing a policy, consider:"
+        },
+        {
+          "type": "definitionListHtml",
+          "items": [
+            {
+              "term": "Liability Coverage",
+              "html": "State minimums may not be enough—many drivers increase limits for stronger protection."
+            },
+            {
+              "term": "Vehicle Protection",
+              "html": "Want full coverage? Add collision and comprehensive for peace of mind."
+            },
+            {
+              "term": "Optional Add-ons",
+              "html": "Rental car reimbursement, roadside assistance, and gap insurance can enhance your policy."
+            }
+          ]
+        },
+        {
+          "type": "pHtml",
+          "html": "<strong data-accent=\"true\">Looking for the best deal? Scroll up and answer our quick Sagewise quiz to get custom recommendations in under 1 minute.</strong>"
+        },
+        {
+          "type": "textRow",
+          "text": "Click to read more about the",
+          "linkText": "7 Ways to Lower Your Car Insurance Rate"
+        },
+
+        { "type": "h3", "text": "9 factors that affect car insurance rates" },
+        { "type": "pHtml", "html": "Insurance premiums are calculated using several factors:" },
+        {
+          "type": "numberedHtml",
+          "itemsHtml": [
+            "<strong>Location:</strong> Urban drivers usually pay more",
+            "<strong>Age:</strong> Younger drivers face higher premiums",
+            "<strong>Gender:</strong> Men under 25 often pay more",
+            "<strong>Credit Score:</strong> Higher scores can mean lower rates",
+            "<strong>Driving Record:</strong> Clean history = better pricing",
+            "<strong>Claims History:</strong> Fewer claims reduce risk",
+            "<strong>Vehicle Type:</strong> Make, model &amp; year matter",
+            "<strong>Coverage Limits:</strong> Higher limits = higher cost",
+            "<strong>Deductibles:</strong> Higher deductible = lower monthly payment"
+          ]
+        },
+
+        { "type": "h3", "text": "How to file a car insurance claim" },
+        { "type": "pHtml", "html": "If you need to file a claim:" },
+        {
+          "type": "numberedHtml",
+          "itemsHtml": [
+            "<strong>Call the police</strong> – Report accidents or theft immediately",
+            "<strong>Document damage</strong> – Photos, notes, witness info",
+            "<strong>Notify your insurer</strong> – Submit details",
+            "<strong>Wait for review</strong> – Adjuster evaluates claim",
+            "<strong>Receive payment</strong> – Minus deductible"
+          ]
+        },
+        {
+          "type": "pHtml",
+          "html": "<strong>Want a hassle-free claims experience?</strong><br />Compare providers now and choose one with a smooth claims process."
+        }
+      ]
+    },
+    "faqs": {
+      "heading": "Frequently Asked Questions (FAQ)",
+      "items": [
+        {
+          "q": "What types of car insurance coverage are available?",
+          "aBlocks": [
+            {
+              "type": "bullets",
+              "items": [
+                "Liability Coverage",
+                "Collision Coverage",
+                "Comprehensive Coverage",
+                "Personal Injury Protection (PIP)",
+                "Uninsured/Underinsured Motorist Coverage"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "How is my premium determined?",
+          "aBlocks": [
+            { "type": "p", "text": "Rates depend on:" },
+            {
+              "type": "bullets",
+              "items": [
+                "Driving record",
+                "Vehicle type",
+                "Location",
+                "Age & gender",
+                "Credit score (in some states)"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Comprehensive vs Collision?",
+          "aBlocks": [
+            {
+              "type": "split",
+              "left": "Collision: Covers crashes",
+              "right": "Comprehensive: Covers theft, vandalism, animals, storms"
+            }
+          ]
+        },
+        {
+          "q": "Do I need uninsured motorist coverage?",
+          "aBlocks": [
+            {
+              "type": "p",
+              "text": "Yes. It protects you if the other driver has little or no insurance."
+            }
+          ]
+        },
+        {
+          "q": "How can I lower my premium?",
+          "aBlocks": [
+            {
+              "type": "bullets",
+              "items": [
+                "Maintain a clean record",
+                "Bundle policies",
+                "Increase deductibles",
+                "Use discounts",
+                "Compare quotes regularly"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "What should I do after an accident?",
+          "aBlocks": [
+            {
+              "type": "bullets",
+              "items": [
+                "Ensure safety",
+                "Call authorities",
+                "Exchange info",
+                "Document scene",
+                "Notify insurer"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Does credit score affect my rate?",
+          "aBlocks": [
+            { "type": "p", "text": "Yes, in many states a higher score = lower rates." }
+          ]
+        },
+        {
+          "q": "Can I drive someone else’s car?",
+          "aBlocks": [
+            {
+              "type": "p",
+              "text": "Usually insurance follows the car, not the driver. Always confirm."
+            }
+          ]
+        },
+        {
+          "q": "What is gap insurance?",
+          "aBlocks": [
+            {
+              "type": "p",
+              "text": "Covers the difference between what your car is worth and what you owe if totaled."
+            }
+          ]
+        },
+        {
+          "q": "How does a speeding ticket affect rates?",
+          "aBlocks": [
+            {
+              "type": "p",
+              "text": "Tickets usually increase premiums depending on severity."
+            }
+          ]
+        },
+        {
+          "q": "How does Sagewise’s car insurance quiz work?",
+          "aBlocks": [
+            {
+              "type": "p",
+              "text": "Answer a few quick questions about your driving, location, and needs."
+            },
+            {
+              "type": "p",
+              "text": "Sagewise matches you with top insurers instantly."
+            }
+          ]
+        },
+        {
+          "q": "How long does the quiz take?",
+          "aBlocks": [
+            { "type": "p", "text": "Less than 2 minutes." }
+          ]
+        },
+        {
+          "q": "Will this affect my credit?",
+          "aBlocks": [
+            { "type": "p", "text": "No. No credit checks required." }
+          ]
+        },
+        {
+          "q": "Is Sagewise reliable?",
+          "aBlocks": [
+            {
+              "type": "p",
+              "text": "Yes. Sagewise partners with top-rated insurers to deliver transparent comparisons."
+            }
+          ]
+        },
+        {
+          "q": "Am I obligated to buy?",
+          "aBlocks": [
+            { "type": "p", "text": "No. Compare freely, decide on your timeline." }
+          ]
+        },
+        {
+          "q": "How do I choose the best provider?",
+          "aBlocks": [
+            {
+              "type": "p",
+              "text": "Compare coverage, pricing, and reviews. Sagewise helps you side-by-side."
+            }
+          ]
+        },
+        {
+          "q": "How often should I compare quotes?",
+          "aBlocks": [
+            { "type": "p", "text": "At least once per year or after life changes." }
+          ]
+        },
+        {
+          "q": "Can I get insurance with bad driving history?",
+          "aBlocks": [
+            {
+              "type": "p",
+              "text": "Yes. Providers like The General, Bristol West, and Progressive specialize in high-risk drivers."
+            }
+          ]
+        },
+        {
+          "q": "Need SR-22 insurance?",
+          "aBlocks": [
+            { "type": "p", "text": "Sagewise matches you with SR-22 providers in your state." }
+          ]
+        },
+        {
+          "q": "Can I switch anytime?",
+          "aBlocks": [
+            { "type": "p", "text": "Yes. Many insurers refund unused premiums." }
+          ]
+        }
+      ]
+    },
+    "bottomLine": {
+      "heading": "Bottom line: Get ready to save on car insurance",
+      "bodyHtml": "Whether you want budget-friendly coverage or premium protection, Sagewise helps you find the best options at the lowest rates.<br /><br /><a href=\"#top\" data-scroll-top=\"true\"><strong data-accent=\"true\">Scroll up, answer a few quick questions &amp; start saving today!</strong></a>",
+      "icon": "Car"
+    }
   },
   "finalStep": {
     "buttonText": "See Matches",
@@ -367,6 +692,12 @@
           "label": "Email",
           "placeholder": "john.doe@email.com",
           "required": true
+        },
+        {
+          "id": "newsletter",
+          "type": "checkbox",
+          "label": "Yes, I want the Sagewise Newsletter!",
+          "required": false
         }
       ]
     }

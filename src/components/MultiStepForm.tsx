@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { FormConfig, FormData } from "@/types/form";
 import { DynamicFormField } from "./DynamicFormField";
 import { Button } from "@/components/ui/button";
@@ -75,6 +75,24 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
   const currentStepData = config.steps[currentStep];
   const totalSteps = config.steps.length;
   const progress = Math.round(((currentStep + 1) / totalSteps) * 100);
+
+  const firstStepButtonVars = useMemo(() => {
+    if (!isFirstStep || !config.firstStepButton) return undefined;
+
+    const bg = config.firstStepButton.bgColor || "var(--sw-cta-primary)";
+    const hover = config.firstStepButton.hoverBgColor || "var(--sw-cta-hover)";
+    const text = config.firstStepButton.textColor || "#ffffff";
+
+    return {
+      ["--sw-first-step-cta-bg" as unknown as string]: bg,
+      ["--sw-first-step-cta-hover" as unknown as string]: hover,
+      ["--sw-first-step-cta-text" as unknown as string]: text,
+    } as CSSProperties;
+  }, [config.firstStepButton, isFirstStep]);
+
+  const firstStepButtonText = isFirstStep
+    ? (config.firstStepButton?.text || "Continue")
+    : "Continue";
 
   useEffect(() => {
     if (onProgressChange) {
@@ -688,13 +706,19 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
               variant="default"
               onClick={handleNext}
               disabled={!isStepValid()}
+              style={firstStepButtonVars}
               className={cn(
-                "bg-primary-main hover:bg-primary-main/90 text-white px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
-                isFirstStep ? "w-full" : "flex-1"
+                "px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
+                isFirstStep
+                  ? "w-full"
+                  : "flex-1",
+                isFirstStep && config.firstStepButton
+                  ? "bg-[var(--sw-first-step-cta-bg)] hover:bg-[var(--sw-first-step-cta-hover)] text-[var(--sw-first-step-cta-text)]"
+                  : "bg-primary-main hover:bg-primary-main/90 text-white"
               )}
             >
               <span className="text-base font-medium leading-none">
-                Continue
+                {firstStepButtonText}
               </span>
               <ArrowRight className="h-[13.25px] w-[13.25px]" />
             </Button>
