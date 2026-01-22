@@ -26,7 +26,7 @@
       "ratingsCount": 5,
       "logo": "/logos/autoins/statefarm.avif",
       "logoWidth": "120px",
-      "logoHeight": "90px",
+      "logoHeight": "80px",
       "badgeText": "TOP-RATED",
       "badgeIcon": "card",
       "advertiserName": "State Farm"
@@ -65,7 +65,7 @@
       "ratingsCount": 5,
       "logo": "/logos/autoins/liberty-mutual.avif",
       "logoWidth": "120px",
-      "logoHeight": "100px",
+      "logoHeight": "80px",
       "badgeText": "",
       "badgeIcon": "card",
       "advertiserName": "Liberty Mutual"

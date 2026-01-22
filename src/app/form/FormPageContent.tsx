@@ -5,10 +5,9 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { getFunnelConfig } from "@/lib/funnel-loader";
-import PageHeader from "@/organisms/PageHeader";
 import { Typography } from "@/components/ui/typography";
-import PlainPageHeader from "@/organisms/PlainPageHeader";
 import { Clock, Lock, Monitor, ShieldCheck } from "lucide-react";
+import { FunnelPostContent } from "@/components/FunnelPostContent";
 
 const INFO_BAR_ICONS = {
   monitor: Monitor,
@@ -43,11 +42,9 @@ export function FormPageContent() {
   }
 
   return (
-    <div className="flex flex-col items-start  w-full bg-[#F8F8F8] min-h-[90vh]">
-      <PlainPageHeader title={formConfig.title} headingFont="lg:text-[25px] font-bold text-primary-dark text-primary-main" />
-
+    <div className="flex flex-col items-start w-full bg-[#F8F8F8] min-h-[90vh] pt-5">
       {/* Main Container with 64px padding - Contains form, separator, and logos */}
-      <div className="flex flex-col items-start w-full pb-9 pt-5 px-6 md:p-16 md:pt-5  justify-between">
+      <div className="flex flex-col items-start w-full pb-9 px-6 pt-6 md:pt-10 justify-between">
         <div className=" flex flex-col w-full flex-1 justify-between ">
           {/* Form Section */}
           <div className="flex flex-col  items-center justify-center w-full">
@@ -65,8 +62,8 @@ export function FormPageContent() {
       <div className="w-full">
         {/* Post-form info bar (funnels only; configured per funnel JSON) */}
         {formConfig.postFormInfoBar?.items?.length ? (
-          <div className="hidden sm:block w-full border-t border-[#e5e5e5] mt-12 max-w-[95vw] mx-auto">
-            <div className="w-full max-w-[890px] mx-auto px-6 md:px-0 pt-12 pb-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-3">
+          <div className="hidden sm:block w-full mt-3">
+            <div className="w-full max-w-[890px] mx-auto px-6 md:px-0 pb-6 flex flex-wrap items-center justify-center gap-x-12">
               {formConfig.postFormInfoBar.items.slice(0, 3).map((item, idx) => {
                 const iconKey = item.icon?.toLowerCase?.() as keyof typeof INFO_BAR_ICONS;
                 const Icon = INFO_BAR_ICONS[iconKey];
@@ -83,12 +80,12 @@ export function FormPageContent() {
                         alt=""
                         width={18}
                         height={18}
-                        className="h-[18px] w-[18px] object-contain"
+                        className="h-[22px] w-[22px] object-contain"
                       />
                     ) : Icon ? (
-                      <Icon className="h-[18px] w-[18px]" aria-hidden />
+                      <Icon className="h-[22px] w-[22px] text-green-600" aria-hidden />
                     ) : null}
-                    <span>{item.text}</span>
+                    <span className="text-general-muted-foreground text-base font-medium">{item.text}</span>
                   </div>
                 );
               })}
@@ -152,7 +149,7 @@ export function FormPageContent() {
 
         {/* Below-logos image section (funnels only; configured per funnel JSON) */}
         {formConfig.belowLogosImage?.src ? (
-          <div className="hidden sm:block w-full pt-12 pb-14">
+          <div className="hidden sm:block w-full py-6">
             <div className="w-full max-w-[890px] mx-auto px-6 md:px-0 flex justify-center">
               <Image
                 src={formConfig.belowLogosImage.src}
@@ -164,6 +161,9 @@ export function FormPageContent() {
             </div>
           </div>
         ) : null}
+
+        {/* Post content sections (optional; configured per funnel JSON) */}
+        <FunnelPostContent postContent={formConfig.postContent} />
       </div>
     </div>
   );

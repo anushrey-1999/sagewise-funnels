@@ -58,6 +58,26 @@ export interface FormConfig {
   title: string; // Hero title
   subtitle: string; // Hero subtitle
   metaDescription?: string; // Meta description for SEO
+  firstStepButton?: {
+    /**
+     * Text label for the "next" button on step 1.
+     * Defaults to "Continue" when omitted.
+     */
+    text?: string;
+    /**
+     * Background color for step-1 button. Prefer CSS vars like:
+     * "var(--sw-cta-primary)" to match adwall CTA styling.
+     */
+    bgColor?: string;
+    /**
+     * Hover background color for step-1 button.
+     */
+    hoverBgColor?: string;
+    /**
+     * Text/icon color for step-1 button.
+     */
+    textColor?: string;
+  };
   navbar?: {
     tagline?: string; // e.g., "Speak to a licensed agent:"
     phone?: string; // display value, e.g., "1-833-906-2737"
@@ -82,6 +102,53 @@ export interface FormConfig {
     alt?: string;
     width: number;
     height: number;
+  };
+  postContent?: {
+    details?: {
+      blocks: Array<
+        | { type: "h2"; text: string }
+        | { type: "h3"; text: string }
+        | { type: "pHtml"; html: string }
+        | {
+            type: "iconList";
+            items: Array<{ icon: string; textHtml: string }>;
+          }
+        | { type: "bulletsHtml"; itemsHtml: string[] }
+        | {
+            type: "definitionListHtml";
+            items: Array<{ term: string; html: string }>;
+          }
+        | { type: "numberedHtml"; itemsHtml: string[] }
+        | {
+            type: "steps";
+            items: Array<{ icon: string; textHtml: string }>;
+          }
+        | { type: "calloutHtml"; icon: string; html: string }
+        | {
+            type: "textRow";
+            icon?: string;
+            text: string;
+            linkText?: string;
+            href?: string;
+          }
+      >;
+    };
+    faqs?: {
+      heading: string;
+      items: Array<{
+        q: string;
+        aBlocks: Array<
+          | { type: "p"; text: string }
+          | { type: "bullets"; items: string[] }
+          | { type: "split"; left: string; right: string }
+        >;
+      }>;
+    };
+    bottomLine?: {
+      heading: string;
+      bodyHtml: string;
+      icon?: string;
+    };
   };
   steps: FormStep[];
   finalStep?: {
