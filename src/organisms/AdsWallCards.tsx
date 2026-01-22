@@ -121,7 +121,7 @@ const AdsWallCards = ({
         <div className={`flex flex-col items-center gap-3 shrink-0 ${logo && logo.trim() !== "" ? "h-full justify-center" : ""}`}>
           {logo && logo.trim() !== "" && (
             <div 
-              className="relative overflow-hidden rounded-lg"
+              className="relative overflow-hidden"
               style={{ width: logoWidth, height: logoHeight }}
             >
               <Image src={logo} alt="logo" layout="fill" />
