@@ -1,8 +1,13 @@
 import { FormConfig, FormData, RedirectOnAnswer } from "@/types/form";
 import { adwallExists } from "@/lib/adwall-loader";
 
+function isAbsoluteUrl(path: string): boolean {
+  return /^https?:\/\//i.test(path);
+}
+
 function normalizePath(path: string): string {
   if (!path) return "/";
+  if (isAbsoluteUrl(path)) return path;
   return path.startsWith("/") ? path : `/${path}`;
 }
 
@@ -70,6 +75,7 @@ export function resolveRedirectOnAnswer(redirectOnAnswer: RedirectOnAnswer, fiel
  * If the route doesn't match old format, returns as-is
  */
 function convertToNewAdwallRoute(path: string, funnelId: string): string {
+  if (isAbsoluteUrl(path)) return path;
   const normalizedPath = normalizePath(path);
   
   // If already in new format, return as-is

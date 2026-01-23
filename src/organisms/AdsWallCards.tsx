@@ -67,31 +67,31 @@ const AdsWallCards = ({
   const handleButtonClick = () => {
     try {
       const url = new URL(buttonLink);
-      
+
       if (affiliateId) {
         url.searchParams.set("s1", affiliateId);
       }
       if (transactionId) {
         url.searchParams.set("sub5", transactionId);
       }
-      
+
       window.open(url.toString(), "_blank");
     } catch (error) {
       // If buttonLink is not a valid absolute URL, append params manually
       const separator = buttonLink.includes("?") ? "&" : "?";
       const params: string[] = [];
-      
+
       if (affiliateId) {
         params.push(`s1=${encodeURIComponent(affiliateId)}`);
       }
       if (transactionId) {
         params.push(`sub5=${encodeURIComponent(transactionId)}`);
       }
-      
-      const finalUrl = params.length > 0 
+
+      const finalUrl = params.length > 0
         ? `${buttonLink}${separator}${params.join("&")}`
         : buttonLink;
-      
+
       window.open(finalUrl, "_blank");
     }
   };
@@ -118,15 +118,17 @@ const AdsWallCards = ({
 
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
         {/* First Container */}
-        <div className={`flex flex-col items-center gap-3 shrink-0 ${logo && logo.trim() !== "" ? "h-full justify-center" : ""}`}>
+        <div className={`flex flex-col w-[120px] items-center gap-3 shrink-0 ${logo && logo.trim() !== "" ? "h-full justify-center" : ""}`}>
+
           {logo && logo.trim() !== "" && (
-            <div 
+            <div
               className="relative overflow-hidden"
               style={{ width: logoWidth, height: logoHeight }}
             >
               <Image src={logo} alt="logo" layout="fill" />
             </div>
           )}
+
           {logoText && logoText.trim() !== "" && (
             <Typography
               variant="p"
@@ -207,7 +209,7 @@ const AdsWallCards = ({
                 ))}
               </div>
               <Typography variant="p" className="text-xs">
-              Sagewise Score
+                Sagewise Score
               </Typography>
             </div>
           </div>
@@ -215,7 +217,7 @@ const AdsWallCards = ({
             <Button
               variant="secondary"
               size="sm"
-              className="font-semibold"
+              className="font-semibold px-2.5 has-[>svg]:px-2"
               onClick={handleButtonClick}
               icon={MoveUpRight}
               iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"
@@ -234,7 +236,7 @@ const AdsWallCards = ({
               <Button
                 variant="link"
                 size="sm"
-                className="font-semibold"
+                className="font-semibold px-2.5"
                 onClick={() => window.open(`tel:${phoneNumber.replace(/\D/g, "")}`, "_self")}
                 style={ctaMinWidthCh ? { minWidth: `${ctaMinWidthCh}ch` } : undefined}
               >
@@ -279,7 +281,7 @@ const AdsWallCards = ({
       <div
         className={cn(
           "border-2 z-1 relative rounded-xl w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
-          isDifferentBorder 
+          isDifferentBorder
             ? "border-[#ffd32a]" // Golden border using CTA primary color
             : "border-general-border", // Default border
           cardBg

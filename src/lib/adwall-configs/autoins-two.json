@@ -27,8 +27,8 @@
       "ratingsNumber": "4.8",
       "ratingsCount": 5,
       "logo": "/logos/autoins/progressive.avif",
-      "logoWidth": "120px",
-      "logoHeight": "35px",
+      "logoWidth": "110px",
+      "logoHeight": "18px",
       "badgeText": "TOP-RATED",
       "badgeIcon": "card",
       "advertiserName": "Progressive"
@@ -46,8 +46,8 @@
       "ratingsNumber": "4.9",
       "ratingsCount": 5,
       "logo": "/logos/autoins/geico.avif",
-      "logoWidth": "120px",
-      "logoHeight": "40px",
+      "logoWidth": "110px",
+      "logoHeight": "30px",
       "badgeText": "BEST MOBILE APP",
       "badgeIcon": "card",
       "advertiserName": "GEICO"
@@ -65,8 +65,8 @@
       "ratingsNumber": "4.6",
       "ratingsCount": 5,
       "logo": "/logos/autoins/root.avif",
-      "logoWidth": "120px",
-      "logoHeight": "50px",
+      "logoWidth": "110px",
+      "logoHeight": "45px",
       "badgeText": "",
       "badgeIcon": "card",
       "advertiserName": "Root"

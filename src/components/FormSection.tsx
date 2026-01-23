@@ -6,6 +6,7 @@ import { FormConfig, FormData } from "@/types/form";
 import { useRouter } from "next/navigation";
 import { Loader } from "./Loader";
 import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
+import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
 
 interface FormSectionProps {
   config: FormConfig;
@@ -113,19 +114,19 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       }
     }
 
-    // Build query params
-    const params = new URLSearchParams();
-    params.set("s1", affiliateId);
-    params.set("s2", transactionId);
-    
-    if (firstName) {
-      params.set("name", firstName);
-    }
-    if (zipCode) {
-      params.set("zip", zipCode);
+    const finalUrl = appendQueryParams(destination, {
+      s1: affiliateId,
+      s2: transactionId,
+      name: firstName,
+      zip: zipCode,
+    });
+
+    if (isAbsoluteUrl(finalUrl)) {
+      window.location.assign(finalUrl);
+      return;
     }
 
-    router.push(`${destination}?${params.toString()}`);
+    router.push(finalUrl);
   };
 
   if (isLoading) {
