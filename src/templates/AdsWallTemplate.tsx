@@ -70,8 +70,9 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
   const ctaMinWidthCh = useMemo(() => {
     const lengths = (config.cards || []).map((c) => stripHtml(c.buttonText || "").trim().length);
     const maxLen = lengths.length ? Math.max(...lengths) : 0;
-    // Add a little buffer for padding/icon. Clamp to avoid extreme widths.
-    return Math.min(32, Math.max(14, maxLen + 6));
+    // Add a small buffer for padding/icon, but keep CTAs from getting overly wide.
+    // (Users prefer compact CTAs on the adwall.)
+    return Math.min(20, Math.max(10, maxLen + 3));
   }, [config.cards]);
 
   return (

@@ -4,7 +4,7 @@
   "adwallType": "one",
   "title": "Compare Top Auto Insurance Rates in {zip}.",
   "subtitle": "Drivers are saving up to $610/year by comparing these top-rated national and local carriers",
-  "updatedAt": "Updated January 06, 2026",
+  "updatedAt": "Updated January 23, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",
     "transactionIdParam": "s2"
@@ -25,8 +25,8 @@
       "phoneNumber": "1-800-000-0000",
       "ratingsCount": 5,
       "logo": "/logos/autoins/statefarm.avif",
-      "logoWidth": "120px",
-      "logoHeight": "30px",
+      "logoWidth": "110px",
+      "logoHeight": "20px",
       "badgeText": "TOP-RATED",
       "badgeIcon": "card",
       "advertiserName": "State Farm"
@@ -45,8 +45,8 @@
       "ratingsNumber": "4.9",
       "ratingsCount": 5,
       "logo": "/logos/autoins/ussa.avif",
-      "logoWidth": "120px",
-      "logoHeight": "30px",
+      "logoWidth": "110px",
+      "logoHeight": "25px",
       "badgeText": "TOP-RATED SERVICE",
       "badgeIcon": "card",
       "advertiserName": "USAA"
@@ -64,8 +64,8 @@
       "ratingsNumber": "4.6",
       "ratingsCount": 5,
       "logo": "/logos/autoins/liberty-manual.avif",
-      "logoWidth": "120px",
-      "logoHeight": "45px",
+      "logoWidth": "110px",
+      "logoHeight": "40px",
       "badgeText": "",
       "badgeIcon": "card",
       "advertiserName": "Liberty Mutual"

@@ -1,0 +1,113 @@
+{
+  "id": "cc-finbuzz",
+  "title": "Sagewise Credit Card Quiz",
+  "subtitle": "Complete the form below to receive personalized quotes.",
+  "metaDescription": "Find the best credit cards of 2026 for cash back, travel rewards, 0% APR, credit building and more. Get personalized matches in seconds.",
+  "finalStep": {
+    "buttonText": "See Instant Matches",
+    "loaderText": "Finding your best credit card matches...",
+    "redirectTo": "/adwall/cc/one",
+    "disclaimerText": "By pressing \"See Instant Matches\" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products."
+  },
+  "steps": [
+    {
+      "id": "credit-score",
+      "title": "What is your credit score?",
+      "description": "",
+      "fields": [
+        {
+          "id": "credit-score",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "excellent", "label": "Excellent (720-850)" },
+            { "value": "good", "label": "Good (690-719)" },
+            { "value": "fair", "label": "Fair (630-689)" },
+            { "value": "bad", "label": "Bad (350-629)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "card-goal",
+      "title": "Why are you looking for a new credit card?",
+      "description": "",
+      "fields": [
+        {
+          "id": "card-goal",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "redirectOnAnswer": {
+            "rules": [
+              {
+                "whenValues": ["travel-cards"],
+                "to": "https://www.yrxtrk.com/aff_c?offer_id=20699&aff_id=1962&aff_sub3=sagewise"
+              },
+              {
+                "whenValues": ["cashback-cards"],
+                "to": "https://financebuzz.com/top-cash-back-credit-cards?utm_source=m1-fbz&utm_medium=paid-rs&utm_campaign=BM-FBZ-m1-fbz-Credit_Cards-top-cash-back-credit-cards-RS&utm_content=&utm_term=sagewise&adgroupid=24221_1962&clickid=1024508f40b3d128aa2a22cf1aeb02"
+              },
+              {
+                "whenValues": ["no-annual-fee-cards"],
+                "to": "https://financebuzz.com/top-no-annual-fee-credit-cards-dn?utm_source=m1-fbz&utm_medium=paid-rs&utm_campaign=BM-FBZ-m1-fbz-Credit_Cards-top-no-annual-fee-credit-cards-dn-RS&utm_content=&utm_term=sagewise&adgroupid=23233_1962&clickid=1022289bd83468b774a3f94bb8bb75"
+              },
+              {
+                "whenValues": ["no-interest-cards"],
+                "to": "https://financebuzz.com/top-no-interest-credit-cards-lz2k?utm_source=m1-fbz&utm_medium=paid-rs&utm_campaign=BM-FBZ-m1-fbz-Credit_Cards-Top-No-Interest-Credit-Cards-RS&utm_content=&utm_term=sagewise&adgroupid=20693_1962&clickid=102c3eacd6114801c11a1f528c32dc"
+              },
+              {
+                "whenValues": ["build-credit"],
+                "to": "/adwall/cc/one"
+              }
+            ],
+            "defaultTo": "/adwall/cc/one"
+          },
+          "options": [
+            { "value": "travel-cards", "label": "Travel Cards" },
+            { "value": "cashback-cards", "label": "Cashback Cards" },
+            { "value": "no-annual-fee-cards", "label": "No Annual Fee Credit Cards" },
+            { "value": "no-interest-cards", "label": "No Interest Credit Cards" },
+            { "value": "build-credit", "label": "Build Credit" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact-info",
+      "title": "Last Step To Unlock Which Cards You Qualify For.",
+      "description": "Complete this final step to find out how much you can save today!",
+      "fields": [
+        {
+          "id": "firstName",
+          "type": "text",
+          "label": "First name",
+          "placeholder": "John",
+          "required": true
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last name",
+          "placeholder": "Doe",
+          "required": true
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "john.doe@email.com",
+          "required": true
+        },
+        {
+          "id": "newsletter",
+          "type": "checkbox",
+          "label": "Yes, I want the Sagewise Retirement Newsletter!",
+          "required": false
+        }
+      ]
+    }
+  ]
+}
+

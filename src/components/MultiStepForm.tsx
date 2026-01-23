@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { Loader } from "./Loader";
 import { useRouter } from "next/navigation";
 import { resolvePostSubmitRedirect, resolveRedirectOnAnswer } from "@/lib/funnel-redirect";
+import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
 
 // Progress bar component
 function ProgressBar({ progress }: { progress: number }) {
@@ -290,7 +291,12 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     const { affiliateId, transactionId } = generateIds();
 
     const destination = resolvePostSubmitRedirect(config, formData);
-    router.push(`${destination}?s1=${encodeURIComponent(affiliateId)}&s2=${encodeURIComponent(transactionId)}`);
+    const finalUrl = appendQueryParams(destination, { s1: affiliateId, s2: transactionId });
+    if (isAbsoluteUrl(finalUrl)) {
+      window.location.assign(finalUrl);
+      return;
+    }
+    router.push(finalUrl);
   };
 
   // Check if a step should be skipped based on skipIf condition

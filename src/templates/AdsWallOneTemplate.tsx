@@ -206,7 +206,7 @@ const AdsWallOneTemplate = () => {
         title={"Best credit cards of January 2026"}
         headingFont="text-3xl text-center lg:text-[48px] font-bold text-primary-main"
         subtitle="High credit card interest can strain a fixed income. Compare 0% intro APR and balance transfer credit cards that may help reduce interest, consolidate debt, and manage monthly expenses."
-        updatedAt={"Updated January 06, 2026"}
+        updatedAt={"Updated January 23, 2026"}
       />
 
       {/* Cards */}
