@@ -32,7 +32,7 @@ interface AdsWallCardsProps {
   phoneNumber?: string; // Optional phone number to display below CTA
   affiliateId?: string | null;
   transactionId?: string | null;
-  ctaMinWidthCh?: number;
+  ctaMinWidthPx?: number;
 }
 
 const AdsWallCards = ({
@@ -61,8 +61,10 @@ const AdsWallCards = ({
   phoneNumber,
   affiliateId,
   transactionId,
-  ctaMinWidthCh,
+  ctaMinWidthPx,
 }: AdsWallCardsProps) => {
+  const ctaMinWidthStyle = ctaMinWidthPx ? ({ minWidth: ctaMinWidthPx } as React.CSSProperties) : undefined;
+
   // Function to append s1 (affiliate_id) and sub5 (transaction_id) to the button link
   const handleButtonClick = () => {
     try {
@@ -118,7 +120,9 @@ const AdsWallCards = ({
 
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
         {/* First Container */}
-        <div className={`flex flex-col w-[120px] items-center gap-3 shrink-0 ${logo && logo.trim() !== "" ? "h-full justify-center" : ""}`}>
+        <div
+          className={`flex flex-col w-full lg:w-[120px] items-center gap-3 shrink-0 ${logo && logo.trim() !== "" ? "h-full justify-center" : ""}`}
+        >
 
           {logo && logo.trim() !== "" && (
             <div
@@ -137,7 +141,7 @@ const AdsWallCards = ({
             />
           )}
           {creditCardImage && creditCardImage.trim() !== "" && (
-            <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
+            <div className="w-full max-w-[184px] h-[120px] lg:w-[120px] lg:h-[72px] relative overflow-hidden rounded-sm self-start lg:self-auto mx-0 lg:mx-auto">
               <Image src={creditCardImage} alt="credit-card" layout="fill" />
             </div>
           )}
@@ -165,7 +169,7 @@ const AdsWallCards = ({
         </div>
 
         {/* Third Container */}
-        <div className=" rounded-md flex justify-between items-center lg:justify-start lg:flex-col gap-3 lg:min-w-[200px] w-full lg:w-fit shrink-0">
+        <div className=" rounded-md flex flex-row justify-between items-center lg:justify-start lg:flex-col gap-3 lg:min-w-[200px] w-full lg:w-fit shrink-0">
           {/* {isGradientBox && (
           <div className="rounded-md overflow-hidden flex lg:flex-col w-full border border-general-border">
             <div className="bg-linear-to-r from-green-700 to-[#2C9D56] pb-1 lg:py-3.5 flex items-center justify-center flex-col w-1/2 lg:w-full rounded-md">
@@ -213,21 +217,22 @@ const AdsWallCards = ({
               </Typography>
             </div>
           </div>
-          <div className="flex flex-col gap-1 items-center">
+          <div className="flex flex-col gap-1 items-end lg:items-center">
             <Button
               variant="secondary"
               size="sm"
-              className="font-semibold px-2.5 has-[>svg]:px-2"
+              data-cta-equalize="true"
+              className="font-semibold px-4 has-[>svg]:px-4 w-fit max-w-full whitespace-nowrap"
               onClick={handleButtonClick}
               icon={MoveUpRight}
               iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"
-              style={ctaMinWidthCh ? { minWidth: `${ctaMinWidthCh}ch` } : undefined}
+              style={ctaMinWidthStyle}
             >
               {buttonText}
             </Button>
             <Typography
               variant="p"
-              className="text-[10px] text-center flex items-center gap-1"
+              className="text-[10px] text-right lg:text-center flex items-center gap-1"
               color="text-general-muted-foreground"
             >
               on {advertiserName} secure site <Lock className="w-3 h-3 lg:w-3 lg:h-3" />
@@ -238,7 +243,6 @@ const AdsWallCards = ({
                 size="sm"
                 className="font-semibold px-2.5"
                 onClick={() => window.open(`tel:${phoneNumber.replace(/\D/g, "")}`, "_self")}
-                style={ctaMinWidthCh ? { minWidth: `${ctaMinWidthCh}ch` } : undefined}
               >
                 {phoneNumber}
               </Button>
