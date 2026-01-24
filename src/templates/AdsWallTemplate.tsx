@@ -5,6 +5,7 @@ import PlainPageHeader from "@/organisms/PlainPageHeader";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { AdwallConfig } from "@/types/adwall";
+import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
 
 interface AdsWallTemplateProps {
   config: AdwallConfig;
@@ -18,10 +19,6 @@ function interpolateTemplate(template: string, variables: Record<string, string>
   return template
     .replace(/\{NAME\}/g, variables.NAME || "")
     .replace(/\{zip\}/g, variables.zip || "");
-}
-
-function stripHtml(input: string): string {
-  return input.replace(/<[^>]*>/g, "");
 }
 
 const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
@@ -66,14 +63,7 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
     return interpolateTemplate(config.subtitle, templateVars);
   }, [config.subtitle, templateVars]);
 
-  // Make all CTA buttons the same width (based on the largest label on the page)
-  const ctaMinWidthCh = useMemo(() => {
-    const lengths = (config.cards || []).map((c) => stripHtml(c.buttonText || "").trim().length);
-    const maxLen = lengths.length ? Math.max(...lengths) : 0;
-    // Add a small buffer for padding/icon, but keep CTAs from getting overly wide.
-    // (Users prefer compact CTAs on the adwall.)
-    return Math.min(20, Math.max(10, maxLen + 3));
-  }, [config.cards]);
+  const { containerRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([config.cards]);
 
   return (
     <div className="bg-white flex flex-col items-start min-h-screen w-full ">
@@ -88,14 +78,14 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
       {/* Cards */}
       <div className="flex flex-col items-center w-full px-6 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
-          <div className="flex flex-col gap-4">
+          <div ref={containerRef} className="flex flex-col gap-4">
             {config.cards?.map((item, index) => (
               <AdsWallCards
                 key={index}
                 {...item}
                 affiliateId={affiliateId}
                 transactionId={transactionId}
-                ctaMinWidthCh={ctaMinWidthCh}
+                ctaMinWidthPx={ctaMinWidthPx}
               />
             ))}
           </div>
