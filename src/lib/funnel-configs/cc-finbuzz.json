@@ -65,10 +65,10 @@
             "defaultTo": "/adwall/cc/one"
           },
           "options": [
-            { "value": "travel-cards", "label": "Travel Cards" },
-            { "value": "cashback-cards", "label": "Cashback Cards" },
-            { "value": "no-annual-fee-cards", "label": "No Annual Fee Credit Cards" },
-            { "value": "no-interest-cards", "label": "No Interest Credit Cards" },
+            { "value": "travel-cards", "label": "Travel Rewards" },
+            { "value": "cashback-cards", "label": "Cashback Rewards" },
+            { "value": "no-annual-fee-cards", "label": "No Annual Fee" },
+            { "value": "no-interest-cards", "label": "No Interest" },
             { "value": "build-credit", "label": "Build Credit" }
           ]
         }
