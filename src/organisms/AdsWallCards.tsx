@@ -63,7 +63,10 @@ const AdsWallCards = ({
   transactionId,
   ctaMinWidthPx,
 }: AdsWallCardsProps) => {
-  const ctaMinWidthStyle = ctaMinWidthPx ? ({ minWidth: ctaMinWidthPx } as React.CSSProperties) : undefined;
+  // Use a preferred width (measured from the widest CTA) but allow shrinking on very small screens.
+  const ctaMinWidthStyle = ctaMinWidthPx
+    ? ({ width: ctaMinWidthPx, maxWidth: "100%" } as React.CSSProperties)
+    : undefined;
 
   // Function to append s1 (affiliate_id) and sub5 (transaction_id) to the button link
   const handleButtonClick = () => {
@@ -217,12 +220,12 @@ const AdsWallCards = ({
               </Typography>
             </div>
           </div>
-          <div className="flex flex-col gap-1 items-end lg:items-center">
+          <div className="flex flex-col gap-1 items-end lg:items-center min-w-0 shrink">
             <Button
               variant="secondary"
               size="sm"
               data-cta-equalize="true"
-              className="font-semibold px-4 has-[>svg]:px-4 w-fit max-w-full whitespace-nowrap"
+              className="font-semibold px-4 has-[>svg]:px-4 max-w-full whitespace-nowrap text-center max-[360px]:whitespace-normal max-[360px]:h-auto max-[360px]:min-h-[44px] max-[360px]:py-2 max-[360px]:leading-tight"
               onClick={handleButtonClick}
               icon={MoveUpRight}
               iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"
