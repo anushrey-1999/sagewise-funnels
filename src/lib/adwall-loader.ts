@@ -10,6 +10,7 @@ import { AdwallConfig } from "@/types/adwall";
 import ccAdwallOne from "./adwall-configs/cc-one.json";
 import ccAdwallTwo from "./adwall-configs/cc-two.json";
 import ccAdwallThree from "./adwall-configs/cc-three.json";
+import ccFinbuzzAdwall from "./adwall-configs/cc-finbuzz.json";
 import autoinsAdwallOne from "./adwall-configs/autoins-one.json";
 import autoinsAdwallTwo from "./adwall-configs/autoins-two.json";
 import autoinsAdwallThree from "./adwall-configs/autoins-three.json";
@@ -27,6 +28,7 @@ const adwallConfigs: Record<string, AdwallConfig> = {
   "cc-one": ccAdwallOne as AdwallConfig,
   "cc-two": ccAdwallTwo as AdwallConfig,
   "cc-three": ccAdwallThree as AdwallConfig,
+  "cc-finbuzz": ccFinbuzzAdwall as AdwallConfig,
   "autoins-one": autoinsAdwallOne as AdwallConfig,
   "autoins-two": autoinsAdwallTwo as AdwallConfig,
   "autoins-three": autoinsAdwallThree as AdwallConfig,

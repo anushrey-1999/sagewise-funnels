@@ -4,35 +4,16 @@
   "subtitle": "Complete the form below to receive personalized quotes.",
   "metaDescription": "Find the best credit cards of 2026 for cash back, travel rewards, 0% APR, credit building and more. Get personalized matches in seconds.",
   "finalStep": {
-    "buttonText": "See Instant Matches",
+    "buttonText": "View My Matches",
     "loaderText": "Finding your best credit card matches...",
-    "redirectTo": "/adwall/cc/one",
-    "disclaimerText": "By pressing \"See Instant Matches\" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products."
+    "redirectTo": "/adwall/cc/finbuzz",
+    "disclaimerText": "By pressing \"View My Matches\" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products."
   },
   "steps": [
     {
-      "id": "credit-score",
-      "title": "What is your credit score?",
-      "description": "",
-      "fields": [
-        {
-          "id": "credit-score",
-          "type": "radio",
-          "label": "",
-          "required": true,
-          "options": [
-            { "value": "excellent", "label": "Excellent (720-850)" },
-            { "value": "good", "label": "Good (690-719)" },
-            { "value": "fair", "label": "Fair (630-689)" },
-            { "value": "bad", "label": "Bad (350-629)" }
-          ]
-        }
-      ]
-    },
-    {
       "id": "card-goal",
-      "title": "Why are you looking for a new credit card?",
-      "description": "",
+      "title": "What is your primary goal for a new card?",
+      "description": "Takes less than 60 seconds",
       "fields": [
         {
           "id": "card-goal",
@@ -59,25 +40,44 @@
               },
               {
                 "whenValues": ["build-credit"],
-                "to": "/adwall/cc/one"
+                "to": "/adwall/cc/finbuzz"
               }
             ],
-            "defaultTo": "/adwall/cc/one"
+            "defaultTo": "/adwall/cc/finbuzz"
           },
           "options": [
-            { "value": "travel-cards", "label": "Travel Rewards" },
-            { "value": "cashback-cards", "label": "Cashback Rewards" },
-            { "value": "no-annual-fee-cards", "label": "No Annual Fee" },
-            { "value": "no-interest-cards", "label": "No Interest" },
-            { "value": "build-credit", "label": "Build Credit" }
+            { "value": "travel-cards", "label": "Earn travel rewards" },
+            { "value": "cashback-cards", "label": "Get cash back on spending" },
+            { "value": "no-annual-fee-cards", "label": "Avoid annual fees" },
+            { "value": "no-interest-cards", "label": "Lower my interest payments" },
+            { "value": "build-credit", "label": "Build or repair my credit" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "credit-score",
+      "title": "What is your credit score?",
+      "description": "",
+      "fields": [
+        {
+          "id": "credit-score",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            { "value": "excellent", "label": "Excellent (720-850)" },
+            { "value": "good", "label": "Good (690-719)" },
+            { "value": "fair", "label": "Fair / Average (630-689)" },
+            { "value": "bad", "label": "Rebuilding (350-629)" }
           ]
         }
       ]
     },
     {
       "id": "contact-info",
-      "title": "Last Step To Unlock Which Cards You Qualify For.",
-      "description": "Complete this final step to find out how much you can save today!",
+      "title": "Your matches are ready!",
+      "description": "Enter your details to view your personalized card recommendations.",
       "fields": [
         {
           "id": "firstName",
