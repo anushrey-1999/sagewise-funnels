@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { AdwallConfig } from "@/types/adwall";
 import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
+import ImpressionOnView from "@/components/ImpressionOnView";
 
 interface AdsWallTemplateProps {
   config: AdwallConfig;
@@ -79,15 +80,24 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
       <div className="flex flex-col items-center w-full px-6 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
           <div ref={containerRef} className="flex flex-col gap-4">
-            {config.cards?.map((item, index) => (
-              <AdsWallCards
-                key={index}
-                {...item}
-                affiliateId={affiliateId}
-                transactionId={transactionId}
-                ctaMinWidthPx={ctaMinWidthPx}
-              />
-            ))}
+            {config.cards?.map((item, index) => {
+              const { impressionScript, ...cardProps } = item;
+              return (
+                <ImpressionOnView
+                  key={index}
+                  impressionScript={impressionScript}
+                  dedupeKey={`${config.id}:${index}`}
+                  debugLabel={item.advertiserName || item.heading}
+                >
+                  <AdsWallCards
+                    {...cardProps}
+                    affiliateId={affiliateId}
+                    transactionId={transactionId}
+                    ctaMinWidthPx={ctaMinWidthPx}
+                  />
+                </ImpressionOnView>
+              );
+            })}
           </div>
         </div>
       </div>

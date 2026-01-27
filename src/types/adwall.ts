@@ -16,6 +16,11 @@ export interface AdwallCard {
   advertiserName: string;
   isDifferentBorder?: boolean;
   phoneNumber?: string; // Optional phone number to display below CTA
+  /**
+   * Raw third-party impression snippet to inject when this card is viewed.
+   * Must be a string containing one or more <script> tags (kept as-provided).
+   */
+  impressionScript?: string;
 }
 
 export interface AdwallConfig {
