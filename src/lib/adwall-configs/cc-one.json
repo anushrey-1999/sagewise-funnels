@@ -17,6 +17,7 @@
     {
       "heading": "Chime Card<sup>&trade;</sup>",
       "description": "Help build credit with your own money. No credit check, no annual fee, and no interest.",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({ \noffer_id: EF.urlParameter('59'), \naffiliate_id: EF.urlParameter('affid'), \nsource_id: EF.urlParameter('source_id'), \nsub1: EF.urlParameter('sub1'), \nsub2: EF.urlParameter('sub2'), \nsub3: EF.urlParameter('sub3'), \nsub4: EF.urlParameter('sub4'), \nsub5: EF.urlParameter('sub5'),\n }); </script>",
       "features": [
         "No credit check to apply",
         "No annual fees or interest",
@@ -37,6 +38,7 @@
     {
       "heading": "Indigo Platinum Mastercard&reg;",
       "description": "Unsecured credit card for rebuilding credit with no security deposit required.",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({ \noffer_id: EF.urlParameter('65'), \naffiliate_id: EF.urlParameter('affid'), \nsource_id: EF.urlParameter('source_id'), \nsub1: EF.urlParameter('sub1'), \nsub2: EF.urlParameter('sub2'), \nsub3: EF.urlParameter('sub3'), \nsub4: EF.urlParameter('sub4'), \nsub5: EF.urlParameter('sub5'),\n }); </script>",
       "features": [
         "No security deposit required",
         "Reports to all three credit bureaus",
@@ -57,6 +59,7 @@
     {
       "heading": "Milestone Mastercard&reg;",
       "description": "Build credit history with an unsecured card designed for limited credit profiles.",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({ \noffer_id: EF.urlParameter('139'), \naffiliate_id: EF.urlParameter('affid'), \nsource_id: EF.urlParameter('source_id'), \nsub1: EF.urlParameter('sub1'), \nsub2: EF.urlParameter('sub2'), \nsub3: EF.urlParameter('sub3'), \nsub4: EF.urlParameter('sub4'), \nsub5: EF.urlParameter('sub5'),\n }); </script>",
       "features": [
         "No security deposit required",
         "Activity reported to major bureaus",
