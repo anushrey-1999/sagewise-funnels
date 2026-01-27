@@ -12,6 +12,7 @@ import { Loader } from "./Loader";
 import { useRouter } from "next/navigation";
 import { resolvePostSubmitRedirect, resolveRedirectOnAnswer } from "@/lib/funnel-redirect";
 import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
+import { useSearchParams } from "next/navigation";
 
 // Progress bar component
 function ProgressBar({ progress }: { progress: number }) {
@@ -63,6 +64,7 @@ interface MultiStepFormProps {
 
 export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({});
   const [errors, setErrors] = useState<Record<string, Record<string, string>>>({});
@@ -278,11 +280,21 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     return true;
   };
 
-  // Generate affiliate_id and transaction_id
+  // Generate affiliate_id and transaction_id (preserve incoming when present)
   const generateIds = () => {
-    // Generate random IDs - you can replace this with actual ID generation logic
-    const affiliateId = Math.random().toString(36).substring(2, 11);
-    const transactionId = Math.random().toString(36).substring(2, 11);
+    const cleanParam = (value: string | null): string | null => {
+      const cleaned = value?.replace(/^["']|["']$/g, "").trim();
+      return cleaned ? cleaned : null;
+    };
+
+    const incomingS1 = cleanParam(searchParams.get("s1"));
+    const incomingS2 = cleanParam(searchParams.get("s2"));
+    const incomingSub5 = cleanParam(searchParams.get("sub5"));
+
+    const affiliateId = incomingS1 ?? Math.random().toString(36).substring(2, 11);
+    const transactionId =
+      incomingS2 ?? incomingSub5 ?? Math.random().toString(36).substring(2, 11);
+
     return { affiliateId, transactionId };
   };
 
@@ -291,7 +303,10 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
     const { affiliateId, transactionId } = generateIds();
 
     const destination = resolvePostSubmitRedirect(config, formData);
-    const finalUrl = appendQueryParams(destination, { s1: affiliateId, s2: transactionId });
+    const finalUrl = appendQueryParams(destination, {
+      s1: affiliateId,
+      s2: transactionId,
+    });
     if (isAbsoluteUrl(finalUrl)) {
       window.location.assign(finalUrl);
       return;

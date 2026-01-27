@@ -25,17 +25,28 @@ function interpolateTemplate(template: string, variables: Record<string, string>
 const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
   const searchParams = useSearchParams();
 
+  const cleanParam = (value: string | null): string | null => {
+    const cleaned = value?.replace(/^["']|["']$/g, "").trim();
+    return cleaned ? cleaned : null;
+  };
+
   // Extract and clean the IDs from URL parameters based on config
   const affiliateId = useMemo(() => {
     const paramName = config.trackingParams?.affiliateIdParam || "s1";
-    const id = searchParams.get(paramName);
-    return id?.replace(/^["']|["']$/g, "") || null;
+    // Canonical funnel -> adwall flow uses s1/s2. Fall back to config param for legacy links.
+    return (
+      cleanParam(searchParams.get("s1")) ??
+      cleanParam(searchParams.get(paramName))
+    );
   }, [searchParams, config.trackingParams?.affiliateIdParam]);
 
   const transactionId = useMemo(() => {
     const paramName = config.trackingParams?.transactionIdParam || "s2";
-    const id = searchParams.get(paramName);
-    return id?.replace(/^["']|["']$/g, "") || null;
+    // Canonical funnel -> adwall flow uses s1/s2. Fall back to config param (e.g. sub5) for legacy links.
+    return (
+      cleanParam(searchParams.get("s2")) ??
+      cleanParam(searchParams.get(paramName))
+    );
   }, [searchParams, config.trackingParams?.transactionIdParam]);
 
   // Extract form data for personalization
