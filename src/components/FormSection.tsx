@@ -4,6 +4,7 @@ import { useState } from "react";
 import { MultiStepForm } from "./MultiStepForm";
 import { FormConfig, FormData } from "@/types/form";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Loader } from "./Loader";
 import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
 import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
@@ -15,6 +16,7 @@ interface FormSectionProps {
 
 export function FormSection({ config, funnelId }: FormSectionProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [submittedData, setSubmittedData] = useState<FormData | null>(null);
 
@@ -92,9 +94,20 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
   const handleLoaderComplete = () => {
     const destination = resolvePostSubmitRedirect(config, submittedData || {});
 
-    // Generate IDs for s1 and s2
-    const affiliateId = Math.random().toString(36).substring(2, 11);
-    const transactionId = Math.random().toString(36).substring(2, 11);
+    const cleanParam = (value: string | null): string | null => {
+      const cleaned = value?.replace(/^["']|["']$/g, "").trim();
+      return cleaned ? cleaned : null;
+    };
+
+    // Preserve incoming tracking IDs when present (funnel -> adwall -> offer)
+    const incomingS1 = cleanParam(searchParams.get("s1"));
+    const incomingS2 = cleanParam(searchParams.get("s2"));
+    const incomingSub5 = cleanParam(searchParams.get("sub5"));
+
+    // Generate IDs only if not provided on the funnel URL
+    const affiliateId = incomingS1 ?? Math.random().toString(36).substring(2, 11);
+    const transactionId =
+      incomingS2 ?? incomingSub5 ?? Math.random().toString(36).substring(2, 11);
 
     // Extract form data for adwall personalization
     const formData = submittedData || {};
