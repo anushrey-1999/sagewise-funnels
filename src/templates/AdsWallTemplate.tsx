@@ -88,7 +88,7 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
       />
 
       {/* Cards */}
-      <div className="flex flex-col items-center w-full px-6 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
+      <div className="relative z-0 flex flex-col items-center w-full px-6 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
           <div ref={containerRef} className="flex flex-col gap-4">
             {config.cards?.map((item, index) => {

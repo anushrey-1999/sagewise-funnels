@@ -1,5 +1,5 @@
 import { Typography } from "@/components/ui/typography";
-import Image from "next/image";
+import AdvertiserDisclosure from "@/components/AdvertiserDisclosure";
 
 interface PageHeaderProps {
   title?: string;
@@ -18,8 +18,13 @@ const PlainPageHeader = ({ title, subtitle, headingFont, subheadingFont, updated
   const hasTitle = Boolean(title?.trim?.());
 
   return (
-    <div className="flex items-center justify-center overflow-hidden relative rounded-bl-[24px] rounded-br-[24px] w-full py-5 px-8 md:py-10">
-      <div className="flex flex-col gap-3 sm:gap-3 md:gap-3 items-center sm:px-8 md:px-16 z-10 w-full">
+    <div className="flex items-center justify-center overflow-visible relative z-20 rounded-bl-[24px] rounded-br-[24px] w-full py-5 px-8 md:py-10">
+      <div className="flex flex-col gap-2 sm:gap-2 md:gap-2 items-center sm:px-8 md:px-16 z-10 w-full">
+        <div className="w-full">
+          <div className="w-full max-w-[970px] mx-auto flex justify-end">
+            <AdvertiserDisclosure placement="bottom" />
+          </div>
+        </div>
         {hasTitle ? (
           <Typography
             variant="h2"
