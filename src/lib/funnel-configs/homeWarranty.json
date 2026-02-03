@@ -1,12 +1,12 @@
 {
-  "id": "homeWarrenty",
+  "id": "homeWarranty",
   "title": "Sagewise Home Warranty Quiz",
   "subtitle": "Complete the form below to receive personalized quotes.",
   "metaDescription": "Answer a few questions to get matched with home warranty protection plans.",
   "finalStep": {
     "buttonText": "See Instant Matches",
     "loaderText": "Searching 40+ Top Protection Plans... Analyzing national providers to find the best rate",
-    "redirectTo": "/adwall/homeWarrenty/one",
+    "redirectTo": "/adwall/homeWarranty/one",
     "disclaimerText": "By pressing \"See Instant Matches\" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products."
   },
   "steps": [
