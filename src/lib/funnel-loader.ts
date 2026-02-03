@@ -7,7 +7,7 @@ import ccTwoConfig from "./funnel-configs/cc-two.json";
 import ccThreeConfig from "./funnel-configs/cc-three.json";
 import ccFinbuzzConfig from "./funnel-configs/cc-finbuzz.json";
 import autoinsConfig from "./funnel-configs/autoins.json";
-import homeWarrentyConfig from "./funnel-configs/homeWarrenty.json";
+import homeWarrantyConfig from "./funnel-configs/homeWarranty.json";
 import goldConfig from "./funnel-configs/gold.json";
 import taxprepConfig from "./funnel-configs/taxprep.json";
 import cash4homeConfig from "./funnel-configs/cash4home.json";
@@ -26,7 +26,7 @@ const funnelConfigs: Record<string, FormConfig> = {
   "cc-three": ccThreeConfig as FormConfig,
   "cc-finbuzz": ccFinbuzzConfig as FormConfig,
   "autoins": autoinsConfig as FormConfig,
-  "homeWarrenty": homeWarrentyConfig as FormConfig,
+  "homeWarranty": homeWarrantyConfig as FormConfig,
   "gold": goldConfig as FormConfig,
   "taxprep": taxprepConfig as FormConfig,
   "cash4home": cash4homeConfig as FormConfig,
