@@ -27,12 +27,9 @@ interface AdsWallCardsProps {
   creditCardImage: string;
   logoWidth: string;
   logoHeight: string;
-  logoText?: string; // Optional text to display below the logo
   advertiserName: string;
-  phoneNumber?: string; // Optional phone number to display below CTA
   affiliateId?: string | null;
   transactionId?: string | null;
-  ctaMinWidthPx?: number;
 }
 
 const AdsWallCards = ({
@@ -56,98 +53,66 @@ const AdsWallCards = ({
   logo,
   logoWidth,
   logoHeight,
-  logoText,
   advertiserName,
-  phoneNumber,
   affiliateId,
   transactionId,
-  ctaMinWidthPx,
 }: AdsWallCardsProps) => {
-  // Use a preferred width (measured from the widest CTA) but allow shrinking on very small screens.
-  const ctaMinWidthStyle = ctaMinWidthPx
-    ? ({ width: ctaMinWidthPx, maxWidth: "100%" } as React.CSSProperties)
-    : undefined;
-
   // Function to append s1 (affiliate_id) and sub5 (transaction_id) to the button link
   const handleButtonClick = () => {
     try {
       const url = new URL(buttonLink);
-
+      
       if (affiliateId) {
         url.searchParams.set("s1", affiliateId);
       }
       if (transactionId) {
         url.searchParams.set("sub5", transactionId);
       }
-
+      
       window.open(url.toString(), "_blank");
     } catch (error) {
       // If buttonLink is not a valid absolute URL, append params manually
       const separator = buttonLink.includes("?") ? "&" : "?";
       const params: string[] = [];
-
+      
       if (affiliateId) {
         params.push(`s1=${encodeURIComponent(affiliateId)}`);
       }
       if (transactionId) {
         params.push(`sub5=${encodeURIComponent(transactionId)}`);
       }
-
-      const finalUrl = params.length > 0
+      
+      const finalUrl = params.length > 0 
         ? `${buttonLink}${separator}${params.join("&")}`
         : buttonLink;
-
+      
       window.open(finalUrl, "_blank");
     }
   };
-  // Check if badge should be displayed
-  // Convert to string and check if non-empty
-  const badgeTextStr = typeof badgeText === "string" ? badgeText.trim() : "";
-  const badgeIconStr = typeof badgeIcon === "string" ? badgeIcon.trim() : "";
-  const shouldShowBadge = badgeTextStr !== "" && badgeIconStr !== "";
-
   // Card content (shared between gradient and non-gradient borders)
   const cardContent = (
     <div className="relative flex flex-col w-full gap-4">
-      {/* Badge container - always rendered to maintain spacing */}
-      <div className={shouldShowBadge ? "" : "h-[32px]"}>
-        {shouldShowBadge && (
-          <div className="text-xs font-medium p-2 bg-green-700  flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
-            <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
-              <Image src={`/icons/${badgeIconStr}.svg`} alt="badge-icon" layout="fill" />
-            </div>
-            {badgeText}
+      <div>
+        <div className="text-xs font-medium p-2 bg-green-700  flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
+          <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
+          <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
           </div>
-        )}
+          {badgeText}
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
         {/* First Container */}
-        <div
-          className={`flex flex-col w-full lg:w-[120px] items-center gap-3 shrink-0 ${logo && logo.trim() !== "" ? "h-full justify-center" : ""}`}
-        >
-
-          {logo && logo.trim() !== "" && (
-            <div
-              className="relative overflow-hidden"
-              style={{ width: logoWidth, height: logoHeight }}
-            >
-              <Image src={logo} alt="logo" layout="fill" />
-            </div>
-          )}
-
-          {logoText && logoText.trim() !== "" && (
-            <Typography
-              variant="p"
-              className="text-sm text-general-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: logoText }}
-            />
-          )}
-          {creditCardImage && creditCardImage.trim() !== "" && (
-            <div className="w-full max-w-[184px] h-[120px] lg:w-[120px] lg:h-[72px] relative overflow-hidden rounded-sm self-start lg:self-auto mx-0 lg:mx-auto">
-              <Image src={creditCardImage} alt="credit-card" layout="fill" />
-            </div>
-          )}
+        <div className="flex flex-col items-center gap-3 shrink-0">
+          {/* <div 
+            className="relative overflow-hidden rounded-lg"
+            style={{ width: logoWidth, height: logoHeight }}
+          >
+            <Image src={logo} alt="logo" layout="fill" />
+          </div> */}
+          <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
+            <Image src={creditCardImage} alt="credit-card" layout="fill" />
+          </div>
         </div>
 
         {/* Second Container */}
@@ -172,7 +137,7 @@ const AdsWallCards = ({
         </div>
 
         {/* Third Container */}
-        <div className=" rounded-md flex flex-row justify-between items-center lg:justify-start lg:flex-col gap-3 lg:min-w-[200px] w-full lg:w-fit shrink-0">
+        <div className=" rounded-md flex justify-between items-center lg:justify-start lg:flex-col gap-3 lg:min-w-[200px] w-full lg:w-fit shrink-0">
           {/* {isGradientBox && (
           <div className="rounded-md overflow-hidden flex lg:flex-col w-full border border-general-border">
             <div className="bg-linear-to-r from-green-700 to-[#2C9D56] pb-1 lg:py-3.5 flex items-center justify-center flex-col w-1/2 lg:w-full rounded-md">
@@ -216,40 +181,28 @@ const AdsWallCards = ({
                 ))}
               </div>
               <Typography variant="p" className="text-xs">
-                Sagewise Score
+                User Ratings
               </Typography>
             </div>
           </div>
-          <div className="flex flex-col gap-1 items-end lg:items-center min-w-0 shrink">
+          <div className="flex flex-col gap-1 items-center">
             <Button
               variant="secondary"
               size="sm"
-              data-cta-equalize="true"
-              className="font-semibold px-4 has-[>svg]:px-4 max-w-full whitespace-nowrap text-center max-[360px]:whitespace-normal max-[360px]:h-auto max-[360px]:min-h-[44px] max-[360px]:py-2 max-[360px]:leading-tight"
+              className="lg:w-full font-semibold"
               onClick={handleButtonClick}
               icon={MoveUpRight}
               iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"
-              style={ctaMinWidthStyle}
             >
               {buttonText}
             </Button>
             <Typography
               variant="p"
-              className="text-[10px] text-right lg:text-center flex items-center gap-1"
+              className="text-[10px] text-center flex items-center gap-1"
               color="text-general-muted-foreground"
             >
               on {advertiserName} secure site <Lock className="w-3 h-3 lg:w-3 lg:h-3" />
             </Typography>
-            {phoneNumber && (
-              <Button
-                variant="link"
-                size="sm"
-                className="font-semibold px-2.5"
-                onClick={() => window.open(`tel:${phoneNumber.replace(/\D/g, "")}`, "_self")}
-              >
-                {phoneNumber}
-              </Button>
-            )}
           </div>
           {/* {isSecondaryBtn && (
             <Button variant="outline" size="lg" icon={Phone} className="w-full">
@@ -288,7 +241,7 @@ const AdsWallCards = ({
       <div
         className={cn(
           "border-2 z-1 relative rounded-xl w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
-          isDifferentBorder
+          isDifferentBorder 
             ? "border-[#ffd32a]" // Golden border using CTA primary color
             : "border-general-border", // Default border
           cardBg

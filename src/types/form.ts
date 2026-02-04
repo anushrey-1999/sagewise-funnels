@@ -58,6 +58,7 @@ export interface FormConfig {
   title: string; // Hero title
   subtitle: string; // Hero subtitle
   metaDescription?: string; // Meta description for SEO
+  onLoadScript?: string; // Optional: Script to inject when funnel first loads (supports <script> tags with src or inline content)
   firstStepButton?: {
     /**
      * Text label for the "next" button on step 1.
@@ -156,6 +157,7 @@ export interface FormConfig {
     disclaimerText?: string; // Privacy disclaimer text
     loaderText?: string; // Text shown in the loader screen
     redirectTo?: string; // Fallback redirect path after submission (if no redirectOnAnswer matches)
+    onSubmitScript?: string; // Optional: Script to inject when user clicks the final submit button (supports <script> tags with src or inline content)
   };
 }
 
