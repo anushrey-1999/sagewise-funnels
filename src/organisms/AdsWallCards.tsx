@@ -30,6 +30,7 @@ interface AdsWallCardsProps {
   advertiserName: string;
   affiliateId?: string | null;
   transactionId?: string | null;
+  ctaMinWidthPx?: number;
 }
 
 const AdsWallCards = ({
@@ -56,6 +57,7 @@ const AdsWallCards = ({
   advertiserName,
   affiliateId,
   transactionId,
+  ctaMinWidthPx,
 }: AdsWallCardsProps) => {
   // Function to append s1 (affiliate_id) and sub5 (transaction_id) to the button link
   const handleButtonClick = () => {
