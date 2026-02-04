@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { resolvePostSubmitRedirect, resolveRedirectOnAnswer } from "@/lib/funnel-redirect";
 import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
 import { useSearchParams } from "next/navigation";
+import { injectImpressionScript } from "@/lib/injectImpressionScript";
 
 // Progress bar component
 function ProgressBar({ progress }: { progress: number }) {
@@ -102,6 +103,13 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       onProgressChange(progress);
     }
   }, [progress, onProgressChange]);
+
+  // Inject onLoadScript when funnel first loads
+  useEffect(() => {
+    if (config.onLoadScript) {
+      void injectImpressionScript(config.onLoadScript);
+    }
+  }, [config.onLoadScript]);
 
   // Keep currentStepRef in sync with currentStep
   useEffect(() => {
@@ -391,6 +399,11 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
       // Validate the last step first
       if (!currentStepData || !validateStep()) {
         return;
+      }
+      
+      // Inject script if provided in config before submission
+      if (config.finalStep?.onSubmitScript) {
+        void injectImpressionScript(config.finalStep.onSubmitScript);
       }
       
       // Submit form data if handler provided
