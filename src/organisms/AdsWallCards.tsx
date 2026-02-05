@@ -27,6 +27,7 @@ interface AdsWallCardsProps {
   creditCardImage: string;
   logoWidth: string;
   logoHeight: string;
+  logoText?: string;
   advertiserName: string;
   affiliateId?: string | null;
   transactionId?: string | null;
@@ -54,6 +55,7 @@ const AdsWallCards = ({
   logo,
   logoWidth,
   logoHeight,
+  logoText,
   advertiserName,
   affiliateId,
   transactionId,
@@ -105,16 +107,30 @@ const AdsWallCards = ({
 
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
         {/* First Container */}
-        <div className="flex flex-col items-center gap-3 shrink-0">
-          {/* <div 
-            className="relative overflow-hidden rounded-lg"
-            style={{ width: logoWidth, height: logoHeight }}
-          >
-            <Image src={logo} alt="logo" layout="fill" />
-          </div> */}
-          <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
-            <Image src={creditCardImage} alt="credit-card" layout="fill" />
-          </div>
+        <div className="flex flex-col items-center justify-center gap-3 shrink-0 self-stretch">
+          {logo ? (
+            <div className="flex flex-col items-start" style={{ width: logoWidth }}>
+              <div
+                className="relative overflow-hidden rounded-lg"
+                style={{ width: logoWidth, height: logoHeight }}
+              >
+                <Image src={logo} alt="logo" layout="fill" />
+              </div>
+              {logoText && (
+                <Typography
+                  variant="p"
+                  className="text-[10px] text-left mt-1"
+                  color="text-general-muted-foreground"
+                >
+                  {logoText}
+                </Typography>
+              )}
+            </div>
+          ) : (
+            <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
+              <Image src={creditCardImage} alt="credit-card" layout="fill" />
+            </div>
+          )}
         </div>
 
         {/* Second Container */}
