@@ -59,7 +59,7 @@
         {
       "heading": "Current Card",
       "description": "Build your credit with Current - No annual fees, no interest, & no credit check",
-      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({offer_id: 163,affiliate_id: EF.urlParameter('s1'),source_id: EF.urlParameter('source_id'),sub1: EF.urlParameter('sub1'),sub2: EF.urlParameter('sub2'),sub3: EF.urlParameter('sub3'),sub4: EF.urlParameter('sub4'),sub5: EF.urlParameter('sub5'),}) </script>",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({offer_id: 163,affiliate_id: EF.urlParameter('s1'),source_id: EF.urlParameter('source_id'),sub1: EF.urlParameter('sub1'),sub2: EF.urlParameter('sub2'),sub3: EF.urlParameter('sub3'),sub4: EF.urlParameter('sub4'),sub5: EF.urlParameter('sub5'),});</script>",
       "features": [
         "No monthly fees or minimum fees",
         "Get paid up to 2 days faster",

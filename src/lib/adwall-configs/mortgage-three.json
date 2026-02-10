@@ -16,17 +16,18 @@
   "cards": [
     {
       "heading": "Aven",
-      "description": "2% Cash Back HELOC. Use your equity anywhere Visa is accepted.",
+      "description": "Access a credit limit from $5,000-$400,000 in home equity",
       "features": [
-        "No Annual or Notary Fees",
-        "Funding in as few as 5 Days",
-        "100% Online; No In-Person Appraisal"
+        "Close in as fast as 15 minutes, 100% online",
+        "Check your offer - no impact to credit score",
+        "Quick access to funds - cash in as little as 3 business days from closing"
       ],
       "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
+      "buttonText": "VIEW RATES",
       "ratingsNumber": "8.0",
       "ratingsCount": 5,
       "logo": "/logos/mortgage/aven.avif",
+      "logoText":"NMLS #2042345",
       "logoWidth": "110px",
       "logoHeight": "35px",
       "badgeText": "2% Cash Back",
