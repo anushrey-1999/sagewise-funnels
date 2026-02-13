@@ -111,7 +111,7 @@ const AdsWallCards = ({
           {logo ? (
             <div className="flex flex-col items-start" style={{ width: logoWidth }}>
               <div
-                className="relative overflow-hidden rounded-lg"
+                className="relative overflow-hidden"
                 style={{ width: logoWidth, height: logoHeight }}
               >
                 <Image src={logo} alt="logo" layout="fill" />

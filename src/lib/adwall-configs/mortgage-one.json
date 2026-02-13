@@ -15,64 +15,103 @@
   },
   "cards": [
     {
-      "heading": "Rocket Mortgage",
-      "description": "America's Largest Digital Lender. Simple, fast home buying solutions.",
+      "heading": "Figure",
+      "description": "Fast Digital HELOC. Approval in as little as 5 minutes.",
       "features": [
-        "Get Prequalified in Minutes",
-        "Fully Online Application",
-        "Loans up to $5M Available"
+        "Fixed Rates for Predictability",
+        "Funding in as few as 5 Days",
+        "100% Online; No In-Person Appraisal"
       ],
       "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
-      "logoText": "NMLS #3030",
-      "ratingsNumber": "9.0",
+      "buttonText": "GET QUOTE",
+      "ratingsNumber": "9.6",
       "ratingsCount": 5,
-      "logo": "/logos/mortgage/rockets.avif",
+      "logo": "/logos/mortgage/figure.avif",
+      "logoText":"NMLS #1717824",
       "logoWidth": "110px",
-      "logoHeight": "35px",
-      "badgeText": "Top Digital Lender",
+      "logoHeight": "18px",
+      "badgeText": "5-Day Funding",
       "badgeIcon": "card",
-      "advertiserName": "Rocket Mortgage",
-      "phoneNumber": "1-800-000-0000"
+      "advertiserName": "Figure"
     },
     {
-      "heading": "Better",
-      "description": "Zero Commissions, No Lender Fees. Instant pre-approval in minutes.",
+      "heading": "Aven",
+      "description": "Access a credit limit from $5,000-$400,000 in home equity",
       "features": [
-        "No Loan Officer Commissions",
-        "Transparent Online Tracking",
-        "Down Payments as low as 3%"
+        "Close in as fast as 15 minutes, 100% online",
+        "Check your offer - no impact to credit score",
+        "Quick access to funds - cash in as little as 3 business days from closing"
+      ],
+      "buttonLink": "#",
+      "buttonText": "VIEW RATES",
+      "ratingsNumber": "8.9",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/aven.avif",
+      "logoText":"NMLS #2042345",
+      "logoWidth": "110px",
+      "logoHeight": "32px",
+      "badgeText": "2% Cash Back",
+      "badgeIcon": "card",
+      "advertiserName": "Aven"
+    },
+    {
+      "heading": "Unlock",
+      "description": "$15K - $500K to use your way. Unlock your home's equity",
+      "features": [
+        "No monthly payments",
+        "Use funds for anything",
+        "Access your equity without refinancing"
       ],
       "buttonLink": "#",
       "buttonText": "GET QUOTE",
       "ratingsNumber": "8.5",
-      "logoText":"NMLS #330511",
       "ratingsCount": 5,
-      "logo": "/logos/mortgage/betters.avif",
+      "logo": "/logos/mortgage/unlock.avif",
+      "logoText":"NMLS #2657081",
       "logoWidth": "110px",
-      "logoHeight": "30px",
-      "badgeText": "No Lender Fees",
+      "logoHeight": "25px",
+      "badgeText": "No Monthly Payments",
       "badgeIcon": "card",
-      "advertiserName": "Better",
-      "phoneNumber": "1-800-000-0000"
+      "advertiserName": "Unlock"
+    },
+    {
+      "heading": "Quicken Loans",
+      "description": "Unlock Cash from Within Your Home",
+      "features": [
+        "Get Prequalified in Minutes",
+        "Fully Online Application",
+        "Compare lenders and loan options to find the help you need"
+      ],
+      "buttonLink": "https://www.rdtrk65.com/38TJS78/5JQ8NT/",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({ offer_id: 92, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5'), });</script>",
+      "buttonText": "GET QUOTE",
+      "ratingsNumber": "8.0",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/quickloans.avif",
+      "logoText":"NMLS #167283",
+      "logoWidth": "110px",
+      "logoHeight": "22px",
+      "badgeText": "100% online",
+      "badgeIcon": "card",
+      "advertiserName": "Quicken Loans"
     },
     {
       "heading": "loanDepot",
-      "description": "Lifetime Guarantee. No lender fees on any future refinances.",
+      "description": "Lower Payments. Consolidate Debt. Pull Cash Out.",
       "features": [
-        "Specialized in VA & FHA Loans",
-        "Streamlined Refi Processes",
-        "Proactive Savings Monitoring"
+        "No obligation rate quote with no impact to your credit score<sup>*</sup>",
+        "Fund in as little as 2 weeks.",
+        "Lifetime waiver of fees after first refinance with loanDepot<sup>*</sup>"
       ],
       "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
+      "buttonText": "APPLY NOW",
       "logoText":"NMLS #174457",
       "ratingsNumber": "7.5",
       "ratingsCount": 5,
       "logo": "/logos/mortgage/loandepot.avif",
       "logoWidth": "100px",
       "logoHeight": "25px",
-      "badgeText": "Lifetime Guarantee",
+      "badgeText": "NO CREDIT CHECK",
       "badgeIcon": "card",
       "advertiserName": "loanDepot"
     }
