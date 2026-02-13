@@ -714,7 +714,19 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
                   </span>
                 </Button>
                 <p className="text-xs text-general-muted-foreground text-left w-full sm:w-[380px] md:w-[342px] mt-3">
-                  {config.finalStep?.disclaimerText || `By pressing "${config.finalStep?.buttonText || "See Instant Matches"}" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.`}
+                  {config.finalStep?.disclaimerText?.includes("<a ") ? (
+                    <span
+                      className="[&_a]:underline [&_a]:text-primary-main [&_a]:hover:opacity-90"
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          config.finalStep.disclaimerText ||
+                          `By pressing "${config.finalStep?.buttonText || "See Instant Matches"}" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.`,
+                      }}
+                    />
+                  ) : (
+                    config.finalStep?.disclaimerText ||
+                    `By pressing "${config.finalStep?.buttonText || "See Instant Matches"}" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.`
+                  )}
                 </p>
               </>
             )}

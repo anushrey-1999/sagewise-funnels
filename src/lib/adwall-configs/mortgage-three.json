@@ -15,65 +15,46 @@
   },
   "cards": [
     {
-      "heading": "Aven",
-      "description": "Access a credit limit from $5,000-$400,000 in home equity",
+      "heading": "Veterans United Home Loans",
+      "description": "Trusted by 300,000 veterans and Military Families",
       "features": [
-        "Close in as fast as 15 minutes, 100% online",
-        "Check your offer - no impact to credit score",
-        "Quick access to funds - cash in as little as 3 business days from closing"
+        "Secure preapproval quickly with 24/7 access",
+        "100% financing for qualified veterans",
+        "Easy, no hassle process with MyVeteransUnited"
       ],
       "buttonLink": "#",
       "buttonText": "VIEW RATES",
-      "ratingsNumber": "8.0",
+      "ratingsNumber": "9.6",
+      "logoText":"NMLS #1907",
       "ratingsCount": 5,
-      "logo": "/logos/mortgage/aven.avif",
-      "logoText":"NMLS #2042345",
-      "logoWidth": "110px",
-      "logoHeight": "35px",
-      "badgeText": "2% Cash Back",
-      "badgeIcon": "card",
-      "advertiserName": "Aven",
-      "phoneNumber": "1-800-000-0000"
-    },
-    {
-      "heading": "Figure",
-      "description": "Fast Digital HELOC. Approval in as little as 5 minutes.",
-      "features": [
-        "Fixed Rates for Predictability",
-        "Funding in as few as 5 Days",
-        "100% Online; No In-Person Appraisal"
-      ],
-      "buttonLink": "#",
-      "buttonText": "GET QUOTE",
-      "ratingsNumber": "8.5",
-      "ratingsCount": 5,
-      "logo": "/logos/mortgage/figure.avif",
-      "logoText":"NMLS #1717824",
+      "logo": "/logos/mortgage/vuhl.avif",
       "logoWidth": "110px",
       "logoHeight": "20px",
-      "badgeText": "5-Day Funding",
+      "badgeText": "#1 VA Lender",
       "badgeIcon": "card",
-      "advertiserName": "Figure",
-      "phoneNumber": "1-800-000-0000"
+      "advertiserName": "New American"
     },
     {
-      "heading": "Hometap",
-      "description": "No Monthly Payments. Get cash now in exchange for future value.",
+      "heading": "Quicken Loans",
+      "description": "Unlock Cash from Within Your Home",
       "features": [
-        "Not a Loan - No Interest",
-        "Settle When You Sell or Refi",
-        "No Minimum Income Requirement"
+        "Get Prequalified in Minutes",
+        "Fully Online Application",
+        "Compare lenders and loan options to find the help you need"
       ],
-      "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
-      "ratingsNumber": "7.5",
+      "buttonLink": "https://www.rdtrk65.com/38TJS78/5JQ8NT/",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({ offer_id: 92, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5'), });</script>",
+      "buttonText": "VIEW RATES",
+      "ratingsNumber": "8.5",
       "ratingsCount": 5,
-      "logo": "/logos/mortgage/hometaps.avif",
-      "logoWidth": "120px",
-      "logoHeight": "55px",
-      "badgeText": "No Income Requirement",
+      "logo": "/logos/mortgage/quickloans.avif",
+      "logoText":"NMLS #167283",
+      "logoWidth": "110px",
+      "logoHeight": "22px",
+      "badgeText": "100% online",
       "badgeIcon": "card",
-      "advertiserName": "Hometap"
+      "advertiserName": "Quicken Loans"
     }
+
   ]
 }

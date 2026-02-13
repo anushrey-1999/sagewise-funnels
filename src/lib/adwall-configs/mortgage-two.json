@@ -15,66 +15,45 @@
   },
   "cards": [
     {
-      "heading": "Freedom Mortgage",
-      "description": "Top VA & FHA Lender. Refinance to lower your monthly payments.",
+      "heading": "Quicken Loans",
+      "description": "Unlock Cash from Within Your Home",
       "features": [
-        "Low Mortgage Rates",
-        "Fast Online Approval",
-        "Flexible Loan Terms (10-30 yr)"
+        "Get Prequalified in Minutes",
+        "Fully Online Application",
+        "Compare lenders and loan options to find the help you need"
       ],
-      "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
-      "ratingsNumber": "7.0",
-      "logoText":"NMLS #2767",
-      "ratingsCount": 5,
-      "logo": "/logos/mortgage/freedom.avif",
-      "logoWidth": "110px",
-      "logoHeight": "40px",
-      "badgeText": "Top VA Lender",
-      "badgeIcon": "card",
-      "advertiserName": "Freedom Mortgage",
-      "phoneNumber": "1-800-000-0000"
-    },
-    {
-      "heading": "Amerisave",
-      "description": "Quick Rate Quotes. Competitive fixed and variable refinance options.",
-      "features": [
-        "Refi up to 100% Home Value",
-        "Flexible Credit Guidelines",
-        "Decades of Lending Experience"
-      ],
-      "buttonLink": "#",
+      "buttonLink": "https://www.rdtrk65.com/38TJS78/5JQ8NT/",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({ offer_id: 92, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5'), });</script>",
       "buttonText": "GET QUOTE",
-      "logoText":"NMLS #1168",
-      "ratingsNumber": "8.0",
+      "ratingsNumber": "9.0",
       "ratingsCount": 5,
-      "logo": "/logos/mortgage/amerisave.avif",
+      "logo": "/logos/mortgage/quickloans.avif",
+      "logoText":"NMLS #167283",
       "logoWidth": "110px",
-      "logoHeight": "55px",
-      "badgeText": "Low Rates",
+      "logoHeight": "22px",
+      "badgeText": "100% online",
       "badgeIcon": "card",
-      "advertiserName": "Amerisave",
-      "phoneNumber": "1-800-000-0000"
+      "advertiserName": "Quicken Loans"
     },
     {
-      "heading": "New American",
-      "description": "Personalized Refi Programs. Dedicated consultants for your goals.",
+      "heading": "loanDepot",
+      "description": "Lower Payments. Consolidate Debt. Pull Cash Out.",
       "features": [
-        "Refi up to 100% Home Value",
-        "Flexible Credit Guidelines",
-        "Decades of Lending Experience"
+        "No obligation rate quote with no impact to your credit score<sup>*</sup>",
+        "Fund in as little as 2 weeks.",
+        "Lifetime waiver of fees after first refinance with loanDepot<sup>*</sup>"
       ],
       "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
+      "buttonText": "APPLY NOW",
+      "logoText":"NMLS #174457",
       "ratingsNumber": "8.5",
-      "logoText":"NMLS #6606",
       "ratingsCount": 5,
-      "logo": "/logos/mortgage/nas.avif",
-      "logoWidth": "110px",
-      "logoHeight": "70px",
-      "badgeText": "Cash-Out Specialist",
+      "logo": "/logos/mortgage/loandepot.avif",
+      "logoWidth": "100px",
+      "logoHeight": "25px",
+      "badgeText": "NO CREDIT CHECK",
       "badgeIcon": "card",
-      "advertiserName": "New American"
+      "advertiserName": "loanDepot"
     }
   ]
 }

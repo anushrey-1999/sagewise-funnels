@@ -8,7 +8,7 @@
     "buttonText": "View My Matches",
     "loaderText": "Finding your best credit card matches...",
     "redirectTo": "/adwall/cc/finbuzz",
-    "disclaimerText": "By pressing \"View My Matches\" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.",
+    "disclaimerText": "By clicking \"View My Matches,\" you acknowledge that you have read and agree to our <a href=\"https://sagewise.net/privacy-policy/\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and <a href=\"https://sagewise.net/terms-of-use/\" target=\"_blank\" rel=\"noopener noreferrer\">Terms of Use</a> and authorize us to use the information you provide to determine your pre‑qualification offers. You also consent to receive transactional and marketing communications about these offers by email at the address you provide, which you can opt out of at any time by following the instructions in our emails. Consent to receive email is not required to apply for or obtain a card; if you prefer not to receive marketing emails, you may unsubscribe at any time.",
     "onSubmitScript": "<script type=\"text/javascript\" src=\"https://www.ckp9xu2d.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.conversion({ offer_id: 155 });</script>"
   },
   "steps": [
