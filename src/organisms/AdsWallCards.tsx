@@ -109,12 +109,17 @@ const AdsWallCards = ({
         {/* First Container */}
         <div className="flex flex-col items-center justify-center gap-3 shrink-0 self-stretch">
           {logo ? (
-            <div className="flex flex-col items-start" style={{ width: logoWidth }}>
+            <div className="flex flex-col items-start w-[110px]" >
               <div
-                className="relative overflow-hidden"
+                className="relative overflow-hidden flex items-center "
                 style={{ width: logoWidth, height: logoHeight }}
               >
-                <Image src={logo} alt="logo" layout="fill" />
+                <Image
+                  src={logo}
+                  alt="logo"
+                  layout="fill"
+                  className="object-contain"
+                />
               </div>
               {logoText && (
                 <Typography
