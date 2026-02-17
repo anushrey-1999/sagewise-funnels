@@ -2,9 +2,9 @@
   "id": "mortgage-two",
   "funnelId": "mortgage",
   "adwallType": "two",
-  "title": "Lower your monthly payments in you city!",
+  "title": "Lower your monthly payments in {zip}!",
   "subtitle": "We've analyzed national lenders to find the best refinance rates for homes in {zip}.",
-  "updatedAt": "Updated January 23, 2026",
+  "updatedAt": "Updated February 17, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",
     "transactionIdParam": "s2"

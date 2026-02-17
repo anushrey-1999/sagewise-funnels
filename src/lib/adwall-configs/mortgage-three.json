@@ -2,9 +2,9 @@
   "id": "mortgage-three",
   "funnelId": "mortgage",
   "adwallType": "three",
-  "title": "Tap into your home's value in your city.",
-  "subtitle": "Access cash for renovations or debt consolidation with these top-rated HELOC and Equity programs.",
-  "updatedAt": "Updated January 23, 2026",
+  "title": "{NAME}, we found lender matches for you in {zip}.",
+  "subtitle": "Compare top-rated purchase programs in {zip} with $0-down options for qualified buyers.",
+  "updatedAt": "Updated February 17, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",
     "transactionIdParam": "s2"
@@ -16,10 +16,10 @@
   "cards": [
     {
       "heading": "Veterans United Home Loans",
-      "description": "Trusted by 300,000 veterans and Military Families",
+      "description": "Trusted by 300,000 veterans and military families",
       "features": [
         "Secure preapproval quickly with 24/7 access",
-        "100% financing for qualified veterans",
+        "Competitively low rates and no PMI",
         "Easy, no hassle process with MyVeteransUnited"
       ],
       "buttonLink": "#",
@@ -28,7 +28,7 @@
       "logoText":"NMLS #1907",
       "ratingsCount": 5,
       "logo": "/logos/mortgage/vuhl.avif",
-      "logoWidth": "110px",
+      "logoWidth": "100px",
       "logoHeight": "20px",
       "badgeText": "#1 VA Lender",
       "badgeIcon": "card",
@@ -36,11 +36,11 @@
     },
     {
       "heading": "Quicken Loans",
-      "description": "Unlock Cash from Within Your Home",
+      "description": "Get personalized lender recommendations for $0",
       "features": [
-        "Get Prequalified in Minutes",
-        "Fully Online Application",
-        "Compare lenders and loan options to find the help you need"
+        "Get rates from our providers. Lenders 100% online",
+        "Check to see your different home buying options",
+        "Home buying with as little as 1% down"
       ],
       "buttonLink": "https://www.rdtrk65.com/38TJS78/5JQ8NT/",
       "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({ offer_id: 92, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5'), });</script>",
@@ -49,7 +49,7 @@
       "ratingsCount": 5,
       "logo": "/logos/mortgage/quickloans.avif",
       "logoText":"NMLS #167283",
-      "logoWidth": "110px",
+      "logoWidth": "100px",
       "logoHeight": "22px",
       "badgeText": "100% online",
       "badgeIcon": "card",

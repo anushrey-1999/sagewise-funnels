@@ -2,9 +2,9 @@
   "id": "mortgage-one",
   "funnelId": "mortgage",
   "adwallType": "one",
-  "title": "{NAME}, we found lender matches for you in {zip}.",
-  "subtitle": "Compare top-rated purchase programs in your city with $0-down options for qualified buyers.",
-  "updatedAt": "Updated January 23, 2026",
+  "title": "Tap into your home's value in your {zip}",
+  "subtitle": "Access cash for renovations or debt consolidation with these top-rated HELOC and Equity programs.",
+  "updatedAt": "Updated February 17, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",
     "transactionIdParam": "s2"
@@ -18,9 +18,10 @@
       "heading": "Figure",
       "description": "Fast Digital HELOC. Approval in as little as 5 minutes.",
       "features": [
-        "Fixed Rates for Predictability",
-        "Funding in as few as 5 Days",
-        "100% Online; No In-Person Appraisal"
+        "Competitive rates even with a 640 FICO score",
+        "High limits: Access up to $750k for any purpose",
+        "No-hassle process: Entirely digital application",
+        "Rapid results: Funding available in 5 days"
       ],
       "buttonLink": "#",
       "buttonText": "GET QUOTE",
@@ -28,9 +29,9 @@
       "ratingsCount": 5,
       "logo": "/logos/mortgage/figure.avif",
       "logoText":"NMLS #1717824",
-      "logoWidth": "110px",
+      "logoWidth": "100px",
       "logoHeight": "18px",
-      "badgeText": "5-Day Funding",
+      "badgeText": "5 DAY FUNDING",
       "badgeIcon": "card",
       "advertiserName": "Figure"
     },
@@ -48,9 +49,9 @@
       "ratingsCount": 5,
       "logo": "/logos/mortgage/aven.avif",
       "logoText":"NMLS #2042345",
-      "logoWidth": "110px",
+      "logoWidth": "90px",
       "logoHeight": "32px",
-      "badgeText": "2% Cash Back",
+      "badgeText": "3 DAY FUNDING",
       "badgeIcon": "card",
       "advertiserName": "Aven"
     },
@@ -58,9 +59,9 @@
       "heading": "Unlock",
       "description": "$15K - $500K to use your way. Unlock your home's equity",
       "features": [
+        "Access your equity without refinancing",
         "No monthly payments",
-        "Use funds for anything",
-        "Access your equity without refinancing"
+        "Use funds for anything"
       ],
       "buttonLink": "#",
       "buttonText": "GET QUOTE",
@@ -68,7 +69,7 @@
       "ratingsCount": 5,
       "logo": "/logos/mortgage/unlock.avif",
       "logoText":"NMLS #2657081",
-      "logoWidth": "110px",
+      "logoWidth": "100px",
       "logoHeight": "25px",
       "badgeText": "No Monthly Payments",
       "badgeIcon": "card",
@@ -89,7 +90,7 @@
       "ratingsCount": 5,
       "logo": "/logos/mortgage/quickloans.avif",
       "logoText":"NMLS #167283",
-      "logoWidth": "110px",
+      "logoWidth": "100px",
       "logoHeight": "22px",
       "badgeText": "100% online",
       "badgeIcon": "card",
