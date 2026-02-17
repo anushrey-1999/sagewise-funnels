@@ -5,19 +5,20 @@ type LogoProps = {
   className?: string;
   color?: "primary" | "white";
   type?: "wordmark" | "logomark";
+  href?: string;
 };
 
 const imgColorWhiteTypeWordmark = "/sagewise-logo.png";
 const imgColorPrimaryTypeWordmark = ""
 
-export function Logo({ className, color = "primary", type = "wordmark" }: LogoProps) {
+export function Logo({ className, color = "primary", type = "wordmark", href = "/" }: LogoProps) {
   const src = color === "white" && type === "wordmark" 
     ? imgColorWhiteTypeWordmark 
     : imgColorPrimaryTypeWordmark;
 
   return (
     <div className={className}>
-      <Link href="/">
+      <Link href={href}>
         <Image
           src={src}
           alt="Sagewise Logo"
