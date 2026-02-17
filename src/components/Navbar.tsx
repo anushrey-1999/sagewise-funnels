@@ -48,7 +48,7 @@ export function Navbar() {
         <Menu className="h-4 w-4 text-white" />
       </Button> */}
       <div className="shrink-0 flex justify-center lg:justify-start items-center">
-        <Logo color="white" />
+        <Logo color="white" href="https://sagewise.net/" />
       </div>
       {(navbar?.tagline || navbar?.phone) && (
         <div className="flex flex-col items-end text-white text-right gap-0.5">
