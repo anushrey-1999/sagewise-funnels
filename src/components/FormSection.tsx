@@ -18,6 +18,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedData, setSubmittedData] = useState<FormData | null>(null);
 
   const handleFormSubmit = async (data: FormData) => {
@@ -25,9 +26,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       console.log("Submitting form data:", { funnelId, data });
 
       setSubmittedData(data);
-
-      // Show loader
-      setIsLoading(true);
+      setIsSubmitting(true);
 
       // Extract user details from form data
       // The form data structure is: { [stepId]: { [fieldId]: value } }
@@ -69,6 +68,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
         throw new Error("Email or phone is required to submit the form");
       }
 
+      // Complete the API call before showing the loader so the request is not cancelled when we redirect
       const response = await fetch("/api/users", {
         method: "POST",
         headers: {
@@ -84,8 +84,12 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       const user = await response.json();
       console.log("User created:", user);
 
+      // Show loader only after user is created so redirect does not cancel the request
+      setIsSubmitting(false);
+      setIsLoading(true);
     } catch (error) {
       console.error("Error submitting form:", error);
+      setIsSubmitting(false);
       setIsLoading(false);
       alert(`There was an error submitting your form: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
@@ -135,18 +139,25 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       zip: zipCode,
     });
 
+    // Use full page redirect so the destination page has a clean document (no leftover
+    // form-injected scripts like EF.conversion that would otherwise persist with client-side nav)
     if (isAbsoluteUrl(finalUrl)) {
       window.location.assign(finalUrl);
       return;
     }
-
-    router.push(finalUrl);
+    window.location.assign(finalUrl);
   };
 
   if (isLoading) {
     return <Loader onComplete={handleLoaderComplete} loaderText={config.finalStep?.loaderText} />;
   }
 
-  return <MultiStepForm config={config} onSubmit={handleFormSubmit} />;
+  return (
+    <MultiStepForm
+      config={config}
+      onSubmit={handleFormSubmit}
+      isSubmitting={isSubmitting}
+    />
+  );
 }
 
