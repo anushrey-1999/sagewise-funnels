@@ -5,7 +5,7 @@ import { FormConfig, FormData } from "@/types/form";
 import { DynamicFormField } from "./DynamicFormField";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Loader } from "./Loader";
@@ -61,9 +61,10 @@ interface MultiStepFormProps {
   config: FormConfig;
   onSubmit?: (data: FormData) => void;
   onProgressChange?: (progress: number) => void;
+  isSubmitting?: boolean;
 }
 
-export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepFormProps) {
+export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting = false }: MultiStepFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(0);
@@ -558,11 +559,8 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
             : appendQueryParams(destination, { s1: s1 ?? undefined, s2: s2 ?? undefined, sub5: s2 ?? undefined });
         }
 
-        if (isAbsoluteUrl(destination)) {
-          window.location.assign(finalUrl);
-        } else {
-          router.push(finalUrl);
-        }
+        // Full page navigation so the destination has a clean document (no form-injected scripts)
+        window.location.assign(finalUrl);
         return;
       }
     }
@@ -721,12 +719,21 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
                   type="button"
                   variant="secondary"
                   onClick={handleNext}
-                  disabled={!isStepValid()}
+                  disabled={!isStepValid() || isSubmitting}
                   className="w-full sm:w-[380px] md:w-[342px] px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-3"
                 >
-                  <span className="text-base font-medium leading-none">
-                    {config.finalStep?.buttonText || "See Instant Matches"}
-                  </span>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                      <span className="text-base font-medium leading-none">
+                        Submitting...
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-base font-medium leading-none">
+                      {config.finalStep?.buttonText || "See Instant Matches"}
+                    </span>
+                  )}
                 </Button>
                 <p className="text-xs text-general-muted-foreground text-left w-full sm:w-[380px] md:w-[342px] mt-3">
                   {config.finalStep?.disclaimerText?.includes("<a ") ? (
