@@ -547,7 +547,22 @@ export function MultiStepForm({ config, onSubmit, onProgressChange }: MultiStepF
           checkCompleteTimeoutRef.current = null;
         }
 
-        router.push(destination);
+        // cc-finbuzz only: pass s1/s2 from funnel URL as sub4/sub5 on external links, s1/s2/sub5 on internal
+        let finalUrl = destination;
+        if (config.id === "cc-finbuzz") {
+          const clean = (v: string | null) => v?.replace(/^["']|["']$/g, "").trim() || null;
+          const s1 = clean(searchParams.get("s1"));
+          const s2 = clean(searchParams.get("s2"));
+          finalUrl = isAbsoluteUrl(destination)
+            ? appendQueryParams(destination, { sub4: s1 ?? undefined, sub5: s2 ?? undefined })
+            : appendQueryParams(destination, { s1: s1 ?? undefined, s2: s2 ?? undefined, sub5: s2 ?? undefined });
+        }
+
+        if (isAbsoluteUrl(destination)) {
+          window.location.assign(finalUrl);
+        } else {
+          router.push(finalUrl);
+        }
         return;
       }
     }

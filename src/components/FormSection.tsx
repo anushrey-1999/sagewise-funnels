@@ -130,6 +130,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
     const finalUrl = appendQueryParams(destination, {
       s1: affiliateId,
       s2: transactionId,
+      sub5: transactionId,
       name: firstName,
       zip: zipCode,
     });
