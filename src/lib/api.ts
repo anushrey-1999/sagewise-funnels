@@ -2,7 +2,7 @@ import { FormData } from "@/types/form";
 
 export interface ApiResponse {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   adsWall?: {
     ads: Array<{

@@ -23,6 +23,7 @@ const footerLinks = [
 
 const MinimalFooter = () => {
   const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
   const showDisclosureInFooter = !pathname?.startsWith("/adwall/");
   return (
     <div className='bg-white p-6 border-t border-general-border flex flex-col items-center gap-4'>

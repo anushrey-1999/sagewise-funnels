@@ -123,13 +123,12 @@ function ArrowBullet({ className }: { className?: string }) {
 }
 
 export function FunnelPostContent({ postContent }: { postContent?: PostContent }) {
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   if (!postContent) return null;
 
   const { details, faqs, bottomLine } = postContent;
   const hasAny = Boolean(details?.blocks?.length || faqs?.items?.length || bottomLine);
   if (!hasAny) return null;
-
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const renderDetailBlock = (block: NonNullable<PostContent["details"]>["blocks"][number], key: number) => {
     switch (block.type) {
@@ -264,17 +263,20 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
       {details?.blocks?.length ? (
         <section>
           {(() => {
-            const groups: Array<{ heading?: NonNullable<PostContent["details"]>["blocks"][number]; blocks: NonNullable<PostContent["details"]>["blocks"] }> = [];
-            let current: { heading?: NonNullable<PostContent["details"]>["blocks"][number]; blocks: NonNullable<PostContent["details"]>["blocks"] } | null = null;
+            type DetailBlock = NonNullable<PostContent["details"]>["blocks"][number];
+            type Group = { heading?: DetailBlock; blocks: DetailBlock[] };
+
+            const groups: Group[] = [];
+            let current: Group | null = null;
 
             for (const b of details.blocks) {
               const isHeading = b.type === "h2" || b.type === "h3";
               if (isHeading) {
                 if (current) groups.push(current);
-                current = { heading: b, blocks: [] as any };
+                current = { heading: b, blocks: [] };
               } else {
-                if (!current) current = { blocks: [] as any };
-                current.blocks.push(b as any);
+                if (!current) current = { blocks: [] };
+                current.blocks.push(b);
               }
             }
             if (current) groups.push(current);

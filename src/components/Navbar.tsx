@@ -3,8 +3,7 @@
 import { Logo } from "./Logo";
 import { Phone } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { getFunnelConfig } from "@/lib/funnel-loader";
-import { getAdwallConfig } from "@/lib/adwall-loader";
+import { useEffect, useState } from "react";
 
 function toTelHref(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, "");
@@ -18,26 +17,35 @@ function toTelHref(phone: string): string {
 export function Navbar() {
   const pathname = usePathname() || "";
   const searchParams = useSearchParams();
+  const hide = pathname.startsWith("/admin");
 
-  // Determine which config applies for the current route and read optional navbar data.
   const funnelIdFromQuery = searchParams.get("funnel");
-  let navbar: { tagline?: string; phone?: string } | undefined;
+  const preview = searchParams.get("preview");
+  const [navbar, setNavbar] = useState<{ tagline?: string; phone?: string } | null>(null);
 
-  if (pathname.startsWith("/adwall/")) {
-    const parts = pathname.split("/").filter(Boolean); // ["adwall", "{funnel}", "{type}", ...]
-    const routeFunnel = parts[1];
-    const adwallType = parts[2];
-    if (routeFunnel && adwallType) {
-      const adwallConfig = getAdwallConfig(routeFunnel, adwallType);
-      // Prefer adwall-specific navbar settings; fallback to the funnel's navbar settings
-      navbar =
-        adwallConfig?.navbar ||
-        (adwallConfig?.funnelId ? getFunnelConfig(adwallConfig.funnelId)?.navbar : undefined);
-    }
-  } else if (pathname === "/form" || pathname.startsWith("/form/")) {
-    navbar = getFunnelConfig(funnelIdFromQuery)?.navbar;
-  }
+  useEffect(() => {
+    if (hide) return;
+    const controller = new AbortController();
+    const url = new URL("/api/navbar", window.location.origin);
+    url.searchParams.set("pathname", pathname);
+    if (funnelIdFromQuery) url.searchParams.set("funnel", funnelIdFromQuery);
+    if (preview === "1") url.searchParams.set("preview", "1");
 
+    fetch(url.toString(), { signal: controller.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.navbar) setNavbar(data.navbar);
+        else setNavbar(null);
+      })
+      .catch(() => {
+        // Non-blocking; keep navbar hidden if it fails.
+        setNavbar(null);
+      });
+
+    return () => controller.abort();
+  }, [pathname, funnelIdFromQuery, preview, hide]);
+
+  if (hide) return null;
   return (
     <div className="bg-[#204c4b] flex items-center justify-between px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative">
       {/* <Button

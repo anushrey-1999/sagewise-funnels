@@ -166,7 +166,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   const createStepSchema = (step: typeof currentStepData) => {
     if (!step) return z.object({});
     
-    const schemaFields: Record<string, any> = {};
+    const schemaFields: Record<string, z.ZodTypeAny> = {};
     step.fields.forEach((field) => {
       if (field.type === "checkbox") {
         schemaFields[field.id] = field.required
@@ -439,7 +439,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   };
 
   // Check if all fields in the step are filled and valid
-  const checkStepComplete = (stepData: Record<string, any>) => {
+  const checkStepComplete = (stepData: Record<string, string | string[] | number | boolean>) => {
     if (!currentStepData) return false;
     
     // If step has no required fields, it's always considered complete
@@ -492,7 +492,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   };
 
 
-  const handleFieldChange = (fieldId: string, value: any) => {
+  const handleFieldChange = (fieldId: string, value: string | string[] | number | boolean) => {
     if (!currentStepData) return;
     
     const field = currentStepData.fields.find(f => f.id === fieldId);

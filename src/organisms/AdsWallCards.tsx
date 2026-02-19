@@ -61,6 +61,12 @@ const AdsWallCards = ({
   transactionId,
   ctaMinWidthPx,
 }: AdsWallCardsProps) => {
+  const safeStr = (v: unknown): string => (typeof v === "string" ? v.trim() : "");
+  const logoSrc = safeStr(logo);
+  const cardImgSrc = safeStr(creditCardImage);
+  const badgeIconName = safeStr(badgeIcon);
+  const badgeTextStr = safeStr(badgeText);
+
   // Function to append s1 (affiliate_id) and sub5 (transaction_id) to the button link
   const handleButtonClick = () => {
     try {
@@ -96,26 +102,30 @@ const AdsWallCards = ({
   // Card content (shared between gradient and non-gradient borders)
   const cardContent = (
     <div className="relative flex flex-col w-full gap-4">
-      <div>
-        <div className="text-xs font-medium p-2 bg-green-700  flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
-          <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
-          <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
+      {badgeTextStr ? (
+        <div>
+          <div className="text-xs font-medium p-2 bg-green-700 flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit text-white">
+            {badgeIconName ? (
+              <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
+                <Image src={`/icons/${badgeIconName}.svg`} alt="" layout="fill" />
+              </div>
+            ) : null}
+            {badgeTextStr}
           </div>
-          {badgeText}
         </div>
-      </div>
+      ) : null}
 
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
         {/* First Container */}
         <div className="flex flex-col items-center justify-center gap-3 shrink-0 self-stretch">
-          {logo ? (
+          {logoSrc ? (
             <div className="flex flex-col items-start w-[110px]" >
               <div
                 className="relative overflow-hidden flex items-center "
                 style={{ width: logoWidth, height: logoHeight }}
               >
                 <Image
-                  src={logo}
+                  src={logoSrc}
                   alt="logo"
                   layout="fill"
                   className="object-contain"
@@ -131,9 +141,13 @@ const AdsWallCards = ({
                 </Typography>
               )}
             </div>
-          ) : (
+          ) : cardImgSrc ? (
             <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
-              <Image src={creditCardImage} alt="credit-card" layout="fill" />
+              <Image src={cardImgSrc} alt="card" layout="fill" />
+            </div>
+          ) : (
+            <div className="w-[110px] h-[60px] lg:w-[120px] lg:h-[72px] rounded-sm bg-[#f3f3f3] border border-general-border flex items-center justify-center text-[10px] text-general-muted-foreground px-2 text-center">
+              Missing image
             </div>
           )}
         </div>

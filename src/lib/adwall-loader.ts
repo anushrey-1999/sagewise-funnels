@@ -1,3 +1,5 @@
+import "server-only";
+
 import { AdwallConfig } from "@/types/adwall";
 
 // Import adwall configs

@@ -7,82 +7,101 @@ import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckIcon } from "lucide-react";
-import { useId, useState } from "react";
+import React, { useId } from "react";
+
+type FieldValue = string | string[] | number | boolean;
 
 interface DynamicFormFieldProps {
   field: FormField;
-  value: any;
-  onChange: (value: any) => void;
+  value: FieldValue | undefined;
+  onChange: (value: FieldValue) => void;
   error?: string;
   isLastStep?: boolean;
   isLastField?: boolean;
 }
 
-export function DynamicFormField({ field, value, onChange, error, isLastStep = false, isLastField = false }: DynamicFormFieldProps) {
+export function DynamicFormField({ field, value, onChange, error }: DynamicFormFieldProps) {
   const errorId = useId();
   const descriptionId = useId();
   
   // Validation function to check if value is valid
-  const isValidValue = (field: FormField, value: any): boolean => {
+  const isValidValue = (fieldToValidate: FormField, valueToValidate: FieldValue | undefined): boolean => {
     // If there's an error, it's not valid
     if (error) return false;
     
     // Check required fields
-    if (field.required) {
-      if (field.type === "checkbox") {
-        const checked = Array.isArray(value) && value.includes(field.id);
+    if (fieldToValidate.required) {
+      if (fieldToValidate.type === "checkbox") {
+        const checked = Array.isArray(valueToValidate) && valueToValidate.includes(fieldToValidate.id);
         if (!checked) return false;
-      } else if (field.type === "radio" || field.type === "select" || field.type === "dropdown") {
-        if (!value || value === "") return false;
+      } else if (
+        fieldToValidate.type === "radio" ||
+        fieldToValidate.type === "select" ||
+        fieldToValidate.type === "dropdown"
+      ) {
+        if (!valueToValidate || valueToValidate === "") return false;
       } else {
-        if (!value || value.toString().trim() === "") return false;
+        if (!valueToValidate || String(valueToValidate).trim() === "") return false;
       }
     }
     
     // Type-specific validation
-    if (field.type === "email" && value) {
+    if (fieldToValidate.type === "email" && valueToValidate) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value.toString())) return false;
+      if (!emailRegex.test(String(valueToValidate))) return false;
     }
     
     // Zip code validation (exactly 5 digits)
-    if (field.id === "zipCode" && value) {
-      const zipValue = value.toString().trim();
+    if (fieldToValidate.id === "zipCode" && valueToValidate) {
+      const zipValue = String(valueToValidate).trim();
       if (zipValue.length !== 5 || !/^\d{5}$/.test(zipValue)) return false;
     }
     
     // Pattern validation
-    if (field.validation?.pattern && value) {
-      const pattern = new RegExp(field.validation.pattern);
-      if (!pattern.test(value.toString())) return false;
+    if (fieldToValidate.validation?.pattern && valueToValidate) {
+      const pattern = new RegExp(fieldToValidate.validation.pattern);
+      if (!pattern.test(String(valueToValidate))) return false;
     }
     
     // Min/Max validation
-    if (field.validation?.min !== undefined && value) {
-      const numValue = typeof value === "number" ? value : parseFloat(value.toString());
-      if (isNaN(numValue) || numValue < field.validation.min) return false;
+    if (fieldToValidate.validation?.min !== undefined && valueToValidate) {
+      const numValue =
+        typeof valueToValidate === "number" ? valueToValidate : parseFloat(String(valueToValidate));
+      if (Number.isNaN(numValue) || numValue < fieldToValidate.validation.min) return false;
     }
     
-    if (field.validation?.max !== undefined && value) {
-      const numValue = typeof value === "number" ? value : parseFloat(value.toString());
-      if (isNaN(numValue) || numValue > field.validation.max) return false;
+    if (fieldToValidate.validation?.max !== undefined && valueToValidate) {
+      const numValue =
+        typeof valueToValidate === "number" ? valueToValidate : parseFloat(String(valueToValidate));
+      if (Number.isNaN(numValue) || numValue > fieldToValidate.validation.max) return false;
     }
     
     // For non-required fields, if there's no value, it's valid (optional)
-    if (!field.required && (!value || value === "" || (Array.isArray(value) && value.length === 0))) {
+    if (
+      !fieldToValidate.required &&
+      (!valueToValidate ||
+        valueToValidate === "" ||
+        (Array.isArray(valueToValidate) && valueToValidate.length === 0))
+    ) {
       return true;
     }
     
     return true;
   };
   
-  const renderField = () => {
+  const onKeyboardActivate = (e: React.KeyboardEvent, fn: () => void) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      fn();
+    }
+  };
+
+  const renderField = (): React.ReactNode => {
     switch (field.type) {
       case "checkbox":
         const isChecked = Array.isArray(value) && value.includes(field.id);
         // Only show green border and checkmark when checkbox is actually checked AND valid
         const isCheckboxValid = isChecked && isValidValue(field, value);
-        const [isCheckboxFocused, setIsCheckboxFocused] = useState(false);
         
         // Check if this is the newsletter checkbox (plain style, no container)
         const isNewsletter = field.id === "newsletter";
@@ -138,14 +157,10 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
           <div
             className={cn(
               "border-[3px] border-[#e5e5e5] h-[55px] min-h-[55px] rounded-lg w-full max-w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
-              isCheckboxFocused 
-                ? "!bg-[var(--sw-input-bg)] !border-[var(--sw-green-accent)]" 
-                : "!bg-white",
-              isCheckboxValid && !isCheckboxFocused && "border-[var(--sw-green-accent)]",
+              "focus-visible:!bg-[var(--sw-input-bg)] focus-visible:!border-[var(--sw-green-accent)] !bg-white outline-none",
+              isCheckboxValid && "border-[var(--sw-green-accent)]",
               error && "border-red-500"
             )}
-            onFocus={() => setIsCheckboxFocused(true)}
-            onBlur={() => setIsCheckboxFocused(false)}
             onClick={() => {
               const currentValue = Array.isArray(value) ? value : [];
               const newValue = currentValue.includes(field.id)
@@ -153,6 +168,15 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
                 : [...currentValue, field.id];
               onChange(newValue);
             }}
+            onKeyDown={(e) =>
+              onKeyboardActivate(e, () => {
+                const currentValue = Array.isArray(value) ? value : [];
+                const newValue = currentValue.includes(field.id)
+                  ? currentValue.filter((id) => id !== field.id)
+                  : [...currentValue, field.id];
+                onChange(newValue);
+              })
+            }
             onMouseDown={(e) => e.preventDefault()}
             tabIndex={0}
             role="checkbox"
@@ -185,40 +209,10 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
         );
 
       case "radio":
-        // Radio option component with focus state
-        const RadioOption = ({ option, isSelected, isValid }: { option: { value: string; label: string }, isSelected: boolean, isValid: boolean }) => {
-          const [isFocused, setIsFocused] = useState(false);
-          return (
-            <div
-              className={cn(
-                "border-[3px] border-gray-200 h-[55px] min-h-[55px] rounded-lg flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto mb-3 relative",
-                isFocused 
-                  ? "!bg-[var(--sw-input-bg)] !border-[var(--sw-green-accent)]" 
-                  : "!bg-white",
-                isValid && !isFocused && "border-[var(--sw-green-accent)]",
-                error && "border-red-500"
-              )}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              onClick={() => onChange(option.value)}
-              onMouseDown={(e) => e.preventDefault()}
-              tabIndex={0}
-            >
-              <RadioGroupItem value={option.value} id={option.value} className="h-4 w-4" />
-              <Label htmlFor={option.value} className="text-base text-foreground cursor-pointer flex-1">
-                {option.label}
-              </Label>
-              {isValid && (
-                <CheckIcon className="size-5 text-[var(--sw-success-green)] pointer-events-none shrink-0" />
-              )}
-            </div>
-          );
-        };
-        
         return (
           <RadioGroup
-            value={value || ""}
-            onValueChange={onChange}
+            value={typeof value === "string" ? value : ""}
+            onValueChange={(v) => onChange(v)}
             className="w-full sm:w-[380px] md:w-[342px]"
             aria-label={field.label || field.id}
             aria-invalid={!!error}
@@ -228,12 +222,29 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
               const isSelected = value === option.value;
               const isValid = isSelected && isValidValue(field, value);
               return (
-                <RadioOption 
+                <div
                   key={option.value}
-                  option={option}
-                  isSelected={isSelected}
-                  isValid={isValid}
-                />
+                  className={cn(
+                    "border-[3px] border-gray-200 h-[55px] min-h-[55px] rounded-lg flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto mb-3 relative !bg-white outline-none",
+                    "focus-visible:!bg-[var(--sw-input-bg)] focus-visible:!border-[var(--sw-green-accent)]",
+                    isValid && "border-[var(--sw-green-accent)]",
+                    error && "border-red-500"
+                  )}
+                  onClick={() => onChange(option.value)}
+                  onKeyDown={(e) => onKeyboardActivate(e, () => onChange(option.value))}
+                  onMouseDown={(e) => e.preventDefault()}
+                  tabIndex={0}
+                  role="radio"
+                  aria-checked={isSelected}
+                >
+                  <RadioGroupItem value={option.value} id={option.value} className="h-4 w-4" />
+                  <Label htmlFor={option.value} className="text-base text-foreground cursor-pointer flex-1">
+                    {option.label}
+                  </Label>
+                  {isValid && (
+                    <CheckIcon className="size-5 text-[var(--sw-success-green)] pointer-events-none shrink-0" />
+                  )}
+                </div>
               );
             })}
           </RadioGroup>
@@ -269,7 +280,7 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
                 id={field.id}
                 type={field.type}
                 placeholder={field.placeholder}
-                value={value || ""}
+                value={typeof value === "string" || typeof value === "number" ? String(value) : ""}
                 onChange={handleInputChange}
                 maxLength={isZipCode ? 5 : undefined}
                 className={cn(
@@ -308,7 +319,6 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
       case "select":
       case "dropdown": {
         const isSelectValid = isValidValue(field, value);
-        const [isSelectFocused, setIsSelectFocused] = useState(false);
         
         return (
           <div className="w-full sm:w-[380px] md:w-[342px]">
@@ -321,16 +331,13 @@ export function DynamicFormField({ field, value, onChange, error, isLastStep = f
             <div className="relative">
               <select
                 id={field.id}
-                value={value || ""}
+                value={typeof value === "string" ? value : ""}
                 onChange={(e) => onChange(e.target.value)}
-                onFocus={() => setIsSelectFocused(true)}
-                onBlur={() => setIsSelectFocused(false)}
                 className={cn(
                   "h-[55px] min-h-[55px] w-full rounded-lg border-[3px] border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-[var(--sw-green-accent)] hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
-                  isSelectFocused 
-                    ? "!bg-[var(--sw-input-bg)] !border-[var(--sw-green-accent)]" 
-                    : "!bg-white",
-                  isSelectValid && !isSelectFocused && "border-[var(--sw-green-accent)]",
+                  "!bg-white",
+                  "focus-visible:!bg-[var(--sw-input-bg)] focus-visible:!border-[var(--sw-green-accent)]",
+                  isSelectValid && "border-[var(--sw-green-accent)]",
                   error && "border-red-500"
                 )}
                 required={field.required}

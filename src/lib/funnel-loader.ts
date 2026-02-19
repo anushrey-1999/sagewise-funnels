@@ -1,3 +1,5 @@
+import "server-only";
+
 import { FormConfig } from "@/types/form";
 
 // Import funnel configs

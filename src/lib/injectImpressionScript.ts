@@ -87,7 +87,7 @@ async function waitForEverflowImpressionReady(timeoutMs = 5000): Promise<void> {
   const start = Date.now();
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const EF = (window as any).EF;
+    const EF = (window as Window & { EF?: { impression?: unknown } }).EF;
     if (EF && typeof EF.impression === "function") return;
     if (Date.now() - start > timeoutMs) return;
     await new Promise((r) => setTimeout(r, 50));
