@@ -548,7 +548,8 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
           checkCompleteTimeoutRef.current = null;
         }
 
-        // cc-finbuzz only: pass s1/s2 from funnel URL as sub4/sub5 on external links, s1/s2/sub5 on internal
+        // cc-finbuzz only: pass s1/s2 from funnel URL as sub4/sub5.
+        // For internal (relative) routes we also keep canonical s1/s2 for app-level tracking.
         let finalUrl = destination;
         if (config.id === "cc-finbuzz") {
           const clean = (v: string | null) => v?.replace(/^["']|["']$/g, "").trim() || null;
@@ -556,7 +557,12 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
           const s2 = clean(searchParams.get("s2"));
           finalUrl = isAbsoluteUrl(destination)
             ? appendQueryParams(destination, { sub4: s1 ?? undefined, sub5: s2 ?? undefined })
-            : appendQueryParams(destination, { s1: s1 ?? undefined, s2: s2 ?? undefined, sub5: s2 ?? undefined });
+            : appendQueryParams(destination, {
+                s1: s1 ?? undefined,
+                s2: s2 ?? undefined,
+                sub4: s1 ?? undefined,
+                sub5: s2 ?? undefined,
+              });
         }
 
         // Full page navigation so the destination has a clean document (no form-injected scripts)
