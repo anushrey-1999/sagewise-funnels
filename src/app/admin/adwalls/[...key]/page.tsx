@@ -3,6 +3,7 @@ import ConfigEditorClient from "../../ConfigEditorClient";
 import { requireAdminPage } from "@/lib/admin/require-page";
 import { getConfigRow } from "@/lib/config-service";
 import { getAdwallConfig } from "@/lib/adwall-loader";
+import { getPublishedFunnelConfig } from "@/lib/published-config";
 import type { AdwallConfig } from "@/types/adwall";
 
 export default async function AdminAdwallEditorPage({
@@ -52,6 +53,17 @@ export default async function AdminAdwallEditorPage({
     fallback ??
     skeleton;
 
+  // Prefill navbar fields for consistency with the public site:
+  // Public Navbar uses /api/navbar which falls back to funnel.navbar when adwall.navbar is missing.
+  // By merging that fallback here, the form shows the values and saving/publishing persists them into the adwall config.
+  const draftAdwall = draft as AdwallConfig;
+  const hasNavbarValues = !!draftAdwall?.navbar?.tagline || !!draftAdwall?.navbar?.phone;
+  const funnelNavbar =
+    !hasNavbarValues && draftAdwall?.funnelId
+      ? (await getPublishedFunnelConfig(draftAdwall.funnelId, { useDraft: true }))?.navbar
+      : null;
+  const draftWithNavbar = !hasNavbarValues && funnelNavbar ? ({ ...draftAdwall, navbar: funnelNavbar } satisfies AdwallConfig) : draft;
+
   const published = existing?.published ?? null;
 
   const previewHref =
@@ -72,7 +84,7 @@ export default async function AdminAdwallEditorPage({
       <ConfigEditorClient
         kind="adwall"
         keyStr={keyStr}
-        initialDraftJson={JSON.stringify(draft, null, 2)}
+        initialDraftJson={JSON.stringify(draftWithNavbar, null, 2)}
         initialPublishedJson={published ? JSON.stringify(published, null, 2) : null}
         userRole={user.role}
         backHref="/admin/adwalls"

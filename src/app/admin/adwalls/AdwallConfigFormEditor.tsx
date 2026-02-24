@@ -1,7 +1,10 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { useForm } from "@tanstack/react-form";
+import { upload } from "@vercel/blob/client";
+import type { PutBlobResult } from "@vercel/blob";
 
 import { adwallConfigSchema } from "@/lib/config-schemas";
 import type { AdwallCard, AdwallConfig } from "@/types/adwall";
@@ -18,21 +21,41 @@ function cloneJson<T>(v: T): T {
 }
 
 function setIn(obj: unknown, path: (string | number)[], value: unknown): unknown {
-  const root = cloneJson(obj) as any;
-  let cur: any = root;
+  const getChild = (container: unknown, key: string | number): unknown => {
+    if (Array.isArray(container)) return container[typeof key === "number" ? key : Number(key)];
+    if (container && typeof container === "object") return (container as Record<string, unknown>)[String(key)];
+    return undefined;
+  };
+
+  const setChild = (container: unknown, key: string | number, next: unknown) => {
+    if (Array.isArray(container)) {
+      container[typeof key === "number" ? key : Number(key)] = next;
+      return;
+    }
+    if (container && typeof container === "object") {
+      (container as Record<string, unknown>)[String(key)] = next;
+      return;
+    }
+    throw new Error("Invalid container");
+  };
+
+  let root: unknown = cloneJson(obj);
+  if (!root || typeof root !== "object") root = {};
+
+  let cur: unknown = root;
 
   for (let i = 0; i < path.length - 1; i++) {
     const key = path[i]!;
     const nextKey = path[i + 1]!;
-    const existing = cur[key];
+    const existing = getChild(cur, key);
 
     if (existing == null || typeof existing !== "object") {
-      cur[key] = typeof nextKey === "number" ? [] : {};
+      setChild(cur, key, typeof nextKey === "number" ? [] : {});
     }
-    cur = cur[key];
+    cur = getChild(cur, key);
   }
 
-  cur[path[path.length - 1]!] = value;
+  setChild(cur, path[path.length - 1]!, value);
   return root;
 }
 
@@ -45,6 +68,123 @@ function splitLines(v: string) {
     .split("\n")
     .map((s) => s.trim())
     .filter(Boolean);
+}
+
+function sanitizePathSegment(v: string): string {
+  return v
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80);
+}
+
+function fileExtension(filename: string): string {
+  const i = filename.lastIndexOf(".");
+  if (i <= 0) return "";
+  const ext = filename.slice(i + 1).toLowerCase();
+  return /^[a-z0-9]+$/.test(ext) ? ext : "";
+}
+
+function isPreviewableImageSrc(src: string): boolean {
+  if (!src) return false;
+  if (src.startsWith("/")) return true;
+  try {
+    const u = new URL(src);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function ImageUploadField(props: {
+  label: string;
+  value: string;
+  placeholder?: string;
+  uploadBasePath: string;
+  uploadName: string;
+  onChange: (next: string) => void;
+}) {
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const [isUploading, setIsUploading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const canPreview = isPreviewableImageSrc(props.value);
+
+  const pickFile = () => inputRef.current?.click();
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const ext = fileExtension(file.name);
+      const pathname = `${props.uploadBasePath}/${props.uploadName}${ext ? `.${ext}` : ""}`;
+
+      const result: PutBlobResult = await upload(pathname, file, {
+        access: "public",
+        handleUploadUrl: "/api/admin/uploads/blob",
+      });
+
+      props.onChange(result.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setIsUploading(false);
+      // allow re-uploading the same file
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <Label>{props.label}</Label>
+        <div className="flex items-center gap-2">
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={onFileChange}
+          />
+          <Button type="button" variant="outline" size="sm" onClick={pickFile} disabled={isUploading}>
+            {isUploading ? "Uploading…" : "Upload"}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => props.onChange("")}
+            disabled={isUploading || !props.value}
+          >
+            Clear
+          </Button>
+        </div>
+      </div>
+
+      <Input value={props.value ?? ""} onChange={(e) => props.onChange(e.target.value)} placeholder={props.placeholder} />
+
+      {canPreview ? (
+        <div className="border border-general-border rounded-md bg-white p-2 w-full">
+          <div className="relative w-full h-[88px]">
+            <Image
+              src={props.value}
+              alt={`${props.label} preview`}
+              fill
+              sizes="320px"
+              className="object-contain"
+            />
+          </div>
+        </div>
+      ) : null}
+
+      {error ? <div className="text-xs text-red-600">{error}</div> : null}
+    </div>
+  );
 }
 
 function newEmptyCard(): AdwallCard {
@@ -75,7 +215,7 @@ export default function AdwallConfigFormEditor(props: {
 }) {
   const canScripts = props.userRole === "internal_admin" || props.userRole === "superadmin";
 
-  const parsed = React.useMemo(() => adwallConfigSchema.safeParse(props.initialDraft), [props.resetKey]);
+  const parsed = React.useMemo(() => adwallConfigSchema.safeParse(props.initialDraft), [props.resetKey, props.initialDraft]);
   const [draft, setDraft] = React.useState<AdwallConfig | null>(parsed.success ? parsed.data : null);
 
   const form = useForm({
@@ -120,6 +260,9 @@ export default function AdwallConfigFormEditor(props: {
 
   const values = draft;
   const cards = Array.isArray(draft.cards) ? draft.cards : [];
+  const uploadBasePath = `adwall/${sanitizePathSegment(values.funnelId ?? "") || "funnel"}/${
+    sanitizePathSegment(values.adwallType ?? "") || "type"
+  }`;
 
   const addCard = () => {
     const next = cloneJson(draft) as AdwallConfig;
@@ -402,12 +545,13 @@ export default function AdwallConfigFormEditor(props: {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-logo`}>Logo path/URL</Label>
-                      <Input
-                        id={`c-${idx}-logo`}
+                      <ImageUploadField
+                        label="Logo path/URL"
                         value={card.logo ?? ""}
-                        onChange={(e) => emitPatch(["cards", idx, "logo"], e.target.value)}
                         placeholder="/logos/autoins/statefarm.avif"
+                        uploadBasePath={`${uploadBasePath}/cards/${idx}`}
+                        uploadName="logo"
+                        onChange={(next) => emitPatch(["cards", idx, "logo"], next)}
                       />
                     </div>
                     <div className="space-y-2">
@@ -488,12 +632,13 @@ export default function AdwallConfigFormEditor(props: {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-ccImg`}>Credit card image (optional)</Label>
-                      <Input
-                        id={`c-${idx}-ccImg`}
+                      <ImageUploadField
+                        label="Credit card image (optional)"
                         value={card.creditCardImage ?? ""}
-                        onChange={(e) => emitPatch(["cards", idx, "creditCardImage"], e.target.value)}
                         placeholder="/images/card.png"
+                        uploadBasePath={`${uploadBasePath}/cards/${idx}`}
+                        uploadName="credit-card"
+                        onChange={(next) => emitPatch(["cards", idx, "creditCardImage"], next)}
                       />
                     </div>
 

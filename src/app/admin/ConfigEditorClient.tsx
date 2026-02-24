@@ -36,7 +36,7 @@ export default function ConfigEditorClient(props: {
   const canDelete = canRollback;
 
   const [draftText, setDraftText] = useState(props.initialDraftJson);
-  const [publishedText] = useState(props.initialPublishedJson);
+  const [publishedText, setPublishedText] = useState(props.initialPublishedJson);
   const [mode, setMode] = useState<"draft" | "published">("draft");
   const [draftView, setDraftView] = useState<"form" | "json">(isAdwall ? "form" : "json");
   const [draftObj, setDraftObj] = useState<unknown>(() => {
@@ -51,6 +51,7 @@ export default function ConfigEditorClient(props: {
 
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isRefreshingConfig, setIsRefreshingConfig] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [issues, setIssues] = useState<ZodIssue[] | null>(null);
   const [versions, setVersions] = useState<VersionRow[]>([]);
@@ -58,6 +59,34 @@ export default function ConfigEditorClient(props: {
   const [isRollingBack, setIsRollingBack] = useState<number | null>(null);
 
   const apiBase = useMemo(() => `/api/admin/configs/${kind}/${keyStr}`, [kind, keyStr]);
+
+  const reloadConfig = async () => {
+    if (!keyStr) return;
+    setIsRefreshingConfig(true);
+    try {
+      const res = await fetch(apiBase, { method: "GET" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return;
+      const cfg = data?.config;
+      if (!cfg) return;
+
+      const nextDraft = cfg.draft ?? null;
+      const nextPublished = cfg.published ?? null;
+
+      if (nextDraft) {
+        setDraftText(JSON.stringify(nextDraft, null, 2));
+        if (isAdwall) {
+          setDraftObj(nextDraft);
+          setFormResetNonce((n) => n + 1);
+        }
+      }
+      setPublishedText(nextPublished ? JSON.stringify(nextPublished, null, 2) : null);
+    } catch {
+      // non-blocking; keep existing state
+    } finally {
+      setIsRefreshingConfig(false);
+    }
+  };
 
   const loadVersions = async () => {
     setIsLoadingVersions(true);
@@ -79,6 +108,35 @@ export default function ConfigEditorClient(props: {
     void loadVersions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // If server-provided JSON changes (router.refresh, navigation), sync it into local state.
+    setDraftText(props.initialDraftJson);
+    setPublishedText(props.initialPublishedJson);
+    try {
+      const parsed = JSON.parse(props.initialDraftJson);
+      setDraftObj(parsed);
+      setFormResetNonce((n) => n + 1);
+    } catch {
+      setDraftObj(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyStr, kind, props.initialDraftJson, props.initialPublishedJson]);
+
+  useEffect(() => {
+    // When returning from Preview/Live tabs (client navigation), refresh config to avoid stale form state.
+    const onFocus = () => void reloadConfig();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void reloadConfig();
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiBase]);
 
   useEffect(() => {
     draftObjRef.current = draftObj;
@@ -272,7 +330,7 @@ export default function ConfigEditorClient(props: {
           <div className="text-xs uppercase tracking-wide text-general-muted-foreground">{kind}</div>
           <h1 className="text-2xl font-semibold text-primary-main break-all">{keyStr}</h1>
           <div className="text-sm text-general-muted-foreground mt-1">
-            <Link className="underline text-primary-main" href={previewHref}>
+            <Link className="underline text-primary-main" href={previewHref} target="_blank" rel="noreferrer">
               Preview (draft)
             </Link>
             {" · "}
@@ -291,17 +349,26 @@ export default function ConfigEditorClient(props: {
             <Button
               type="button"
               variant={mode === "draft" ? "secondary" : "outline"}
-              onClick={() => setMode("draft")}
+              onClick={() => {
+                void reloadConfig();
+                setMode("draft");
+              }}
             >
               Draft
             </Button>
             <Button
               type="button"
               variant={mode === "published" ? "secondary" : "outline"}
-              onClick={() => setMode("published")}
+              onClick={() => {
+                void reloadConfig();
+                setMode("published");
+              }}
               disabled={!publishedText}
             >
               Published
+            </Button>
+            <Button type="button" variant="outline" onClick={reloadConfig} disabled={isRefreshingConfig}>
+              {isRefreshingConfig ? "Refreshing…" : "Refresh"}
             </Button>
           </div>
         </div>
