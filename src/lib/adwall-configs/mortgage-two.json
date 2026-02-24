@@ -1,7 +1,7 @@
 {
-  "id": "mortgage-two",
+  "id": "mortgage-refi",
   "funnelId": "mortgage",
-  "adwallType": "two",
+  "adwallType": "refi",
   "title": "Lower your monthly payments in {zip}!",
   "subtitle": "We've analyzed national lenders to find the best refinance rates for homes in {zip}.",
   "updatedAt": "Updated February 17, 2026",
@@ -30,7 +30,7 @@
       "logo": "/logos/mortgage/quick-loans-logo.avif",
       "logoText":"NMLS #167283",
       "logoWidth": "110px",
-      "logoHeight": "22px",
+      "logoHeight": "33px",
       "badgeText": "100% online",
       "badgeIcon": "card",
       "advertiserName": "Quicken Loans"

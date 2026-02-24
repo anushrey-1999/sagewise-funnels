@@ -5,6 +5,7 @@ import { Phone } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getFunnelConfig } from "@/lib/funnel-loader";
 import { getAdwallConfig } from "@/lib/adwall-loader";
+import AdvertiserDisclosure from "@/components/AdvertiserDisclosure";
 
 function toTelHref(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, "");
@@ -39,7 +40,7 @@ export function Navbar() {
   }
 
   return (
-    <div className="bg-[#204c4b] flex items-center justify-between px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative">
+    <div className="bg-[#204c4b] grid grid-cols-3 items-center px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative">
       {/* <Button
         variant="ghost"
         size="icon"
@@ -47,28 +48,35 @@ export function Navbar() {
       >
         <Menu className="h-4 w-4 text-white" />
       </Button> */}
-      <div className="shrink-0 flex justify-center lg:justify-start items-center">
+      <div className="shrink-0 flex justify-start items-center justify-self-start">
         <Logo color="white" href="https://sagewise.net/" />
       </div>
-      {(navbar?.tagline || navbar?.phone) && (
-        <div className="flex flex-col items-end text-white text-right gap-0.5">
-          {navbar?.tagline && (
-            <div className="hidden sm:block text-xs sm:text-sm opacity-90 leading-tight">
-              {navbar.tagline}
-            </div>
-          )}
-          {navbar?.phone && (
-            <a
-              href={toTelHref(navbar.phone)}
-              className="flex items-center gap-2 font-semibold text-sm sm:text-base hover:underline underline-offset-4"
-              aria-label={`Call ${navbar.phone}`}
-            >
-              <Phone className="h-4 w-4 sm:h-4 sm:w-4 text-white" />
-              <span>{navbar.phone}</span>
-            </a>
-          )}
-        </div>
-      )}
+      <div className="justify-self-center">
+        <AdvertiserDisclosure
+          placement="bottom"
+          triggerClassName="text-[10px] sm:text-[11px] text-white/90 hover:text-white"
+          popoverTitleClassName="text-xs"
+          popoverBodyClassName="text-xs"
+        />
+      </div>
+
+      <div className="flex flex-col items-end text-right gap-0.5 justify-self-end">
+        {navbar?.tagline && (
+          <div className="hidden sm:block text-xs sm:text-sm opacity-90 leading-tight text-white">
+            {navbar.tagline}
+          </div>
+        )}
+        {navbar?.phone && (
+          <a
+            href={toTelHref(navbar.phone)}
+            className="flex items-center gap-2 font-semibold text-sm sm:text-base hover:underline underline-offset-4 text-white"
+            aria-label={`Call ${navbar.phone}`}
+          >
+            <Phone className="h-4 w-4 sm:h-4 sm:w-4 text-white" />
+            <span>{navbar.phone}</span>
+          </a>
+        )}
+      </div>
     </div>
   );
 }

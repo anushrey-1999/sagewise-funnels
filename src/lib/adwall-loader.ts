@@ -32,9 +32,9 @@ const adwallConfigs: Record<string, AdwallConfig> = {
   "autoins-one": autoinsAdwallOne as AdwallConfig,
   "autoins-two": autoinsAdwallTwo as AdwallConfig,
   "autoins-three": autoinsAdwallThree as AdwallConfig,
-  "mortgage-one": mortgageAdwallOne as AdwallConfig,
-  "mortgage-two": mortgageAdwallTwo as AdwallConfig,
-  "mortgage-three": mortgageAdwallThree as AdwallConfig,
+  "mortgage-heloc": mortgageAdwallOne as AdwallConfig,
+  "mortgage-refi": mortgageAdwallTwo as AdwallConfig,
+  "mortgage-purchase": mortgageAdwallThree as AdwallConfig,
   "tubs-one": tubsAdwallOne as AdwallConfig,
   "homeWarranty-one": homeWarrantyAdwallOne as AdwallConfig,
   // Add more adwall configs here as they are created

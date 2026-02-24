@@ -112,9 +112,9 @@ const AdsWallCards = ({
         {/* First Container */}
         <div className="flex flex-col items-center justify-center gap-3 shrink-0 self-stretch">
           {logo ? (
-            <div className="flex flex-col items-start w-[110px]" >
+            <div className="flex flex-col items-center w-[110px]">
               <div
-                className="relative overflow-hidden flex items-center "
+                className="relative overflow-hidden flex items-center justify-center"
                 style={{ width: logoWidth, height: logoHeight }}
               >
                 <Image
@@ -127,7 +127,7 @@ const AdsWallCards = ({
               {logoText && (
                 <Typography
                   variant="p"
-                  className="text-[10px] text-left mt-1"
+                  className="text-[10px] text-center mt-1 w-full"
                   color="text-general-muted-foreground"
                 >
                   {logoText}
@@ -150,7 +150,7 @@ const AdsWallCards = ({
           />
           <Typography
             variant="p"
-            className="text-sm"
+            className="text-sm font-bold"
             dangerouslySetInnerHTML={{ __html: description }}
           />
           <Typography variant="ul" className="">

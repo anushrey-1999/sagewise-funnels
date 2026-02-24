@@ -102,6 +102,7 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
                 >
                   <AdsWallCards
                     {...cardProps}
+                    buttonText="VIEW RATES"
                     affiliateId={affiliateId}
                     transactionId={transactionId}
                     ctaMinWidthPx={ctaMinWidthPx}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 // NOTE: This copy is intentionally kept identical to the legacy footer
 // "Advertiser Disclosure" overlay, so we can reuse it in the header too.
@@ -11,9 +12,15 @@ type Placement = "top" | "bottom";
 export default function AdvertiserDisclosure({
   placement = "bottom",
   className = "",
+  triggerClassName = "",
+  popoverTitleClassName = "",
+  popoverBodyClassName = "",
 }: {
   placement?: Placement;
   className?: string;
+  triggerClassName?: string;
+  popoverTitleClassName?: string;
+  popoverBodyClassName?: string;
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -61,7 +68,10 @@ export default function AdvertiserDisclosure({
     >
       <span
         ref={triggerRef}
-        className="text-black underline hover:text-gray-600 cursor-pointer"
+        className={cn(
+          "text-black underline hover:text-gray-600 cursor-pointer",
+          triggerClassName
+        )}
         role="button"
         tabIndex={0}
         aria-haspopup="dialog"
@@ -89,11 +99,11 @@ export default function AdvertiserDisclosure({
           onClick={(e) => e.stopPropagation()}
         >
           <div className="p-4">
-            <div className="text-sm font-semibold text-black mb-2">
-              Advertiser Disclosure
-            </div>
             <div
-              className="text-black text-sm leading-relaxed space-y-4"
+              className={cn(
+                "text-black text-sm leading-relaxed space-y-4",
+                popoverBodyClassName
+              )}
               dangerouslySetInnerHTML={{ __html: disclosureText }}
             />
           </div>

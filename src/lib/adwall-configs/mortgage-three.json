@@ -1,7 +1,7 @@
 {
-  "id": "mortgage-three",
+  "id": "mortgage-purchase",
   "funnelId": "mortgage",
-  "adwallType": "three",
+  "adwallType": "purchase",
   "title": "{NAME}, we found lender matches for you in {zip}.",
   "subtitle": "Compare top-rated purchase programs in {zip} with $0-down options for qualified buyers.",
   "updatedAt": "Updated February 17, 2026",
@@ -10,8 +10,8 @@
     "transactionIdParam": "s2"
   },
   "metadata": {
-    "title": "Best Home Equity Lenders - Sagewise",
-    "description": "Compare top home equity lenders. Find competitive rates, fast funding, and flexible terms including HELOCs and home equity loans."
+    "title": "Best Mortgage Lenders for Purchase - Sagewise",
+    "description": "Compare top mortgage lenders for home purchase. Find competitive rates, flexible terms, and $0-down options from trusted lenders."
   },
   "cards": [
     {
@@ -50,7 +50,7 @@
       "logo": "/logos/mortgage/quick-loans-logo.avif",
       "logoText":"NMLS #167283",
       "logoWidth": "100px",
-      "logoHeight": "22px",
+      "logoHeight": "33px",
       "badgeText": "100% online",
       "badgeIcon": "card",
       "advertiserName": "Quicken Loans"

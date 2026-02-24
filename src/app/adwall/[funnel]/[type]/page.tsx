@@ -1,6 +1,6 @@
 import AdsWallTemplate from "@/templates/AdsWallTemplate";
 import { getAdwallConfig } from "@/lib/adwall-loader";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -30,6 +30,14 @@ export async function generateMetadata({ params }: AdwallPageProps): Promise<Met
 
 export default async function AdwallPage({ params }: AdwallPageProps) {
   const { funnel, type } = await params;
+
+  // Back-compat: mortgage adwalls were previously addressed as one/two/three.
+  if (funnel === "mortgage") {
+    if (type === "one") redirect("/adwall/mortgage/heloc");
+    if (type === "two") redirect("/adwall/mortgage/refi");
+    if (type === "three") redirect("/adwall/mortgage/purchase");
+  }
+
   const config = getAdwallConfig(funnel, type);
 
   if (!config) {
