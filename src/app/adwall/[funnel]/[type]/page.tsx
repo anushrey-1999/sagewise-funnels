@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { resolveCityFromZip } from "@/lib/geo/resolveCityFromZip";
 
-export const revalidate = 60 * 60 * 24; // revalidate daily
+export const revalidate = 86400; // revalidate daily
 
 interface AdwallPageProps {
   params: Promise<{
