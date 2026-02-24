@@ -3,7 +3,7 @@
   "funnelId": "mortgage",
   "adwallType": "purchase",
   "title": "{NAME}, we found lender matches for you in {zip}.",
-  "subtitle": "Compare top-rated purchase programs in {zip} with $0-down options for qualified buyers.",
+  "subtitle": "Compare top-rated purchase programs in {city} with $0-down options for qualified buyers.",
   "updatedAt": "Updated February 17, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",

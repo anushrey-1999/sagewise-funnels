@@ -8,18 +8,19 @@ import { cn } from "@/lib/utils";
 const disclosureText = `<a href="https://sagewise.com" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline;">Sagewise.com</a> is an independent, advertising-supported publisher and comparison service. Our websites may earn compensation when a customer clicks on a link, when an application is approved, or when an account is opened. Therefore, this compensation may impact what products appear and how, where, and in what order they appear within listing categories, except where prohibited by law for our mortgage, home equity and other home lending products. Other factors, such as our proprietary website rules and whether a product is offered in your area or at your self-selected credit score range, can also impact how and where products appear on this site. While we strive to provide a wide range of offers, Bankrate does not include information about every financial or credit product or service.`;
 
 type Placement = "top" | "bottom";
+type Align = "left" | "center" | "right";
 
 export default function AdvertiserDisclosure({
   placement = "bottom",
+  align = "right",
   className = "",
   triggerClassName = "",
-  popoverTitleClassName = "",
   popoverBodyClassName = "",
 }: {
   placement?: Placement;
+  align?: Align;
   className?: string;
   triggerClassName?: string;
-  popoverTitleClassName?: string;
   popoverBodyClassName?: string;
 }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -54,10 +55,14 @@ export default function AdvertiserDisclosure({
 
   const showPopover = isHovered || isOpen;
 
-  const popoverPositionClasses =
+  const desktopPopoverPositionClasses =
     placement === "top"
       ? "left-1/2 -translate-x-1/2 bottom-full mb-2"
-      : "right-0 top-full mt-2";
+      : align === "center"
+        ? "left-1/2 -translate-x-1/2 top-full mt-2"
+        : align === "left"
+          ? "left-0 top-full mt-2"
+          : "right-0 top-full mt-2";
 
   return (
     <div
@@ -92,22 +97,59 @@ export default function AdvertiserDisclosure({
       </span>
 
       {showPopover && (
-        <div
-          role="dialog"
-          aria-label="Advertiser Disclosure"
-          className={`absolute ${popoverPositionClasses} w-[90vw] max-w-[600px] bg-white rounded-lg shadow-2xl z-1000 overflow-hidden`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="p-4">
+        <>
+          {isOpen && (
             <div
-              className={cn(
-                "text-black text-sm leading-relaxed space-y-4",
-                popoverBodyClassName
-              )}
-              dangerouslySetInnerHTML={{ __html: disclosureText }}
+              className="fixed inset-0 bg-black/30 z-999 sm:hidden"
+              aria-hidden="true"
+              onClick={() => setIsOpen(false)}
             />
+          )}
+          {isOpen && (
+            <div
+              role="dialog"
+              aria-label="Advertiser Disclosure"
+              className={cn(
+                "fixed inset-x-4 top-20 z-1000 sm:hidden",
+                "bg-white rounded-lg shadow-2xl overflow-hidden",
+                "max-h-[70vh] overflow-y-auto"
+              )}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-4">
+                <div
+                  className={cn(
+                    "text-black text-sm leading-relaxed space-y-4",
+                    popoverBodyClassName
+                  )}
+                  dangerouslySetInnerHTML={{ __html: disclosureText }}
+                />
+              </div>
+            </div>
+          )}
+
+          <div
+            role="dialog"
+            aria-label="Advertiser Disclosure"
+            className={cn(
+              "absolute hidden sm:block z-1000",
+              desktopPopoverPositionClasses,
+              "w-[90vw] max-w-[600px] bg-white rounded-lg shadow-2xl overflow-hidden",
+              "max-h-[70vh] overflow-y-auto"
+            )}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4">
+              <div
+                className={cn(
+                  "text-black text-sm leading-relaxed space-y-4",
+                  popoverBodyClassName
+                )}
+                dangerouslySetInnerHTML={{ __html: disclosureText }}
+              />
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

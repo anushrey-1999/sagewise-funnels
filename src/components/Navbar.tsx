@@ -40,7 +40,7 @@ export function Navbar() {
   }
 
   return (
-    <div className="bg-[#204c4b] grid grid-cols-3 items-center px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative">
+    <div className="bg-[#204c4b] grid grid-cols-1 sm:grid-cols-3 items-center px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative gap-1 sm:gap-0">
       {/* <Button
         variant="ghost"
         size="icon"
@@ -48,19 +48,19 @@ export function Navbar() {
       >
         <Menu className="h-4 w-4 text-white" />
       </Button> */}
-      <div className="shrink-0 flex justify-start items-center justify-self-start">
+      <div className="shrink-0 flex justify-center sm:justify-start items-center sm:justify-self-start">
         <Logo color="white" href="https://sagewise.net/" />
       </div>
-      <div className="justify-self-center">
+      <div className="justify-self-center text-center">
         <AdvertiserDisclosure
           placement="bottom"
-          triggerClassName="text-[10px] sm:text-[11px] text-white/90 hover:text-white"
-          popoverTitleClassName="text-xs"
+          align="center"
+          triggerClassName="text-[11px] sm:text-[11px] text-white/90 hover:text-white"
           popoverBodyClassName="text-xs"
         />
       </div>
 
-      <div className="flex flex-col items-end text-right gap-0.5 justify-self-end">
+      <div className="flex flex-col items-center sm:items-end text-center sm:text-right gap-0.5 sm:justify-self-end">
         {navbar?.tagline && (
           <div className="hidden sm:block text-xs sm:text-sm opacity-90 leading-tight text-white">
             {navbar.tagline}

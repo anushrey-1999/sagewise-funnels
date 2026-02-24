@@ -10,19 +10,22 @@ import ImpressionOnView from "@/components/ImpressionOnView";
 
 interface AdsWallTemplateProps {
   config: AdwallConfig;
+  resolvedCity?: string | null;
+  updatedAtOverride?: string | null;
 }
 
 /**
  * Interpolate variables in text template
- * Supports: {NAME}, {zip}
+ * Supports: {NAME}, {zip}, {city}
  */
 function interpolateTemplate(template: string, variables: Record<string, string>): string {
   return template
     .replace(/\{NAME\}/g, variables.NAME || "")
-    .replace(/\{zip\}/g, variables.zip || "");
+    .replace(/\{zip\}/g, variables.zip || "")
+    .replace(/\{city\}/g, variables.city || "");
 }
 
-const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
+const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTemplateProps) => {
   const searchParams = useSearchParams();
 
   const cleanParam = (value: string | null): string | null => {
@@ -64,7 +67,8 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
   const templateVars = useMemo(() => ({
     NAME: name || "",
     zip: zip || "",
-  }), [name, zip]);
+    city: resolvedCity || zip || "",
+  }), [name, zip, resolvedCity]);
 
   // Interpolate title and subtitle
   const personalizedTitle = useMemo(() => {
@@ -84,7 +88,7 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
         title={personalizedTitle}
         headingFont="text-3xl text-center lg:text-[48px] font-bold text-primary-main"
         subtitle={personalizedSubtitle}
-        updatedAt={config.updatedAt}
+        updatedAt={updatedAtOverride ?? config.updatedAt}
       />
 
       {/* Cards */}
