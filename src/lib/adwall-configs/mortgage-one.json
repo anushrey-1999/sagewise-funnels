@@ -16,12 +16,12 @@
   "cards": [
     {
       "heading": "Figure",
-      "description": "Fast Digital HELOC. Approval in as little as 5 minutes.",
+      "description": "Fast Digital HELOC with an A+ BBB Rating and $20+ Billion in Loans Funded",
       "features": [
         "Competitive rates even with a 640 FICO score",
         "High limits: Access up to $750k for any purpose",
         "No-hassle process: Entirely digital application",
-        "Rapid results: Funding available in 5 days"
+        "Approval in minutes and funding in as few as 5 days for qualified loans"
       ],
       "buttonLink": "#",
       "buttonText": "View My Rates",
@@ -31,7 +31,7 @@
       "logoText":"NMLS #1717824",
       "logoWidth": "100px",
       "logoHeight": "18px",
-      "badgeText": "5 DAY FUNDING",
+      "badgeText": "FUNDING IN AS FEW AS 5 DAYS FOR QUALIFIED LOANS",
       "badgeIcon": "card",
       "advertiserName": "Figure"
     },
