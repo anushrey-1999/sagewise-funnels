@@ -23,7 +23,7 @@
         "Get a free quote now"
       ],
       "buttonLink": "#",
-      "buttonText": "START QUOTE",
+      "buttonText": "View My Rates",
       "ratingsNumber": "4.8",
       "ratingsCount": 5,
       "logo": "/logos/autoins/general.avif",
@@ -43,7 +43,7 @@
         "Simple process to get covered quickly"
       ],
       "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
+      "buttonText": "View My Rates",
       "ratingsNumber": "4.9",
       "ratingsCount": 5,
       "logo": "/logos/autoins/kemper.avif",
@@ -62,7 +62,7 @@
         "Competitive rates for all drivers"
       ],
       "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
+      "buttonText": "View My Rates",
       "ratingsNumber": "4.6",
       "ratingsCount": 5,
       "logo": "/logos/autoins/geinsco.avif",

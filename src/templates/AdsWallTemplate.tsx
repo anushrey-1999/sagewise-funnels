@@ -106,7 +106,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
                 >
                   <AdsWallCards
                     {...cardProps}
-                    buttonText="VIEW RATES"
+                    buttonText={cardProps.buttonText || "View My Rates"}
                     affiliateId={affiliateId}
                     transactionId={transactionId}
                     ctaMinWidthPx={ctaMinWidthPx}
