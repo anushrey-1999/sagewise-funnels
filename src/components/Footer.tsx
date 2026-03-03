@@ -144,8 +144,15 @@ export function Footer() {
         color="text-primary-light"
         className="text-[10px] md:text-xs  tracking-[0.5px]"
       >
-        © Copyright 2026, Sagewise® • All Rights Reserved • 4376 Forestdale
-        Drive #4, Park City, UT 84098 US
+        © Copyright 2026, Sagewise® • All Rights Reserved
+      </Typography>
+      <Typography
+        variant="p"
+        color="text-primary-light"
+        className="text-[10px] md:text-xs  tracking-[0.5px] mt-1"
+      >
+        C3 Data LLC dba Massive and Co | 4376 Forestdale Drive #4 Park City, UT
+        84098
       </Typography>
     </div>
   );
