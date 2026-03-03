@@ -69,6 +69,7 @@
       "ratingsCount": 5,
       "logo": "/logos/mortgage/unlock.avif",
       "logoText":"NMLS #2657081",
+      "logoSubtext": "Terms and conditions apply",
       "logoWidth": "100px",
       "logoHeight": "25px",
       "badgeText": "No Monthly Payments",

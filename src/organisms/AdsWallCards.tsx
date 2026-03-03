@@ -28,6 +28,7 @@ interface AdsWallCardsProps {
   logoWidth: string;
   logoHeight: string;
   logoText?: string;
+  logoSubtext?: string;
   advertiserName: string;
   affiliateId?: string | null;
   transactionId?: string | null;
@@ -58,6 +59,7 @@ const AdsWallCards = ({
   logoWidth,
   logoHeight,
   logoText,
+  logoSubtext,
   advertiserName,
   affiliateId,
   transactionId,
@@ -144,6 +146,15 @@ const AdsWallCards = ({
                   color="text-general-muted-foreground"
                 >
                   {logoText}
+                </Typography>
+              )}
+              {logoSubtext && (
+                <Typography
+                  variant="p"
+                  className="text-[10px] text-center mt-0.5 w-full"
+                  color="text-general-muted-foreground"
+                >
+                  {logoSubtext}
                 </Typography>
               )}
             </div>

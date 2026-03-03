@@ -10,6 +10,7 @@ export interface AdwallCard {
   logoWidth: string;
   logoHeight: string;
   logoText?: string; // Optional text to display below the logo
+  logoSubtext?: string; // Optional text to display below logoText (e.g. "Terms and conditions apply")
   creditCardImage: string;
   badgeText: string;
   badgeIcon: string;
