@@ -312,10 +312,16 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
     const { affiliateId, transactionId } = generateIds();
 
     const destination = resolvePostSubmitRedirect(config, formData);
-    const finalUrl = appendQueryParams(destination, {
+    const baseParams: Record<string, string> = {
       s1: affiliateId,
       s2: transactionId,
-    });
+    };
+    if (config.id === "cc-finbuzz") {
+      baseParams.sub4 = affiliateId;
+      baseParams.sub5 = transactionId;
+      baseParams.sub3 = "155";
+    }
+    const finalUrl = appendQueryParams(destination, baseParams);
     if (isAbsoluteUrl(finalUrl)) {
       window.location.assign(finalUrl);
       return;
@@ -548,20 +554,24 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
           checkCompleteTimeoutRef.current = null;
         }
 
-        // cc-finbuzz only: pass s1/s2 from funnel URL as sub4/sub5.
+        // cc-finbuzz only: pass s1/s2 from funnel URL as sub4/sub5 and sub3=155.
         // For internal (relative) routes we also keep canonical s1/s2 for app-level tracking.
         let finalUrl = destination;
         if (config.id === "cc-finbuzz") {
           const clean = (v: string | null) => v?.replace(/^["']|["']$/g, "").trim() || null;
           const s1 = clean(searchParams.get("s1"));
           const s2 = clean(searchParams.get("s2"));
+          const finbuzzParams = {
+            sub4: s1 ?? undefined,
+            sub5: s2 ?? undefined,
+            sub3: "155",
+          };
           finalUrl = isAbsoluteUrl(destination)
-            ? appendQueryParams(destination, { sub4: s1 ?? undefined, sub5: s2 ?? undefined })
+            ? appendQueryParams(destination, finbuzzParams)
             : appendQueryParams(destination, {
                 s1: s1 ?? undefined,
                 s2: s2 ?? undefined,
-                sub4: s1 ?? undefined,
-                sub5: s2 ?? undefined,
+                ...finbuzzParams,
               });
         }
 

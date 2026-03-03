@@ -31,6 +31,8 @@ interface AdsWallCardsProps {
   advertiserName: string;
   affiliateId?: string | null;
   transactionId?: string | null;
+  /** Optional extra query params for CTA link (e.g. sub3 for cc-finbuzz) */
+  extraTrackingParams?: Record<string, string>;
   ctaMinWidthPx?: number;
 }
 
@@ -59,6 +61,7 @@ const AdsWallCards = ({
   advertiserName,
   affiliateId,
   transactionId,
+  extraTrackingParams,
   ctaMinWidthPx,
 }: AdsWallCardsProps) => {
   const affiliateParamName = "sub4";
@@ -75,9 +78,14 @@ const AdsWallCards = ({
       if (transactionId) {
         url.searchParams.set(transactionParamName, transactionId);
       }
+      if (extraTrackingParams) {
+        Object.entries(extraTrackingParams).forEach(([key, value]) => {
+          url.searchParams.set(key, value);
+        });
+      }
       
       window.open(url.toString(), "_blank");
-    } catch (error) {
+    } catch {
       // If buttonLink is not a valid absolute URL, append params manually
       const separator = buttonLink.includes("?") ? "&" : "?";
       const params: string[] = [];
@@ -87,6 +95,11 @@ const AdsWallCards = ({
       }
       if (transactionId) {
         params.push(`${transactionParamName}=${encodeURIComponent(transactionId)}`);
+      }
+      if (extraTrackingParams) {
+        Object.entries(extraTrackingParams).forEach(([key, value]) => {
+          params.push(`${key}=${encodeURIComponent(value)}`);
+        });
       }
       
       const finalUrl = params.length > 0 

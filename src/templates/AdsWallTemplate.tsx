@@ -109,6 +109,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
                     buttonText={cardProps.buttonText || "View My Rates"}
                     affiliateId={affiliateId}
                     transactionId={transactionId}
+                    extraTrackingParams={config.id === "cc-finbuzz" ? { sub3: "128" } : undefined}
                     ctaMinWidthPx={ctaMinWidthPx}
                   />
                 </ImpressionOnView>
