@@ -18,6 +18,11 @@ export interface AdwallCard {
   isDifferentBorder?: boolean;
   phoneNumber?: string; // Optional phone number to display below CTA
   /**
+   * Optional bottom callout box content rendered as HTML.
+   * Controlled via the adwall JSON on a per-card basis.
+   */
+  bottomBoxHtml?: string;
+  /**
    * Raw third-party impression snippet to inject when this card is viewed.
    * Must be a string containing one or more <script> tags (kept as-provided).
    */

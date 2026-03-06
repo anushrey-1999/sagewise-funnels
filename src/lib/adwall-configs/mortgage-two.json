@@ -33,6 +33,7 @@
       "logoHeight": "33px",
       "badgeText": "100% online",
       "badgeIcon": "card",
+      "bottomBoxHtml": "<p>Quicken Loans <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/167283\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #167283</a>; QuickenLoans.com, a LMB Mortgage Services, Inc. company <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/167283\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #167283</a>.</p>",
       "advertiserName": "Quicken Loans"
     },
     {
@@ -55,6 +56,5 @@
       "badgeIcon": "card",
       "advertiserName": "loanDepot"
     }
-  ],
-  "disclaimers": "<div><strong>Quicken Loans</strong><p class=\"mt-2\">Quicken Loans <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/167283\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #167283</a>; QuickenLoans.com, a LMB Mortgage Services, Inc. company <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/167283\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #167283</a>.</p></div><div><strong>How we make money</strong><p class=\"mt-2\"><a href=\"https://sagewise.net\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">Sagewise.net</a> is an independent, advertising-supported publisher and comparison service. Our websites may earn compensation when a customer clicks on a link, when an application is approved, or when an account is opened. Therefore, this compensation may impact what products appear and how, where, and in what order they appear within listing categories, except where prohibited by law for our mortgage, home equity and other home lending products. Other factors, such as our proprietary website rules and whether a product is offered in your area or at your self-selected credit score range, can also impact how and where products appear on this site. While we strive to provide a wide range of offers, Sagewise does not include information about every financial or credit product or service.</p></div>"
+  ]
 }

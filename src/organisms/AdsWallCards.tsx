@@ -6,6 +6,31 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import React from "react";
 
+function sanitizeCardHtml(html: string): string {
+  // Funnel/adwall JSON is controlled content; this is defensive, not a full HTML sanitizer.
+  // Keep deterministic transforms to avoid any hydration mismatch surprises.
+  let out = html;
+
+  // Remove script/style blocks entirely
+  out = out.replace(/<\s*(script|style)[^>]*>[\s\S]*?<\s*\/\s*\1\s*>/gi, "");
+
+  // Strip event handlers everywhere
+  out = out.replace(/\s+on[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "");
+
+  // Neutralize javascript: URLs in href/src attrs
+  out = out.replace(
+    /\b(href|src)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi,
+    (_m, attr, v1, v2, v3) => {
+      const val = String(v1 || v2 || v3 || "").trim();
+      if (val.toLowerCase().startsWith("javascript:")) return `${attr}=""`;
+      // Rebuild using double quotes for consistency
+      return `${attr}="${val}"`;
+    }
+  );
+
+  return out;
+}
+
 interface AdsWallCardsProps {
   ratings?: number;
   cardBg?: string;
@@ -35,6 +60,8 @@ interface AdsWallCardsProps {
   /** Optional extra query params for CTA link (e.g. sub3 for cc-finbuzz) */
   extraTrackingParams?: Record<string, string>;
   ctaMinWidthPx?: number;
+  /** Optional bottom callout box content rendered as HTML. */
+  bottomBoxHtml?: string;
 }
 
 const AdsWallCards = ({
@@ -65,6 +92,7 @@ const AdsWallCards = ({
   transactionId,
   extraTrackingParams,
   ctaMinWidthPx,
+  bottomBoxHtml,
 }: AdsWallCardsProps) => {
   const affiliateParamName = "sub4";
   const transactionParamName = "sub5";
@@ -290,7 +318,7 @@ const AdsWallCards = ({
 
       <div
         className={cn(
-          "border-2 z-1 relative rounded-xl w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
+          "border-2 z-1 relative rounded-xl w-full flex flex-col ",
           isDifferentBorder 
             ? "border-[#ffd32a]" // Golden border using CTA primary color
             : "border-general-border", // Default border
@@ -298,6 +326,14 @@ const AdsWallCards = ({
         )}
       >
         {cardContent}
+        {bottomBoxHtml ? (
+          <div className="pb-5 pt-3 px-4">
+            <div
+              className="bg-[#F4F5F8] p-2.5 text-xs leading-relaxed text-general-muted-foreground [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
+              dangerouslySetInnerHTML={{ __html: sanitizeCardHtml(bottomBoxHtml) }}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );
