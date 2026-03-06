@@ -16,13 +16,14 @@ interface AdsWallTemplateProps {
 
 /**
  * Interpolate variables in text template
- * Supports: {NAME}, {zip}, {city}
+ * Supports: {NAME}, {zip}, {city}, {month}, {year}
  */
 function interpolateTemplate(template: string, variables: Record<string, string>): string {
-  return template
-    .replace(/\{NAME\}/g, variables.NAME || "")
-    .replace(/\{zip\}/g, variables.zip || "")
-    .replace(/\{city\}/g, variables.city || "");
+  let out = template;
+  for (const [key, value] of Object.entries(variables)) {
+    out = out.replace(new RegExp(`\\{${key}\\}`, "g"), value ?? "");
+  }
+  return out;
 }
 
 const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTemplateProps) => {
@@ -63,12 +64,27 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
     return z?.replace(/^["']|["']$/g, "") || null;
   }, [searchParams]);
 
+  const { monthName, yearNumber } = useMemo(() => {
+    const effectiveUpdatedAt = updatedAtOverride ?? config.updatedAt ?? "";
+    const match = effectiveUpdatedAt.match(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\b[^0-9]*([0-9]{4})\b/);
+    if (match) {
+      return { monthName: match[1], yearNumber: match[2] };
+    }
+
+    const now = new Date();
+    const fallbackMonth = new Intl.DateTimeFormat("en-US", { month: "long" }).format(now);
+    const fallbackYear = String(now.getFullYear());
+    return { monthName: fallbackMonth, yearNumber: fallbackYear };
+  }, [config.updatedAt, updatedAtOverride]);
+
   // Prepare variables for interpolation
   const templateVars = useMemo(() => ({
     NAME: name || "",
     zip: zip || "",
     city: resolvedCity || zip || "",
-  }), [name, zip, resolvedCity]);
+    month: monthName,
+    year: yearNumber,
+  }), [name, zip, resolvedCity, monthName, yearNumber]);
 
   // Interpolate title and subtitle
   const personalizedTitle = useMemo(() => {

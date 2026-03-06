@@ -2,8 +2,8 @@
   "id": "homeWarranty-one",
   "funnelId": "homeWarranty",
   "adwallType": "one",
-  "title": "{NAME}, we found lender matches for you in {zip}.",
-  "subtitle": "Compare top-rated purchase programs in your city with $0-down options for qualified buyers.",
+  "title": "{NAME}, We Found the Best Home Warranty Deals in {zip}",
+  "subtitle": "Compare top-rated plans starting at $24.99/mo to protect your home and budget",
   "updatedAt": "Updated January 23, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",
