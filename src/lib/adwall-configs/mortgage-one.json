@@ -44,7 +44,7 @@
         "Check your offer - no impact to credit score",
         "Quick access to funds - cash in as little as 3 business days from closing"
       ],
-      "buttonLink": "#",
+      "buttonLink": "https://www.mny0fw3trk.com/37SB645/9TK4PN/",
       "buttonText": "View My Rates",
       "ratingsNumber": "8.9",
       "ratingsCount": 5,
@@ -66,7 +66,7 @@
         "Use funds for anything"
       ],
       "buttonLink": "https://www.rdtrk66.com/28KL6/9CN9CL/?_tlk=2KTQPQC5",
-      "buttonText": "View My Rates",
+      "buttonText": "Check Eligibility",
       "ratingsNumber": "8.5",
       "ratingsCount": 5,
       "logo": "/logos/mortgage/unlock.avif",
@@ -120,6 +120,27 @@
       "badgeText": "NO CREDIT CHECK",
       "badgeIcon": "card",
       "advertiserName": "loanDepot"
+    },
+    {
+      "heading": "Upstart",
+      "description": "Access $26,000 - $250,000 with a HELOC from Upstart Mortgage",
+      "features": [
+        "Check your rate in minutes",
+        "10 or 15 year terms available",
+        "Typical APR 6.52% - 18.00% APR<sup>1</sup>",
+        "Use funds for consolidation, renovations, or large purchases"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Check Eligibility",
+      "logoText":"NMLS #2443873",
+      "ratingsNumber": "7.0",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/upstart.avif",
+      "logoWidth": "100px",
+      "logoHeight": "70px",
+      "badgeText": "Fast Funding",
+      "badgeIcon": "card",
+      "advertiserName": "Upstart"
     }
   ]
 }
