@@ -15,68 +15,97 @@
   },
   "cards": [
     {
-      "heading": "Select Home Warranty",
-      "description": "Affordable home warranty plans with exclusive discounts and member benefits.",
-      "features": [
-        "Plans starting as low as $24.99/month",
-        "$150 Off + 2 Months Free + Free Roof Coverage",
-        "A+ Rated, Accredited Business by Online Business Bureau",
-        "Members save up to 75% at Amazon, Home Depot, Best Buy & more",
-        "Preferred home warranty partner for all Remax Realty listings"
-      ],
-      "buttonLink": "#",
-      "buttonText": "View My Rates",
-      "ratingsNumber": "9.9",
-      "ratingsCount": 5,
-      "logo": "/logos/home-warranty/Select.avif",
-      "logoWidth": "120px",
-      "logoHeight": "80px",
-      "badgeText": "A+ BBB RATED",
-      "badgeIcon": "card",
-      "advertiserName": "Select Home Warranty",
-      "phoneNumber": "800-000-0000"
-    },
-    {
       "heading": "Choice Home Warranty",
-      "description": "Customizable home warranty plans tailored to your home and budget.",
+      "description": "MADNESS In March: $75 OFF + 1 Month Free",
       "features": [
-        "Choose a plan tailored to your home and budget",
-        "Limited Time Offer: Get $100 OFF your first year of coverage",
-        "Highly Rated by thousands of satisfied customers",
-        "Dedicated Claims Team for faster service"
+        "Handled more than 8M service requests",
+        "Covered more than 2.4 M homes",
+        "First 30 days: free cancelation "
       ],
       "buttonLink": "#",
-      "buttonText": "View My Rates",
+      "buttonText": "View Plan",
       "ratingsNumber": "9.8",
       "ratingsCount": 5,
       "logo": "/logos/home-warranty/Choice.avif",
       "logoWidth": "120px",
       "logoHeight": "80px",
-      "badgeText": "$100 OFF PROMO",
       "badgeIcon": "card",
-      "advertiserName": "Choice Home Warranty",
-      "phoneNumber": "800-000-0001"
+      "phoneNumber": "(866) 835-4717",
+      "advertiserName": "Choice Home Warranty"
     },
     {
-      "heading": "American Home Shield",
-      "description": "Trusted home warranty protection backed by over 50 years of industry leadership.",
+      "heading": "First American Home Warranty",
+      "description": "Unlimited Service Calls 24/7, 365 days a year",
       "features": [
-        "Get 50% OFF select best-selling plans",
-        "Backed by Over 50 Years of Industry Leadership",
-        "24/7 Expert Support with Real-Time Video Chat",
-        "Exclusive: $150 Service Fee Rebate for New Customers"
+        "Get a $100 Instant Discount*! Promo: PROTECT",
+        "Over $1.8 Billion in claims paid since 2015",
+        "Absolutely no limit to the number of claims you file"
+      ],
+      "buttonLink": "#",
+      "buttonText": "View Plan",
+      "ratingsNumber": "9.7",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warranty/first-american.avif",
+      "logoWidth": "130px",
+      "logoHeight": "50px",
+      "badgeIcon": "card",
+      "phoneNumber": "(866) 291-0365",
+      "advertiserName": "First American Home Warranty"
+    },
+    {
+      "heading": "American Home Warranty",
+      "description": "Protect Your Home Systems & Appliances",
+      "features": [
+        "Get $50 Off & 1st Month Free<sup>*</sup>",
+        "Request service online 24/7 when things break",
+        "Nationwide network of local repair pros"
       ],
       "buttonLink": "#",
       "buttonText": "View My Rates",
-      "ratingsNumber": "9.7",
+      "ratingsNumber": "9.5",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warranty/american-home-warranty.avif",
+      "logoWidth": "100px",
+      "logoHeight": "80px",
+      "badgeIcon": "card",
+      "advertiserName": "American Home Warranty"
+    },
+    {
+      "heading": "Total Home Shield",
+      "description": "Get Your Appliance Breakdowns Covered by a Home Warranty",
+      "features": [
+        "Limited Time: 1 Month Free + $50 OFF",
+        "24/7 Home Warranty Service",
+        "If we can't fix it, we replace it<sup>*</sup>"
+      ],
+      "buttonLink": "#",
+      "buttonText": "View My Rates",
+      "ratingsNumber": "8.9",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warranty/total-home-shield.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeIcon": "card",
+      "advertiserName": "Total Home Shield"  
+    },
+    {
+      "heading": "American Home Shield",
+      "description": "30-Day Workmanship Guarantee on covered repairs",
+      "features": [
+        "Plans as low as $29.99 a month<sup>*</sup>",
+        "Helps cover breakdowns homeowners insurance typically doesn't",
+        "Nationwide network of trusted service Pros"
+      ],
+      "buttonLink": "#",
+      "buttonText": "View My Rates",
+      "ratingsNumber": "8.8",
       "ratingsCount": 5,
       "logo": "/logos/home-warranty/American Home Shield.avif",
       "logoWidth": "120px",
       "logoHeight": "80px",
-      "badgeText": "50% SELECT PLANS",
       "badgeIcon": "card",
       "advertiserName": "American Home Shield",
-      "phoneNumber": "800-000-0002"
+      "phoneNumber": "(855) 632-0306"
     }
   ]
 }

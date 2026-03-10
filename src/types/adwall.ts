@@ -12,8 +12,8 @@ export interface AdwallCard {
   logoText?: string; // Optional text to display below the logo
   logoSubtext?: string; // Optional text to display below logoText (e.g. "Terms and conditions apply")
   creditCardImage: string;
-  badgeText: string;
-  badgeIcon: string;
+  badgeText?: string;
+  badgeIcon?: string;
   advertiserName: string;
   isDifferentBorder?: boolean;
   phoneNumber?: string; // Optional phone number to display below CTA

@@ -31,6 +31,14 @@ function sanitizeCardHtml(html: string): string {
   return out;
 }
 
+function toTelHref(phone: string): string {
+  const digits = phone.replace(/[^\d+]/g, "");
+  if (digits.startsWith("+")) return `tel:${digits}`;
+  const onlyDigits = phone.replace(/[^\d]/g, "");
+  if (onlyDigits.length === 11 && onlyDigits.startsWith("1")) return `tel:+${onlyDigits}`;
+  return `tel:${onlyDigits}`;
+}
+
 interface AdsWallCardsProps {
   ratings?: number;
   cardBg?: string;
@@ -57,6 +65,7 @@ interface AdsWallCardsProps {
   advertiserName: string;
   affiliateId?: string | null;
   transactionId?: string | null;
+  phoneNumber?: string;
   /** Optional extra query params for CTA link (e.g. sub3 for cc-finbuzz) */
   extraTrackingParams?: Record<string, string>;
   ctaMinWidthPx?: number;
@@ -90,12 +99,15 @@ const AdsWallCards = ({
   advertiserName,
   affiliateId,
   transactionId,
+  phoneNumber,
   extraTrackingParams,
   ctaMinWidthPx,
   bottomBoxHtml,
 }: AdsWallCardsProps) => {
   const affiliateParamName = "sub4";
   const transactionParamName = "sub5";
+  const hasBadgeText =
+    typeof badgeText === "string" ? badgeText.trim().length > 0 : Boolean(badgeText);
 
   // Append tracking params to outbound offer link
   const handleButtonClick = () => {
@@ -142,13 +154,19 @@ const AdsWallCards = ({
   // Card content (shared between gradient and non-gradient borders)
   const cardContent = (
     <div className="relative flex flex-col w-full gap-4">
-      <div>
-        <div className="text-xs font-medium p-2 bg-green-700  flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
-          <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
-          <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
+      <div className="h-8">
+        {hasBadgeText ? (
+          <div className="h-full text-xs font-medium px-2 bg-green-700 flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit text-white whitespace-nowrap">
+            {badgeIcon ? (
+              <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
+                <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
+              </div>
+            ) : null}
+            {badgeText}
           </div>
-          {badgeText}
-        </div>
+        ) : (
+          <div className="h-full" aria-hidden="true" />
+        )}
       </div>
 
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
@@ -281,6 +299,16 @@ const AdsWallCards = ({
             >
               on {advertiserName} secure site <Lock className="w-3 h-3 lg:w-3 lg:h-3" />
             </Typography>
+            {phoneNumber ? (
+              <a
+                href={toTelHref(phoneNumber)}
+                className="mt-1 text-xs font-semibold hover:underline underline-offset-4 flex items-center gap-1 text-general-muted-foreground"
+                aria-label={`Call ${phoneNumber}`}
+              >
+                <Phone className="w-3 h-3" />
+                <span>{phoneNumber}</span>
+              </a>
+            ) : null}
           </div>
           {/* {isSecondaryBtn && (
             <Button variant="outline" size="lg" icon={Phone} className="w-full">
