@@ -45,6 +45,7 @@
         "Quick access to funds - cash in as little as 3 business days from closing"
       ],
       "buttonLink": "https://www.mny0fw3trk.com/37SB645/9TK4PN/",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> \nEF.impression({\noffer_id: 179,\naffiliate_id: EF.urlParameter('s1'),\nsource_id: EF.urlParameter('source_id'),\nsub1: EF.urlParameter('sub1'),\nsub2: EF.urlParameter('sub2'),\nsub3: EF.urlParameter('sub3'),\nsub4: EF.urlParameter('sub4'),\nsub5: EF.urlParameter('sub5'),\n});\n</script>",
       "buttonText": "View My Rates",
       "ratingsNumber": "8.9",
       "ratingsCount": 5,
@@ -141,6 +142,47 @@
       "badgeText": "Fast Funding",
       "badgeIcon": "card",
       "advertiserName": "Upstart"
+    },
+    {
+      "heading": "Achieve",
+      "description": "No refinance required, borrow up to $300k",
+      "features": [
+        "Members save an average of $10,000/year when consolidating debt",
+        "Smart Debt Consolidation solution for homeowners",
+        "Pre-qualify in minutes, fast funding",
+        "Fixed-rate HELOC custom built for you"
+      ],
+      "buttonLink": "https://www.achieve.com/home-equity-loan-mp?section=achieve_hl",
+      "buttonText": "Check Eligibility",
+      "logoText":"NMLS #1810501",
+      "ratingsNumber": "6.8",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/achieve.avif",
+      "logoWidth": "100px",
+      "logoHeight": "50px",
+      "badgeText": "Recommended for Debt Consolidation",
+      "badgeIcon": "card",
+      "advertiserName": "Achieve"
+    },
+    {
+      "heading": "HomeTap",
+      "description": "Access Your Home Equity — Without a Loan",
+      "features": [
+        "Receive up to $600,000 in cash",
+        "No monthly payments and no interest",
+        "Funding typically available in about 3 weeks"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Check Eligibility",
+      "logoText":"NMLS #2467867",
+      "ratingsNumber": "6.5",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/hometap.avif",
+      "logoWidth": "100px",
+      "logoHeight": "30px",
+      "badgeText": "No Monthly Payments",
+      "badgeIcon": "card",
+      "advertiserName": "HomeTap"
     }
   ]
 }
