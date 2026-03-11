@@ -97,6 +97,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
 
   const handleLoaderComplete = () => {
     const destination = resolvePostSubmitRedirect(config, submittedData || {});
+    const destinationPath = destination.split("?")[0];
 
     const cleanParam = (value: string | null): string | null => {
       const cleaned = value?.replace(/^["']|["']$/g, "").trim();
@@ -142,6 +143,9 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       params.sub4 = affiliateId;
       params.sub5 = transactionId;
       params.sub3 = "155";
+    }
+    if (destinationPath === "/adwall/mortgage/heloc") {
+      params.sub3 = "180";
     }
     const finalUrl = appendQueryParams(destination, params);
 
