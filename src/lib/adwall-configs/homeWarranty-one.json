@@ -17,6 +17,7 @@
     {
       "heading": "Choice Home Warranty",
       "description": "MADNESS In March: $75 OFF + 1 Month Free",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 175, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
       "features": [
         "Handled more than 8M service requests",
         "Covered more than 2.4 M homes",
@@ -35,11 +36,13 @@
     },
     {
       "heading": "First American Home Warranty",
-      "description": "Unlimited Service Calls 24/7, 365 days a year",
+      "description": "Help Protect Your Home from Unexpected Repairs",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 63, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
       "features": [
         "Get a $100 Instant Discount*! Promo: PROTECT",
-        "Over $1.8 Billion in claims paid since 2015",
-        "Absolutely no limit to the number of claims you file"
+        "Unlimited service calls",
+        "Available 24/7, 365 days a year",
+        "Service provided through a network of approved contractors"
       ],
       "buttonLink": "#",
       "buttonText": "View Plan",
@@ -55,6 +58,7 @@
     {
       "heading": "American Home Warranty",
       "description": "Protect Your Home Systems & Appliances",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 94, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
       "features": [
         "Get $50 Off & 1st Month Free<sup>*</sup>",
         "Request service online 24/7 when things break",
@@ -73,6 +77,7 @@
     {
       "heading": "Total Home Shield",
       "description": "Get Your Appliance Breakdowns Covered by a Home Warranty",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 174, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
       "features": [
         "Limited Time: 1 Month Free + $50 OFF",
         "24/7 Home Warranty Service",
@@ -107,5 +112,6 @@
       "advertiserName": "American Home Shield",
       "phoneNumber": "(855) 632-0306"
     }
-  ]
+  ],
+  "disclaimers": "<div><strong>Choice Home Warranty</strong><p class=\"mt-2\">With purchase of any single home warranty plan.</p></div><div><strong>First American Home Warranty</strong><p class=\"mt-2\">Offer valid for new customers at the time of purchase on Consumer Essential or Premium Plan version #G. Excludes warranty plans for home buyers, sellers, agents and renewals.</p></div><div><strong>American Home Warranty</strong><p class=\"mt-2\">With purchase of a single payment home warranty plan. Offers subject to availability and terms and may be changed at any time.</p></div><div><strong>Total Home Shield</strong><p class=\"mt-2\">With purchase of a single payment home warranty plan. Offers subject to availability and terms and may be changed at any time.</p></div><div><strong>American Home Shield</strong><p class=\"mt-2\">See the plan agreement at <a href=\"https://www.ahs.com/contracts\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">ahs.com/contracts</a> for coverage details, including service fees, limitations and exclusions. Coverage limits and charges for non-covered items may apply.</p></div>"
 }
