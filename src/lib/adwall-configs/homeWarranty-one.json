@@ -31,7 +31,6 @@
       "logoWidth": "120px",
       "logoHeight": "80px",
       "badgeIcon": "card",
-      "phoneNumber": "(866) 835-4717",
       "advertiserName": "Choice Home Warranty"
     },
     {
@@ -52,8 +51,25 @@
       "logoWidth": "130px",
       "logoHeight": "50px",
       "badgeIcon": "card",
-      "phoneNumber": "(866) 291-0365",
       "advertiserName": "First American Home Warranty"
+    },
+    {
+      "heading": "American Home Shield",
+      "description": "30-Day Workmanship Guarantee on covered repairs",
+      "features": [
+        "Plans as low as $29.99 a month<sup>*</sup>",
+        "Helps cover breakdowns homeowners insurance typically doesn't",
+        "Nationwide network of trusted service Pros"
+      ],
+      "buttonLink": "#",
+      "buttonText": "View My Rates",
+      "ratingsNumber": "9.5",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warranty/American Home Shield.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeIcon": "card",
+      "advertiserName": "American Home Shield"
     },
     {
       "heading": "American Home Warranty",
@@ -66,7 +82,7 @@
       ],
       "buttonLink": "#",
       "buttonText": "View My Rates",
-      "ratingsNumber": "9.5",
+      "ratingsNumber": "8.9",
       "ratingsCount": 5,
       "logo": "/logos/home-warranty/american-home-warranty.avif",
       "logoWidth": "100px",
@@ -85,33 +101,14 @@
       ],
       "buttonLink": "#",
       "buttonText": "View My Rates",
-      "ratingsNumber": "8.9",
+      "ratingsNumber": "8.8",
       "ratingsCount": 5,
       "logo": "/logos/home-warranty/total-home-shield.avif",
       "logoWidth": "120px",
       "logoHeight": "80px",
       "badgeIcon": "card",
       "advertiserName": "Total Home Shield"  
-    },
-    {
-      "heading": "American Home Shield",
-      "description": "30-Day Workmanship Guarantee on covered repairs",
-      "features": [
-        "Plans as low as $29.99 a month<sup>*</sup>",
-        "Helps cover breakdowns homeowners insurance typically doesn't",
-        "Nationwide network of trusted service Pros"
-      ],
-      "buttonLink": "#",
-      "buttonText": "View My Rates",
-      "ratingsNumber": "8.8",
-      "ratingsCount": 5,
-      "logo": "/logos/home-warranty/American Home Shield.avif",
-      "logoWidth": "120px",
-      "logoHeight": "80px",
-      "badgeIcon": "card",
-      "advertiserName": "American Home Shield",
-      "phoneNumber": "(855) 632-0306"
     }
   ],
-  "disclaimers": "<div><strong>Choice Home Warranty</strong><p class=\"mt-2\">With purchase of any single home warranty plan.</p></div><div><strong>First American Home Warranty</strong><p class=\"mt-2\">Offer valid for new customers at the time of purchase on Consumer Essential or Premium Plan version #G. Excludes warranty plans for home buyers, sellers, agents and renewals.</p></div><div><strong>American Home Warranty</strong><p class=\"mt-2\">With purchase of a single payment home warranty plan. Offers subject to availability and terms and may be changed at any time.</p></div><div><strong>Total Home Shield</strong><p class=\"mt-2\">With purchase of a single payment home warranty plan. Offers subject to availability and terms and may be changed at any time.</p></div><div><strong>American Home Shield</strong><p class=\"mt-2\">See the plan agreement at <a href=\"https://www.ahs.com/contracts\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">ahs.com/contracts</a> for coverage details, including service fees, limitations and exclusions. Coverage limits and charges for non-covered items may apply.</p></div>"
+  "disclaimers": "<div><strong>Choice Home Warranty</strong><p class=\"mt-2\">With purchase of any single home warranty plan.</p></div><div><strong>First American Home Warranty</strong><p class=\"mt-2\">Offer valid for new customers at the time of purchase on Consumer Essential or Premium Plan version #G. Excludes warranty plans for home buyers, sellers, agents and renewals.</p></div><div><strong>American Home Shield</strong><p class=\"mt-2\">See the plan agreement at <a href=\"https://www.ahs.com/contracts\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">ahs.com/contracts</a> for coverage details, including service fees, limitations and exclusions. Coverage limits and charges for non-covered items may apply.</p></div><div><strong>American Home Warranty</strong><p class=\"mt-2\">With purchase of a single payment home warranty plan. Offers subject to availability and terms and may be changed at any time.</p></div><div><strong>Total Home Shield</strong><p class=\"mt-2\">With purchase of a single payment home warranty plan. Offers subject to availability and terms and may be changed at any time.</p></div>"
 }
