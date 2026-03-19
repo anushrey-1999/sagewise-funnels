@@ -5,6 +5,7 @@ import { Phone } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getFunnelConfig } from "@/lib/funnel-loader";
 import { getAdwallConfig } from "@/lib/adwall-loader";
+import { getDemoAdwallConfig } from "@/lib/demo-adwall-loader";
 import AdvertiserDisclosure from "@/components/AdvertiserDisclosure";
 
 function toTelHref(phone: string): string {
@@ -25,11 +26,15 @@ export function Navbar() {
   let navbar: { tagline?: string; phone?: string } | undefined;
 
   if (pathname.startsWith("/adwall/")) {
-    const parts = pathname.split("/").filter(Boolean); // ["adwall", "{funnel}", "{type}", ...]
-    const routeFunnel = parts[1];
-    const adwallType = parts[2];
+    const parts = pathname.split("/").filter(Boolean);
+    const isDemoAdwall = parts[1] === "demo";
+    const routeFunnel = isDemoAdwall ? parts[2] : parts[1];
+    const adwallType = isDemoAdwall ? parts[3] : parts[2];
+
     if (routeFunnel && adwallType) {
-      const adwallConfig = getAdwallConfig(routeFunnel, adwallType);
+      const adwallConfig = isDemoAdwall
+        ? getDemoAdwallConfig(routeFunnel, adwallType)
+        : getAdwallConfig(routeFunnel, adwallType);
       // Prefer adwall-specific navbar settings; fallback to the funnel's navbar settings
       navbar =
         adwallConfig?.navbar ||

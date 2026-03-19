@@ -1,0 +1,80 @@
+{
+  "id": "demo-mortgage-heloc",
+  "funnelId": "mortgage",
+  "adwallType": "heloc",
+  "title": "Tap into your home's value in your city",
+  "subtitle": "Access cash for renovations or debt consolidation with these top-rated HELOC and Equity programs.",
+  "updatedAt": "Updated March 19, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "s2"
+  },
+  "metadata": {
+    "title": "Demo Home Equity Lenders - Sagewise",
+    "description": "Preview the demo mortgage HELOC adwall experience without affecting the production mortgage adwall."
+  },
+  "cards": [
+    {
+      "heading": "Upstart",
+      "description": "Access $26,000 - $250,000 with a HELOC from Upstart Mortgage",
+      "features": [
+        "Check your rate in minutes",
+        "10 or 15 year terms available",
+        "Typical APR 6.52% - 18.00% APR<sup>1</sup>",
+        "Use funds for consolidation, renovations, or large purchases"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Check Eligibility",
+      "logoText": "NMLS #2443873",
+      "ratingsNumber": "7.0",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/upstart.avif",
+      "logoWidth": "100px",
+      "logoHeight": "70px",
+      "badgeText": "Fast Funding",
+      "badgeIcon": "card",
+      "advertiserName": "Upstart"
+    },
+    {
+      "heading": "Achieve",
+      "description": "No refinance required, borrow up to $300k",
+      "features": [
+        "Members save an average of $10,000/year when consolidating debt",
+        "Smart Debt Consolidation solution for homeowners",
+        "Pre-qualify in minutes, fast funding",
+        "Fixed-rate HELOC custom built for you"
+      ],
+      "buttonLink": "https://www.achieve.com/home-equity-loan-mp?section=achieve_hl",
+      "buttonText": "Check Eligibility",
+      "logoText": "NMLS #1810501",
+      "ratingsNumber": "6.8",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/achieve.avif",
+      "logoWidth": "100px",
+      "logoHeight": "50px",
+      "badgeText": "Recommended for Debt Consolidation",
+      "badgeIcon": "card",
+      "advertiserName": "Achieve"
+    },
+    {
+      "heading": "HomeTap",
+      "description": "Access Your Home Equity — No income or DTI requirements",
+      "features": [
+        "Receive up to $600,000 in cash",
+        "No monthly payments and no interest",
+        "Funding typically available in about 3 weeks"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Check Eligibility",
+      "logoText": "NMLS #2467867",
+      "ratingsNumber": "6.5",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/hometap.avif",
+      "logoWidth": "100px",
+      "logoHeight": "30px",
+      "badgeText": "No Monthly Payments",
+      "badgeIcon": "card",
+      "advertiserName": "HomeTap"
+    }
+  ]
+}
