@@ -5,6 +5,11 @@ import { Phone } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+type NavbarConfig = {
+  tagline?: string;
+  phone?: string;
+} | null;
+
 function toTelHref(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, "");
   // If user passed "+1..." keep it; else strip to digits and add "+" when it's clearly a country code format.
@@ -17,35 +22,54 @@ function toTelHref(phone: string): string {
 export function Navbar() {
   const pathname = usePathname() || "";
   const searchParams = useSearchParams();
-  const hide = pathname.startsWith("/admin");
+  const [navbar, setNavbar] = useState<NavbarConfig>(null);
 
   const funnelIdFromQuery = searchParams.get("funnel");
   const preview = searchParams.get("preview");
-  const [navbar, setNavbar] = useState<{ tagline?: string; phone?: string } | null>(null);
 
   useEffect(() => {
-    if (hide) return;
-    const controller = new AbortController();
-    const url = new URL("/api/navbar", window.location.origin);
-    url.searchParams.set("pathname", pathname);
-    if (funnelIdFromQuery) url.searchParams.set("funnel", funnelIdFromQuery);
-    if (preview === "1") url.searchParams.set("preview", "1");
+    const isAdwallRoute = pathname.startsWith("/adwall/");
+    const isFormRoute = pathname === "/form" || pathname.startsWith("/form/");
 
-    fetch(url.toString(), { signal: controller.signal })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data?.navbar) setNavbar(data.navbar);
-        else setNavbar(null);
-      })
-      .catch(() => {
-        // Non-blocking; keep navbar hidden if it fails.
-        setNavbar(null);
-      });
+    if (!isAdwallRoute && !isFormRoute) {
+      setNavbar(null);
+      return;
+    }
+
+    const params = new URLSearchParams({ pathname });
+    if (funnelIdFromQuery) params.set("funnel", funnelIdFromQuery);
+    if (preview === "1") params.set("preview", "1");
+
+    const controller = new AbortController();
+    setNavbar(null);
+
+    async function loadNavbar() {
+      try {
+        const response = await fetch(`/api/navbar?${params.toString()}`, {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load navbar");
+        }
+
+        const data = (await response.json()) as { navbar?: NavbarConfig };
+        if (!controller.signal.aborted) {
+          setNavbar(data.navbar ?? null);
+        }
+      } catch {
+        if (!controller.signal.aborted) {
+          setNavbar(null);
+        }
+      }
+    }
+
+    void loadNavbar();
 
     return () => controller.abort();
-  }, [pathname, funnelIdFromQuery, preview, hide]);
+  }, [funnelIdFromQuery, pathname, preview]);
 
-  if (hide) return null;
   return (
     <div className="bg-[#204c4b] flex items-center justify-between px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative">
       {/* <Button

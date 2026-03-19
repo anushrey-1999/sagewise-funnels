@@ -102,18 +102,14 @@ const AdsWallCards = ({
   // Card content (shared between gradient and non-gradient borders)
   const cardContent = (
     <div className="relative flex flex-col w-full gap-4">
-      {badgeTextStr ? (
-        <div>
-          <div className="text-xs font-medium p-2 bg-green-700 flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit text-white">
-            {badgeIconName ? (
-              <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
-                <Image src={`/icons/${badgeIconName}.svg`} alt="" layout="fill" />
-              </div>
-            ) : null}
-            {badgeTextStr}
+      <div>
+        <div className="text-xs font-medium p-2 bg-green-700  flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
+          <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
+          <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
           </div>
+          {badgeText}
         </div>
-      ) : null}
+      </div>
 
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
         {/* First Container */}

@@ -2,10 +2,10 @@
 
 import { FormSection } from "@/components/FormSection";
 import Image from "next/image";
+import type { FormConfig } from "@/types/form";
 import { Typography } from "@/components/ui/typography";
 import { Clock, Lock, Monitor, ShieldCheck } from "lucide-react";
 import { FunnelPostContent } from "@/components/FunnelPostContent";
-import type { FormConfig } from "@/types/form";
 
 const INFO_BAR_ICONS = {
   monitor: Monitor,
