@@ -1,0 +1,59 @@
+{
+  "id": "demo-mortgage-purchase",
+  "funnelId": "mortgage",
+  "adwallType": "purchase",
+  "title": "We found lender matches for you in your area",
+  "subtitle": "Compare top-rated purchase programs with $0-down options for qualified buyers.",
+  "updatedAt": "Updated March 19, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "s2"
+  },
+  "metadata": {
+    "title": "Demo Mortgage Purchase Lenders - Sagewise",
+    "description": "Preview the demo mortgage purchase adwall experience without affecting the production mortgage adwall."
+  },
+  "cards": [
+    {
+      "heading": "AmeriSave",
+      "description": "Get Your Home Loan — Fast, Fully Online",
+      "features": [
+        "Prequalify in minutes with no credit score impact",
+        "Accepts credit scores as low as 600",
+        "$750 closing cost credit on your future refinance"
+      ],
+      "buttonLink": "#",
+      "buttonText": "GET MY RATE",
+      "logoText": "NMLS #1168",
+      "ratingsNumber": "9.9",
+      "ratingsCount": 5,
+      "logo": "/logos/AmeriSave.avif",
+      "logoWidth": "110px",
+      "logoHeight": "40px",
+      "badgeText": "LOW CREDIT SCORE ACCEPTED",
+      "badgeIcon": "card",
+      "advertiserName": "AmeriSave"
+    },
+    {
+      "heading": "Bankrate",
+      "description": "Compare Top Mortgage Lenders in One Place",
+      "features": [
+        "Easy online pre-approvals",
+        "Get matched with custom mortgage offers",
+        "Multiple lenders compete for your business"
+      ],
+      "buttonLink": "#",
+      "buttonText": "View Rates",
+      "logoText": "NMLS #1427381",
+      "ratingsNumber": "9.9",
+      "ratingsCount": 5,
+      "logo": "/logos/Bankrate.avif",
+      "logoWidth": "100px",
+      "logoHeight": "40px",
+      "badgeText": "Fast & Convenient",
+      "badgeIcon": "card",
+      "bottomBoxHtml": "<p>Bankrate, LLC <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/1427381\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #1427381</a>; BR Tech Services, Inc. <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/1743443\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #1743443</a>.</p>",
+      "advertiserName": "Bankrate"
+    }
+  ]
+}

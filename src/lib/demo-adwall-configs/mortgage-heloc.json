@@ -15,6 +15,47 @@
   },
   "cards": [
     {
+      "heading": "AmeriSave",
+      "description": "Tap Into Your Home's Equity — Fully Online",
+      "features": [
+        "Rate buydown lowers your mortgage rate by 1% in year one",
+        "Prequalify in minutes — no impact to your credit score",
+        "Available with credit scores as low as 600"
+      ],
+      "buttonLink": "#",
+      "buttonText": "GET MY RATE",
+      "logoText": "NMLS #1168",
+      "ratingsNumber": "9.9",
+      "ratingsCount": 5,
+      "logo": "/logos/AmeriSave.avif",
+      "logoWidth": "110px",
+      "logoHeight": "40px",
+      "badgeText": "LOCK & DROP RATE PROGRAM",
+      "badgeIcon": "card",
+      "advertiserName": "AmeriSave"
+    },
+    {
+      "heading": "Bankrate",
+      "description": "Compare Top Mortgage Lenders in One Place",
+      "features": [
+        "Easy online pre-approvals",
+        "Get matched with custom mortgage offers",
+        "Multiple lenders compete for your business"
+      ],
+      "buttonLink": "#",
+      "buttonText": "View Rates",
+      "logoText": "NMLS #1427381",
+      "ratingsNumber": "9.9",
+      "ratingsCount": 5,
+      "logo": "/logos/Bankrate.avif",
+      "logoWidth": "100px",
+      "logoHeight": "40px",
+      "badgeText": "Fast & Convenient",
+      "badgeIcon": "card",
+      "bottomBoxHtml": "<p>Bankrate, LLC <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/1427381\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #1427381</a>; BR Tech Services, Inc. <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/1743443\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #1743443</a>.</p>",
+      "advertiserName": "Bankrate"
+    },
+    {
       "heading": "Upstart",
       "description": "Access $26,000 - $250,000 with a HELOC from Upstart Mortgage",
       "features": [
@@ -61,7 +102,7 @@
       "description": "Access Your Home Equity — No income or DTI requirements",
       "features": [
         "Receive up to $600,000 in cash",
-        "No monthly payments and no interest",
+        "See if you prequalify in less than a minute",
         "Funding typically available in about 3 weeks"
       ],
       "buttonLink": "#",
