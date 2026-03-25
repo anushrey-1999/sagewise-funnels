@@ -69,7 +69,7 @@ export function resolveRedirectOnAnswer(redirectOnAnswer: RedirectOnAnswer, fiel
  * - cc-one, cc-two, cc-three -> /adwall/cc/one, /adwall/cc/two, /adwall/cc/three
  * 
  * For other funnels, routes use the funnel ID:
- * - mortgage funnel -> /adwall/mortgage/one
+ * - mortgage funnel -> /adwall/mortgage/heloc
  * - autoins funnel -> /adwall/autoins/one
  * 
  * Note: If the route is already in the new format (e.g., /adwall/cc/one),
@@ -186,6 +186,8 @@ export function resolvePostSubmitRedirect(config: FormConfig, data: FormData): s
     return route;
   }
 
-  // Default to "one" adwall for the funnel (with automatic fallback to shared adwalls)
-  return getAdwallRoute(funnelId, "one");
+  // Default to "one" adwall for the funnel (with automatic fallback to shared adwalls).
+  // Mortgage uses named adwalls instead of numeric ones.
+  const defaultType = funnelId === "mortgage" ? "heloc" : "one";
+  return getAdwallRoute(funnelId, defaultType);
 }

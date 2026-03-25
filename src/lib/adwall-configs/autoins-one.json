@@ -20,7 +20,7 @@
       "features": [
       ],
       "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
+      "buttonText": "View My Rates",
       "ratingsNumber": "4.8",
       "phoneNumber": "1-800-000-0000",
       "ratingsCount": 5,
@@ -40,7 +40,7 @@
         "Get your quote online in minutes"
       ],
       "buttonLink": "#",
-      "buttonText": "GET QUOTE",
+      "buttonText": "View My Rates",
       "phoneNumber": "1-800-000-0000",
       "ratingsNumber": "4.9",
       "ratingsCount": 5,
@@ -60,7 +60,7 @@
         "Get a quote and compare rates today"
       ],
       "buttonLink": "#",
-      "buttonText": "SEE MY RATE",
+      "buttonText": "View My Rates",
       "ratingsNumber": "4.6",
       "ratingsCount": 5,
       "logo": "/logos/autoins/liberty-manual.avif",

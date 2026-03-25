@@ -1,8 +1,8 @@
 {
-  "id": "mortgage-one",
+  "id": "mortgage-heloc",
   "funnelId": "mortgage",
-  "adwallType": "one",
-  "title": "Tap into your home's value in your {zip}",
+  "adwallType": "heloc",
+  "title": "Tap into your home's value in {city}",
   "subtitle": "Access cash for renovations or debt consolidation with these top-rated HELOC and Equity programs.",
   "updatedAt": "Updated February 17, 2026",
   "trackingParams": {
@@ -10,71 +10,10 @@
     "transactionIdParam": "s2"
   },
   "metadata": {
-    "title": "Best Mortgage Lenders for Purchase - Sagewise",
-    "description": "Compare top mortgage lenders for home purchase. Find competitive rates, flexible terms, and $0-down options from trusted lenders."
+    "title": "Best Home Equity Lenders - Sagewise",
+    "description": "Compare top home equity lenders. Find competitive rates, fast funding, and flexible terms including HELOCs and home equity loans."
   },
   "cards": [
-    {
-      "heading": "Figure",
-      "description": "Fast Digital HELOC. Approval in as little as 5 minutes.",
-      "features": [
-        "Competitive rates even with a 640 FICO score",
-        "High limits: Access up to $750k for any purpose",
-        "No-hassle process: Entirely digital application",
-        "Rapid results: Funding available in 5 days"
-      ],
-      "buttonLink": "#",
-      "buttonText": "GET QUOTE",
-      "ratingsNumber": "9.6",
-      "ratingsCount": 5,
-      "logo": "/logos/mortgage/figure.avif",
-      "logoText":"NMLS #1717824",
-      "logoWidth": "100px",
-      "logoHeight": "18px",
-      "badgeText": "5 DAY FUNDING",
-      "badgeIcon": "card",
-      "advertiserName": "Figure"
-    },
-    {
-      "heading": "Aven",
-      "description": "Access a credit limit from $5,000-$400,000 in home equity",
-      "features": [
-        "Close in as fast as 15 minutes, 100% online",
-        "Check your offer - no impact to credit score",
-        "Quick access to funds - cash in as little as 3 business days from closing"
-      ],
-      "buttonLink": "#",
-      "buttonText": "VIEW RATES",
-      "ratingsNumber": "8.9",
-      "ratingsCount": 5,
-      "logo": "/logos/mortgage/aven.avif",
-      "logoText":"NMLS #2042345",
-      "logoWidth": "90px",
-      "logoHeight": "32px",
-      "badgeText": "3 DAY FUNDING",
-      "badgeIcon": "card",
-      "advertiserName": "Aven"
-    },
-    {
-      "heading": "Unlock",
-      "description": "$15K - $500K to use your way. Unlock your home's equity",
-      "features": [
-        "Access your equity without refinancing",
-        "No monthly payments",
-        "Use funds for anything"
-      ],
-      "buttonLink": "#",
-      "buttonText": "GET QUOTE",
-      "ratingsNumber": "8.5",
-      "ratingsCount": 5,
-      "logo": "/logos/mortgage/unlock.avif",
-      "logoText":"NMLS #2657081",
-      "logoWidth": "100px",
-      "logoHeight": "25px",
-      "badgeText": "No Monthly Payments",
-      "badgeIcon": "card",
-      "advertiserName": "Unlock"
-    },
     {
       "heading": "Quicken Loans",
       "description": "Unlock Cash from Within Your Home",
@@ -85,8 +24,8 @@
       ],
       "buttonLink": "https://www.rdtrk65.com/38TJS78/5JQ8NT/",
       "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({ offer_id: 92, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5'), });</script>",
-      "buttonText": "GET QUOTE",
-      "ratingsNumber": "8.0",
+      "buttonText": "View My Rates",
+      "ratingsNumber": "9.6",
       "ratingsCount": 5,
       "logo": "/logos/mortgage/quick-loans-logo.avif",
       "logoText":"NMLS #167283",
@@ -94,7 +33,30 @@
       "logoHeight": "33px",
       "badgeText": "100% online",
       "badgeIcon": "card",
+      "bottomBoxHtml": "<p>Quicken Loans <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/167283\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #167283</a>; QuickenLoans.com, a LMB Mortgage Services, Inc. company <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/167283\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #167283</a>.</p>",
       "advertiserName": "Quicken Loans"
+    },
+    {
+      "heading": "Figure",
+      "description": "Fast Digital HELOC with an A+ BBB Rating and $20+ Billion in Loans Funded",
+      "features": [
+        "Competitive rates even with a 640 FICO score",
+        "High limits: Access up to $750k for any purpose",
+        "No-hassle process: Entirely digital application",
+        "Approval in minutes and funding in as few as 5 days for qualified loans"
+      ],
+      "buttonLink": "https://www.mny0fw3trk.com/38TJS78/9S6813/",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\">\n</script> \n<script type=\"text/javascript\"> \nEF.impression({\noffer_id: 178,\naffiliate_id: EF.urlParameter('s1'),\nsource_id: EF.urlParameter('source_id'),\nsub1: EF.urlParameter('sub1'),\nsub2: EF.urlParameter('sub2'),\nsub3: EF.urlParameter('sub3'),\nsub4: EF.urlParameter('sub4'),\nsub5: EF.urlParameter('sub5'),\n});\n</script>",
+      "buttonText": "View My Rates",
+      "ratingsNumber": "8.6",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/figure.avif",
+      "logoText":"NMLS #1717824",
+      "logoWidth": "100px",
+      "logoHeight": "18px",
+      "badgeText": "FAST FUNDING FOR QUALIFIED LOANS",
+      "badgeIcon": "card",
+      "advertiserName": "Figure"
     },
     {
       "heading": "loanDepot",
@@ -104,8 +66,9 @@
         "Fund in as little as 2 weeks.",
         "Lifetime waiver of fees after first refinance with loanDepot<sup>*</sup>"
       ],
-      "buttonLink": "#",
-      "buttonText": "APPLY NOW",
+      "buttonLink": "https://www.rdtrk66.com/38TJS78/4Z3MTK",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> \nEF.impression({\noffer_id: 80,\naffiliate_id: EF.urlParameter('s1'),\nsource_id: EF.urlParameter('source_id'),\nsub1: EF.urlParameter('sub1'),\nsub2: EF.urlParameter('sub2'),\nsub3: EF.urlParameter('sub3'),\nsub4: EF.urlParameter('sub4'),\nsub5: EF.urlParameter('sub5'),\n});\n</script>",
+      "buttonText": "View My Rates",
       "logoText":"NMLS #174457",
       "ratingsNumber": "7.5",
       "ratingsCount": 5,
@@ -115,6 +78,28 @@
       "badgeText": "NO CREDIT CHECK",
       "badgeIcon": "card",
       "advertiserName": "loanDepot"
+    },
+    {
+      "heading": "Aven",
+      "description": "Access a credit limit from $5,000-$400,000 in home equity",
+      "features": [
+        "Close in as fast as 15 minutes, 100% online",
+        "Check your offer - no impact to credit score",
+        "Quick access to funds - cash in as little as 3 business days from closing"
+      ],
+      "buttonLink": "https://www.mny0fw3trk.com/38TJS78/9TK4PN/",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> \nEF.impression({\noffer_id: 179,\naffiliate_id: EF.urlParameter('s1'),\nsource_id: EF.urlParameter('source_id'),\nsub1: EF.urlParameter('sub1'),\nsub2: EF.urlParameter('sub2'),\nsub3: EF.urlParameter('sub3'),\nsub4: EF.urlParameter('sub4'),\nsub5: EF.urlParameter('sub5'),\n});\n</script>",
+      "buttonText": "View My Rates",
+      "ratingsNumber": "7.0",
+      "ratingsCount": 5,
+      "logo": "/logos/mortgage/aven.avif",
+      "logoText":"NMLS #2042345",
+      "logoWidth": "90px",
+      "logoHeight": "32px",
+      "badgeText": "3 DAY FUNDING",
+      "badgeIcon": "card",
+      "bottomBoxHtml": "<p>Aven Visa Credit Cards are issued by Coastal Community Bank, pursuant to a license from Visa U.S.A., Inc. Aven accounts are made by Coastal Community Bank, Member FDIC. Equal Housing Lender. <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/462289\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #462289</a>.</p>",
+      "advertiserName": "Aven"
     }
   ]
 }

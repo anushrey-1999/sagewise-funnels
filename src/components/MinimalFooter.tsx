@@ -3,27 +3,44 @@
 import Link from 'next/link';
 import React from 'react'
 import { Typography } from './ui/typography';
-import AdvertiserDisclosure from "@/components/AdvertiserDisclosure";
-import { usePathname } from "next/navigation";
 
 const footerLinks = [
-    { label: "Legal Overview", href: "#" },
-    { label: "Privacy Policy", href: "#" },
-    { label: "Your Privacy Choices", href: "#" },
-    { label: "State Law Privacy Notice", href: "#" },
-    { label: "Security", href: "#" },
-    { label: "Terms of Use", href: "#" },
-    { label: "Licenses & Disclosures", href: "#" },
-    { label: "Do Not Call & Consent to Contact", href: "#" },
-    { label: "SMS Terms & Conditions", href: "#" },
-    { label: "Unsubscribe", href: "#" },
-    { label: "Vulnerability Disclosure Program", href: "#" },
-    { label: "Accessibility Statement", href: "#" },
+    { label: "Legal Overview", href: "https://sagewise.net/legal-overview/" },
+    { label: "Privacy Policy", href: "https://sagewise.net/privacy-policy/" },
+    {
+      label: "Your Privacy Choices",
+      href: "https://sagewise.net/your-privacy-choices/",
+    },
+    {
+      label: "State Law Privacy Notice",
+      href: "https://sagewise.net/state-law-privacy-notice/",
+    },
+    { label: "Security", href: "https://sagewise.net/security/" },
+    { label: "Terms of Use", href: "https://sagewise.net/terms-of-use/" },
+    {
+      label: "Licenses & Disclosures",
+      href: "https://sagewise.net/licenses-disclosures/",
+    },
+    {
+      label: "Do Not Call & Consent to Contact",
+      href: "https://sagewise.net/do-not-call-consent-to-contact/",
+    },
+    {
+      label: "SMS Terms & Conditions",
+      href: "https://sagewise.net/sms-terms-conditions/",
+    },
+    { label: "Unsubscribe", href: "https://sagewise.net/unsubscribe/" },
+    {
+      label: "Vulnerability Disclosure Program",
+      href: "https://sagewise.net/vulnerability-disclosure-program/",
+    },
+    {
+      label: "Accessibility Statement",
+      href: "https://sagewise.net/accessibility-statement/",
+    },
   ];
 
 const MinimalFooter = () => {
-  const pathname = usePathname();
-  const showDisclosureInFooter = !pathname?.startsWith("/adwall/");
   return (
     <div className='bg-white p-6 border-t border-general-border flex flex-col items-center gap-4'>
         <div className="text-center">
@@ -34,11 +51,25 @@ const MinimalFooter = () => {
       >
         © Copyright 2026, Sagewise® • All Rights Reserved
       </Typography>
+      <Typography
+        variant="p"
+        color="text-primary-light"
+        className="text-[10px] md:text-xs  tracking-[0.5px] mt-1"
+      >
+        C3 Data LLC dba Massive and Co | 4376 Forestdale Drive #4 Park City, UT
+        84098
+      </Typography>
         </div>
         <div className="flex flex-col gap-3 items-center">
         <div className="flex flex-row flex-wrap gap-2 sm:gap-3 md:gap-4 text-xs text-black underline items-center justify-center">
           {footerLinks.slice(0, 7).map((link, index) => (
-            <Link key={index} href={link.href} className="hover:text-gray-600 text-black">
+            <Link
+              key={index}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-600 text-black"
+            >
               {link.label}
             </Link>
           ))}
@@ -46,11 +77,16 @@ const MinimalFooter = () => {
 
         <div className="flex flex-row flex-wrap gap-2 sm:gap-3 md:gap-4 text-xs text-black underline items-center justify-center">
           {footerLinks.slice(7).map((link, index) => (
-            <Link key={index} href={link.href} className="hover:text-gray-600 text-black">
+            <Link
+              key={index}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-600 text-black"
+            >
               {link.label}
             </Link>
           ))}
-          {showDisclosureInFooter ? <AdvertiserDisclosure placement="top" /> : null}
         </div>
       </div>
     </div>

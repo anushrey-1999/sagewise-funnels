@@ -2,7 +2,7 @@
   "id": "cc-three",
   "funnelId": "cc-one",
   "adwallType": "three",
-  "title": "Best credit cards of January 2026",
+  "title": "Best credit cards of {month} {year}",
   "subtitle": "High credit card interest can strain a fixed income. Compare 0% intro APR and balance transfer credit cards that may help reduce interest, consolidate debt, and manage monthly expenses.",
   "updatedAt": "Updated January 6, 2026",
   "trackingParams": {
@@ -44,7 +44,7 @@
         "0% intro APR on purchases and balance transfers for 12 months"
       ],
       "buttonLink": "#",
-      "buttonText": "Check Pre-Approval",
+      "buttonText": "Apply Now",
       "ratingsNumber": "9.3",
       "ratingsCount": 5,
       "logoWidth": "100px",
@@ -84,7 +84,7 @@
         "Flexible payment due dates to help align with your paychecks"
       ],
       "buttonLink": "#",
-      "buttonText": "Open Account",
+      "buttonText": "Apply Now",
       "isDifferentBorder": false,
       "ratingsNumber": "8.7",
       "ratingsCount": 5,

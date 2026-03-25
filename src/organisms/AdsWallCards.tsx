@@ -6,6 +6,39 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import React from "react";
 
+function sanitizeCardHtml(html: string): string {
+  // Funnel/adwall JSON is controlled content; this is defensive, not a full HTML sanitizer.
+  // Keep deterministic transforms to avoid any hydration mismatch surprises.
+  let out = html;
+
+  // Remove script/style blocks entirely
+  out = out.replace(/<\s*(script|style)[^>]*>[\s\S]*?<\s*\/\s*\1\s*>/gi, "");
+
+  // Strip event handlers everywhere
+  out = out.replace(/\s+on[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "");
+
+  // Neutralize javascript: URLs in href/src attrs
+  out = out.replace(
+    /\b(href|src)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi,
+    (_m, attr, v1, v2, v3) => {
+      const val = String(v1 || v2 || v3 || "").trim();
+      if (val.toLowerCase().startsWith("javascript:")) return `${attr}=""`;
+      // Rebuild using double quotes for consistency
+      return `${attr}="${val}"`;
+    }
+  );
+
+  return out;
+}
+
+function toTelHref(phone: string): string {
+  const digits = phone.replace(/[^\d+]/g, "");
+  if (digits.startsWith("+")) return `tel:${digits}`;
+  const onlyDigits = phone.replace(/[^\d]/g, "");
+  if (onlyDigits.length === 11 && onlyDigits.startsWith("1")) return `tel:+${onlyDigits}`;
+  return `tel:${onlyDigits}`;
+}
+
 interface AdsWallCardsProps {
   ratings?: number;
   cardBg?: string;
@@ -28,10 +61,16 @@ interface AdsWallCardsProps {
   logoWidth: string;
   logoHeight: string;
   logoText?: string;
+  logoSubtext?: string;
   advertiserName: string;
   affiliateId?: string | null;
   transactionId?: string | null;
+  phoneNumber?: string;
+  /** Optional extra query params for CTA link (e.g. sub3 for cc-finbuzz) */
+  extraTrackingParams?: Record<string, string>;
   ctaMinWidthPx?: number;
+  /** Optional bottom callout box content rendered as HTML. */
+  bottomBoxHtml?: string;
 }
 
 const AdsWallCards = ({
@@ -56,40 +95,53 @@ const AdsWallCards = ({
   logoWidth,
   logoHeight,
   logoText,
+  logoSubtext,
   advertiserName,
   affiliateId,
   transactionId,
+  phoneNumber,
+  extraTrackingParams,
   ctaMinWidthPx,
+  bottomBoxHtml,
 }: AdsWallCardsProps) => {
-  const safeStr = (v: unknown): string => (typeof v === "string" ? v.trim() : "");
-  const logoSrc = safeStr(logo);
-  const cardImgSrc = safeStr(creditCardImage);
-  const badgeIconName = safeStr(badgeIcon);
-  const badgeTextStr = safeStr(badgeText);
+  const affiliateParamName = "sub4";
+  const transactionParamName = "sub5";
+  const hasBadgeText =
+    typeof badgeText === "string" ? badgeText.trim().length > 0 : Boolean(badgeText);
 
-  // Function to append s1 (affiliate_id) and sub5 (transaction_id) to the button link
+  // Append tracking params to outbound offer link
   const handleButtonClick = () => {
     try {
       const url = new URL(buttonLink);
       
       if (affiliateId) {
-        url.searchParams.set("s1", affiliateId);
+        url.searchParams.set(affiliateParamName, affiliateId);
       }
       if (transactionId) {
-        url.searchParams.set("sub5", transactionId);
+        url.searchParams.set(transactionParamName, transactionId);
+      }
+      if (extraTrackingParams) {
+        Object.entries(extraTrackingParams).forEach(([key, value]) => {
+          url.searchParams.set(key, value);
+        });
       }
       
       window.open(url.toString(), "_blank");
-    } catch (error) {
+    } catch {
       // If buttonLink is not a valid absolute URL, append params manually
       const separator = buttonLink.includes("?") ? "&" : "?";
       const params: string[] = [];
       
       if (affiliateId) {
-        params.push(`s1=${encodeURIComponent(affiliateId)}`);
+        params.push(`${affiliateParamName}=${encodeURIComponent(affiliateId)}`);
       }
       if (transactionId) {
-        params.push(`sub5=${encodeURIComponent(transactionId)}`);
+        params.push(`${transactionParamName}=${encodeURIComponent(transactionId)}`);
+      }
+      if (extraTrackingParams) {
+        Object.entries(extraTrackingParams).forEach(([key, value]) => {
+          params.push(`${key}=${encodeURIComponent(value)}`);
+        });
       }
       
       const finalUrl = params.length > 0 
@@ -102,26 +154,32 @@ const AdsWallCards = ({
   // Card content (shared between gradient and non-gradient borders)
   const cardContent = (
     <div className="relative flex flex-col w-full gap-4">
-      <div>
-        <div className="text-xs font-medium p-2 bg-green-700  flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit  text-white">
-          <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
-          <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
+      <div className="h-8">
+        {hasBadgeText ? (
+          <div className="h-full text-[10px] lg:text-xs font-medium px-2 bg-green-700 flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit text-white whitespace-nowrap">
+            {badgeIcon ? (
+              <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
+                <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
+              </div>
+            ) : null}
+            {badgeText}
           </div>
-          {badgeText}
-        </div>
+        ) : (
+          <div className="h-full" aria-hidden="true" />
+        )}
       </div>
 
       <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
         {/* First Container */}
         <div className="flex flex-col items-center justify-center gap-3 shrink-0 self-stretch">
-          {logoSrc ? (
-            <div className="flex flex-col items-start w-[110px]" >
+          {logo ? (
+            <div className="flex flex-col items-center w-[110px]">
               <div
-                className="relative overflow-hidden flex items-center "
+                className="relative overflow-hidden flex items-center justify-center"
                 style={{ width: logoWidth, height: logoHeight }}
               >
                 <Image
-                  src={logoSrc}
+                  src={logo}
                   alt="logo"
                   layout="fill"
                   className="object-contain"
@@ -130,20 +188,25 @@ const AdsWallCards = ({
               {logoText && (
                 <Typography
                   variant="p"
-                  className="text-[10px] text-left mt-1"
+                  className="text-[10px] text-center mt-1 w-full"
                   color="text-general-muted-foreground"
                 >
                   {logoText}
                 </Typography>
               )}
-            </div>
-          ) : cardImgSrc ? (
-            <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
-              <Image src={cardImgSrc} alt="card" layout="fill" />
+              {logoSubtext && (
+                <Typography
+                  variant="p"
+                  className="text-[10px] text-center mt-0.5 w-full"
+                  color="text-general-muted-foreground"
+                >
+                  {logoSubtext}
+                </Typography>
+              )}
             </div>
           ) : (
-            <div className="w-[110px] h-[60px] lg:w-[120px] lg:h-[72px] rounded-sm bg-[#f3f3f3] border border-general-border flex items-center justify-center text-[10px] text-general-muted-foreground px-2 text-center">
-              Missing image
+            <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
+              <Image src={creditCardImage} alt="credit-card" layout="fill" />
             </div>
           )}
         </div>
@@ -157,7 +220,7 @@ const AdsWallCards = ({
           />
           <Typography
             variant="p"
-            className="text-sm"
+            className="text-sm font-bold"
             dangerouslySetInnerHTML={{ __html: description }}
           />
           <Typography variant="ul" className="">
@@ -236,6 +299,16 @@ const AdsWallCards = ({
             >
               on {advertiserName} secure site <Lock className="w-3 h-3 lg:w-3 lg:h-3" />
             </Typography>
+            {phoneNumber ? (
+              <a
+                href={toTelHref(phoneNumber)}
+                className="mt-1 text-xs font-semibold hover:underline underline-offset-4 flex items-center gap-1 text-general-muted-foreground"
+                aria-label={`Call ${phoneNumber}`}
+              >
+                <Phone className="w-3 h-3" />
+                <span>{phoneNumber}</span>
+              </a>
+            ) : null}
           </div>
           {/* {isSecondaryBtn && (
             <Button variant="outline" size="lg" icon={Phone} className="w-full">
@@ -273,7 +346,7 @@ const AdsWallCards = ({
 
       <div
         className={cn(
-          "border-2 z-1 relative rounded-xl w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
+          "border-2 z-1 relative rounded-xl w-full flex flex-col ",
           isDifferentBorder 
             ? "border-[#ffd32a]" // Golden border using CTA primary color
             : "border-general-border", // Default border
@@ -281,6 +354,14 @@ const AdsWallCards = ({
         )}
       >
         {cardContent}
+        {bottomBoxHtml ? (
+          <div className="pb-5 pt-3 px-4">
+            <div
+              className="bg-[#F4F5F8] p-2.5 text-xs leading-relaxed text-general-muted-foreground [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
+              dangerouslySetInnerHTML={{ __html: sanitizeCardHtml(bottomBoxHtml) }}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );

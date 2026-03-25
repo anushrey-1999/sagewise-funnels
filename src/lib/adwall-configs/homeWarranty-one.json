@@ -2,8 +2,8 @@
   "id": "homeWarranty-one",
   "funnelId": "homeWarranty",
   "adwallType": "one",
-  "title": "{NAME}, we found lender matches for you in {zip}.",
-  "subtitle": "Compare top-rated purchase programs in your city with $0-down options for qualified buyers.",
+  "title": "Best Home Warranty Companies for 2026",
+  "subtitle": "Compare top-rated home warranty plans that help protect your home systems and appliances from costly breakdowns.",
   "updatedAt": "Updated January 23, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",
@@ -15,68 +15,119 @@
   },
   "cards": [
     {
-      "heading": "Select Home Warranty",
-      "description": "Affordable home warranty plans with exclusive discounts and member benefits.",
-      "features": [
-        "Plans starting as low as $24.99/month",
-        "$150 Off + 2 Months Free + Free Roof Coverage",
-        "A+ Rated, Accredited Business by Online Business Bureau",
-        "Members save up to 75% at Amazon, Home Depot, Best Buy & more",
-        "Preferred home warranty partner for all Remax Realty listings"
-      ],
-      "buttonLink": "#",
-      "buttonText": "SEE PLANS",
-      "ratingsNumber": "9.9",
-      "ratingsCount": 5,
-      "logo": "/logos/home-warranty/Select.avif",
-      "logoWidth": "120px",
-      "logoHeight": "80px",
-      "badgeText": "A+ BBB RATED",
-      "badgeIcon": "card",
-      "advertiserName": "Select Home Warranty",
-      "phoneNumber": "800-000-0000"
-    },
-    {
       "heading": "Choice Home Warranty",
-      "description": "Customizable home warranty plans tailored to your home and budget.",
+      "description": "MADNESS In March: $75 OFF + 1 Month Free",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 175, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
       "features": [
-        "Choose a plan tailored to your home and budget",
-        "Limited Time Offer: Get $100 OFF your first year of coverage",
-        "Highly Rated by thousands of satisfied customers",
-        "Dedicated Claims Team for faster service"
+        "Handled more than 8M service requests",
+        "Covered more than 2.4 M homes",
+        "First 30 days: free cancelation "
       ],
-      "buttonLink": "#",
-      "buttonText": "SEE PLANS",
+      "buttonLink": "https://www.rdtrker21.com/39915PT/9N1KR8/",
+      "buttonText": "View Plan",
       "ratingsNumber": "9.8",
       "ratingsCount": 5,
       "logo": "/logos/home-warranty/Choice.avif",
       "logoWidth": "120px",
       "logoHeight": "80px",
-      "badgeText": "$100 OFF PROMO",
       "badgeIcon": "card",
-      "advertiserName": "Choice Home Warranty",
-      "phoneNumber": "800-000-0001"
+      "advertiserName": "Choice Home Warranty"
+    },
+    {
+      "heading": "First Premier Home Warranty",
+      "description": "All your home's major systems and appliances covered!",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 183, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
+      "features": [
+        "$250 OFF + 2 months + free roof coverage",
+        "Senior & Veterans discount available",
+        "Fastest claim dispatch in the Industry"
+      ],
+      "buttonLink": "https://www.mny0fw3trk.com/39915PT/B34MN4/",
+      "buttonText": "View Plan",
+      "ratingsNumber": "9.7",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warranty/first-premier.avif",
+      "logoWidth": "110px",
+      "logoHeight": "80px",
+      "badgeIcon": "card",
+      "advertiserName": "First Premier Home Warranty"
+    },
+    {
+      "heading": "First American Home Warranty",
+      "description": "Help Protect Your Home from Unexpected Repairs",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 63, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
+      "features": [
+        "Get a $100 Instant Discount*! Promo: PROTECT",
+        "Unlimited service calls",
+        "Available 24/7, 365 days a year",
+        "Service provided through a network of approved contractors"
+      ],
+      "buttonLink": "https://www.xrt5mv7q.com/39915PT/44GMC8/",
+      "buttonText": "View Plan",
+      "ratingsNumber": "9.5",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warranty/first-american.avif",
+      "logoWidth": "130px",
+      "logoHeight": "50px",
+      "badgeIcon": "card",
+      "advertiserName": "First American Home Warranty"
     },
     {
       "heading": "American Home Shield",
-      "description": "Trusted home warranty protection backed by over 50 years of industry leadership.",
+      "description": "30-Day Workmanship Guarantee on covered repairs",
       "features": [
-        "Get 50% OFF select best-selling plans",
-        "Backed by Over 50 Years of Industry Leadership",
-        "24/7 Expert Support with Real-Time Video Chat",
-        "Exclusive: $150 Service Fee Rebate for New Customers"
+        "Plans as low as $29.99 a month<sup>*</sup>",
+        "Helps cover breakdowns homeowners insurance typically doesn't",
+        "Nationwide network of trusted service Pros"
       ],
-      "buttonLink": "#",
-      "buttonText": "SEE PLANS",
-      "ratingsNumber": "9.7",
+      "buttonLink": "https://www.xrt5mv7q.com/39915PT/9ZBW6W/",
+      "buttonText": "View Plan",
+      "ratingsNumber": "9.2",
       "ratingsCount": 5,
       "logo": "/logos/home-warranty/American Home Shield.avif",
       "logoWidth": "120px",
       "logoHeight": "80px",
-      "badgeText": "50% SELECT PLANS",
       "badgeIcon": "card",
-      "advertiserName": "American Home Shield",
-      "phoneNumber": "800-000-0002"
+      "advertiserName": "American Home Shield"
+    },
+    {
+      "heading": "American Home Warranty",
+      "description": "Protect Your Home Systems & Appliances",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 94, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
+      "features": [
+        "Get $50 Off & 1st Month Free<sup>*</sup>",
+        "Request service online 24/7 when things break",
+        "Nationwide network of local repair pros"
+      ],
+      "buttonLink": "https://www.rdtrk65.com/39915PT/5MJ263/",
+      "buttonText": "View Plan",
+      "ratingsNumber": "8.9",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warranty/american-home-warranty.avif",
+      "logoWidth": "100px",
+      "logoHeight": "80px",
+      "badgeIcon": "card",
+      "advertiserName": "American Home Warranty"
+    },
+    {
+      "heading": "Total Home Shield",
+      "description": "Get Your Appliance Breakdowns Covered by a Home Warranty",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 174, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
+      "features": [
+        "Limited Time: 1 Month Free + $50 OFF",
+        "24/7 Home Warranty Service",
+        "If we can't fix it, we replace it<sup>*</sup>"
+      ],
+      "buttonLink": "https://www.rdtrker21.com/39915PT/9LLP2M/",
+      "buttonText": "View Plan",
+      "ratingsNumber": "8.8",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warranty/total-home-shield.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeIcon": "card",
+      "advertiserName": "Total Home Shield"  
     }
-  ]
+  ],
+  "disclaimers": "<div><strong>Choice Home Warranty</strong><p class=\"mt-2\">With purchase of any single home warranty plan.</p></div><div><strong>First American Home Warranty</strong><p class=\"mt-2\">Offer valid for new customers at the time of purchase on Consumer Essential or Premium Plan version #G. Excludes warranty plans for home buyers, sellers, agents and renewals.</p></div><div><strong>American Home Shield</strong><p class=\"mt-2\">See the plan agreement at <a href=\"https://www.ahs.com/contracts\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">ahs.com/contracts</a> for coverage details, including service fees, limitations and exclusions. Coverage limits and charges for non-covered items may apply.</p></div><div><strong>American Home Warranty</strong><p class=\"mt-2\">With purchase of a single payment home warranty plan. Offers subject to availability and terms and may be changed at any time.</p></div><div><strong>Total Home Shield</strong><p class=\"mt-2\">With purchase of a single payment home warranty plan. Offers subject to availability and terms and may be changed at any time.</p></div>"
 }

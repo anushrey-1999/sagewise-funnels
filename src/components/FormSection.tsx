@@ -97,6 +97,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
 
   const handleLoaderComplete = () => {
     const destination = resolvePostSubmitRedirect(config, submittedData || {});
+    const destinationPath = destination.split("?")[0];
 
     const cleanParam = (value: string | null): string | null => {
       const cleaned = value?.replace(/^["']|["']$/g, "").trim();
@@ -131,13 +132,22 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       }
     }
 
-    const finalUrl = appendQueryParams(destination, {
+    const params: Record<string, string | undefined> = {
       s1: affiliateId,
       s2: transactionId,
       sub5: transactionId,
       name: firstName,
       zip: zipCode,
-    });
+    };
+    if (config.id === "cc-finbuzz") {
+      params.sub4 = affiliateId;
+      params.sub5 = transactionId;
+      params.sub3 = "155";
+    }
+    if (destinationPath === "/adwall/mortgage/heloc") {
+      params.sub3 = "180";
+    }
+    const finalUrl = appendQueryParams(destination, params);
 
     // Use full page redirect so the destination page has a clean document (no leftover
     // form-injected scripts like EF.conversion that would otherwise persist with client-side nav)

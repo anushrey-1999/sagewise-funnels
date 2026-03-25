@@ -3,12 +3,10 @@
 import { Logo } from "./Logo";
 import { Phone } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-
-type NavbarConfig = {
-  tagline?: string;
-  phone?: string;
-} | null;
+import { getFunnelConfig } from "@/lib/funnel-loader";
+import { getAdwallConfig } from "@/lib/adwall-loader";
+import { getDemoAdwallConfig } from "@/lib/demo-adwall-loader";
+import AdvertiserDisclosure from "@/components/AdvertiserDisclosure";
 
 function toTelHref(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, "");
@@ -22,56 +20,32 @@ function toTelHref(phone: string): string {
 export function Navbar() {
   const pathname = usePathname() || "";
   const searchParams = useSearchParams();
-  const [navbar, setNavbar] = useState<NavbarConfig>(null);
 
+  // Determine which config applies for the current route and read optional navbar data.
   const funnelIdFromQuery = searchParams.get("funnel");
-  const preview = searchParams.get("preview");
+  let navbar: { tagline?: string; phone?: string } | undefined;
 
-  useEffect(() => {
-    const isAdwallRoute = pathname.startsWith("/adwall/");
-    const isFormRoute = pathname === "/form" || pathname.startsWith("/form/");
+  if (pathname.startsWith("/adwall/")) {
+    const parts = pathname.split("/").filter(Boolean);
+    const isDemoAdwall = parts[1] === "demo";
+    const routeFunnel = isDemoAdwall ? parts[2] : parts[1];
+    const adwallType = isDemoAdwall ? parts[3] : parts[2];
 
-    if (!isAdwallRoute && !isFormRoute) {
-      setNavbar(null);
-      return;
+    if (routeFunnel && adwallType) {
+      const adwallConfig = isDemoAdwall
+        ? getDemoAdwallConfig(routeFunnel, adwallType)
+        : getAdwallConfig(routeFunnel, adwallType);
+      // Prefer adwall-specific navbar settings; fallback to the funnel's navbar settings
+      navbar =
+        adwallConfig?.navbar ||
+        (adwallConfig?.funnelId ? getFunnelConfig(adwallConfig.funnelId)?.navbar : undefined);
     }
-
-    const params = new URLSearchParams({ pathname });
-    if (funnelIdFromQuery) params.set("funnel", funnelIdFromQuery);
-    if (preview === "1") params.set("preview", "1");
-
-    const controller = new AbortController();
-    setNavbar(null);
-
-    async function loadNavbar() {
-      try {
-        const response = await fetch(`/api/navbar?${params.toString()}`, {
-          signal: controller.signal,
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to load navbar");
-        }
-
-        const data = (await response.json()) as { navbar?: NavbarConfig };
-        if (!controller.signal.aborted) {
-          setNavbar(data.navbar ?? null);
-        }
-      } catch {
-        if (!controller.signal.aborted) {
-          setNavbar(null);
-        }
-      }
-    }
-
-    void loadNavbar();
-
-    return () => controller.abort();
-  }, [funnelIdFromQuery, pathname, preview]);
+  } else if (pathname === "/form" || pathname.startsWith("/form/")) {
+    navbar = getFunnelConfig(funnelIdFromQuery)?.navbar;
+  }
 
   return (
-    <div className="bg-[#204c4b] flex items-center justify-between px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative">
+    <div className="bg-[#204c4b] grid grid-cols-1 sm:grid-cols-3 items-center px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative gap-1 sm:gap-0">
       {/* <Button
         variant="ghost"
         size="icon"
@@ -79,28 +53,35 @@ export function Navbar() {
       >
         <Menu className="h-4 w-4 text-white" />
       </Button> */}
-      <div className="shrink-0 flex justify-center lg:justify-start items-center">
+      <div className="shrink-0 flex justify-center sm:justify-start items-center sm:justify-self-start">
         <Logo color="white" href="https://sagewise.net/" />
       </div>
-      {(navbar?.tagline || navbar?.phone) && (
-        <div className="flex flex-col items-end text-white text-right gap-0.5">
-          {navbar?.tagline && (
-            <div className="hidden sm:block text-xs sm:text-sm opacity-90 leading-tight">
-              {navbar.tagline}
-            </div>
-          )}
-          {navbar?.phone && (
-            <a
-              href={toTelHref(navbar.phone)}
-              className="flex items-center gap-2 font-semibold text-sm sm:text-base hover:underline underline-offset-4"
-              aria-label={`Call ${navbar.phone}`}
-            >
-              <Phone className="h-4 w-4 sm:h-4 sm:w-4 text-white" />
-              <span>{navbar.phone}</span>
-            </a>
-          )}
-        </div>
-      )}
+      <div className="justify-self-center text-center">
+        <AdvertiserDisclosure
+          placement="bottom"
+          align="center"
+          triggerClassName="text-[11px] sm:text-[11px] text-white/90 hover:text-white"
+          popoverBodyClassName="text-xs"
+        />
+      </div>
+
+      <div className="flex flex-col items-center sm:items-end text-center sm:text-right gap-0.5 sm:justify-self-end">
+        {navbar?.tagline && (
+          <div className="hidden sm:block text-xs sm:text-sm opacity-90 leading-tight text-white">
+            {navbar.tagline}
+          </div>
+        )}
+        {navbar?.phone && (
+          <a
+            href={toTelHref(navbar.phone)}
+            className="flex items-center gap-2 font-semibold text-sm sm:text-base hover:underline underline-offset-4 text-white"
+            aria-label={`Call ${navbar.phone}`}
+          >
+            <Phone className="h-4 w-4 sm:h-4 sm:w-4 text-white" />
+            <span>{navbar.phone}</span>
+          </a>
+        )}
+      </div>
     </div>
   );
 }

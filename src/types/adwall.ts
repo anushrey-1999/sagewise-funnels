@@ -10,12 +10,18 @@ export interface AdwallCard {
   logoWidth: string;
   logoHeight: string;
   logoText?: string; // Optional text to display below the logo
+  logoSubtext?: string; // Optional text to display below logoText (e.g. "Terms and conditions apply")
   creditCardImage: string;
-  badgeText: string;
-  badgeIcon: string;
+  badgeText?: string;
+  badgeIcon?: string;
   advertiserName: string;
   isDifferentBorder?: boolean;
   phoneNumber?: string; // Optional phone number to display below CTA
+  /**
+   * Optional bottom callout box content rendered as HTML.
+   * Controlled via the adwall JSON on a per-card basis.
+   */
+  bottomBoxHtml?: string;
   /**
    * Raw third-party impression snippet to inject when this card is viewed.
    * Must be a string containing one or more <script> tags (kept as-provided).

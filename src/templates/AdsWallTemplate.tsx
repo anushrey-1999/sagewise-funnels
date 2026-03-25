@@ -10,19 +10,23 @@ import ImpressionOnView from "@/components/ImpressionOnView";
 
 interface AdsWallTemplateProps {
   config: AdwallConfig;
+  resolvedCity?: string | null;
+  updatedAtOverride?: string | null;
 }
 
 /**
  * Interpolate variables in text template
- * Supports: {NAME}, {zip}
+ * Supports: {NAME}, {zip}, {city}, {month}, {year}
  */
 function interpolateTemplate(template: string, variables: Record<string, string>): string {
-  return template
-    .replace(/\{NAME\}/g, variables.NAME || "")
-    .replace(/\{zip\}/g, variables.zip || "");
+  let out = template;
+  for (const [key, value] of Object.entries(variables)) {
+    out = out.replace(new RegExp(`\\{${key}\\}`, "g"), value ?? "");
+  }
+  return out;
 }
 
-const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
+const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTemplateProps) => {
   const searchParams = useSearchParams();
 
   const cleanParam = (value: string | null): string | null => {
@@ -60,11 +64,27 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
     return z?.replace(/^["']|["']$/g, "") || null;
   }, [searchParams]);
 
+  const { monthName, yearNumber } = useMemo(() => {
+    const effectiveUpdatedAt = updatedAtOverride ?? config.updatedAt ?? "";
+    const match = effectiveUpdatedAt.match(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\b[^0-9]*([0-9]{4})\b/);
+    if (match) {
+      return { monthName: match[1], yearNumber: match[2] };
+    }
+
+    const now = new Date();
+    const fallbackMonth = new Intl.DateTimeFormat("en-US", { month: "long" }).format(now);
+    const fallbackYear = String(now.getFullYear());
+    return { monthName: fallbackMonth, yearNumber: fallbackYear };
+  }, [config.updatedAt, updatedAtOverride]);
+
   // Prepare variables for interpolation
   const templateVars = useMemo(() => ({
     NAME: name || "",
     zip: zip || "",
-  }), [name, zip]);
+    city: resolvedCity || zip || "",
+    month: monthName,
+    year: yearNumber,
+  }), [name, zip, resolvedCity, monthName, yearNumber]);
 
   // Interpolate title and subtitle
   const personalizedTitle = useMemo(() => {
@@ -84,7 +104,7 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
         title={personalizedTitle}
         headingFont="text-3xl text-center lg:text-[48px] font-bold text-primary-main"
         subtitle={personalizedSubtitle}
-        updatedAt={config.updatedAt}
+        updatedAt={updatedAtOverride ?? config.updatedAt}
       />
 
       {/* Cards */}
@@ -102,8 +122,10 @@ const AdsWallTemplate = ({ config }: AdsWallTemplateProps) => {
                 >
                   <AdsWallCards
                     {...cardProps}
+                    buttonText={cardProps.buttonText || "View My Rates"}
                     affiliateId={affiliateId}
                     transactionId={transactionId}
+                    extraTrackingParams={config.id === "cc-finbuzz" ? { sub3: "128" } : undefined}
                     ctaMinWidthPx={ctaMinWidthPx}
                   />
                 </ImpressionOnView>

@@ -1,17 +1,17 @@
 {
-  "id": "mortgage-three",
+  "id": "mortgage-purchase",
   "funnelId": "mortgage",
-  "adwallType": "three",
+  "adwallType": "purchase",
   "title": "{NAME}, we found lender matches for you in {zip}.",
-  "subtitle": "Compare top-rated purchase programs in {zip} with $0-down options for qualified buyers.",
+  "subtitle": "Compare top-rated purchase programs in {city} with $0-down options for qualified buyers.",
   "updatedAt": "Updated February 17, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",
     "transactionIdParam": "s2"
   },
   "metadata": {
-    "title": "Best Home Equity Lenders - Sagewise",
-    "description": "Compare top home equity lenders. Find competitive rates, fast funding, and flexible terms including HELOCs and home equity loans."
+    "title": "Best Mortgage Lenders for Purchase - Sagewise",
+    "description": "Compare top mortgage lenders for home purchase. Find competitive rates, flexible terms, and $0-down options from trusted lenders."
   },
   "cards": [
     {
@@ -23,7 +23,7 @@
         "Easy, no hassle process with MyVeteransUnited"
       ],
       "buttonLink": "#",
-      "buttonText": "VIEW RATES",
+      "buttonText": "View My Rates",
       "ratingsNumber": "9.6",
       "logoText":"NMLS #1907",
       "ratingsCount": 5,
@@ -32,7 +32,7 @@
       "logoHeight": "20px",
       "badgeText": "#1 VA Lender",
       "badgeIcon": "card",
-      "advertiserName": "New American"
+      "advertiserName": "Veterans United"
     },
     {
       "heading": "Quicken Loans",
@@ -44,15 +44,16 @@
       ],
       "buttonLink": "https://www.rdtrk65.com/38TJS78/5JQ8NT/",
       "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script> <script type=\"text/javascript\"> EF.impression({ offer_id: 92, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5'), });</script>",
-      "buttonText": "VIEW RATES",
+      "buttonText": "View My Rates",
       "ratingsNumber": "8.5",
       "ratingsCount": 5,
       "logo": "/logos/mortgage/quick-loans-logo.avif",
       "logoText":"NMLS #167283",
       "logoWidth": "100px",
-      "logoHeight": "22px",
+      "logoHeight": "33px",
       "badgeText": "100% online",
       "badgeIcon": "card",
+      "bottomBoxHtml": "<p>Quicken Loans <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/167283\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #167283</a>; QuickenLoans.com, a LMB Mortgage Services, Inc. company <a href=\"https://www.nmlsconsumeraccess.org/TuringTestPage.aspx?ReturnUrl=/EntityDetails.aspx/COMPANY/167283\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #2563eb; text-decoration: underline;\">NMLS #167283</a>.</p>",
       "advertiserName": "Quicken Loans"
     }
 

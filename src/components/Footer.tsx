@@ -1,22 +1,41 @@
 import { Logo } from "./Logo";
-import { Button } from "@/components/ui/button";
-import { Facebook, Linkedin, Twitter, Instagram, Youtube } from "lucide-react";
 import { Typography } from "./ui/typography";
 import Link from "next/link";
 
 const footerLinks = [
-  { label: "Legal Overview", href: "#" },
-  { label: "Privacy Policy", href: "#" },
-  { label: "Your Privacy Choices", href: "#" },
-  { label: "State Law Privacy Notice", href: "#" },
-  { label: "Security", href: "#" },
-  { label: "Terms of Use", href: "#" },
-  { label: "Licenses & Disclosures", href: "#" },
-  { label: "Do Not Call & Consent to Contact", href: "#" },
-  { label: "SMS Terms & Conditions", href: "#" },
-  { label: "Unsubscribe", href: "#" },
-  { label: "Vulnerability Disclosure Program", href: "#" },
-  { label: "Accessibility Statement", href: "#" },
+  { label: "Legal Overview", href: "https://sagewise.net/legal-overview/" },
+  { label: "Privacy Policy", href: "https://sagewise.net/privacy-policy/" },
+  {
+    label: "Your Privacy Choices",
+    href: "https://sagewise.net/your-privacy-choices/",
+  },
+  {
+    label: "State Law Privacy Notice",
+    href: "https://sagewise.net/state-law-privacy-notice/",
+  },
+  { label: "Security", href: "https://sagewise.net/security/" },
+  { label: "Terms of Use", href: "https://sagewise.net/terms-of-use/" },
+  {
+    label: "Licenses & Disclosures",
+    href: "https://sagewise.net/licenses-disclosures/",
+  },
+  {
+    label: "Do Not Call & Consent to Contact",
+    href: "https://sagewise.net/do-not-call-consent-to-contact/",
+  },
+  {
+    label: "SMS Terms & Conditions",
+    href: "https://sagewise.net/sms-terms-conditions/",
+  },
+  { label: "Unsubscribe", href: "https://sagewise.net/unsubscribe/" },
+  {
+    label: "Vulnerability Disclosure Program",
+    href: "https://sagewise.net/vulnerability-disclosure-program/",
+  },
+  {
+    label: "Accessibility Statement",
+    href: "https://sagewise.net/accessibility-statement/",
+  },
 ];
 
 export function Footer() {
@@ -93,7 +112,13 @@ export function Footer() {
       <div className="flex md:flex-col gap-6 md:gap-2">
         <div className="flex flex-col md:flex-row gap-2 sm:gap-3 md:gap-4 text-xs text-general-primary-foreground underline">
           {footerLinks.slice(0, 7).map((link, index) => (
-            <Link key={index} href={link.href} className="hover:text-white/80">
+            <Link
+              key={index}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white/80"
+            >
               {link.label}
             </Link>
           ))}
@@ -101,7 +126,13 @@ export function Footer() {
 
         <div className="flex flex-col md:flex-row gap-2 sm:gap-3 md:gap-4 text-xs text-general-primary-foreground underline">
           {footerLinks.slice(7).map((link, index) => (
-            <Link key={index} href={link.href} className="hover:text-white/80">
+            <Link
+              key={index}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white/80"
+            >
               {link.label}
             </Link>
           ))}
@@ -113,8 +144,15 @@ export function Footer() {
         color="text-primary-light"
         className="text-[10px] md:text-xs  tracking-[0.5px]"
       >
-        © Copyright 2026, Sagewise® • All Rights Reserved • 4376 Forestdale
-        Drive #4, Park City, UT 84098 US
+        © Copyright 2026, Sagewise® • All Rights Reserved
+      </Typography>
+      <Typography
+        variant="p"
+        color="text-primary-light"
+        className="text-[10px] md:text-xs  tracking-[0.5px] mt-1"
+      >
+        C3 Data LLC dba Massive and Co | 4376 Forestdale Drive #4 Park City, UT
+        84098
       </Typography>
     </div>
   );

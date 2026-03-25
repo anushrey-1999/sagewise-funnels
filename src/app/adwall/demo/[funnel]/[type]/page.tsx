@@ -1,13 +1,13 @@
 import AdsWallTemplate from "@/templates/AdsWallTemplate";
-import { getAdwallConfig } from "@/lib/adwall-loader";
-import { notFound, redirect } from "next/navigation";
+import { getDemoAdwallConfig } from "@/lib/demo-adwall-loader";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { resolveCityFromZip } from "@/lib/geo/resolveCityFromZip";
 
 export const revalidate = 86400; // revalidate daily
 
-interface AdwallPageProps {
+interface DemoAdwallPageProps {
   params: Promise<{
     funnel: string;
     type: string;
@@ -15,19 +15,19 @@ interface AdwallPageProps {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata({ params }: AdwallPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: DemoAdwallPageProps): Promise<Metadata> {
   const { funnel, type } = await params;
-  const config = getAdwallConfig(funnel, type);
+  const config = getDemoAdwallConfig(funnel, type);
 
   if (!config) {
     return {
-      title: "Adwall - Sagewise",
-      description: "Browse the best offers and products.",
+      title: "Demo Adwall - Sagewise",
+      description: "Browse the demo offers and products.",
     };
   }
 
   return {
-    title: config.metadata?.title || "Adwall - Sagewise",
+    title: config.metadata?.title || "Demo Adwall - Sagewise",
     description: config.metadata?.description || config.subtitle,
   };
 }
@@ -37,17 +37,9 @@ function firstParam(value: string | string[] | undefined): string | undefined {
   return value;
 }
 
-export default async function AdwallPage({ params, searchParams }: AdwallPageProps) {
+export default async function DemoAdwallPage({ params, searchParams }: DemoAdwallPageProps) {
   const { funnel, type } = await params;
-
-  // Back-compat: mortgage adwalls were previously addressed as one/two/three.
-  if (funnel === "mortgage") {
-    if (type === "one") redirect("/adwall/mortgage/heloc");
-    if (type === "two") redirect("/adwall/mortgage/refi");
-    if (type === "three") redirect("/adwall/mortgage/purchase");
-  }
-
-  const config = getAdwallConfig(funnel, type);
+  const config = getDemoAdwallConfig(funnel, type);
 
   if (!config) {
     notFound();
