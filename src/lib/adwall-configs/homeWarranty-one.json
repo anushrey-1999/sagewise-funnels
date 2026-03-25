@@ -34,6 +34,25 @@
       "advertiserName": "Choice Home Warranty"
     },
     {
+      "heading": "First Premier Home Warranty",
+      "description": "All your home's major systems and appliances covered!",
+      "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 183, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
+      "features": [
+        "$250 OFF + 2 months + free roof coverage",
+        "Senior & Veterans discount available",
+        "Fastest claim dispatch in the Industry"
+      ],
+      "buttonLink": "https://www.mny0fw3trk.com/39915PT/B34MN4/",
+      "buttonText": "View Plan",
+      "ratingsNumber": "9.7",
+      "ratingsCount": 5,
+      "logo": "/logos/home-warranty/first-premier.avif",
+      "logoWidth": "110px",
+      "logoHeight": "80px",
+      "badgeIcon": "card",
+      "advertiserName": "First Premier Home Warranty"
+    },
+    {
       "heading": "First American Home Warranty",
       "description": "Help Protect Your Home from Unexpected Repairs",
       "impressionScript": "<script type=\"text/javascript\" src=\"https://www.xrt5mv7q.com/scripts/main.js\"></script><script type=\"text/javascript\">EF.impression({ offer_id: 63, affiliate_id: EF.urlParameter('s1'), source_id: EF.urlParameter('source_id'), sub1: EF.urlParameter('sub1'), sub2: EF.urlParameter('sub2'), sub3: EF.urlParameter('sub3'), sub4: EF.urlParameter('sub4'), sub5: EF.urlParameter('sub5') });</script>",
@@ -45,7 +64,7 @@
       ],
       "buttonLink": "https://www.xrt5mv7q.com/39915PT/44GMC8/",
       "buttonText": "View Plan",
-      "ratingsNumber": "9.7",
+      "ratingsNumber": "9.5",
       "ratingsCount": 5,
       "logo": "/logos/home-warranty/first-american.avif",
       "logoWidth": "130px",
@@ -63,7 +82,7 @@
       ],
       "buttonLink": "https://www.xrt5mv7q.com/39915PT/9ZBW6W/",
       "buttonText": "View Plan",
-      "ratingsNumber": "9.5",
+      "ratingsNumber": "9.2",
       "ratingsCount": 5,
       "logo": "/logos/home-warranty/American Home Shield.avif",
       "logoWidth": "120px",
@@ -71,26 +90,6 @@
       "badgeIcon": "card",
       "advertiserName": "American Home Shield"
     },
-
-    {
-      "heading": "First Premier Home Warranty",
-      "description": "All your home's major systems and appliances covered!",
-      "features": [
-        "$250 OFF + 2 months + free roof coverage",
-        "Senior & Veterans discount available",
-        "Fastest claim dispatch in the Industry"
-      ],
-      "buttonLink": "https://www.mny0fw3trk.com/39915PT/B34MN4/",
-      "buttonText": "View Plan",
-      "ratingsNumber": "9.2",
-      "ratingsCount": 5,
-      "logo": "/logos/home-warranty/first-premier.avif",
-      "logoWidth": "110px",
-      "logoHeight": "80px",
-      "badgeIcon": "card",
-      "advertiserName": "First Premier Home Warranty"
-    },
-
     {
       "heading": "American Home Warranty",
       "description": "Protect Your Home Systems & Appliances",
