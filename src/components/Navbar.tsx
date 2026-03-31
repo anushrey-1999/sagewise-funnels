@@ -3,10 +3,13 @@
 import { Logo } from "./Logo";
 import { Phone } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { getFunnelConfig } from "@/lib/funnel-loader";
-import { getAdwallConfig } from "@/lib/adwall-loader";
-import { getDemoAdwallConfig } from "@/lib/demo-adwall-loader";
+import { useEffect, useState } from "react";
 import AdvertiserDisclosure from "@/components/AdvertiserDisclosure";
+
+type NavbarConfig = {
+  tagline?: string;
+  phone?: string;
+} | null;
 
 function toTelHref(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, "");
@@ -20,29 +23,52 @@ function toTelHref(phone: string): string {
 export function Navbar() {
   const pathname = usePathname() || "";
   const searchParams = useSearchParams();
-
-  // Determine which config applies for the current route and read optional navbar data.
   const funnelIdFromQuery = searchParams.get("funnel");
-  let navbar: { tagline?: string; phone?: string } | undefined;
+  const preview = searchParams.get("preview");
+  const [navbar, setNavbar] = useState<NavbarConfig>(null);
 
-  if (pathname.startsWith("/adwall/")) {
-    const parts = pathname.split("/").filter(Boolean);
-    const isDemoAdwall = parts[1] === "demo";
-    const routeFunnel = isDemoAdwall ? parts[2] : parts[1];
-    const adwallType = isDemoAdwall ? parts[3] : parts[2];
+  useEffect(() => {
+    const isAdwallRoute = pathname.startsWith("/adwall/");
+    const isFormRoute = pathname === "/form" || pathname.startsWith("/form/");
 
-    if (routeFunnel && adwallType) {
-      const adwallConfig = isDemoAdwall
-        ? getDemoAdwallConfig(routeFunnel, adwallType)
-        : getAdwallConfig(routeFunnel, adwallType);
-      // Prefer adwall-specific navbar settings; fallback to the funnel's navbar settings
-      navbar =
-        adwallConfig?.navbar ||
-        (adwallConfig?.funnelId ? getFunnelConfig(adwallConfig.funnelId)?.navbar : undefined);
+    if (!isAdwallRoute && !isFormRoute) {
+      setNavbar(null);
+      return;
     }
-  } else if (pathname === "/form" || pathname.startsWith("/form/")) {
-    navbar = getFunnelConfig(funnelIdFromQuery)?.navbar;
-  }
+
+    const params = new URLSearchParams({ pathname });
+    if (funnelIdFromQuery) params.set("funnel", funnelIdFromQuery);
+    if (preview === "1") params.set("preview", "1");
+
+    const controller = new AbortController();
+    setNavbar(null);
+
+    async function loadNavbar() {
+      try {
+        const response = await fetch(`/api/navbar?${params.toString()}`, {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load navbar");
+        }
+
+        const data = (await response.json()) as { navbar?: NavbarConfig };
+        if (!controller.signal.aborted) {
+          setNavbar(data.navbar ?? null);
+        }
+      } catch {
+        if (!controller.signal.aborted) {
+          setNavbar(null);
+        }
+      }
+    }
+
+    void loadNavbar();
+
+    return () => controller.abort();
+  }, [funnelIdFromQuery, pathname, preview]);
 
   return (
     <div className="bg-[#204c4b] grid grid-cols-1 sm:grid-cols-3 items-center px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative gap-1 sm:gap-0">

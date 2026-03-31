@@ -1,10 +1,8 @@
 "use client";
 
 import { FormSection } from "@/components/FormSection";
-import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { getFunnelConfig } from "@/lib/funnel-loader";
+import type { FormConfig } from "@/types/form";
 import { Typography } from "@/components/ui/typography";
 import { Clock, Lock, Monitor, ShieldCheck } from "lucide-react";
 import { FunnelPostContent } from "@/components/FunnelPostContent";
@@ -16,30 +14,7 @@ const INFO_BAR_ICONS = {
   shield: ShieldCheck,
 } as const;
 
-export function FormPageContent() {
-  const searchParams = useSearchParams();
-  const funnelId = searchParams.get("funnel");
-
-  // Load the appropriate funnel config
-  const formConfig = getFunnelConfig(funnelId);
-
-  // If funnel config not found, show error
-  if (!formConfig) {
-    return (
-      <div className="bg-[#F8F8F8] flex flex-col items-center justify-center min-h-screen w-full px-4">
-        <div className="text-center max-w-md">
-          <h1 className="text-2xl font-semibold mb-4">Funnel Not Found</h1>
-          <p className="text-muted-foreground mb-6">
-            The funnel you're looking for doesn't exist. Please check the URL
-            and try again.
-          </p>
-          <a href="/" className="text-[#204c4b] hover:underline">
-            Return to Homepage
-          </a>
-        </div>
-      </div>
-    );
-  }
+export function FormPageContent({ formConfig, funnelId }: { formConfig: FormConfig; funnelId: string }) {
 
   return (
     <div className="flex flex-col items-start w-full bg-[#F8F8F8] min-h-[90vh] pt-5">

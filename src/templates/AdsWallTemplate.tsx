@@ -111,7 +111,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
       <div className="relative z-0 flex flex-col items-center w-full px-6 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
           <div ref={containerRef} className="flex flex-col gap-4">
-            {config.cards?.map((item, index) => {
+            {config.cards?.filter((item) => !item?.isHidden).map((item, index) => {
               const { impressionScript, ...cardProps } = item;
               return (
                 <ImpressionOnView
@@ -125,7 +125,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
                     buttonText={cardProps.buttonText || "View My Rates"}
                     affiliateId={affiliateId}
                     transactionId={transactionId}
-                    extraTrackingParams={config.id === "cc-finbuzz" ? { sub3: "128" } : undefined}
+                    extraTrackingParams={config.trackingParams?.sub3 ? { sub3: config.trackingParams.sub3 } : undefined}
                     ctaMinWidthPx={ctaMinWidthPx}
                   />
                 </ImpressionOnView>

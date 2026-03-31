@@ -1,5 +1,4 @@
 import { FormConfig, FormData, RedirectOnAnswer } from "@/types/form";
-import { adwallExists } from "@/lib/adwall-loader";
 
 function isAbsoluteUrl(path: string): boolean {
   return /^https?:\/\//i.test(path);
@@ -120,13 +119,6 @@ function getRoutePrefixForFunnel(funnelId: string): string {
  */
 function getAdwallRoute(funnelId: string, adwallType: string = "one"): string {
   const routePrefix = getRoutePrefixForFunnel(funnelId);
-  
-  // Check if the adwall exists for this route prefix
-  if (adwallExists(routePrefix, adwallType)) {
-    return `/adwall/${routePrefix}/${adwallType}`;
-  }
-  
-  // Fallback: still return the route (the page will handle 404 gracefully)
   return `/adwall/${routePrefix}/${adwallType}`;
 }
 

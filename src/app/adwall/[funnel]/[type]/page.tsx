@@ -1,11 +1,13 @@
 import AdsWallTemplate from "@/templates/AdsWallTemplate";
-import { getAdwallConfig } from "@/lib/adwall-loader";
+import { getPublishedAdwallConfig } from "@/lib/published-config";
+import { getAdminUserFromCookies } from "@/lib/admin/session";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { resolveCityFromZip } from "@/lib/geo/resolveCityFromZip";
 
 export const revalidate = 86400; // revalidate daily
+export const dynamic = "force-dynamic";
 
 interface AdwallPageProps {
   params: Promise<{
@@ -17,7 +19,7 @@ interface AdwallPageProps {
 
 export async function generateMetadata({ params }: AdwallPageProps): Promise<Metadata> {
   const { funnel, type } = await params;
-  const config = getAdwallConfig(funnel, type);
+  const config = await getPublishedAdwallConfig(funnel, type);
 
   if (!config) {
     return {
@@ -47,13 +49,17 @@ export default async function AdwallPage({ params, searchParams }: AdwallPagePro
     if (type === "three") redirect("/adwall/mortgage/purchase");
   }
 
-  const config = getAdwallConfig(funnel, type);
+  const sp = (await searchParams) || {};
+  const wantsPreview = firstParam(sp.preview) === "1";
+  const adminUser = wantsPreview ? await getAdminUserFromCookies() : null;
+  const useDraft = wantsPreview && !!adminUser;
+
+  const config = await getPublishedAdwallConfig(funnel, type, { useDraft });
 
   if (!config) {
     notFound();
   }
 
-  const sp = (await searchParams) || {};
   const zip = firstParam(sp.zip);
   const resolvedCity = resolveCityFromZip(zip);
   const updatedAtOverride = `Updated ${new Intl.DateTimeFormat("en-US", {
