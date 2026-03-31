@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import MinimalFooter from "@/components/MinimalFooter";
+import AppToaster from "@/components/ui/sonner";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default function RootLayout({
           </main>
           <MinimalFooter />
         </div>
+        <AppToaster />
       </body>
     </html>
   );

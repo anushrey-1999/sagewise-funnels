@@ -4,10 +4,6 @@ function isAbsoluteUrl(path: string): boolean {
   return /^https?:\/\//i.test(path);
 }
 
-function isAbsoluteUrl(path: string): boolean {
-  return /^https?:\/\//i.test(path);
-}
-
 function normalizePath(path: string): string {
   if (!path) return "/";
   if (isAbsoluteUrl(path)) return path;

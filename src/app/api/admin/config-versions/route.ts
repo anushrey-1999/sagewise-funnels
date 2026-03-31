@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/admin/require";
 import { listConfigVersions, type ConfigKind } from "@/lib/config-service";
 
 const querySchema = z.object({
-  kind: z.enum(["funnel", "adwall"]),
+  kind: z.enum(["funnel", "adwall", "demo-adwall"]),
   key: z.string().min(1),
 });
 

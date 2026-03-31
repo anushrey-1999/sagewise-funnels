@@ -3,6 +3,7 @@ import "server-only";
 import type { AdwallConfig } from "@/types/adwall";
 import type { FormConfig } from "@/types/form";
 import { getAdwallConfig as getStaticAdwallConfig } from "@/lib/adwall-loader";
+import { getDemoAdwallConfig as getStaticDemoAdwallConfig } from "@/lib/demo-adwall-loader";
 import { getFunnelConfig as getStaticFunnelConfig } from "@/lib/funnel-loader";
 import { adwallConfigKey, getConfigRow, type ConfigKind } from "@/lib/config-service";
 
@@ -43,5 +44,16 @@ export async function getPublishedAdwallConfig(
   const fromDb = await getConfigData<AdwallConfig>("adwall", key, opts);
   if (fromDb) return fromDb;
   return getStaticAdwallConfig(routePrefix, adwallType);
+}
+
+export async function getPublishedDemoAdwallConfig(
+  routePrefix: string,
+  adwallType: string,
+  opts?: { useDraft?: boolean }
+): Promise<AdwallConfig | null> {
+  const key = adwallConfigKey(routePrefix, adwallType);
+  const fromDb = await getConfigData<AdwallConfig>("demo-adwall", key, opts);
+  if (fromDb) return fromDb;
+  return getStaticDemoAdwallConfig(routePrefix, adwallType);
 }
 

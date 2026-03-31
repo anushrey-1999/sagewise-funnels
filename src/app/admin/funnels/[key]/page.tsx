@@ -1,4 +1,3 @@
-import AdminTopBar from "../../AdminTopBar";
 import ConfigEditorClient from "../../ConfigEditorClient";
 import { requireAdminPage } from "@/lib/admin/require-page";
 import { getConfigRow } from "@/lib/config-service";
@@ -36,7 +35,6 @@ export default async function AdminFunnelEditorPage({ params }: { params: Promis
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10 space-y-6">
-      <AdminTopBar email={user.email} role={user.role} />
       <ConfigEditorClient
         kind="funnel"
         keyStr={key}

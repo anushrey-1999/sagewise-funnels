@@ -5,7 +5,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { configVersions, configs } from "@/lib/db/schema";
 
-export type ConfigKind = "funnel" | "adwall";
+export type ConfigKind = "funnel" | "adwall" | "demo-adwall";
 
 export function adwallConfigKey(routePrefix: string, type: string): string {
   return `${routePrefix}/${type}`;

@@ -157,9 +157,9 @@ const AdsWallCards = ({
       <div className="h-8">
         {hasBadgeText ? (
           <div className="h-full text-[10px] lg:text-xs font-medium px-2 bg-green-700 flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit text-white whitespace-nowrap">
-            {badgeIcon ? (
+            {(badgeIcon ?? "card") ? (
               <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
-                <Image src={`/icons/${badgeIcon}.svg`} alt="badge-icon" layout="fill" />
+                <Image src={`/icons/${badgeIcon ?? "card"}.svg`} alt="badge-icon" layout="fill" />
               </div>
             ) : null}
             {badgeText}
@@ -204,9 +204,13 @@ const AdsWallCards = ({
                 </Typography>
               )}
             </div>
-          ) : (
+          ) : creditCardImage ? (
             <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
               <Image src={creditCardImage} alt="credit-card" layout="fill" />
+            </div>
+          ) : (
+            <div className="w-[110px] h-[72px] rounded-sm bg-[#f3f3f3] border border-general-border flex items-center justify-center text-[10px] text-general-muted-foreground px-2 text-center">
+              Add a logo or card image
             </div>
           )}
         </div>

@@ -5,10 +5,20 @@ import Image from "next/image";
 import { useForm } from "@tanstack/react-form";
 import { upload } from "@vercel/blob/client";
 import type { PutBlobResult } from "@vercel/blob";
+import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 
 import { adwallConfigSchema } from "@/lib/config-schemas";
 import type { AdwallCard, AdwallConfig } from "@/types/adwall";
+import {
+  adminButtonDestructive,
+  adminButtonSecondary,
+  adminIconDestructiveButton,
+  adminSmallButton,
+  adminSmallDestructiveButton,
+  adminSmallGhostButton,
+} from "../admin-button-styles";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -59,15 +69,11 @@ function setIn(obj: unknown, path: (string | number)[], value: unknown): unknown
   return root;
 }
 
-function joinLines(arr: string[] | undefined) {
-  return Array.isArray(arr) ? arr.join("\n") : "";
-}
-
-function splitLines(v: string) {
-  return v
-    .split("\n")
-    .map((s) => s.trim())
-    .filter(Boolean);
+function stopAccordionFieldKeyPropagation(e: React.KeyboardEvent<HTMLElement>) {
+  const target = e.target;
+  if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+    e.stopPropagation();
+  }
 }
 
 function sanitizePathSegment(v: string): string {
@@ -151,13 +157,14 @@ function ImageUploadField(props: {
             className="hidden"
             onChange={onFileChange}
           />
-          <Button type="button" variant="outline" size="sm" onClick={pickFile} disabled={isUploading}>
+          <Button type="button" variant="outline" size="sm" className={adminSmallButton} onClick={pickFile} disabled={isUploading}>
             {isUploading ? "Uploading…" : "Upload"}
           </Button>
           <Button
             type="button"
             variant="ghost"
             size="sm"
+            className={adminSmallGhostButton}
             onClick={() => props.onChange("")}
             disabled={isUploading || !props.value}
           >
@@ -197,12 +204,17 @@ function newEmptyCard(): AdwallCard {
     ratingsNumber: "",
     ratingsCount: 5,
     logo: "",
-    logoWidth: "",
-    logoHeight: "",
+    logoWidth: "110px",
+    logoHeight: "28px",
     creditCardImage: "",
     badgeText: "",
-    badgeIcon: "",
+    badgeIcon: "card",
+    logoText: "",
+    logoSubtext: "",
     advertiserName: "",
+    isHidden: false,
+    phoneNumber: "",
+    bottomBoxHtml: "",
   };
 }
 
@@ -210,6 +222,8 @@ export default function AdwallConfigFormEditor(props: {
   initialDraft: unknown;
   resetKey: string;
   userRole: string;
+  section?: "basic" | "publishers";
+  onAddCard?: () => void;
   onDraftChange: (next: unknown) => void;
   className?: string;
 }) {
@@ -293,169 +307,200 @@ export default function AdwallConfigFormEditor(props: {
     emitNext(next);
   };
 
+  const addFeature = (cardIndex: number) => {
+    const next = cloneJson(draft) as AdwallConfig;
+    const current = Array.isArray(next.cards[cardIndex]?.features) ? next.cards[cardIndex]!.features : [];
+    next.cards[cardIndex]!.features = [...current, ""];
+    emitNext(next);
+  };
+
+  const updateFeature = (cardIndex: number, featureIndex: number, value: string) => {
+    emitPatch(["cards", cardIndex, "features", featureIndex], value);
+  };
+
+  const removeFeature = (cardIndex: number, featureIndex: number) => {
+    const next = cloneJson(draft) as AdwallConfig;
+    const current = Array.isArray(next.cards[cardIndex]?.features) ? next.cards[cardIndex]!.features : [];
+    next.cards[cardIndex]!.features = current.filter((_, idx) => idx !== featureIndex);
+    emitNext(next);
+  };
+
+  const toggleCardHidden = (cardIndex: number) => {
+    const next = cloneJson(draft) as AdwallConfig;
+    const currentHidden = !!next.cards[cardIndex]?.isHidden;
+    next.cards[cardIndex]!.isHidden = !currentHidden;
+    emitNext(next);
+  };
+
   return (
     <div className={cn("space-y-6", props.className)}>
-      <div className="bg-white border border-general-border rounded-lg p-4 space-y-4">
-        <div className="text-sm font-medium">Adwall details</div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="adwall-id">ID</Label>
-            <Input
-              id="adwall-id"
-              value={values.id ?? ""}
-              onChange={(e) => emitPatch(["id"], e.target.value)}
-              placeholder="autoins-one"
-            />
+      {props.section !== "publishers" ? (
+        <div className="bg-white border border-general-border rounded-lg p-4 space-y-4">
+          <div className="text-sm font-medium">Adwall details</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="adwall-id">ID</Label>
+              <Input
+                id="adwall-id"
+                value={values.id ?? ""}
+                onChange={(e) => emitPatch(["id"], e.target.value)}
+                placeholder="autoins-one"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="adwall-funnelId">Funnel ID</Label>
+              <Input
+                id="adwall-funnelId"
+                value={values.funnelId ?? ""}
+                onChange={(e) => emitPatch(["funnelId"], e.target.value)}
+                placeholder="autoins"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="adwall-type">Adwall type</Label>
+              <Input
+                id="adwall-type"
+                value={values.adwallType ?? ""}
+                onChange={(e) => emitPatch(["adwallType"], e.target.value)}
+                placeholder="one"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="adwall-updatedAt">Updated at</Label>
+              <Input
+                id="adwall-updatedAt"
+                value={values.updatedAt ?? ""}
+                onChange={(e) => emitPatch(["updatedAt"], e.target.value)}
+                placeholder='Updated January 23, 2026'
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="adwall-funnelId">Funnel ID</Label>
-            <Input
-              id="adwall-funnelId"
-              value={values.funnelId ?? ""}
-              onChange={(e) => emitPatch(["funnelId"], e.target.value)}
-              placeholder="autoins"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="adwall-type">Adwall type</Label>
-            <Input
-              id="adwall-type"
-              value={values.adwallType ?? ""}
-              onChange={(e) => emitPatch(["adwallType"], e.target.value)}
-              placeholder="one"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="adwall-updatedAt">Updated at</Label>
-            <Input
-              id="adwall-updatedAt"
-              value={values.updatedAt ?? ""}
-              onChange={(e) => emitPatch(["updatedAt"], e.target.value)}
-              placeholder='Updated January 23, 2026'
-            />
-          </div>
-        </div>
 
-        <Separator />
+          <Separator />
 
-        <div className="grid grid-cols-1 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="adwall-title">Title</Label>
-            <Input
-              id="adwall-title"
-              value={values.title ?? ""}
-              onChange={(e) => emitPatch(["title"], e.target.value)}
-              placeholder="Compare Top Auto Insurance Rates in {zip}."
-            />
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="adwall-title">Title</Label>
+              <Input
+                id="adwall-title"
+                value={values.title ?? ""}
+                onChange={(e) => emitPatch(["title"], e.target.value)}
+                placeholder="Compare Top Auto Insurance Rates in {zip}."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="adwall-subtitle">Subtitle</Label>
+              <textarea
+                id="adwall-subtitle"
+                className="w-full min-h-[90px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+                value={values.subtitle ?? ""}
+                onChange={(e) => emitPatch(["subtitle"], e.target.value)}
+                placeholder="Drivers are saving up to…"
+              />
+            </div>
           </div>
+
+          <Separator />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="meta-title">Metadata title</Label>
+              <Input
+                id="meta-title"
+                value={values.metadata?.title ?? ""}
+                onChange={(e) => emitPatch(["metadata", "title"], e.target.value)}
+                placeholder="Page title for SEO"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="meta-desc">Metadata description</Label>
+              <Input
+                id="meta-desc"
+                value={values.metadata?.description ?? ""}
+                onChange={(e) => emitPatch(["metadata", "description"], e.target.value)}
+                placeholder="Description for SEO"
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="nav-tagline">Navbar tagline</Label>
+              <Input
+                id="nav-tagline"
+                value={values.navbar?.tagline ?? ""}
+                onChange={(e) => emitPatch(["navbar", "tagline"], e.target.value)}
+                placeholder="Speak to a licensed agent:"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="nav-phone">Navbar phone</Label>
+              <Input
+                id="nav-phone"
+                value={values.navbar?.phone ?? ""}
+                onChange={(e) => emitPatch(["navbar", "phone"], e.target.value)}
+                placeholder="1-800-000-0000"
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="track-aff">Tracking affiliateIdParam</Label>
+              <Input
+                id="track-aff"
+                value={values.trackingParams?.affiliateIdParam ?? ""}
+                onChange={(e) => emitPatch(["trackingParams", "affiliateIdParam"], e.target.value)}
+                placeholder="s1"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="track-txn">Tracking transactionIdParam</Label>
+              <Input
+                id="track-txn"
+                value={values.trackingParams?.transactionIdParam ?? ""}
+                onChange={(e) => emitPatch(["trackingParams", "transactionIdParam"], e.target.value)}
+                placeholder="s2"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="track-sub3">sub3 value (optional)</Label>
+              <Input
+                id="track-sub3"
+                value={values.trackingParams?.sub3 ?? ""}
+                onChange={(e) => emitPatch(["trackingParams", "sub3"], e.target.value)}
+                placeholder="e.g. 128"
+              />
+            </div>
+          </div>
+
+          <Separator />
+
           <div className="space-y-2">
-            <Label htmlFor="adwall-subtitle">Subtitle</Label>
+            <Label htmlFor="disclaimers">Disclaimers</Label>
             <textarea
-              id="adwall-subtitle"
+              id="disclaimers"
               className="w-full min-h-[90px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]"
-              value={values.subtitle ?? ""}
-              onChange={(e) => emitPatch(["subtitle"], e.target.value)}
-              placeholder="Drivers are saving up to…"
+              value={values.disclaimers ?? ""}
+              onChange={(e) => emitPatch(["disclaimers"], e.target.value)}
+              placeholder="Optional disclaimer text"
             />
           </div>
         </div>
+      ) : null}
 
-        <Separator />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="meta-title">Metadata title</Label>
-            <Input
-              id="meta-title"
-              value={values.metadata?.title ?? ""}
-              onChange={(e) => emitPatch(["metadata", "title"], e.target.value)}
-              placeholder="Page title for SEO"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="meta-desc">Metadata description</Label>
-            <Input
-              id="meta-desc"
-              value={values.metadata?.description ?? ""}
-              onChange={(e) => emitPatch(["metadata", "description"], e.target.value)}
-              placeholder="Description for SEO"
-            />
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="nav-tagline">Navbar tagline</Label>
-            <Input
-              id="nav-tagline"
-              value={values.navbar?.tagline ?? ""}
-              onChange={(e) => emitPatch(["navbar", "tagline"], e.target.value)}
-              placeholder="Speak to a licensed agent:"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="nav-phone">Navbar phone</Label>
-            <Input
-              id="nav-phone"
-              value={values.navbar?.phone ?? ""}
-              onChange={(e) => emitPatch(["navbar", "phone"], e.target.value)}
-              placeholder="1-800-000-0000"
-            />
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="track-aff">Tracking affiliateIdParam</Label>
-            <Input
-              id="track-aff"
-              value={values.trackingParams?.affiliateIdParam ?? ""}
-              onChange={(e) => emitPatch(["trackingParams", "affiliateIdParam"], e.target.value)}
-              placeholder="s1"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="track-txn">Tracking transactionIdParam</Label>
-            <Input
-              id="track-txn"
-              value={values.trackingParams?.transactionIdParam ?? ""}
-              onChange={(e) => emitPatch(["trackingParams", "transactionIdParam"], e.target.value)}
-              placeholder="s2"
-            />
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="space-y-2">
-          <Label htmlFor="disclaimers">Disclaimers</Label>
-          <textarea
-            id="disclaimers"
-            className="w-full min-h-[90px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]"
-            value={values.disclaimers ?? ""}
-            onChange={(e) => emitPatch(["disclaimers"], e.target.value)}
-            placeholder="Optional disclaimer text"
-          />
-        </div>
-      </div>
-
-      <div className="bg-white border border-general-border rounded-lg overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-general-border">
-          <div className="text-sm font-medium">Cards</div>
-          <Button type="button" variant="outline" onClick={addCard}>
-            Add card
-          </Button>
-        </div>
-
-        <Accordion type="multiple" className="divide-y divide-general-border">
+      {props.section !== "basic" ? (
+        <div className="bg-white border border-general-border rounded-lg overflow-hidden">
+          <Accordion type="multiple" className="divide-y divide-general-border">
           {cards.map((card, idx) => {
             const heading = card?.heading?.trim() || `Card ${idx + 1}`;
             const adv = card?.advertiserName?.trim();
             const badge = card?.badgeText?.trim();
+            const hidden = !!card?.isHidden;
 
             return (
               <AccordionItem key={idx} value={`card-${idx}`} className="px-4">
@@ -465,32 +510,53 @@ export default function AdwallConfigFormEditor(props: {
                     <div className="text-xs text-general-muted-foreground truncate">
                       {adv ? adv : "—"}
                       {badge ? ` · ${badge}` : ""}
+                      {hidden ? " · Hidden" : ""}
                     </div>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pb-4">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <Button type="button" variant="outline" size="sm" onClick={() => moveCard(idx, idx - 1)} disabled={idx === 0}>
+                    <Button type="button" variant="outline" size="sm" className={adminSmallButton} onClick={() => moveCard(idx, idx - 1)} disabled={idx === 0}>
                       Move up
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
+                      className={adminSmallButton}
                       onClick={() => moveCard(idx, idx + 1)}
                       disabled={idx === cards.length - 1}
                     >
                       Move down
                     </Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => duplicateCard(idx)}>
+                    <Button type="button" variant="outline" size="sm" className={adminSmallButton} onClick={() => duplicateCard(idx)}>
                       Duplicate
                     </Button>
-                    <Button type="button" variant="destructive" size="sm" onClick={() => deleteCard(idx)}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className={adminSmallButton}
+                      onClick={() => toggleCardHidden(idx)}
+                    >
+                      {hidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                      {hidden ? "Unhide" : "Hide"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className={adminSmallDestructiveButton}
+                      onClick={() => deleteCard(idx)}
+                    >
                       Delete
                     </Button>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    onKeyDownCapture={stopAccordionFieldKeyPropagation}
+                  >
                     <div className="space-y-2">
                       <Label htmlFor={`c-${idx}-heading`}>Heading</Label>
                       <Input
@@ -517,14 +583,46 @@ export default function AdwallConfigFormEditor(props: {
                       />
                     </div>
                     <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor={`c-${idx}-features`}>Features (one per line)</Label>
-                      <textarea
-                        id={`c-${idx}-features`}
-                        className="w-full min-h-[110px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px] font-mono text-xs"
-                        value={joinLines(card.features)}
-                        onChange={(e) => emitPatch(["cards", idx, "features"], splitLines(e.target.value))}
-                        placeholder={"Feature 1\nFeature 2\nFeature 3"}
-                      />
+                      <div className="flex items-center justify-between gap-3">
+                        <Label>Features</Label>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className={adminSmallButton}
+                          onClick={() => addFeature(idx)}
+                        >
+                          <Plus className="h-4 w-4" />
+                          Add feature
+                        </Button>
+                      </div>
+                      <div className="space-y-2">
+                        {Array.isArray(card.features) && card.features.length > 0 ? (
+                          card.features.map((feature, featureIdx) => (
+                            <div key={featureIdx} className="flex items-center gap-2">
+                              <Input
+                                value={feature ?? ""}
+                                onChange={(e) => updateFeature(idx, featureIdx, e.target.value)}
+                                placeholder={`Feature ${featureIdx + 1}`}
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className={adminIconDestructiveButton}
+                                onClick={() => removeFeature(idx, featureIdx)}
+                                aria-label={`Remove feature ${featureIdx + 1}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="rounded-xl border border-dashed border-general-border bg-[#fafafa] px-4 py-3 text-sm text-general-muted-foreground">
+                            No features added yet. Click <span className="font-medium text-general-primary">Add feature</span> to create the first item.
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="space-y-2">
@@ -544,15 +642,25 @@ export default function AdwallConfigFormEditor(props: {
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <ImageUploadField
-                        label="Logo path/URL"
-                        value={card.logo ?? ""}
-                        placeholder="/logos/autoins/statefarm.avif"
-                        uploadBasePath={`${uploadBasePath}/cards/${idx}`}
-                        uploadName="logo"
-                        onChange={(next) => emitPatch(["cards", idx, "logo"], next)}
-                      />
+                    <div className="space-y-2 md:col-span-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ImageUploadField
+                          label="Logo path/URL"
+                          value={card.logo ?? ""}
+                          placeholder="/logos/autoins/statefarm.avif"
+                          uploadBasePath={`${uploadBasePath}/cards/${idx}`}
+                          uploadName="logo"
+                          onChange={(next) => emitPatch(["cards", idx, "logo"], next)}
+                        />
+                        <ImageUploadField
+                          label="Credit card image (optional)"
+                          value={card.creditCardImage ?? ""}
+                          placeholder="/images/card.png"
+                          uploadBasePath={`${uploadBasePath}/cards/${idx}`}
+                          uploadName="credit-card"
+                          onChange={(next) => emitPatch(["cards", idx, "creditCardImage"], next)}
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor={`c-${idx}-logoText`}>Logo text (optional)</Label>
@@ -591,13 +699,20 @@ export default function AdwallConfigFormEditor(props: {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-badgeIcon`}>Badge icon</Label>
-                      <Input
-                        id={`c-${idx}-badgeIcon`}
-                        value={card.badgeIcon ?? ""}
-                        onChange={(e) => emitPatch(["cards", idx, "badgeIcon"], e.target.value)}
-                        placeholder="card"
-                      />
+                      <Label>Highlight border</Label>
+                      <div className="flex items-center gap-3 rounded-xl border border-general-border bg-[#fafafa] px-3 py-3">
+                        <Checkbox
+                          id={`c-${idx}-differentBorder`}
+                          checked={!!card.isDifferentBorder}
+                          onCheckedChange={(checked) => emitPatch(["cards", idx, "isDifferentBorder"], checked === true)}
+                        />
+                        <label
+                          htmlFor={`c-${idx}-differentBorder`}
+                          className="text-sm text-general-primary cursor-pointer"
+                        >
+                          Use the highlighted border style for this publisher card
+                        </label>
+                      </div>
                     </div>
 
                     <div className="space-y-2">
@@ -631,14 +746,15 @@ export default function AdwallConfigFormEditor(props: {
                         placeholder="1-800-000-0000"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <ImageUploadField
-                        label="Credit card image (optional)"
-                        value={card.creditCardImage ?? ""}
-                        placeholder="/images/card.png"
-                        uploadBasePath={`${uploadBasePath}/cards/${idx}`}
-                        uploadName="credit-card"
-                        onChange={(next) => emitPatch(["cards", idx, "creditCardImage"], next)}
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor={`c-${idx}-bottomBoxHtml`}>Bottom callout HTML (optional)</Label>
+                      <textarea
+                        id={`c-${idx}-bottomBoxHtml`}
+                        className="w-full min-h-[110px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px] font-mono text-xs"
+                        value={card.bottomBoxHtml ?? ""}
+                        onChange={(e) => emitPatch(["cards", idx, "bottomBoxHtml"], e.target.value)}
+                        placeholder="<p>Optional disclosure, licensing, or lender details.</p>"
+                        spellCheck={false}
                       />
                     </div>
 
@@ -669,8 +785,9 @@ export default function AdwallConfigFormEditor(props: {
               </AccordionItem>
             );
           })}
-        </Accordion>
-      </div>
+          </Accordion>
+        </div>
+      ) : null}
     </div>
   );
 }

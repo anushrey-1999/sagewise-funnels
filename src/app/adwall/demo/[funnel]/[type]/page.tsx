@@ -1,11 +1,13 @@
 import AdsWallTemplate from "@/templates/AdsWallTemplate";
-import { getDemoAdwallConfig } from "@/lib/demo-adwall-loader";
+import { getPublishedDemoAdwallConfig } from "@/lib/published-config";
+import { getAdminUserFromCookies } from "@/lib/admin/session";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { resolveCityFromZip } from "@/lib/geo/resolveCityFromZip";
 
-export const revalidate = 86400; // revalidate daily
+export const revalidate = 86400; // revalidate daily (overridden to force-dynamic when DB row exists)
+export const dynamic = "force-dynamic";
 
 interface DemoAdwallPageProps {
   params: Promise<{
@@ -17,7 +19,7 @@ interface DemoAdwallPageProps {
 
 export async function generateMetadata({ params }: DemoAdwallPageProps): Promise<Metadata> {
   const { funnel, type } = await params;
-  const config = getDemoAdwallConfig(funnel, type);
+  const config = await getPublishedDemoAdwallConfig(funnel, type);
 
   if (!config) {
     return {
@@ -39,13 +41,17 @@ function firstParam(value: string | string[] | undefined): string | undefined {
 
 export default async function DemoAdwallPage({ params, searchParams }: DemoAdwallPageProps) {
   const { funnel, type } = await params;
-  const config = getDemoAdwallConfig(funnel, type);
+
+  const sp = (await searchParams) || {};
+  const wantsPreview = (Array.isArray(sp.preview) ? sp.preview[0] : sp.preview) === "1";
+  const adminUser = wantsPreview ? await getAdminUserFromCookies() : null;
+  const useDraft = wantsPreview && !!adminUser;
+
+  const config = await getPublishedDemoAdwallConfig(funnel, type, { useDraft });
 
   if (!config) {
     notFound();
   }
-
-  const sp = (await searchParams) || {};
   const zip = firstParam(sp.zip);
   const resolvedCity = resolveCityFromZip(zip);
   const updatedAtOverride = `Updated ${new Intl.DateTimeFormat("en-US", {

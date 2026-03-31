@@ -151,12 +151,15 @@ const adwallCardSchema = z
     logoWidth: z.string().optional().default(""),
     logoHeight: z.string().optional().default(""),
     logoText: z.string().optional(),
+    logoSubtext: z.string().optional(),
     creditCardImage: z.string().optional().default(""),
     badgeText: z.string().optional().default(""),
-    badgeIcon: z.string().optional().default(""),
+    badgeIcon: z.string().optional().default("card"),
     advertiserName: z.string().optional().default(""),
+    isHidden: z.boolean().optional(),
     isDifferentBorder: z.boolean().optional(),
     phoneNumber: z.string().optional(),
+    bottomBoxHtml: z.string().optional(),
     impressionScript: z.string().optional(),
   })
   .passthrough();
@@ -189,6 +192,7 @@ export const adwallConfigSchema = z
       .object({
         affiliateIdParam: z.string().optional(),
         transactionIdParam: z.string().optional(),
+        sub3: z.string().optional(),
       })
       .passthrough()
       .optional(),

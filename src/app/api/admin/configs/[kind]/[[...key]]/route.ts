@@ -16,7 +16,7 @@ import {
 } from "@/lib/config-service";
 
 function parseKind(kind: string): ConfigKind {
-  if (kind === "funnel" || kind === "adwall") return kind;
+  if (kind === "funnel" || kind === "adwall" || kind === "demo-adwall") return kind;
   throw new Error("Invalid kind");
 }
 
@@ -97,6 +97,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ kind: strin
     if (parsedKind === "funnel") {
       funnelConfigSchema.parse(draft);
     } else {
+      // Both "adwall" and "demo-adwall" use the same schema
       adwallConfigSchema.parse(draft);
     }
 
@@ -149,7 +150,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ kind: stri
       if (!row) return NextResponse.json({ error: "Config not found" }, { status: 404 });
 
       if (parsedKind === "funnel") funnelConfigSchema.parse(row.draft);
-      else adwallConfigSchema.parse(row.draft);
+      else adwallConfigSchema.parse(row.draft); // covers "adwall" and "demo-adwall"
 
       const updated = await publishConfig({ kind: parsedKind, key: joinedKey, publishedBy: user.id });
       return NextResponse.json({ config: updated }, { status: 200 });

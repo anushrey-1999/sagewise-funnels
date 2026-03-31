@@ -15,6 +15,7 @@ export interface AdwallCard {
   badgeText?: string;
   badgeIcon?: string;
   advertiserName: string;
+  isHidden?: boolean;
   isDifferentBorder?: boolean;
   phoneNumber?: string; // Optional phone number to display below CTA
   /**
@@ -49,5 +50,7 @@ export interface AdwallConfig {
   trackingParams?: {
     affiliateIdParam?: string; // e.g., "s1", "s2"
     transactionIdParam?: string; // e.g., "sub5", "s2"
+    /** Fixed sub3 value appended to every card's CTA link for this adwall */
+    sub3?: string;
   };
 }

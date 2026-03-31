@@ -15,6 +15,10 @@ export async function POST(req: NextRequest) {
   try {
     assertSameOrigin(req);
 
+    if (process.env.ENABLE_ADMIN_BOOTSTRAP !== "true") {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
     const expected = process.env.ADMIN_BOOTSTRAP_TOKEN;
     const provided = req.headers.get("x-admin-bootstrap-token");
     if (!expected || !provided || provided !== expected) {

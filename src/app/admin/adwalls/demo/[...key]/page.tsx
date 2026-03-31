@@ -1,19 +1,19 @@
-import ConfigEditorClient from "../../ConfigEditorClient";
+import ConfigEditorClient from "../../../ConfigEditorClient";
 import { requireAdminPage } from "@/lib/admin/require-page";
 import { getConfigRow } from "@/lib/config-service";
-import { getAdwallConfig } from "@/lib/adwall-loader";
+import { getDemoAdwallConfig } from "@/lib/demo-adwall-loader";
 import { getPublishedFunnelConfig } from "@/lib/published-config";
 import type { AdwallConfig } from "@/types/adwall";
 
-function buildNewAdwallSkeleton(routePrefix?: string, adwallType?: string): AdwallConfig {
+function buildNewDemoAdwallSkeleton(routePrefix?: string, adwallType?: string): AdwallConfig {
   const normalizedRoutePrefix = routePrefix || "route";
   const normalizedAdwallType = adwallType || "one";
 
   return {
-    id: `${normalizedRoutePrefix}-${normalizedAdwallType}`,
+    id: `demo-${normalizedRoutePrefix}-${normalizedAdwallType}`,
     funnelId: normalizedRoutePrefix,
     adwallType: normalizedAdwallType,
-    title: "New Adwall",
+    title: "New Demo Adwall",
     subtitle: "",
     updatedAt: `Updated ${new Date().toLocaleDateString("en-US", {
       month: "long",
@@ -49,7 +49,7 @@ function buildNewAdwallSkeleton(routePrefix?: string, adwallType?: string): Adwa
   };
 }
 
-export default async function AdminAdwallEditorPage({
+export default async function AdminDemoAdwallEditorPage({
   params,
   searchParams,
 }: {
@@ -63,46 +63,48 @@ export default async function AdminAdwallEditorPage({
   const createMode = query.create === "1";
 
   const [routePrefix, adwallType] = key || [];
-  const existing = keyStr ? await getConfigRow("adwall", keyStr) : null;
-  const fallback =
-    existing || createMode || !routePrefix || !adwallType ? null : getAdwallConfig(routePrefix, adwallType);
 
-  const skeleton = buildNewAdwallSkeleton(routePrefix, adwallType);
+  // Check DB first (kind = "demo-adwall")
+  const existing = keyStr ? await getConfigRow("demo-adwall", keyStr) : null;
 
-  const draft =
-    existing?.draft ??
-    fallback ??
-    skeleton;
+  // Fall back to bundled static demo config
+  const staticFallback =
+    existing || createMode || !routePrefix || !adwallType
+      ? null
+      : getDemoAdwallConfig(routePrefix, adwallType);
 
-  // Prefill navbar fields for consistency with the public site:
-  // Public Navbar uses /api/navbar which falls back to funnel.navbar when adwall.navbar is missing.
-  // By merging that fallback here, the form shows the values and saving/publishing persists them into the adwall config.
+  const skeleton = buildNewDemoAdwallSkeleton(routePrefix, adwallType);
+
+  const draft = existing?.draft ?? staticFallback ?? skeleton;
+
+  // Prefill navbar from funnel config if not already set
   const draftAdwall = draft as AdwallConfig;
   const hasNavbarValues = !!draftAdwall?.navbar?.tagline || !!draftAdwall?.navbar?.phone;
   const funnelNavbar =
     !hasNavbarValues && draftAdwall?.funnelId
       ? (await getPublishedFunnelConfig(draftAdwall.funnelId, { useDraft: true }))?.navbar
       : null;
-  const draftWithNavbar = !hasNavbarValues && funnelNavbar ? ({ ...draftAdwall, navbar: funnelNavbar } satisfies AdwallConfig) : draft;
+  const draftWithNavbar =
+    !hasNavbarValues && funnelNavbar
+      ? ({ ...draftAdwall, navbar: funnelNavbar } satisfies AdwallConfig)
+      : draft;
 
   const published = existing?.published ?? null;
 
   const previewHref =
     routePrefix && adwallType
-      ? `/adwall/${encodeURIComponent(routePrefix)}/${encodeURIComponent(
-          adwallType
-        )}?preview=1&name=Test&zip=00000`
+      ? `/adwall/demo/${encodeURIComponent(routePrefix)}/${encodeURIComponent(adwallType)}?preview=1&name=Test&zip=00000`
       : "/admin/adwalls";
 
   const liveHref =
     routePrefix && adwallType
-      ? `/adwall/${encodeURIComponent(routePrefix)}/${encodeURIComponent(adwallType)}`
+      ? `/adwall/demo/${encodeURIComponent(routePrefix)}/${encodeURIComponent(adwallType)}`
       : "/admin/adwalls";
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10 space-y-6">
       <ConfigEditorClient
-        kind="adwall"
+        kind="demo-adwall"
         keyStr={keyStr}
         initialDraftJson={JSON.stringify(draftWithNavbar, null, 2)}
         initialPublishedJson={published ? JSON.stringify(published, null, 2) : null}
@@ -114,4 +116,3 @@ export default async function AdminAdwallEditorPage({
     </div>
   );
 }
-

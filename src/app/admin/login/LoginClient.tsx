@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { adminButtonPrimary } from "../admin-button-styles";
 
 export default function LoginClient() {
   const router = useRouter();
@@ -69,7 +70,7 @@ export default function LoginClient() {
         />
       </div>
       {error ? <div className="text-sm text-red-600">{error}</div> : null}
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button type="submit" className={`w-full ${adminButtonPrimary}`} disabled={isLoading}>
         {isLoading ? "Signing in…" : "Sign in"}
       </Button>
     </form>
