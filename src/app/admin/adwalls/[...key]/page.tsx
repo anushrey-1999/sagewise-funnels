@@ -22,7 +22,7 @@ function mergeFileCardIntoDbCard(dbCard: AdwallCard, fileCard: AdwallCard): Adwa
   const result: AdwallCard = { ...dbCard };
   for (const field of OPTIONAL_CARD_FIELDS) {
     if (result[field] === undefined && fileCard[field] !== undefined) {
-      (result as Record<string, unknown>)[field] = fileCard[field];
+      (result as unknown as Record<string, unknown>)[field] = fileCard[field];
     }
   }
   return result;
