@@ -66,6 +66,10 @@ function createEmptyPublisherCard() {
     advertiserName: "",
     isHidden: false,
     phoneNumber: "",
+    trustpilotReviews: "",
+    minCreditScore: "",
+    maxLoanAmount: "",
+    aprRange: "",
     bottomBoxHtml: "",
   };
 }

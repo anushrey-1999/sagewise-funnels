@@ -3,9 +3,10 @@
 import AdsWallCards from "@/organisms/AdsWallCards";
 import PlainPageHeader from "@/organisms/PlainPageHeader";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { AdwallConfig } from "@/types/adwall";
 import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
+import { useEqualStatsWidthPx } from "@/hooks/useEqualStatsWidthPx";
 import ImpressionOnView from "@/components/ImpressionOnView";
 
 interface AdsWallTemplateProps {
@@ -80,8 +81,8 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
   // Prepare variables for interpolation
   const templateVars = useMemo(() => ({
     NAME: name || "",
-    zip: zip || "",
-    city: resolvedCity || zip || "",
+    zip: zip || "your city",
+    city: resolvedCity || "your city",
     month: monthName,
     year: yearNumber,
   }), [name, zip, resolvedCity, monthName, yearNumber]);
@@ -95,7 +96,12 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
     return interpolateTemplate(config.subtitle, templateVars);
   }, [config.subtitle, templateVars]);
 
-  const { containerRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([config.cards]);
+  const { containerRef: ctaRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([config.cards]);
+  const { statsContainerRef: statsRef, statsMinWidthPx } = useEqualStatsWidthPx([config.cards]);
+  const containerRef = useCallback((node: HTMLDivElement | null) => {
+    ctaRef.current = node;
+    statsRef.current = node;
+  }, [ctaRef, statsRef]);
 
   return (
     <div className="bg-white flex flex-col items-start min-h-screen w-full ">
@@ -108,7 +114,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
       />
 
       {/* Cards */}
-      <div className="relative z-0 flex flex-col items-center w-full px-6 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
+      <div className="relative z-0 flex flex-col items-center w-full px-2 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
           <div ref={containerRef} className="flex flex-col gap-4">
             {config.cards?.filter((item) => !item?.isHidden).map((item, index) => {
@@ -122,11 +128,13 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
                 >
                   <AdsWallCards
                     {...cardProps}
+                    cardNumber={index + 1}
                     buttonText={cardProps.buttonText || "View My Rates"}
                     affiliateId={affiliateId}
                     transactionId={transactionId}
                     extraTrackingParams={config.trackingParams?.sub3 ? { sub3: config.trackingParams.sub3 } : undefined}
                     ctaMinWidthPx={ctaMinWidthPx}
+                    statsMinWidthPx={statsMinWidthPx}
                   />
                 </ImpressionOnView>
               );
@@ -134,6 +142,22 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
           </div>
         </div>
       </div>
+
+      {/* Mobile-only: card-level disclosures in page footer */}
+      {config.cards?.some((item) => !item?.isHidden && item.bottomBoxHtml) && (
+        <div className="lg:hidden w-full max-w-[970px] mx-auto px-2 sm:px-6 mb-6 flex flex-col gap-3">
+          {config.cards
+            .filter((item) => !item?.isHidden && item.bottomBoxHtml)
+            .map((item, index) => (
+              <div key={index} className="bg-[#f5f5f5] rounded-lg px-4 py-3 text-xs leading-relaxed text-general-muted-foreground [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2">
+                {item.advertiserName && (
+                  <span className="font-semibold mr-1">{item.advertiserName}:</span>
+                )}
+                <span dangerouslySetInnerHTML={{ __html: item.bottomBoxHtml! }} />
+              </div>
+            ))}
+        </div>
+      )}
 
       {/* Disclaimers */}
       {config.disclaimers && (

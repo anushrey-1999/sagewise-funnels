@@ -14,15 +14,15 @@ import ccFinbuzzAdwall from "./adwall-configs/cc-finbuzz.json";
 import autoinsAdwallOne from "./adwall-configs/autoins-one.json";
 import autoinsAdwallTwo from "./adwall-configs/autoins-two.json";
 import autoinsAdwallThree from "./adwall-configs/autoins-three.json";
-import mortgageAdwallOne from "./adwall-configs/mortgage-one.json";
-import mortgageAdwallTwo from "./adwall-configs/mortgage-two.json";
-import mortgageAdwallThree from "./adwall-configs/mortgage-three.json";
+import mortgageAdwallHeloc from "./adwall-configs/mortgage-heloc.json";
+import mortgageAdwallRefi from "./adwall-configs/mortgage-refi.json";
+import mortgageAdwallPurchase from "./adwall-configs/mortgage-purchase.json";
 import tubsAdwallOne from "./adwall-configs/tubs-one.json";
 import homeWarrantyAdwallOne from "./adwall-configs/homeWarranty-one.json";
 
 // Map of [funnelId]-[adwallType] to their configs
 // Format: "funnelId-adwallType" -> config
-// Example: "mortgage-one", "dental-one", "cc-one-one", "cc-one-two", "cc-one-three"
+// Example: "mortgage-heloc", "cc-one", "cc-two", "cc-three"
 // Most funnels will only have "funnelId-one", but some may have multiple types
 const adwallConfigs: Record<string, AdwallConfig> = {
   "cc-one": ccAdwallOne as AdwallConfig,
@@ -32,9 +32,9 @@ const adwallConfigs: Record<string, AdwallConfig> = {
   "autoins-one": autoinsAdwallOne as AdwallConfig,
   "autoins-two": autoinsAdwallTwo as AdwallConfig,
   "autoins-three": autoinsAdwallThree as AdwallConfig,
-  "mortgage-heloc": mortgageAdwallOne as AdwallConfig,
-  "mortgage-refi": mortgageAdwallTwo as AdwallConfig,
-  "mortgage-purchase": mortgageAdwallThree as AdwallConfig,
+  "mortgage-heloc": mortgageAdwallHeloc as AdwallConfig,
+  "mortgage-refi": mortgageAdwallRefi as AdwallConfig,
+  "mortgage-purchase": mortgageAdwallPurchase as AdwallConfig,
   "tubs-one": tubsAdwallOne as AdwallConfig,
   "homeWarranty-one": homeWarrantyAdwallOne as AdwallConfig,
   // Add more adwall configs here as they are created

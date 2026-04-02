@@ -3,7 +3,30 @@ import { requireAdminPage } from "@/lib/admin/require-page";
 import { getConfigRow } from "@/lib/config-service";
 import { getAdwallConfig } from "@/lib/adwall-loader";
 import { getPublishedFunnelConfig } from "@/lib/published-config";
-import type { AdwallConfig } from "@/types/adwall";
+import type { AdwallCard, AdwallConfig } from "@/types/adwall";
+
+/**
+ * When a config is loaded from the DB, optional fields added to the file config after the last save
+ * won't be present in the DB draft. This fills those gaps from the matching file card so the
+ * admin form shows pre-populated values for newly added fields.
+ * Only fills fields that are `undefined` in the DB card — empty string is respected as intentional.
+ */
+const OPTIONAL_CARD_FIELDS: Array<keyof AdwallCard> = [
+  "trustpilotReviews",
+  "minCreditScore",
+  "maxLoanAmount",
+  "aprRange",
+];
+
+function mergeFileCardIntoDbCard(dbCard: AdwallCard, fileCard: AdwallCard): AdwallCard {
+  const result: AdwallCard = { ...dbCard };
+  for (const field of OPTIONAL_CARD_FIELDS) {
+    if (result[field] === undefined && fileCard[field] !== undefined) {
+      (result as Record<string, unknown>)[field] = fileCard[field];
+    }
+  }
+  return result;
+}
 
 function buildNewAdwallSkeleton(routePrefix?: string, adwallType?: string): AdwallConfig {
   const normalizedRoutePrefix = routePrefix || "route";
@@ -73,6 +96,22 @@ export default async function AdminAdwallEditorPage({
     existing?.draft ??
     fallback ??
     skeleton;
+
+  // For DB drafts, fill in any optional card fields that are absent but present in the
+  // corresponding file config (e.g. fields added after the last save).
+  if (existing?.draft && fallback == null && routePrefix && adwallType) {
+    const fileConfig = getAdwallConfig(routePrefix, adwallType);
+    const draftTyped = draft as AdwallConfig;
+    if (fileConfig && Array.isArray(draftTyped.cards)) {
+      const fileCards = Array.isArray(fileConfig.cards) ? fileConfig.cards : [];
+      draftTyped.cards = draftTyped.cards.map((dbCard) => {
+        const fileCard = fileCards.find(
+          (f) => f.advertiserName === dbCard.advertiserName || f.heading === dbCard.heading
+        );
+        return fileCard ? mergeFileCardIntoDbCard(dbCard, fileCard) : dbCard;
+      });
+    }
+  }
 
   // Prefill navbar fields for consistency with the public site:
   // Public Navbar uses /api/navbar which falls back to funnel.navbar when adwall.navbar is missing.

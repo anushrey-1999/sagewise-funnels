@@ -80,6 +80,34 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   const currentStepData = config.steps[currentStep];
   const totalSteps = config.steps.length;
   const progress = Math.round(((currentStep + 1) / totalSteps) * 100);
+  const isCreditScoreQuestion = Boolean(
+    currentStepData?.title.toLowerCase().includes("credit score") &&
+    currentStepData.fields.some((field) => {
+      const normalizedFieldId = field.id.toLowerCase().replace(/[-_\s]/g, "");
+      return (
+        normalizedFieldId.includes("creditscore") &&
+        field.options?.some((option) => ["excellent", "good", "fair", "bad", "poor"].includes(option.value))
+      );
+    })
+  );
+  const creditScoreStepIndex = config.steps.findIndex((step) =>
+    step.title.toLowerCase().includes("credit score") &&
+    step.fields.some((field) => {
+      const normalizedFieldId = field.id.toLowerCase().replace(/[-_\s]/g, "");
+      return (
+        normalizedFieldId.includes("creditscore") &&
+        field.options?.some((option) => ["excellent", "good", "fair", "bad", "poor"].includes(option.value))
+      );
+    })
+  );
+  const isPastCreditScoreStep = creditScoreStepIndex !== -1 && currentStep > creditScoreStepIndex;
+
+  const currentStepDescription =
+    isCreditScoreQuestion
+      ? "Won't affect credit score | 100% free | Takes two minutes"
+      : isPastCreditScoreStep
+        ? "Get rates with no credit check required!"
+        : (currentStepData?.description?.trim() || "");
 
   const firstStepButtonVars = useMemo(() => {
     if (!isFirstStep || !config.firstStepButton) return undefined;
@@ -703,9 +731,9 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
             <CardTitle className="text-3xl lg:text-[40px] font-bold text-primary-main">
               {currentStepData.title}
             </CardTitle>
-            {currentStepData.description?.trim() ? (
+            {currentStepDescription ? (
               <CardDescription className="text-base text-muted-foreground">
-                {currentStepData.description}
+                {currentStepDescription}
               </CardDescription>
             ) : null}
           </CardHeader>

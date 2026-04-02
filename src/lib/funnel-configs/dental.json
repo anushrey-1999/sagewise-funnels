@@ -72,7 +72,7 @@
     {
       "id": "credit-score",
       "title": "What is your estimated credit score?",
-      "description": "Helps us find the best financing rate.",
+      "description": "Won't affect credit score | 100% free | Takes two minutes",
       "fields": [
         {
           "id": "creditScore",

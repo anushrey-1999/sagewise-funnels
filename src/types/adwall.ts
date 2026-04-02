@@ -18,6 +18,12 @@ export interface AdwallCard {
   isHidden?: boolean;
   isDifferentBorder?: boolean;
   phoneNumber?: string; // Optional phone number to display below CTA
+  /** Optional Trustpilot review count string, e.g. "18,267". Displayed above/below CTA. */
+  trustpilotReviews?: string;
+  /** Optional card stats shown between features and CTA */
+  minCreditScore?: string;
+  maxLoanAmount?: string;
+  aprRange?: string;
   /**
    * Optional bottom callout box content rendered as HTML.
    * Controlled via the adwall JSON on a per-card basis.

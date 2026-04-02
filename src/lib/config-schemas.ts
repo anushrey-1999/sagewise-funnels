@@ -159,6 +159,10 @@ const adwallCardSchema = z
     isHidden: z.boolean().optional(),
     isDifferentBorder: z.boolean().optional(),
     phoneNumber: z.string().optional(),
+    trustpilotReviews: z.string().optional(),
+    minCreditScore: z.string().optional(),
+    maxLoanAmount: z.string().optional(),
+    aprRange: z.string().optional(),
     bottomBoxHtml: z.string().optional(),
     impressionScript: z.string().optional(),
   })

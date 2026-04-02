@@ -1,35 +1,8 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Typography } from "@/components/ui/typography";
-import { Lock, MoveUpRight, Phone, Rocket, Trophy, Type } from "lucide-react";
+import { MoveUpRight, Phone } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import React from "react";
-
-function sanitizeCardHtml(html: string): string {
-  // Funnel/adwall JSON is controlled content; this is defensive, not a full HTML sanitizer.
-  // Keep deterministic transforms to avoid any hydration mismatch surprises.
-  let out = html;
-
-  // Remove script/style blocks entirely
-  out = out.replace(/<\s*(script|style)[^>]*>[\s\S]*?<\s*\/\s*\1\s*>/gi, "");
-
-  // Strip event handlers everywhere
-  out = out.replace(/\s+on[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "");
-
-  // Neutralize javascript: URLs in href/src attrs
-  out = out.replace(
-    /\b(href|src)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi,
-    (_m, attr, v1, v2, v3) => {
-      const val = String(v1 || v2 || v3 || "").trim();
-      if (val.toLowerCase().startsWith("javascript:")) return `${attr}=""`;
-      // Rebuild using double quotes for consistency
-      return `${attr}="${val}"`;
-    }
-  );
-
-  return out;
-}
 
 function toTelHref(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, "");
@@ -46,9 +19,10 @@ interface AdsWallCardsProps {
   isBadge?: boolean;
   isSecondaryBtn?: boolean;
   isGradientBox?: boolean;
-  isDifferentBorder?: boolean; // Golden border for special cards
-  badgeIcon?: React.ReactNode; // Accepts HTML/JSX content
-  badgeText?: React.ReactNode; // Accepts HTML/JSX content
+  isDifferentBorder?: boolean;
+  badgeIcon?: React.ReactNode;
+  badgeText?: React.ReactNode;
+  cardNumber?: number;
   heading: string;
   description: string;
   features: string[];
@@ -66,23 +40,21 @@ interface AdsWallCardsProps {
   affiliateId?: string | null;
   transactionId?: string | null;
   phoneNumber?: string;
-  /** Optional extra query params for CTA link (e.g. sub3 for cc-finbuzz) */
   extraTrackingParams?: Record<string, string>;
   ctaMinWidthPx?: number;
-  /** Optional bottom callout box content rendered as HTML. */
+  statsMinWidthPx?: number;
+  trustpilotReviews?: string;
+  minCreditScore?: string;
+  maxLoanAmount?: string;
+  aprRange?: string;
   bottomBoxHtml?: string;
 }
 
 const AdsWallCards = ({
-  ratings,
-  cardBg = "bg-white",
-  isGradientBorder,
-  isBadge = false,
-  isSecondaryBtn = true,
-  isGradientBox = false,
   isDifferentBorder = false,
   badgeIcon,
   badgeText,
+  cardNumber,
   heading,
   description,
   features,
@@ -101,271 +73,254 @@ const AdsWallCards = ({
   transactionId,
   phoneNumber,
   extraTrackingParams,
-  ctaMinWidthPx,
+  statsMinWidthPx,
+  trustpilotReviews,
+  minCreditScore,
+  maxLoanAmount,
+  aprRange,
   bottomBoxHtml,
 }: AdsWallCardsProps) => {
   const affiliateParamName = "sub4";
   const transactionParamName = "sub5";
+
+  const displayReviews = trustpilotReviews?.trim() || null;
+
   const hasBadgeText =
     typeof badgeText === "string" ? badgeText.trim().length > 0 : Boolean(badgeText);
 
-  // Append tracking params to outbound offer link
   const handleButtonClick = () => {
     try {
       const url = new URL(buttonLink);
-      
-      if (affiliateId) {
-        url.searchParams.set(affiliateParamName, affiliateId);
-      }
-      if (transactionId) {
-        url.searchParams.set(transactionParamName, transactionId);
-      }
+      if (affiliateId) url.searchParams.set(affiliateParamName, affiliateId);
+      if (transactionId) url.searchParams.set(transactionParamName, transactionId);
       if (extraTrackingParams) {
         Object.entries(extraTrackingParams).forEach(([key, value]) => {
           url.searchParams.set(key, value);
         });
       }
-      
       window.open(url.toString(), "_blank");
     } catch {
-      // If buttonLink is not a valid absolute URL, append params manually
       const separator = buttonLink.includes("?") ? "&" : "?";
       const params: string[] = [];
-      
-      if (affiliateId) {
-        params.push(`${affiliateParamName}=${encodeURIComponent(affiliateId)}`);
-      }
-      if (transactionId) {
-        params.push(`${transactionParamName}=${encodeURIComponent(transactionId)}`);
-      }
+      if (affiliateId) params.push(`${affiliateParamName}=${encodeURIComponent(affiliateId)}`);
+      if (transactionId) params.push(`${transactionParamName}=${encodeURIComponent(transactionId)}`);
       if (extraTrackingParams) {
         Object.entries(extraTrackingParams).forEach(([key, value]) => {
           params.push(`${key}=${encodeURIComponent(value)}`);
         });
       }
-      
-      const finalUrl = params.length > 0 
-        ? `${buttonLink}${separator}${params.join("&")}`
-        : buttonLink;
-      
+      const finalUrl = params.length > 0 ? `${buttonLink}${separator}${params.join("&")}` : buttonLink;
       window.open(finalUrl, "_blank");
     }
   };
-  // Card content (shared between gradient and non-gradient borders)
-  const cardContent = (
-    <div className="relative flex flex-col w-full gap-4">
-      <div className="h-8">
-        {hasBadgeText ? (
-          <div className="h-full text-[10px] lg:text-xs font-medium px-2 bg-green-700 flex items-center gap-1.5 uppercase rounded-tl-xl rounded-br-xl w-fit text-white whitespace-nowrap">
-            {(badgeIcon ?? "card") ? (
-              <div className="w-4 h-4 lg:w-4 lg:h-4 relative">
-                <Image src={`/icons/${badgeIcon ?? "card"}.svg`} alt="badge-icon" layout="fill" />
-              </div>
-            ) : null}
-            {badgeText}
-          </div>
-        ) : (
-          <div className="h-full" aria-hidden="true" />
-        )}
-      </div>
-
-      <div className="flex flex-col lg:flex-row justify-between w-full items-start px-4 pb-4 gap-6">
-        {/* First Container */}
-        <div className="flex flex-col items-center justify-center gap-3 shrink-0 self-stretch">
-          {logo ? (
-            <div className="flex flex-col items-center w-[110px]">
-              <div
-                className="relative overflow-hidden flex items-center justify-center"
-                style={{ width: logoWidth, height: logoHeight }}
-              >
-                <Image
-                  src={logo}
-                  alt="logo"
-                  layout="fill"
-                  className="object-contain"
-                />
-              </div>
-              {logoText && (
-                <Typography
-                  variant="p"
-                  className="text-[10px] text-center mt-1 w-full"
-                  color="text-general-muted-foreground"
-                >
-                  {logoText}
-                </Typography>
-              )}
-              {logoSubtext && (
-                <Typography
-                  variant="p"
-                  className="text-[10px] text-center mt-0.5 w-full"
-                  color="text-general-muted-foreground"
-                >
-                  {logoSubtext}
-                </Typography>
-              )}
-            </div>
-          ) : creditCardImage ? (
-            <div className="w-46 h-30 lg:w-30 lg:h-18 relative overflow-hidden rounded-sm">
-              <Image src={creditCardImage} alt="credit-card" layout="fill" />
-            </div>
-          ) : (
-            <div className="w-[110px] h-[72px] rounded-sm bg-[#f3f3f3] border border-general-border flex items-center justify-center text-[10px] text-general-muted-foreground px-2 text-center">
-              Add a logo or card image
-            </div>
-          )}
-        </div>
-
-        {/* Second Container */}
-        <div className="flex flex-col gap-2 flex-1 h-full">
-          <Typography
-            variant="h4"
-            color="text-primary-main text-xl"
-            dangerouslySetInnerHTML={{ __html: heading }}
-          />
-          <Typography
-            variant="p"
-            className="text-sm font-bold"
-            dangerouslySetInnerHTML={{ __html: description }}
-          />
-          <Typography variant="ul" className="">
-            <ul className="list-disc text-left lg:ml-0 text-sm flex flex-col gap-1">
-              {features.map((feature, index) => (
-                <li key={index} dangerouslySetInnerHTML={{ __html: feature }} />
-              ))}
-            </ul>
-          </Typography>
-        </div>
-
-        {/* Third Container */}
-        <div className=" rounded-md flex justify-between items-center lg:justify-start lg:flex-col gap-3 lg:min-w-[200px] w-full lg:w-fit shrink-0">
-          {/* {isGradientBox && (
-          <div className="rounded-md overflow-hidden flex lg:flex-col w-full border border-general-border">
-            <div className="bg-linear-to-r from-green-700 to-[#2C9D56] pb-1 lg:py-3.5 flex items-center justify-center flex-col w-1/2 lg:w-full rounded-md">
-              <Typography variant="h3" color="text-white" className="text-2xl">
-                AA++
-              </Typography>
-              <Typography variant="monospaced" color="text-white" className="text-sm lg:text-base">
-                SUPERIOR
-              </Typography>
-            </div>
-            <div className="rounded-br-lg rounded-bl-lg py-2.5 px-1 lg:pt-1 lg:pb-2 flex flex-col items-center justify-center w-1/2 lg:w-full">
-              <Typography variant="p" size="text-xs" className="font-medium">
-                A.M. Best Rating
-              </Typography>
-              <Typography variant="p" size="text-xs" className="font-medium">
-                (as of 8/1/25)
-              </Typography>
-            </div>
-          </div>
-        )} */}
-
-          <div className="flex gap-2 items-center lg:items-end justify-center shrink-0">
-            <Typography
-              variant="h3"
-              color="text-black"
-              className="text-xl lg:text-3xl leading-none"
-            >
-              {ratingsNumber}
-            </Typography>
-            <div className="flex flex-col gap-0.5">
-              <div className="flex gap-1 justify-center items-center ">
-                {Array.from({ length: ratingsCount || 5 }, (_, index) => (
-                  <Image
-                    key={index}
-                    src={"/star.svg"}
-                    alt="star"
-                    width={100}
-                    height={100}
-                    className="w-3 h-3"
-                  />
-                ))}
-              </div>
-              <Typography variant="p" className="text-xs">
-                User Ratings
-              </Typography>
-            </div>
-          </div>
-          <div className="flex flex-col gap-1 items-center">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="lg:w-full font-semibold"
-              onClick={handleButtonClick}
-              icon={MoveUpRight}
-              iconClass="w-3 h-3 lg:w-3.5 lg:h-3.5"
-            >
-              {buttonText}
-            </Button>
-            <Typography
-              variant="p"
-              className="text-[10px] text-center flex items-center gap-1"
-              color="text-general-muted-foreground"
-            >
-              on {advertiserName} secure site <Lock className="w-3 h-3 lg:w-3 lg:h-3" />
-            </Typography>
-            {phoneNumber ? (
-              <a
-                href={toTelHref(phoneNumber)}
-                className="mt-1 text-xs font-semibold hover:underline underline-offset-4 flex items-center gap-1 text-general-muted-foreground"
-                aria-label={`Call ${phoneNumber}`}
-              >
-                <Phone className="w-3 h-3" />
-                <span>{phoneNumber}</span>
-              </a>
-            ) : null}
-          </div>
-          {/* {isSecondaryBtn && (
-            <Button variant="outline" size="lg" icon={Phone} className="w-full">
-              1-833-906-2737
-            </Button>
-          )} */}
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="relative w-full">
-      {/* {isGradientBorder ? (
-        <div className="p-[2px] rounded-xl bg-linear-to-r from-primary-main via-[#D3FCFB] to-[#357F7D] w-full">
-          <div
-            className={cn(
-              "rounded-xl z-1 relative p-4 lg:p-6 w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
-              cardBg
-            )}
-          >
-            {cardContent}
-          </div>
-        </div>
-      ) : (
-        <div
-          className={cn(
-            "border-2 z-1 relative border-general-border rounded-xl p-4 lg:p-6 w-full flex flex-col lg:flex-row justify-between gap-6 lg:gap-11",
-            cardBg
-          )}
-        >
-          {cardContent}
-        </div>
-      )} */}
-
       <div
         className={cn(
-          "border-2 z-1 relative rounded-xl w-full flex flex-col ",
-          isDifferentBorder 
-            ? "border-[#ffd32a]" // Golden border using CTA primary color
-            : "border-general-border", // Default border
-          cardBg
+          "border-[1.5px] lg:border-2 relative rounded-xl w-full flex flex-col overflow-hidden bg-white gap-4 lg:gap-5",
+          isDifferentBorder ? "border-[#ffd32a]" : "border-primary-main"
         )}
       >
-        {cardContent}
-        {bottomBoxHtml ? (
-          <div className="pb-5 pt-3 px-4">
+        {/* ── Badges (top-right on mobile, top-left on desktop) ── */}
+        <div className="flex items-center self-end lg:self-start">
+          {cardNumber && (
             <div
-              className="bg-[#F4F5F8] p-2.5 text-xs leading-relaxed text-general-muted-foreground [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
-              dangerouslySetInnerHTML={{ __html: sanitizeCardHtml(bottomBoxHtml) }}
+              className={cn(
+                "min-h-[28px] lg:min-h-[32px] text-[11px] lg:text-sm font-medium px-3 lg:px-4 py-1 bg-primary-main flex items-center uppercase text-white whitespace-nowrap tracking-wide",
+                hasBadgeText ? "max-lg:rounded-bl-xl" : "max-lg:rounded-bl-xl lg:rounded-br-xl"
+              )}
+            >
+              #{cardNumber}
+            </div>
+          )}
+          {hasBadgeText && (
+            <div
+              className={cn(
+                "min-h-[28px] lg:min-h-[32px] text-[11px] lg:text-sm font-medium px-3 lg:px-4 py-1 bg-primary-dark flex items-center gap-1.5 uppercase text-white whitespace-nowrap tracking-wide",
+                "lg:rounded-br-xl"
+              )}
+            >
+              {(badgeIcon ?? "card") ? (
+                <div className="w-3 h-3 lg:w-3.5 lg:h-3.5 relative shrink-0">
+                  <Image src={`/icons/${badgeIcon ?? "card"}.svg`} alt="" fill className="object-contain" />
+                </div>
+              ) : null}
+              {badgeText}
+            </div>
+          )}
+        </div>
+
+        {/* ── Mobile logo (below badge, own row) ── */}
+        <div className="lg:hidden px-4">
+          {logo ? (
+            <div className="flex flex-col items-start">
+              <div
+                className="relative overflow-hidden rounded-lg"
+                style={{ width: logoWidth || "180px", height: logoHeight || "84px" }}
+              >
+                <Image src={logo} alt={heading} fill className="object-contain" />
+              </div>
+              {logoText && (
+                <p className="text-[10px] text-general-muted-foreground mt-1">{logoText}</p>
+              )}
+            </div>
+          ) : creditCardImage ? (
+            <div className="w-[180px] h-[120px] relative overflow-hidden rounded-lg">
+              <Image src={creditCardImage} alt={heading} fill className="object-cover" />
+            </div>
+          ) : null}
+        </div>
+
+        {/* ── Main Content ── */}
+        <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-8 px-4 pb-[20px] lg:px-6 lg:py-5 lg:pb-3 lg:pr-8">
+
+          {/* Desktop-only Logo */}
+          <div className="hidden lg:flex shrink-0 flex-col items-center gap-1">
+            {logo ? (
+              <div className="flex flex-col items-center">
+                <div
+                  className="relative overflow-hidden rounded-lg flex items-center justify-center"
+                  style={{ width: logoWidth || "200px", height: logoHeight || "69px" }}
+                >
+                  <Image src={logo} alt={heading} fill className="object-contain" />
+                </div>
+                {logoText && (
+                  <p className="text-[10px] text-general-muted-foreground text-center mt-1">{logoText}</p>
+                )}
+                {logoSubtext && (
+                  <p className="text-[10px] text-general-muted-foreground text-center mt-0.5">{logoSubtext}</p>
+                )}
+              </div>
+            ) : creditCardImage ? (
+              <div className="w-[200px] h-[130px] relative overflow-hidden rounded-lg">
+                <Image src={creditCardImage} alt={heading} fill className="object-cover" />
+              </div>
+            ) : (
+              <div className="w-[200px] h-[69px] rounded-lg bg-white border border-general-border flex items-center justify-center text-xs text-general-muted-foreground">
+                Add a logo
+              </div>
+            )}
+          </div>
+
+          {/* Heading + Description + Features */}
+          <div className="flex flex-col gap-2 lg:gap-3 flex-1 min-w-0">
+            <h3
+              className="text-2xl lg:text-[30px] font-semibold text-primary-main leading-[1.2] tracking-tight"
+              dangerouslySetInnerHTML={{ __html: heading }}
+            />
+            <div className="text-xs lg:text-base text-black">
+              <p
+                className="font-medium"
+                dangerouslySetInnerHTML={{ __html: description }}
+              />
+              <ul className="list-disc ml-5 flex flex-col gap-0.5 mt-1">
+                {features.map((feature, index) => (
+                  <li
+                    key={index}
+                    className={index >= 2 ? "hidden lg:list-item" : undefined}
+                    dangerouslySetInnerHTML={{ __html: feature }}
+                  />
+                ))}
+              </ul>
+            </div>
+
+            {/* Stats Box (horizontal row below features) */}
+            {(minCreditScore || maxLoanAmount || aprRange) && (
+              <div
+                data-stats-equalize="true"
+                className="grid grid-cols-3 gap-2 lg:gap-3 w-full bg-[#f5f5f5] rounded-lg p-2.5 lg:p-3 text-center"
+                style={statsMinWidthPx ? { minWidth: statsMinWidthPx } : undefined}
+              >
+                {minCreditScore && (
+                  <div className="flex flex-col gap-0.5 items-center">
+                    <p className="text-[8px] lg:text-[10px] font-medium text-general-muted-foreground tracking-wide leading-[1.3]">Min Credit Score</p>
+                    <p className="text-sm lg:text-lg font-semibold text-primary-main leading-[1.2] tracking-tight">{minCreditScore}</p>
+                  </div>
+                )}
+                {maxLoanAmount && (
+                  <div className="flex flex-col gap-0.5 items-center">
+                    <p className="text-[8px] lg:text-[10px] font-medium text-general-muted-foreground tracking-wide leading-[1.3]">Max Loan Amount</p>
+                    <p className="text-sm lg:text-lg font-semibold text-primary-main leading-[1.2] tracking-tight">{maxLoanAmount}</p>
+                  </div>
+                )}
+                {aprRange && (
+                  <div className="flex flex-col gap-0.5 items-center">
+                    <p className="text-[8px] lg:text-[10px] font-medium text-general-muted-foreground tracking-wide leading-[1.3]">APR Range</p>
+                    <p className="text-sm lg:text-lg font-semibold text-primary-main leading-[1.2] tracking-tight">{aprRange}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Rating + CTA Column */}
+          <div className="flex flex-col gap-4 lg:gap-6 items-center lg:items-stretch shrink-0 w-full lg:w-auto lg:min-w-[200px]">
+
+            {/* Rating */}
+            <div className="flex gap-3 items-center justify-center lg:justify-start">
+              <p
+                className="text-5xl font-semibold leading-[1.2] tracking-tight bg-clip-text text-transparent"
+                style={{ backgroundImage: "linear-gradient(120deg, #204c4b 17%, #059669 87%)" }}
+              >
+                {ratingsNumber}
+              </p>
+              <div className="flex flex-col gap-1">
+                <div className="flex gap-0.5 items-center">
+                  {Array.from({ length: ratingsCount || 5 }, (_, i) => (
+                    <Image key={i} src="/star.svg" alt="star" width={22} height={22} className="w-[22px] h-[22px]" />
+                  ))}
+                </div>
+                {displayReviews && (
+                  <p className="text-xs font-medium text-general-muted-foreground whitespace-nowrap flex items-center">
+                    {displayReviews} reviews by
+                    <Image
+                      src="/trustpilot-logo.svg"
+                      alt="Trustpilot"
+                      width={70}
+                      height={18}
+                      className="h-5 w-auto"
+                    />
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col gap-2 w-full">
+              <Button
+                variant="secondary"
+                size="lg"
+                className="w-full font-medium text-lg rounded-lg"
+                onClick={handleButtonClick}
+                icon={MoveUpRight}
+                iconClass="w-3.5 h-3.5"
+              >
+                {buttonText}
+              </Button>
+              {phoneNumber && (
+                <a
+                  href={toTelHref(phoneNumber)}
+                  className="flex items-center justify-center gap-2 w-full min-h-[40px] px-6 py-2 rounded-lg border border-[#d4d4d4] bg-white shadow-sm text-lg font-medium text-black hover:bg-gray-50 transition-colors"
+                  aria-label={`Call ${phoneNumber}`}
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>{phoneNumber}</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop-only: disclaimer inside card */}
+        {bottomBoxHtml && (
+          <div className="hidden lg:block bg-[#f5f5f5] px-6 py-3">
+            <div
+              className="text-sm text-general-muted-foreground leading-relaxed [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
+              dangerouslySetInnerHTML={{ __html: bottomBoxHtml }}
             />
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );

@@ -7,22 +7,33 @@ import { getDemoAdwallConfig as getStaticDemoAdwallConfig } from "@/lib/demo-adw
 import { getFunnelConfig as getStaticFunnelConfig } from "@/lib/funnel-loader";
 import { adwallConfigKey, getConfigRow, type ConfigKind } from "@/lib/config-service";
 
-async function getConfigData<T>(
+type ConfigResult<T> = { source: "db"; data: T } | { source: "db-missing-field"; row: true } | { source: "no-row" } | { source: "db-error" };
+
+async function getConfigFromDb<T>(
   kind: ConfigKind,
   key: string,
   opts?: { useDraft?: boolean }
-): Promise<T | null> {
+): Promise<ConfigResult<T>> {
   let row: Awaited<ReturnType<typeof getConfigRow>> | null = null;
   try {
     row = await getConfigRow(kind, key);
   } catch {
-    // If DB tables aren't migrated yet (or DB is temporarily unavailable),
-    // fall back to bundled JSON configs instead of crashing the public site.
-    return null;
+    // DB unavailable — caller decides whether to use static fallback.
+    return { source: "db-error" };
   }
-  if (!row) return null;
-  if (opts?.useDraft) return (row.draft as T) ?? null;
-  return (row.published as T) ?? null;
+  if (!row) return { source: "no-row" };
+
+  if (opts?.useDraft) {
+    // Preview mode: prefer draft, fall back to published
+    if (row.draft != null) return { source: "db", data: row.draft as T };
+    if (row.published != null) return { source: "db", data: row.published as T };
+    return { source: "db-missing-field", row: true };
+  }
+
+  // Live mode: only use published. If never published, fall back to static
+  // JSON so file-based updates are visible until an explicit publish happens.
+  if (row.published != null) return { source: "db", data: row.published as T };
+  return { source: "no-row" };
 }
 
 export async function getPublishedFunnelConfig(
@@ -30,9 +41,14 @@ export async function getPublishedFunnelConfig(
   opts?: { useDraft?: boolean }
 ): Promise<FormConfig | null> {
   const resolvedId = funnelId || "cc-one";
-  const fromDb = await getConfigData<FormConfig>("funnel", resolvedId, opts);
-  if (fromDb) return fromDb;
-  return getStaticFunnelConfig(resolvedId);
+  const result = await getConfigFromDb<FormConfig>("funnel", resolvedId, opts);
+  if (result.source === "db") return result.data;
+  // Only fall back to static JSON when DB has no row at all (or is unavailable).
+  // If a row exists the DB version is authoritative — don't show stale static data.
+  if (result.source === "no-row" || result.source === "db-error") {
+    return getStaticFunnelConfig(resolvedId);
+  }
+  return null;
 }
 
 export async function getPublishedAdwallConfig(
@@ -41,9 +57,12 @@ export async function getPublishedAdwallConfig(
   opts?: { useDraft?: boolean }
 ): Promise<AdwallConfig | null> {
   const key = adwallConfigKey(routePrefix, adwallType);
-  const fromDb = await getConfigData<AdwallConfig>("adwall", key, opts);
-  if (fromDb) return fromDb;
-  return getStaticAdwallConfig(routePrefix, adwallType);
+  const result = await getConfigFromDb<AdwallConfig>("adwall", key, opts);
+  if (result.source === "db") return result.data;
+  if (result.source === "no-row" || result.source === "db-error") {
+    return getStaticAdwallConfig(routePrefix, adwallType);
+  }
+  return null;
 }
 
 export async function getPublishedDemoAdwallConfig(
@@ -52,8 +71,11 @@ export async function getPublishedDemoAdwallConfig(
   opts?: { useDraft?: boolean }
 ): Promise<AdwallConfig | null> {
   const key = adwallConfigKey(routePrefix, adwallType);
-  const fromDb = await getConfigData<AdwallConfig>("demo-adwall", key, opts);
-  if (fromDb) return fromDb;
-  return getStaticDemoAdwallConfig(routePrefix, adwallType);
+  const result = await getConfigFromDb<AdwallConfig>("demo-adwall", key, opts);
+  if (result.source === "db") return result.data;
+  if (result.source === "no-row" || result.source === "db-error") {
+    return getStaticDemoAdwallConfig(routePrefix, adwallType);
+  }
+  return null;
 }
 

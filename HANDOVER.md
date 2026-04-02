@@ -197,7 +197,7 @@ An “adwall” is a **JSON-defined list of offer cards** rendered at:
 Examples:
 
 - Credit cards: `/adwall/cc/one` (and `/two`, `/three`)
-- Mortgage: `/adwall/mortgage/one`
+- Mortgage: `/adwall/mortgage/heloc`, `/adwall/mortgage/refi`, `/adwall/mortgage/purchase`
 
 ### Source of truth
 
@@ -221,7 +221,7 @@ Adwall `title` and `subtitle` support simple interpolation:
 - **`{NAME}`** is replaced by `name` query param (uppercase placeholder)
 - **`{zip}`** is replaced by `zip` query param (lowercase placeholder)
 
-Example from `src/lib/adwall-configs/mortgage-one.json`:
+Example from `src/lib/adwall-configs/mortgage-heloc.json`:
 
 - Title: `{NAME}, we found lender matches for you in {zip}.`
 
@@ -327,7 +327,7 @@ Update `src/lib/adwall-loader.ts`:
 Examples of keys used today:
 
 - `cc-one`, `cc-two`, `cc-three` (routePrefix `cc`, types `one|two|three`)
-- `mortgage-one`, `mortgage-two`, `mortgage-three`
+- `mortgage-heloc`, `mortgage-refi`, `mortgage-purchase`
 - `tubs-one`
 
 ### 3) Point the funnel to it
@@ -335,7 +335,7 @@ Examples of keys used today:
 Choose one:
 
 - Set funnel’s `finalStep.redirectTo` to the adwall route, e.g.:
-  - `/adwall/mortgage/one`
+  - `/adwall/mortgage/heloc`
 - Or set `redirectOnAnswer` rules on a field to branch to different adwall types, e.g.:
   - `/adwall/cc/one`, `/adwall/cc/two`, `/adwall/cc/three`
 

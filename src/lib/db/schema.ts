@@ -65,7 +65,7 @@ export const configs = pgTable(
     kind: text('kind').notNull(), // funnel | adwall
     /**
      * For kind=funnel: key is funnelId (e.g. "mortgage")
-     * For kind=adwall: key is "routePrefix/type" (e.g. "mortgage/one", "cc/finbuzz")
+     * For kind=adwall: key is "routePrefix/type" (e.g. "mortgage/heloc", "cc/finbuzz")
      */
     key: text('key').notNull(),
     draft: jsonb('draft').notNull(),

@@ -60,7 +60,7 @@
     {
       "id": "credit-score",
       "title": "What is your credit score?",
-      "description": "",
+      "description": "Won't affect credit score | 100% free | Takes two minutes",
       "fields": [
         {
           "id": "credit-score",

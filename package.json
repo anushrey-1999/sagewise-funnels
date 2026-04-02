@@ -29,7 +29,10 @@
     "admin:create:prod": "dotenv -e .env.prod -- tsx scripts/create-admin.ts",
     "configs:seed": "tsx scripts/seed-configs.ts",
     "configs:seed:dev": "dotenv -e .env.dev -- tsx scripts/seed-configs.ts",
-    "configs:seed:prod": "dotenv -e .env.prod -- tsx scripts/seed-configs.ts"
+    "configs:seed:prod": "dotenv -e .env.prod -- tsx scripts/seed-configs.ts",
+    "configs:sync": "SEED_FORCE=1 tsx scripts/sync-configs.ts",
+    "configs:sync:dev": "SEED_FORCE=1 dotenv -e .env.dev -- tsx scripts/sync-configs.ts",
+    "configs:sync:prod": "SEED_FORCE=1 dotenv -e .env.prod -- tsx scripts/sync-configs.ts"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",

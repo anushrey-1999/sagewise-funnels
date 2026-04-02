@@ -214,6 +214,10 @@ function newEmptyCard(): AdwallCard {
     advertiserName: "",
     isHidden: false,
     phoneNumber: "",
+    trustpilotReviews: "",
+    minCreditScore: "",
+    maxLoanAmount: "",
+    aprRange: "",
     bottomBoxHtml: "",
   };
 }
@@ -246,11 +250,26 @@ export default function AdwallConfigFormEditor(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.resetKey]);
 
+  // Keep internal draft in sync when the parent's draft changes (e.g. the
+  // other section tab edited a field). Without this, each section's internal
+  // `draft` can go stale and overwrite changes made in the other tab.
+  // We skip the update when this instance was the one that emitted the change
+  // to avoid unnecessary re-parses and potential loops.
+  const selfEmittedRef = React.useRef<unknown>(null);
+  React.useEffect(() => {
+    if (props.initialDraft === selfEmittedRef.current) return;
+    const reParsed = adwallConfigSchema.safeParse(props.initialDraft);
+    if (reParsed.success) {
+      setDraft(reParsed.data);
+    }
+  }, [props.initialDraft]);
+
   const emitPatch = React.useCallback(
     (path: (string | number)[], value: unknown) => {
       const base = draft ?? (form.state.values as AdwallConfig);
       const next = setIn(base, path, value) as AdwallConfig;
       setDraft(next);
+      selfEmittedRef.current = next;
       props.onDraftChange(next);
     },
     [draft, form, props]
@@ -259,6 +278,7 @@ export default function AdwallConfigFormEditor(props: {
   const emitNext = React.useCallback(
     (next: AdwallConfig) => {
       setDraft(next);
+      selfEmittedRef.current = next;
       props.onDraftChange(next);
     },
     [props]
@@ -744,6 +764,42 @@ export default function AdwallConfigFormEditor(props: {
                         value={card.phoneNumber ?? ""}
                         onChange={(e) => emitPatch(["cards", idx, "phoneNumber"], e.target.value)}
                         placeholder="1-800-000-0000"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`c-${idx}-trustpilotReviews`}>Trustpilot reviews (optional)</Label>
+                      <Input
+                        id={`c-${idx}-trustpilotReviews`}
+                        value={card.trustpilotReviews ?? ""}
+                        onChange={(e) => emitPatch(["cards", idx, "trustpilotReviews"], e.target.value)}
+                        placeholder="18,267"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`c-${idx}-minCreditScore`}>Min credit score (optional)</Label>
+                      <Input
+                        id={`c-${idx}-minCreditScore`}
+                        value={card.minCreditScore ?? ""}
+                        onChange={(e) => emitPatch(["cards", idx, "minCreditScore"], e.target.value)}
+                        placeholder="620"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`c-${idx}-maxLoanAmount`}>Max loan amount (optional)</Label>
+                      <Input
+                        id={`c-${idx}-maxLoanAmount`}
+                        value={card.maxLoanAmount ?? ""}
+                        onChange={(e) => emitPatch(["cards", idx, "maxLoanAmount"], e.target.value)}
+                        placeholder="$2,000,000"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`c-${idx}-aprRange`}>APR range (optional)</Label>
+                      <Input
+                        id={`c-${idx}-aprRange`}
+                        value={card.aprRange ?? ""}
+                        onChange={(e) => emitPatch(["cards", idx, "aprRange"], e.target.value)}
+                        placeholder="6.5% – 18%"
                       />
                     </div>
                     <div className="space-y-2 md:col-span-2">
