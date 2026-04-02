@@ -108,6 +108,7 @@ export default function ConfigEditorClient(props: {
   });
   const draftObjRef = useRef<unknown>(draftObj);
   const [formResetNonce, setFormResetNonce] = useState(0);
+  const hasDirtyEditsRef = useRef(false);
 
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -122,8 +123,9 @@ export default function ConfigEditorClient(props: {
 
   const apiBase = useMemo(() => `/api/admin/configs/${kind}/${keyStr}`, [kind, keyStr]);
 
-  const reloadConfig = async () => {
+  const reloadConfig = async (forceReload = false) => {
     if (!keyStr) return;
+    if (!forceReload && hasDirtyEditsRef.current) return;
     setIsRefreshingConfig(true);
     try {
       const res = await fetch(apiBase, { method: "GET" });
@@ -143,6 +145,7 @@ export default function ConfigEditorClient(props: {
         }
       }
       setPublishedText(nextPublished ? JSON.stringify(nextPublished, null, 2) : null);
+      hasDirtyEditsRef.current = false;
     } catch {
       // non-blocking; keep existing state
     } finally {
@@ -306,6 +309,7 @@ export default function ConfigEditorClient(props: {
         setDraftObj(storedDraft);
         setFormResetNonce((n) => n + 1);
       }
+      hasDirtyEditsRef.current = false;
       await loadVersions();
       toast.success("Draft saved");
     } catch {
@@ -523,7 +527,7 @@ export default function ConfigEditorClient(props: {
               value={mode}
               onValueChange={(value) => {
                 if (value === "published" && !publishedText) return;
-                void reloadConfig();
+                void reloadConfig(true);
                 setMode(value as "draft" | "published");
               }}
               className="gap-0"
@@ -618,7 +622,7 @@ export default function ConfigEditorClient(props: {
                       size="icon"
                       className={adminIconButton}
                       onClick={async () => {
-                        await reloadConfig();
+                        await reloadConfig(true);
                         toast.success("Config refreshed");
                       }}
                       disabled={isRefreshingConfig}
@@ -722,6 +726,7 @@ export default function ConfigEditorClient(props: {
                   section="basic"
                   onDraftChange={(next) => {
                     draftObjRef.current = next;
+                    hasDirtyEditsRef.current = true;
                     setDraftObj(next);
                   }}
                 />
@@ -738,6 +743,7 @@ export default function ConfigEditorClient(props: {
                   onAddCard={addPublisherCard}
                   onDraftChange={(next) => {
                     draftObjRef.current = next;
+                    hasDirtyEditsRef.current = true;
                     setDraftObj(next);
                   }}
                 />
@@ -758,6 +764,7 @@ export default function ConfigEditorClient(props: {
               userRole={props.userRole}
               onDraftChange={(next) => {
                 draftObjRef.current = next;
+                hasDirtyEditsRef.current = true;
                 setDraftObj(next);
               }}
             />

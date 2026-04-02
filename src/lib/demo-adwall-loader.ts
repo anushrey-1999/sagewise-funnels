@@ -21,11 +21,9 @@ export function demoAdwallExists(routePrefix: string, adwallType: string): boole
 }
 
 export function getAvailableDemoAdwalls(): { key: string; routePrefix: string; adwallType: string }[] {
-  return Object.entries(demoAdwallConfigs).map(([key, config]) => {
-    // Key format: "{routePrefix}-{adwallType}" e.g. "mortgage-heloc"
-    // Split on first "-" won't work for multi-segment prefixes, so use adwallType from config
+  return Object.entries(demoAdwallConfigs).map(([, config]) => {
     return {
-      key,
+      key: `${config.funnelId}/${config.adwallType}`,
       routePrefix: config.funnelId,
       adwallType: config.adwallType,
     };

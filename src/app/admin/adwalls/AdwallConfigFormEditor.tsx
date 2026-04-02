@@ -235,6 +235,7 @@ export default function AdwallConfigFormEditor(props: {
 
   const parsed = React.useMemo(() => adwallConfigSchema.safeParse(props.initialDraft), [props.resetKey, props.initialDraft]);
   const [draft, setDraft] = React.useState<AdwallConfig | null>(parsed.success ? parsed.data : null);
+  const draftRef = React.useRef<AdwallConfig | null>(draft);
 
   const form = useForm({
     defaultValues: (parsed.success ? parsed.data : (undefined as unknown as AdwallConfig)),
@@ -244,6 +245,7 @@ export default function AdwallConfigFormEditor(props: {
   React.useEffect(() => {
     if (parsed.success) {
       setDraft(parsed.data);
+      draftRef.current = parsed.data;
       form.reset(parsed.data);
       props.onDraftChange(parsed.data);
     }
@@ -261,23 +263,26 @@ export default function AdwallConfigFormEditor(props: {
     const reParsed = adwallConfigSchema.safeParse(props.initialDraft);
     if (reParsed.success) {
       setDraft(reParsed.data);
+      draftRef.current = reParsed.data;
     }
   }, [props.initialDraft]);
 
   const emitPatch = React.useCallback(
     (path: (string | number)[], value: unknown) => {
-      const base = draft ?? (form.state.values as AdwallConfig);
+      const base = draftRef.current ?? (form.state.values as AdwallConfig);
       const next = setIn(base, path, value) as AdwallConfig;
       setDraft(next);
+      draftRef.current = next;
       selfEmittedRef.current = next;
       props.onDraftChange(next);
     },
-    [draft, form, props]
+    [form, props]
   );
 
   const emitNext = React.useCallback(
     (next: AdwallConfig) => {
       setDraft(next);
+      draftRef.current = next;
       selfEmittedRef.current = next;
       props.onDraftChange(next);
     },
