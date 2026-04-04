@@ -1,7 +1,7 @@
 import AdsWallTemplate from "@/templates/AdsWallTemplate";
 import { getPublishedAdwallConfig } from "@/lib/published-config";
 import { getAdminUserFromCookies } from "@/lib/admin/session";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { resolveCityFromZip } from "@/lib/geo/resolveCityFromZip";
@@ -41,6 +41,13 @@ function firstParam(value: string | string[] | undefined): string | undefined {
 
 export default async function AdwallPage({ params, searchParams }: AdwallPageProps) {
   const { funnel, type } = await params;
+
+  // Back-compat: mortgage adwalls were renamed from one/two/three to heloc/refi/purchase.
+  if (funnel === "mortgage") {
+    if (type === "one") redirect("/adwall/mortgage/heloc");
+    if (type === "two") redirect("/adwall/mortgage/refi");
+    if (type === "three") redirect("/adwall/mortgage/purchase");
+  }
 
   const sp = (await searchParams) || {};
   const wantsPreview = firstParam(sp.preview) === "1";
