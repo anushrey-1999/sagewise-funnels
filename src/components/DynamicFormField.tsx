@@ -7,9 +7,137 @@ import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckIcon } from "lucide-react";
-import React, { useId } from "react";
+import React, { useId, useState } from "react";
 
 type FieldValue = string | string[] | number | boolean;
+
+function SliderField({
+  field,
+  value,
+  onChange,
+  error,
+  errorId,
+  isValidValue,
+}: {
+  field: FormField;
+  value: FieldValue | undefined;
+  onChange: (v: FieldValue) => void;
+  error?: string;
+  errorId: string;
+  isValidValue: (f: FormField, v: FieldValue | undefined) => boolean;
+}) {
+  const min = field.validation?.min ?? 0;
+  const max = field.validation?.max ?? 1000000;
+  const isPercent = max <= 100;
+  const step = isPercent ? 0.25 : Math.max(1, Math.round((max - min) / 100));
+  const midpoint = isPercent ? parseFloat(((min + max) / 2).toFixed(2)) : Math.round((min + max) / 2);
+
+  const currentNum = typeof value === "number" ? value : min;
+
+  const [sliderVal, setSliderVal] = useState(currentNum || midpoint);
+  const [inputText, setInputText] = useState("");
+
+  const effectiveValue = inputText.trim() ? currentNum : sliderVal;
+  const isValid = isValidValue(field, effectiveValue);
+
+  const formatValue = (v: number) =>
+    isPercent ? `${v}%` : v.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+  const handleInputChange = (raw: string) => {
+    if (isPercent) {
+      const cleaned = raw.replace(/[^0-9.]/g, "");
+      setInputText(cleaned);
+      if (cleaned === "") {
+        onChange(sliderVal);
+      } else {
+        const parsed = parseFloat(cleaned);
+        onChange(Number.isNaN(parsed) ? sliderVal : Math.min(parsed, max));
+      }
+    } else {
+      const digits = raw.replace(/[^0-9]/g, "");
+      setInputText(digits);
+      if (digits === "") {
+        onChange(sliderVal);
+      } else {
+        const parsed = parseInt(digits, 10);
+        onChange(Number.isNaN(parsed) ? sliderVal : Math.min(parsed, max));
+      }
+    }
+  };
+
+  const handleSliderChange = (val: number) => {
+    const rounded = isPercent ? parseFloat(val.toFixed(2)) : val;
+    setSliderVal(rounded);
+    if (!inputText.trim()) {
+      onChange(rounded);
+    }
+  };
+
+  const displayInput = inputText.trim()
+    ? isPercent ? inputText : parseInt(inputText, 10).toLocaleString("en-US")
+    : "";
+
+  const prefix = isPercent ? "" : "$";
+  const suffix = isPercent ? "%" : "";
+
+  return (
+    <div className="w-full sm:w-[380px] md:w-[342px] flex flex-col gap-4">
+      {field.label && (
+        <Label htmlFor={field.id} className="text-base font-medium text-foreground">
+          {field.label}
+          {field.required && <span className="text-red-500 ml-1" aria-label="required">*</span>}
+        </Label>
+      )}
+      <div className="relative">
+        {prefix && (
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-general-muted-foreground text-base pointer-events-none">{prefix}</span>
+        )}
+        <Input
+          id={field.id}
+          type="text"
+          inputMode={isPercent ? "decimal" : "numeric"}
+          placeholder={isPercent ? `${sliderVal}%` : formatValue(sliderVal)}
+          value={displayInput}
+          onChange={(e) => handleInputChange(e.target.value)}
+          className={cn(
+            "h-[55px] min-h-[55px] rounded-lg text-lg font-semibold text-primary-main",
+            prefix ? "pl-8" : "pl-4",
+            isValid && "border-[var(--sw-green-accent)]",
+            error && "border-red-500"
+          )}
+          aria-label={field.label || field.placeholder || field.id}
+          aria-invalid={!!error}
+          aria-describedby={error ? errorId : undefined}
+        />
+        {suffix && displayInput && (
+          <span className="absolute right-10 top-1/2 -translate-y-1/2 text-lg font-semibold text-primary-main pointer-events-none">{suffix}</span>
+        )}
+        {isValid && (
+          <CheckIcon className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-[var(--sw-success-green)] pointer-events-none" />
+        )}
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={sliderVal}
+        onChange={(e) => handleSliderChange(parseFloat(e.target.value))}
+        className="w-full h-2 rounded-full appearance-none cursor-pointer bg-gray-200 accent-primary-main [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary-main [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary-main [&::-moz-range-thumb]:border-none"
+        aria-label={`${field.label || field.id} slider`}
+      />
+      <div className="flex justify-between text-xs text-general-muted-foreground">
+        <span>{formatValue(min)}</span>
+        <span>{formatValue(max)}</span>
+      </div>
+      {error && (
+        <p id={errorId} className="text-sm text-red-500" role="alert" aria-live="polite">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
 
 interface DynamicFormFieldProps {
   field: FormField;
@@ -368,6 +496,19 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
               </p>
             )}
           </div>
+        );
+      }
+
+      case "slider": {
+        return (
+          <SliderField
+            field={field}
+            value={value}
+            onChange={onChange}
+            error={error}
+            errorId={errorId}
+            isValidValue={isValidValue}
+          />
         );
       }
 

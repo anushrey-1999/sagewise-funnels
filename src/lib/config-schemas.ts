@@ -11,6 +11,7 @@ const inputTypeSchema = z.enum([
   "email",
   "tel",
   "number",
+  "slider",
 ]);
 
 const redirectRuleSchema = z

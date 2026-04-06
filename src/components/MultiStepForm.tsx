@@ -155,23 +155,31 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
     }
   }, [currentStep]);
 
-  // Initialize newsletter checkbox as checked by default when step loads
+  // Initialize default field values when step loads
   useEffect(() => {
-    if (currentStepData) {
-      const newsletterField = currentStepData.fields.find(f => f.id === "newsletter" && f.type === "checkbox");
-      if (newsletterField) {
-        const stepData = formData[currentStepData.id] || {};
-        // Only initialize if not already set
-        if (!stepData.newsletter) {
-          setFormData((prev) => ({
-            ...prev,
-            [currentStepData.id]: {
-              ...(prev[currentStepData.id] || {}),
-              newsletter: [newsletterField.id], // Checkbox values are arrays
-            },
-          }));
-        }
+    if (!currentStepData) return;
+    const stepData = formData[currentStepData.id] || {};
+    const defaults: Record<string, string | string[] | number | boolean> = {};
+
+    for (const f of currentStepData.fields) {
+      if (f.id === "newsletter" && f.type === "checkbox" && !stepData.newsletter) {
+        defaults.newsletter = [f.id];
       }
+      if (f.type === "slider" && stepData[f.id] === undefined) {
+        const min = f.validation?.min ?? 0;
+        const max = f.validation?.max ?? 1000000;
+        defaults[f.id] = Math.round((min + max) / 2);
+      }
+    }
+
+    if (Object.keys(defaults).length > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        [currentStepData.id]: {
+          ...(prev[currentStepData.id] || {}),
+          ...defaults,
+        },
+      }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep]);
@@ -204,6 +212,11 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
         schemaFields[field.id] = field.required
           ? z.string().min(1, `${field.label} is required`)
           : z.string().optional();
+      } else if (field.type === "slider") {
+        let numSchema = z.number();
+        if (field.validation?.min !== undefined) numSchema = numSchema.min(field.validation.min, field.validation.message || "Value is too low");
+        if (field.validation?.max !== undefined) numSchema = numSchema.max(field.validation.max, field.validation.message || "Value is too high");
+        schemaFields[field.id] = field.required ? numSchema : numSchema.optional();
       } else {
         let fieldSchema = z.string();
         if (field.required) {
@@ -301,12 +314,14 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
             return false;
           }
         } else if (field.type === "radio") {
-          // For radio, check if value exists and is not empty
           if (!value || value === "") {
             return false;
           }
+        } else if (field.type === "slider") {
+          if (value === undefined || value === null) {
+            return false;
+          }
         } else {
-          // For text inputs, check if value exists and is not empty
           if (!value || (typeof value === "string" && value.trim() === "")) {
             return false;
           }
@@ -755,6 +770,22 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 />
               );
             })}
+
+            {/* Equity estimate shown on the equity-display step */}
+            {currentStepData.id === "equity-display" && (() => {
+              const homeVal = formData["home-value"]?.homeValue;
+              const balVal = formData["mortgage-balance"]?.mortgageBalance;
+              const home = typeof homeVal === "number" ? homeVal : 0;
+              const bal = typeof balVal === "number" ? balVal : 0;
+              const equity = Math.max(0, home - bal);
+              return (
+                <div className="w-full sm:w-[380px] md:w-[342px] rounded-xl bg-[#DEF1F1] px-6 py-5 text-center">
+                  <p className="text-3xl lg:text-4xl font-bold text-primary-main">
+                    {equity.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })}
+                  </p>
+                </div>
+              );
+            })()}
             
             {/* For last step, render Continue button inside card after checkbox */}
             {isLastStep && (

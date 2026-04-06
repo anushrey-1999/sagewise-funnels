@@ -7,7 +7,8 @@ export type InputType =
   | "textarea"
   | "email"
   | "tel"
-  | "number";
+  | "number"
+  | "slider";
 
 export interface RedirectRule {
   whenValues: string[];
