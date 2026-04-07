@@ -24,7 +24,7 @@ export function Logo({ className, color = "primary", type = "wordmark", href = "
           alt="Sagewise Logo"
           width={169}
           height={35}
-          className="h-[35px] w-[169px]"
+          className="h-[24px] w-[116px] sm:h-[35px] sm:w-[169px]"
         />
       </Link>
     </div>
