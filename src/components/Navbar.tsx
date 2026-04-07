@@ -99,7 +99,7 @@ export function Navbar() {
         <div className="text-right">
           <AdvertiserDisclosure
             placement="bottom"
-            align="end"
+            align="right"
             triggerClassName="text-[11px] sm:text-[11px] text-white/90 hover:text-white whitespace-nowrap"
             popoverBodyClassName="text-xs"
           />

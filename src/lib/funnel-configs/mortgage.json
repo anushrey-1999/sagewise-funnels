@@ -6,7 +6,6 @@
   "finalStep": {
     "buttonText": "SEE MATCHES",
     "loaderText": "Searching 100+ top lenders... Finding your best matches...",
-    "redirectTo": "/adwall/mortgage/heloc",
     "disclaimerText": "By pressing \"SEE MATCHES\" you agree to our privacy policy and consent to have an agent from one of our partners contact you by email, phone call, and/or text/SMS at the phone number and email you provide. Consent isn't a condition to purchase products."
   },
   "steps": [
@@ -51,7 +50,7 @@
               { "whenValues": ["home-equity-heloc"], "to": "/adwall/mortgage/heloc" },
               { "whenValues": ["refinance"], "to": "/adwall/mortgage/refi" },
               { "whenValues": ["purchase"], "to": "/adwall/mortgage/purchase" },
-              { "whenValues": ["cash-out-refinance"], "to": "/adwall/mortgage/refi" }
+              { "whenValues": ["cash-out-refinance"], "to": "/adwall/mortgage/heloc" }
             ]
           }
         }
@@ -228,7 +227,7 @@
     {
       "id": "equity-display",
       "title": "Your estimated available equity",
-      "description": "Based on your inputs, you may have approximately this much available.",
+      "description": "Calculated as your home value minus your mortgage balance.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",

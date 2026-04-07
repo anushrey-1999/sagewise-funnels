@@ -778,13 +778,26 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
               const homeVal = formData["home-value"]?.homeValue;
               const balVal = formData["mortgage-balance"]?.mortgageBalance;
               const home = typeof homeVal === "number" ? homeVal : 0;
-              const bal = typeof balVal === "number" ? balVal : 0;
-              const equity = Math.max(0, home - bal);
+              const mortgageBalance = typeof balVal === "number" ? balVal : 0;
+              const equity = Math.max(0, home - mortgageBalance);
+              const formatCurrency = (amount: number) =>
+                amount.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                  maximumFractionDigits: 0,
+                });
+
               return (
                 <div className="w-full sm:w-[380px] md:w-[342px] rounded-xl bg-[#DEF1F1] px-6 py-5 text-center">
-                  <p className="text-3xl lg:text-4xl font-bold text-primary-main">
-                    {equity.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })}
-                  </p>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-general-muted-foreground">Home Value - Mortgage Balance</p>
+                    <div className="rounded-lg bg-white/70 px-4 py-3">
+                      <p className="text-sm text-general-muted-foreground">
+                        {formatCurrency(home)} - {formatCurrency(mortgageBalance)}
+                      </p>
+                    </div>
+                    <p className="text-3xl lg:text-4xl font-bold text-primary-main">~{formatCurrency(equity)} available</p>
+                  </div>
                 </div>
               );
             })()}
@@ -858,7 +871,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                   ? "w-full"
                   : "flex-1",
                 isFirstStep && config.firstStepButton
-                  ? "bg-[var(--sw-first-step-cta-bg)] hover:bg-[var(--sw-first-step-cta-hover)] text-[var(--sw-first-step-cta-text)]"
+                  ? "bg-(--sw-first-step-cta-bg) hover:bg-(--sw-first-step-cta-hover) text-(--sw-first-step-cta-text)"
                   : "bg-primary-main hover:bg-primary-main/90 text-white"
               )}
             >
