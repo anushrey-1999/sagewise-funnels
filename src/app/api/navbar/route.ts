@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { getAdminUserFromRequest } from "@/lib/admin/session";
-import { getPublishedAdwallConfig, getPublishedFunnelConfig } from "@/lib/published-config";
+import {
+  getPublishedAdwallConfig,
+  getPublishedDemoAdwallConfig,
+  getPublishedFunnelConfig,
+} from "@/lib/published-config";
 
 const querySchema = z.object({
   pathname: z.string().min(1),
@@ -25,11 +29,14 @@ export async function GET(req: NextRequest) {
 
     if (q.pathname.startsWith("/adwall/")) {
       const parts = q.pathname.split("/").filter(Boolean);
-      const routePrefix = parts[1];
-      const adwallType = parts[2];
+      const isDemoRoute = parts[1] === "demo";
+      const routePrefix = isDemoRoute ? parts[2] : parts[1];
+      const adwallType = isDemoRoute ? parts[3] : parts[2];
       if (!routePrefix || !adwallType) return NextResponse.json({ navbar: null }, { status: 200 });
 
-      const adwall = await getPublishedAdwallConfig(routePrefix, adwallType, { useDraft });
+      const adwall = isDemoRoute
+        ? await getPublishedDemoAdwallConfig(routePrefix, adwallType, { useDraft })
+        : await getPublishedAdwallConfig(routePrefix, adwallType, { useDraft });
       if (!adwall) return NextResponse.json({ navbar: null }, { status: 200 });
 
       const navbar =

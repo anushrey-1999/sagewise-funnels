@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { AdwallConfig } from "@/types/adwall";
 import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
-import { useEqualStatsWidthPx } from "@/hooks/useEqualStatsWidthPx";
 import ImpressionOnView from "@/components/ImpressionOnView";
 
 interface AdsWallTemplateProps {
@@ -17,13 +16,19 @@ interface AdsWallTemplateProps {
 
 /**
  * Interpolate variables in text template
- * Supports: {NAME}, {zip}, {city}, {month}, {year}
+ * Supports: {NAME}, {ZIP}, {CITY}, {MONTH}, {YEAR}
+ * Legacy lowercase variables remain supported for older configs.
  */
 function interpolateTemplate(template: string, variables: Record<string, string>): string {
   let out = template;
   for (const [key, value] of Object.entries(variables)) {
     out = out.replace(new RegExp(`\\{${key}\\}`, "g"), value ?? "");
   }
+  out = out
+    .replace(/\{zip\}/g, variables.ZIP ?? "")
+    .replace(/\{city\}/g, variables.CITY ?? "")
+    .replace(/\{month\}/g, variables.MONTH ?? "")
+    .replace(/\{year\}/g, variables.YEAR ?? "");
   return out;
 }
 
@@ -65,6 +70,8 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
     return z?.replace(/^["']|["']$/g, "") || null;
   }, [searchParams]);
 
+  const isDynamicHeader = useMemo(() => searchParams.get("fromFunnel") === "1", [searchParams]);
+
   const { monthName, yearNumber } = useMemo(() => {
     const effectiveUpdatedAt = updatedAtOverride ?? config.updatedAt ?? "";
     const match = effectiveUpdatedAt.match(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\b[^0-9]*([0-9]{4})\b/);
@@ -81,34 +88,39 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
   // Prepare variables for interpolation
   const templateVars = useMemo(() => ({
     NAME: name || "",
-    zip: zip || "your city",
-    city: resolvedCity || "your city",
-    month: monthName,
-    year: yearNumber,
+    ZIP: zip || "your city",
+    CITY: resolvedCity || "your city",
+    MONTH: monthName,
+    YEAR: yearNumber,
   }), [name, zip, resolvedCity, monthName, yearNumber]);
+
+  const selectedTitle = isDynamicHeader
+    ? (config.dynamicTitle ?? config.title)
+    : (config.staticTitle ?? config.title);
+  const selectedSubtitle = isDynamicHeader
+    ? (config.dynamicSubtitle ?? config.subtitle)
+    : (config.staticSubtitle ?? config.subtitle);
 
   // Interpolate title and subtitle
   const personalizedTitle = useMemo(() => {
-    return interpolateTemplate(config.title, templateVars);
-  }, [config.title, templateVars]);
+    return interpolateTemplate(selectedTitle, templateVars);
+  }, [selectedTitle, templateVars]);
 
   const personalizedSubtitle = useMemo(() => {
-    return interpolateTemplate(config.subtitle, templateVars);
-  }, [config.subtitle, templateVars]);
+    return interpolateTemplate(selectedSubtitle, templateVars);
+  }, [selectedSubtitle, templateVars]);
 
   const { containerRef: ctaRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([config.cards]);
-  const { statsContainerRef: statsRef, statsMinWidthPx } = useEqualStatsWidthPx([config.cards]);
   const containerRef = useCallback((node: HTMLDivElement | null) => {
     ctaRef.current = node;
-    statsRef.current = node;
-  }, [ctaRef, statsRef]);
+  }, [ctaRef]);
 
   return (
     <div className="bg-white flex flex-col items-start min-h-screen w-full ">
       {/* Header */}
       <PlainPageHeader
         title={personalizedTitle}
-        headingFont="text-3xl text-center lg:text-[48px] font-bold text-primary-main"
+        headingFont="text-[24px] text-center lg:text-[48px] font-bold text-primary-main"
         subtitle={personalizedSubtitle}
         updatedAt={updatedAtOverride ?? config.updatedAt}
       />
@@ -128,13 +140,11 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
                 >
                   <AdsWallCards
                     {...cardProps}
-                    cardNumber={index + 1}
                     buttonText={cardProps.buttonText || "View My Rates"}
                     affiliateId={affiliateId}
                     transactionId={transactionId}
                     extraTrackingParams={config.trackingParams?.sub3 ? { sub3: config.trackingParams.sub3 } : undefined}
                     ctaMinWidthPx={ctaMinWidthPx}
-                    statsMinWidthPx={statsMinWidthPx}
                   />
                 </ImpressionOnView>
               );
@@ -149,10 +159,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
           {config.cards
             .filter((item) => !item?.isHidden && item.bottomBoxHtml)
             .map((item, index) => (
-              <div key={index} className="bg-[#f5f5f5] rounded-lg px-4 py-3 text-xs leading-relaxed text-general-muted-foreground [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2">
-                {item.advertiserName && (
-                  <span className="font-semibold mr-1">{item.advertiserName}:</span>
-                )}
+              <div key={index} className="rounded-lg border border-general-border bg-white px-4 py-3 text-[10px] leading-relaxed text-[#9CA3AF] [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2">
                 <span dangerouslySetInnerHTML={{ __html: item.bottomBoxHtml! }} />
               </div>
             ))}
@@ -161,10 +168,10 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
 
       {/* Disclaimers */}
       {config.disclaimers && (
-        <div className="text-general-muted-foreground text-xs leading-relaxed space-y-4 max-w-[970px] mx-auto mb-10 px-6 lg:px-0">
+        <div className="w-full text-general-muted-foreground text-xs leading-relaxed space-y-4 max-w-[970px] mx-auto mb-10 px-6 lg:px-0 text-left">
           <h3 className="text-base font-semibold mb-4">Full Disclaimers</h3>
           <div
-            className="space-y-4"
+            className="space-y-4 text-left"
             dangerouslySetInnerHTML={{
               __html: config.disclaimers,
             }}

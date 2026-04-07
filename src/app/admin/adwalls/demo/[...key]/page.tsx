@@ -15,6 +15,10 @@ function buildNewDemoAdwallSkeleton(routePrefix?: string, adwallType?: string): 
     adwallType: normalizedAdwallType,
     title: "New Demo Adwall",
     subtitle: "",
+    staticTitle: "New Demo Adwall",
+    staticSubtitle: "",
+    dynamicTitle: "New Demo Adwall",
+    dynamicSubtitle: "",
     updatedAt: `Updated ${new Date().toLocaleDateString("en-US", {
       month: "long",
       day: "numeric",
@@ -93,7 +97,7 @@ export default async function AdminDemoAdwallEditorPage({
 
   const previewHref =
     routePrefix && adwallType
-      ? `/adwall/demo/${encodeURIComponent(routePrefix)}/${encodeURIComponent(adwallType)}?preview=1&name=Test&zip=00000`
+      ? `/adwall/demo/${encodeURIComponent(routePrefix)}/${encodeURIComponent(adwallType)}?preview=1`
       : "/admin/adwalls";
 
   const liveHref =

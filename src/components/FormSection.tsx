@@ -136,6 +136,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       s1: affiliateId,
       s2: transactionId,
       sub5: transactionId,
+      fromFunnel: "1",
       name: firstName,
       zip: zipCode,
     };

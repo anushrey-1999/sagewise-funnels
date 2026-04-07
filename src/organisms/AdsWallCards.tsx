@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MoveUpRight, Phone } from "lucide-react";
+import { MoveRight, Phone } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import React from "react";
@@ -12,6 +12,23 @@ function toTelHref(phone: string): string {
   return `tel:${onlyDigits}`;
 }
 
+function ScoreStar({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={cn("h-[14px] w-[14px]", filled ? "text-[#F59E0B]" : "text-[#F59E0B]/45")}
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2.75l2.85 5.78 6.38.93-4.61 4.49 1.09 6.35L12 17.3l-5.71 3 1.09-6.35-4.61-4.49 6.38-.93L12 2.75z" />
+    </svg>
+  );
+}
+
 interface AdsWallCardsProps {
   ratings?: number;
   cardBg?: string;
@@ -19,10 +36,8 @@ interface AdsWallCardsProps {
   isBadge?: boolean;
   isSecondaryBtn?: boolean;
   isGradientBox?: boolean;
-  isDifferentBorder?: boolean;
   badgeIcon?: React.ReactNode;
   badgeText?: React.ReactNode;
-  cardNumber?: number;
   heading: string;
   description: string;
   features: string[];
@@ -42,7 +57,6 @@ interface AdsWallCardsProps {
   phoneNumber?: string;
   extraTrackingParams?: Record<string, string>;
   ctaMinWidthPx?: number;
-  statsMinWidthPx?: number;
   trustpilotReviews?: string;
   minCreditScore?: string;
   maxLoanAmount?: string;
@@ -51,10 +65,8 @@ interface AdsWallCardsProps {
 }
 
 const AdsWallCards = ({
-  isDifferentBorder = false,
   badgeIcon,
   badgeText,
-  cardNumber,
   heading,
   description,
   features,
@@ -68,22 +80,18 @@ const AdsWallCards = ({
   logoHeight,
   logoText,
   logoSubtext,
-  advertiserName,
   affiliateId,
   transactionId,
   phoneNumber,
   extraTrackingParams,
-  statsMinWidthPx,
   trustpilotReviews,
-  minCreditScore,
-  maxLoanAmount,
-  aprRange,
   bottomBoxHtml,
 }: AdsWallCardsProps) => {
   const affiliateParamName = "sub4";
   const transactionParamName = "sub5";
 
   const displayReviews = trustpilotReviews?.trim() || null;
+  const fullStars = Math.max(0, Math.min(5, Number.isFinite(ratingsCount) ? ratingsCount : 5));
 
   const hasBadgeText =
     typeof badgeText === "string" ? badgeText.trim().length > 0 : Boolean(badgeText);
@@ -118,41 +126,29 @@ const AdsWallCards = ({
     <div className="relative w-full">
       <div
         className={cn(
-          "border-[1.5px] lg:border-2 relative rounded-xl w-full flex flex-col overflow-hidden bg-white gap-4 lg:gap-5",
-          isDifferentBorder ? "border-[#ffd32a]" : "border-primary-main"
+          "border-[1.5px] lg:border-2 relative rounded-xl w-full flex flex-col overflow-hidden bg-white gap-2 lg:gap-3 border-primary-main"
         )}
       >
-        {/* ── Badges (top-right on mobile, top-left on desktop) ── */}
-        <div className="flex items-center self-end lg:self-start">
-          {cardNumber && (
+        {/* ── Badge (top-left on all breakpoints) ── */}
+        <div className="flex items-center self-start">
+          {hasBadgeText ? (
             <div
               className={cn(
-                "min-h-[28px] lg:min-h-[32px] text-[11px] lg:text-sm font-medium px-3 lg:px-4 py-1 bg-primary-main flex items-center uppercase text-white whitespace-nowrap tracking-wide",
-                hasBadgeText ? "max-lg:rounded-bl-xl" : "max-lg:rounded-bl-xl lg:rounded-br-xl"
-              )}
-            >
-              #{cardNumber}
-            </div>
-          )}
-          {hasBadgeText && (
-            <div
-              className={cn(
-                "min-h-[28px] lg:min-h-[32px] text-[11px] lg:text-sm font-medium px-3 lg:px-4 py-1 bg-primary-dark flex items-center gap-1.5 uppercase text-white whitespace-nowrap tracking-wide",
-                "lg:rounded-br-xl"
+                "text-[10px] font-bold px-[10px] py-[4px] bg-primary-main flex items-center gap-1.5 uppercase text-white whitespace-nowrap tracking-wide rounded-br-xl"
               )}
             >
               {(badgeIcon ?? "card") ? (
-                <div className="w-3 h-3 lg:w-3.5 lg:h-3.5 relative shrink-0">
+                <div className="w-2.5 h-2.5 lg:w-3 lg:h-3 relative shrink-0">
                   <Image src={`/icons/${badgeIcon ?? "card"}.svg`} alt="" fill className="object-contain" />
                 </div>
               ) : null}
               {badgeText}
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* ── Mobile logo (below badge, own row) ── */}
-        <div className="lg:hidden px-4">
+        <div className="lg:hidden px-[14px] pt-2 pb-2">
           {logo ? (
             <div className="flex flex-col items-start">
               <div
@@ -173,10 +169,10 @@ const AdsWallCards = ({
         </div>
 
         {/* ── Main Content ── */}
-        <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-8 px-4 pb-[20px] lg:px-6 lg:py-5 lg:pb-3 lg:pr-8">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8 px-[14px] py-[12px]">
 
           {/* Desktop-only Logo */}
-          <div className="hidden lg:flex shrink-0 flex-col items-center gap-1">
+          <div className="hidden lg:flex shrink-0 self-center flex-col items-center justify-center gap-1">
             {logo ? (
               <div className="flex flex-col items-center">
                 <div
@@ -203,19 +199,23 @@ const AdsWallCards = ({
             )}
           </div>
 
-          {/* Heading + Description + Features */}
+          {/* Title + Tagline + Features */}
           <div className="flex flex-col gap-2 lg:gap-3 flex-1 min-w-0">
-            <h3
-              className="text-2xl lg:text-[30px] font-semibold text-primary-main leading-[1.2] tracking-tight"
-              dangerouslySetInnerHTML={{ __html: heading }}
-            />
             <div className="text-xs lg:text-base text-black">
-              <p
-                className="font-medium"
-                dangerouslySetInnerHTML={{ __html: description }}
-              />
-              <ul className="list-disc ml-5 flex flex-col gap-0.5 mt-1">
-                {features.map((feature, index) => (
+              {heading ? (
+                <h3
+                  className="mb-1 text-[22px] lg:text-[28px] font-semibold leading-[1.2] tracking-tight text-primary-main"
+                  dangerouslySetInnerHTML={{ __html: heading }}
+                />
+              ) : null}
+              {description ? (
+                <p
+                  className="mb-1 text-[15px] lg:text-[16px] font-semibold leading-[1.4] text-black"
+                  dangerouslySetInnerHTML={{ __html: description }}
+                />
+              ) : null}
+              <ul className="list-disc ml-5 flex flex-col gap-0.5">
+                {features.slice(0, 3).map((feature, index) => (
                   <li
                     key={index}
                     className={index >= 2 ? "hidden lg:list-item" : undefined}
@@ -225,7 +225,7 @@ const AdsWallCards = ({
               </ul>
             </div>
 
-            {/* Stats Box (horizontal row below features) */}
+            {/* Stats box hidden for now per updated adwall UI.
             {(minCreditScore || maxLoanAmount || aprRange) && (
               <div
                 data-stats-equalize="true"
@@ -251,57 +251,55 @@ const AdsWallCards = ({
                   </div>
                 )}
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Rating + CTA Column */}
-          <div className="flex flex-col gap-4 lg:gap-6 items-center lg:items-stretch shrink-0 w-full lg:w-auto lg:min-w-[200px]">
+          <div className="flex flex-col gap-2 lg:gap-3 self-center items-center lg:items-stretch justify-center shrink-0 w-full lg:w-auto lg:min-w-[200px]">
 
             {/* Rating */}
-            <div className="flex gap-3 items-center justify-center lg:justify-start">
-              <p
-                className="text-5xl font-semibold leading-[1.2] tracking-tight bg-clip-text text-transparent"
-                style={{ backgroundImage: "linear-gradient(120deg, #204c4b 17%, #059669 87%)" }}
-              >
-                {ratingsNumber}
-              </p>
-              <div className="flex flex-col gap-1">
-                <div className="flex gap-0.5 items-center">
-                  {Array.from({ length: ratingsCount || 5 }, (_, i) => (
-                    <Image key={i} src="/star.svg" alt="star" width={22} height={22} className="w-[22px] h-[22px]" />
-                  ))}
-                </div>
-                {displayReviews && (
-                  <p className="text-xs font-medium text-general-muted-foreground whitespace-nowrap flex items-center">
-                    {displayReviews} reviews by
-                    <Image
-                      src="/trustpilot-logo.svg"
-                      alt="Trustpilot"
-                      width={70}
-                      height={18}
-                      className="h-5 w-auto"
-                    />
-                  </p>
-                )}
+            <div className="flex w-full flex-col items-start justify-center gap-1.5 border-t border-[#E5E7EB] pt-[10px] text-left lg:w-auto lg:items-center lg:border-t-0 lg:pt-0 lg:text-center">
+              <div className="flex items-end justify-start gap-1 lg:justify-center">
+                <p className="text-[28px] lg:text-[36px] font-semibold leading-none tracking-tight text-[#204C4B]">
+                  {ratingsNumber}
+                </p>
+                <span className="mb-1 text-[13px] font-medium leading-none text-[#94A3B8]">/10</span>
               </div>
+              <p className="text-[11px] font-semibold leading-none text-[#9CA3AF]">Sagewise Score</p>
+              <div className="flex items-center justify-start gap-0.5 lg:justify-center">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <ScoreStar key={i} filled={i < fullStars} />
+                ))}
+              </div>
+              {displayReviews && (
+                <p className="text-[11px] font-medium leading-none text-[#6B7280] whitespace-nowrap flex items-center justify-start lg:justify-center">
+                  <span>{displayReviews} reviews by</span>
+                  <Image
+                    src="/trustpilot-logo.svg"
+                    alt="Trustpilot"
+                    width={66}
+                    height={14}
+                    className="h-[18px] w-auto lg:h-4.5"
+                  />
+                </p>
+              )}
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col gap-2 w-full">
+            <div className="flex flex-col gap-2 w-full pt-2 lg:pt-0">
               <Button
                 variant="secondary"
-                size="lg"
-                className="w-full font-medium text-lg rounded-lg"
+                className="h-[41px] w-full rounded-lg px-3 py-0 text-[15px] font-bold text-white"
                 onClick={handleButtonClick}
-                icon={MoveUpRight}
-                iconClass="w-3.5 h-3.5"
+                icon={MoveRight}
+                iconClass="w-4 h-4"
               >
                 {buttonText}
               </Button>
               {phoneNumber && (
                 <a
                   href={toTelHref(phoneNumber)}
-                  className="flex items-center justify-center gap-2 w-full min-h-[40px] px-6 py-2 rounded-lg border border-[#d4d4d4] bg-white shadow-sm text-lg font-medium text-black hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-center gap-2 h-[41px] w-full rounded-lg border border-[#d4d4d4] bg-white px-3 py-0 text-[15px] font-medium text-black shadow-sm transition-colors hover:bg-gray-50"
                   aria-label={`Call ${phoneNumber}`}
                 >
                   <Phone className="w-3.5 h-3.5" />
@@ -314,9 +312,9 @@ const AdsWallCards = ({
 
         {/* Desktop-only: disclaimer inside card */}
         {bottomBoxHtml && (
-          <div className="hidden lg:block bg-[#f5f5f5] px-6 py-3">
+          <div className="hidden lg:block border-t border-general-border bg-white px-[14px] py-[12px]">
             <div
-              className="text-sm text-general-muted-foreground leading-relaxed [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
+              className="text-[10px] text-[#9CA3AF] leading-relaxed [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
               dangerouslySetInnerHTML={{ __html: bottomBoxHtml }}
             />
           </div>

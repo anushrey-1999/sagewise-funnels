@@ -358,6 +358,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
     const baseParams: Record<string, string> = {
       s1: affiliateId,
       s2: transactionId,
+      fromFunnel: "1",
     };
     if (config.id === "cc-finbuzz") {
       baseParams.sub4 = affiliateId;
@@ -599,7 +600,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
 
         // cc-finbuzz only: pass s1/s2 from funnel URL as sub4/sub5 and sub3=155.
         // For internal (relative) routes we also keep canonical s1/s2 for app-level tracking.
-        let finalUrl = destination;
+        let finalUrl = appendQueryParams(destination, { fromFunnel: "1" });
         if (config.id === "cc-finbuzz") {
           const clean = (v: string | null) => v?.replace(/^["']|["']$/g, "").trim() || null;
           const s1 = clean(searchParams.get("s1"));
@@ -610,10 +611,11 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
             sub3: "155",
           };
           finalUrl = isAbsoluteUrl(destination)
-            ? appendQueryParams(destination, finbuzzParams)
+            ? appendQueryParams(destination, { fromFunnel: "1", ...finbuzzParams })
             : appendQueryParams(destination, {
                 s1: s1 ?? undefined,
                 s2: s2 ?? undefined,
+                fromFunnel: "1",
                 ...finbuzzParams,
               });
         }

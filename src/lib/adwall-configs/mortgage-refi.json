@@ -2,8 +2,8 @@
   "id": "mortgage-refi",
   "funnelId": "mortgage",
   "adwallType": "refi",
-  "title": "Lower your monthly payments in {city}!",
-  "subtitle": "We've analyzed national lenders to find the best refinance rates for homes in {zip}.",
+  "title": "Lower your monthly payments in {CITY}!",
+  "subtitle": "We've analyzed national lenders to find the best refinance rates for homes in {ZIP}.",
   "updatedAt": "Updated February 17, 2026",
   "trackingParams": {
     "affiliateIdParam": "s1",

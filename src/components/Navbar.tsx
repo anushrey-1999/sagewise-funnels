@@ -70,8 +70,20 @@ export function Navbar() {
     return () => controller.abort();
   }, [funnelIdFromQuery, pathname, preview]);
 
+  useEffect(() => {
+    if (preview !== "1") return;
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== "sagewise-preview-refresh" || !event.newValue) return;
+      window.location.reload();
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [preview]);
+
   return (
-    <div className="bg-[#204c4b] grid grid-cols-1 sm:grid-cols-3 items-center px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative gap-1 sm:gap-0">
+    <div className="bg-[#204c4b] flex items-center justify-between px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative gap-4">
       {/* <Button
         variant="ghost"
         size="icon"
@@ -79,33 +91,38 @@ export function Navbar() {
       >
         <Menu className="h-4 w-4 text-white" />
       </Button> */}
-      <div className="shrink-0 flex justify-center sm:justify-start items-center sm:justify-self-start">
+      <div className="shrink-0 flex justify-center sm:justify-start items-center">
         <Logo color="white" href="https://sagewise.net/" />
       </div>
-      <div className="justify-self-center text-center">
-        <AdvertiserDisclosure
-          placement="bottom"
-          align="center"
-          triggerClassName="text-[11px] sm:text-[11px] text-white/90 hover:text-white"
-          popoverBodyClassName="text-xs"
-        />
-      </div>
 
-      <div className="flex flex-col items-center sm:items-end text-center sm:text-right gap-0.5 sm:justify-self-end">
-        {navbar?.tagline && (
-          <div className="hidden sm:block text-xs sm:text-sm opacity-90 leading-tight text-white">
-            {navbar.tagline}
+      <div className="ml-auto flex items-center justify-end gap-4 sm:gap-6">
+        <div className="text-right">
+          <AdvertiserDisclosure
+            placement="bottom"
+            align="end"
+            triggerClassName="text-[11px] sm:text-[11px] text-white/90 hover:text-white whitespace-nowrap"
+            popoverBodyClassName="text-xs"
+          />
+        </div>
+
+        {(navbar?.tagline || navbar?.phone) && (
+          <div className="flex flex-col items-end text-right gap-0.5">
+            {navbar?.tagline && (
+              <div className="hidden sm:block text-xs sm:text-sm opacity-90 leading-tight text-white">
+                {navbar.tagline}
+              </div>
+            )}
+            {navbar?.phone && (
+              <a
+                href={toTelHref(navbar.phone)}
+                className="flex items-center gap-2 font-semibold text-sm sm:text-base hover:underline underline-offset-4 text-white whitespace-nowrap"
+                aria-label={`Call ${navbar.phone}`}
+              >
+                <Phone className="h-4 w-4 sm:h-4 sm:w-4 text-white" />
+                <span>{navbar.phone}</span>
+              </a>
+            )}
           </div>
-        )}
-        {navbar?.phone && (
-          <a
-            href={toTelHref(navbar.phone)}
-            className="flex items-center gap-2 font-semibold text-sm sm:text-base hover:underline underline-offset-4 text-white"
-            aria-label={`Call ${navbar.phone}`}
-          >
-            <Phone className="h-4 w-4 sm:h-4 sm:w-4 text-white" />
-            <span>{navbar.phone}</span>
-          </a>
         )}
       </div>
     </div>

@@ -24,3 +24,6 @@ export const adminSmallGhostButton =
 
 export const adminSmallDestructiveButton =
   "h-9 rounded-lg border border-red-200 bg-red-50 px-3 text-red-700 hover:bg-red-100 hover:text-red-800";
+
+export const adminTextareaInput =
+  "w-full min-w-0 rounded-md border-[3px] border-input bg-white px-3 py-3 text-base shadow-xs outline-none transition-[color,box-shadow,background-color,border-color] duration-200 ease-out hover:border-[var(--sw-green-accent)] hover:shadow-md focus-visible:bg-[var(--sw-input-bg)] focus-visible:border-[var(--sw-green-accent)] md:text-sm cursor-text";

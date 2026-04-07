@@ -27,6 +27,7 @@ import {
   adminIconButton,
   adminIconDestructiveButton,
   adminSmallButton,
+  adminTextareaInput,
 } from "./admin-button-styles";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -108,6 +109,7 @@ export default function ConfigEditorClient(props: {
   });
   const draftObjRef = useRef<unknown>(draftObj);
   const [formResetNonce, setFormResetNonce] = useState(0);
+  const [previewRefreshToken, setPreviewRefreshToken] = useState<number | null>(null);
   const hasDirtyEditsRef = useRef(false);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -122,6 +124,24 @@ export default function ConfigEditorClient(props: {
   const [adwallContentTab, setAdwallContentTab] = useState<AdwallContentTab>(isAdwall ? "form" : "json");
 
   const apiBase = useMemo(() => `/api/admin/configs/${kind}/${keyStr}`, [kind, keyStr]);
+  const previewHrefWithRefresh = useMemo(() => {
+    if (previewRefreshToken == null) return previewHref;
+    const separator = previewHref.includes("?") ? "&" : "?";
+    return `${previewHref}${separator}previewRefresh=${previewRefreshToken}`;
+  }, [previewHref, previewRefreshToken]);
+
+  const notifyPreviewRefresh = () => {
+    const nextToken = Date.now();
+    setPreviewRefreshToken(nextToken);
+    try {
+      window.localStorage.setItem(
+        "sagewise-preview-refresh",
+        JSON.stringify({ keyStr, kind, token: nextToken })
+      );
+    } catch {
+      // Ignore storage failures; the cache-busting preview URL still updates.
+    }
+  };
 
   const reloadConfig = async (forceReload = false) => {
     if (!keyStr) return;
@@ -146,6 +166,7 @@ export default function ConfigEditorClient(props: {
       }
       setPublishedText(nextPublished ? JSON.stringify(nextPublished, null, 2) : null);
       hasDirtyEditsRef.current = false;
+      notifyPreviewRefresh();
     } catch {
       // non-blocking; keep existing state
     } finally {
@@ -310,6 +331,7 @@ export default function ConfigEditorClient(props: {
         setFormResetNonce((n) => n + 1);
       }
       hasDirtyEditsRef.current = false;
+      notifyPreviewRefresh();
       await loadVersions();
       toast.success("Draft saved");
     } catch {
@@ -339,6 +361,7 @@ export default function ConfigEditorClient(props: {
       }
       await loadVersions();
       setMode("draft");
+      notifyPreviewRefresh();
       toast.success("Published successfully");
     } catch {
       setError("Failed to publish");
@@ -400,6 +423,7 @@ export default function ConfigEditorClient(props: {
           setFormResetNonce((n) => n + 1);
         }
       }
+      notifyPreviewRefresh();
       await loadVersions();
       toast.success(`Rolled back to v${toVersion}`);
     } catch {
@@ -503,7 +527,7 @@ export default function ConfigEditorClient(props: {
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Link
                 className="inline-flex items-center gap-2 rounded-full border border-general-border bg-white px-3 py-1.5 text-primary-main transition-colors hover:bg-[#f7f8fa]"
-                href={previewHref}
+                href={previewHrefWithRefresh}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -703,7 +727,7 @@ export default function ConfigEditorClient(props: {
                 </TabsTrigger>
                 <TabsTrigger value="publishers">
                   <Users className="mr-2 h-4 w-4" />
-                  Publishers
+                  Offers Tiles
                   <span className="ml-2 rounded-full bg-[#eef2f6] px-2 py-0.5 text-[11px] text-general-muted-foreground">
                     {publisherCount}
                   </span>
@@ -772,7 +796,8 @@ export default function ConfigEditorClient(props: {
         ) : (
           <textarea
             className={cn(
-              "w-full min-h-[720px] p-4 font-mono text-xs outline-none",
+              adminTextareaInput,
+              "min-h-[720px] p-4 font-mono text-xs",
               mode === "published" ? "bg-[#fafafa]" : "bg-white"
             )}
             value={shownText}

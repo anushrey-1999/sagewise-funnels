@@ -10,20 +10,40 @@ import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import { adwallConfigSchema } from "@/lib/config-schemas";
 import type { AdwallCard, AdwallConfig } from "@/types/adwall";
 import {
-  adminButtonDestructive,
-  adminButtonSecondary,
   adminIconDestructiveButton,
   adminSmallButton,
   adminSmallDestructiveButton,
   adminSmallGhostButton,
+  adminTextareaInput,
 } from "../admin-button-styles";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+
+const MAX_CARD_FEATURES = 3;
+
+function normalizeTemplateVariables(value: string | undefined): string | undefined {
+  if (value == null) return value;
+  return value
+    .replace(/\{zip\}/g, "{ZIP}")
+    .replace(/\{city\}/g, "{CITY}")
+    .replace(/\{month\}/g, "{MONTH}")
+    .replace(/\{year\}/g, "{YEAR}");
+}
+
+function normalizeAdwallHeaderTemplates(config: AdwallConfig): AdwallConfig {
+  const next = cloneJson(config);
+  next.title = normalizeTemplateVariables(next.title) ?? "";
+  next.subtitle = normalizeTemplateVariables(next.subtitle) ?? "";
+  next.staticTitle = normalizeTemplateVariables(next.staticTitle);
+  next.staticSubtitle = normalizeTemplateVariables(next.staticSubtitle);
+  next.dynamicTitle = normalizeTemplateVariables(next.dynamicTitle);
+  next.dynamicSubtitle = normalizeTemplateVariables(next.dynamicSubtitle);
+  return next;
+}
 
 function cloneJson<T>(v: T): T {
   // Configs are JSON-compatible; prefer structuredClone when available.
@@ -194,34 +214,6 @@ function ImageUploadField(props: {
   );
 }
 
-function newEmptyCard(): AdwallCard {
-  return {
-    heading: "New offer",
-    description: "",
-    features: [],
-    buttonLink: "#",
-    buttonText: "Learn more",
-    ratingsNumber: "",
-    ratingsCount: 5,
-    logo: "",
-    logoWidth: "110px",
-    logoHeight: "28px",
-    creditCardImage: "",
-    badgeText: "",
-    badgeIcon: "card",
-    logoText: "",
-    logoSubtext: "",
-    advertiserName: "",
-    isHidden: false,
-    phoneNumber: "",
-    trustpilotReviews: "",
-    minCreditScore: "",
-    maxLoanAmount: "",
-    aprRange: "",
-    bottomBoxHtml: "",
-  };
-}
-
 export default function AdwallConfigFormEditor(props: {
   initialDraft: unknown;
   resetKey: string;
@@ -233,7 +225,7 @@ export default function AdwallConfigFormEditor(props: {
 }) {
   const canScripts = props.userRole === "internal_admin" || props.userRole === "superadmin";
 
-  const parsed = React.useMemo(() => adwallConfigSchema.safeParse(props.initialDraft), [props.resetKey, props.initialDraft]);
+  const parsed = React.useMemo(() => adwallConfigSchema.safeParse(props.initialDraft), [props.initialDraft]);
   const [draft, setDraft] = React.useState<AdwallConfig | null>(parsed.success ? parsed.data : null);
   const draftRef = React.useRef<AdwallConfig | null>(draft);
 
@@ -244,10 +236,11 @@ export default function AdwallConfigFormEditor(props: {
 
   React.useEffect(() => {
     if (parsed.success) {
-      setDraft(parsed.data);
-      draftRef.current = parsed.data;
-      form.reset(parsed.data);
-      props.onDraftChange(parsed.data);
+      const normalized = normalizeAdwallHeaderTemplates(parsed.data);
+      setDraft(normalized);
+      draftRef.current = normalized;
+      form.reset(normalized);
+      props.onDraftChange(normalized);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.resetKey]);
@@ -262,15 +255,22 @@ export default function AdwallConfigFormEditor(props: {
     if (props.initialDraft === selfEmittedRef.current) return;
     const reParsed = adwallConfigSchema.safeParse(props.initialDraft);
     if (reParsed.success) {
-      setDraft(reParsed.data);
-      draftRef.current = reParsed.data;
+      const normalized = normalizeAdwallHeaderTemplates(reParsed.data);
+      setDraft(normalized);
+      draftRef.current = normalized;
     }
   }, [props.initialDraft]);
 
   const emitPatch = React.useCallback(
     (path: (string | number)[], value: unknown) => {
       const base = draftRef.current ?? (form.state.values as AdwallConfig);
-      const next = setIn(base, path, value) as AdwallConfig;
+      const normalizedValue =
+        typeof value === "string" &&
+        path.length >= 1 &&
+        ["title", "subtitle", "staticTitle", "staticSubtitle", "dynamicTitle", "dynamicSubtitle"].includes(String(path[path.length - 1]))
+          ? normalizeTemplateVariables(value)
+          : value;
+      const next = setIn(base, path, normalizedValue) as AdwallConfig;
       setDraft(next);
       draftRef.current = next;
       selfEmittedRef.current = next;
@@ -303,12 +303,6 @@ export default function AdwallConfigFormEditor(props: {
     sanitizePathSegment(values.adwallType ?? "") || "type"
   }`;
 
-  const addCard = () => {
-    const next = cloneJson(draft) as AdwallConfig;
-    next.cards = [...cards, newEmptyCard()];
-    emitNext(next);
-  };
-
   const deleteCard = (idx: number) => {
     const next = cloneJson(draft) as AdwallConfig;
     next.cards = cards.filter((_, i) => i !== idx);
@@ -335,7 +329,19 @@ export default function AdwallConfigFormEditor(props: {
   const addFeature = (cardIndex: number) => {
     const next = cloneJson(draft) as AdwallConfig;
     const current = Array.isArray(next.cards[cardIndex]?.features) ? next.cards[cardIndex]!.features : [];
+    if (current.length >= MAX_CARD_FEATURES) return;
     next.cards[cardIndex]!.features = [...current, ""];
+    emitNext(next);
+  };
+
+  const updateCardMedia = (cardIndex: number, field: "logo" | "creditCardImage", value: string) => {
+    const next = cloneJson(draftRef.current ?? draft) as AdwallConfig;
+    if (!next?.cards?.[cardIndex]) return;
+    next.cards[cardIndex]![field] = value;
+    if (value) {
+      const alternateField = field === "logo" ? "creditCardImage" : "logo";
+      next.cards[cardIndex]![alternateField] = "";
+    }
     emitNext(next);
   };
 
@@ -405,22 +411,53 @@ export default function AdwallConfigFormEditor(props: {
 
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="adwall-title">Title</Label>
+              <Label htmlFor="adwall-static-title">Static title</Label>
+              <div className="text-xs text-general-muted-foreground">
+                This will be visible if user comes directly to adwall.
+              </div>
               <Input
-                id="adwall-title"
-                value={values.title ?? ""}
-                onChange={(e) => emitPatch(["title"], e.target.value)}
-                placeholder="Compare Top Auto Insurance Rates in {zip}."
+                id="adwall-static-title"
+                value={values.staticTitle ?? values.title ?? ""}
+                onChange={(e) => emitPatch(["staticTitle"], e.target.value)}
+                placeholder="Compare Top Auto Insurance Rates in {ZIP}."
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="adwall-subtitle">Subtitle</Label>
+              <Label htmlFor="adwall-static-subtitle">Static subtitle</Label>
+              <div className="text-xs text-general-muted-foreground">
+                This will be visible if user comes directly to adwall.
+              </div>
               <textarea
-                id="adwall-subtitle"
-                className="w-full min-h-[90px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]"
-                value={values.subtitle ?? ""}
-                onChange={(e) => emitPatch(["subtitle"], e.target.value)}
+                id="adwall-static-subtitle"
+                className={cn(adminTextareaInput, "min-h-[90px]")}
+                value={values.staticSubtitle ?? values.subtitle ?? ""}
+                onChange={(e) => emitPatch(["staticSubtitle"], e.target.value)}
                 placeholder="Drivers are saving up to…"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="adwall-dynamic-title">Dynamic title</Label>
+              <div className="text-xs text-general-muted-foreground">
+                This will be visible if user comes from the funnel.
+              </div>
+              <Input
+                id="adwall-dynamic-title"
+                value={values.dynamicTitle ?? values.title ?? ""}
+                onChange={(e) => emitPatch(["dynamicTitle"], e.target.value)}
+                placeholder="{NAME}, we found matches for you in {ZIP}."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="adwall-dynamic-subtitle">Dynamic subtitle</Label>
+              <div className="text-xs text-general-muted-foreground">
+                This will be visible if user comes from the funnel.
+              </div>
+              <textarea
+                id="adwall-dynamic-subtitle"
+                className={cn(adminTextareaInput, "min-h-[90px]")}
+                value={values.dynamicSubtitle ?? values.subtitle ?? ""}
+                onChange={(e) => emitPatch(["dynamicSubtitle"], e.target.value)}
+                placeholder="Compare top-rated offers in {CITY}."
               />
             </div>
           </div>
@@ -509,7 +546,7 @@ export default function AdwallConfigFormEditor(props: {
             <Label htmlFor="disclaimers">Disclaimers</Label>
             <textarea
               id="disclaimers"
-              className="w-full min-h-[90px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+              className={cn(adminTextareaInput, "min-h-[90px]")}
               value={values.disclaimers ?? ""}
               onChange={(e) => emitPatch(["disclaimers"], e.target.value)}
               placeholder="Optional disclaimer text"
@@ -523,7 +560,6 @@ export default function AdwallConfigFormEditor(props: {
           <Accordion type="multiple" className="divide-y divide-general-border">
           {cards.map((card, idx) => {
             const heading = card?.heading?.trim() || `Card ${idx + 1}`;
-            const adv = card?.advertiserName?.trim();
             const badge = card?.badgeText?.trim();
             const hidden = !!card?.isHidden;
 
@@ -533,8 +569,7 @@ export default function AdwallConfigFormEditor(props: {
                   <div className="min-w-0">
                     <div className="text-sm font-medium truncate">{heading}</div>
                     <div className="text-xs text-general-muted-foreground truncate">
-                      {adv ? adv : "—"}
-                      {badge ? ` · ${badge}` : ""}
+                      {badge ? badge : "—"}
                       {hidden ? " · Hidden" : ""}
                     </div>
                   </div>
@@ -583,39 +618,32 @@ export default function AdwallConfigFormEditor(props: {
                     onKeyDownCapture={stopAccordionFieldKeyPropagation}
                   >
                     <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-heading`}>Heading</Label>
+                      <Label htmlFor={`c-${idx}-heading`}>Title</Label>
                       <Input
                         id={`c-${idx}-heading`}
                         value={card.heading ?? ""}
                         onChange={(e) => emitPatch(["cards", idx, "heading"], e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-adv`}>Advertiser name</Label>
-                      <Input
-                        id={`c-${idx}-adv`}
-                        value={card.advertiserName ?? ""}
-                        onChange={(e) => emitPatch(["cards", idx, "advertiserName"], e.target.value)}
-                      />
-                    </div>
                     <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor={`c-${idx}-desc`}>Description</Label>
+                      <Label htmlFor={`c-${idx}-desc`}>Headline</Label>
                       <textarea
                         id={`c-${idx}-desc`}
-                        className="w-full min-h-[80px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+                        className={cn(adminTextareaInput, "min-h-[80px]")}
                         value={card.description ?? ""}
                         onChange={(e) => emitPatch(["cards", idx, "description"], e.target.value)}
                       />
                     </div>
                     <div className="space-y-2 md:col-span-2">
                       <div className="flex items-center justify-between gap-3">
-                        <Label>Features</Label>
+                        <Label>Sub-bullets</Label>
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           className={adminSmallButton}
                           onClick={() => addFeature(idx)}
+                          disabled={(card.features?.length ?? 0) >= MAX_CARD_FEATURES}
                         >
                           <Plus className="h-4 w-4" />
                           Add feature
@@ -623,7 +651,7 @@ export default function AdwallConfigFormEditor(props: {
                       </div>
                       <div className="space-y-2">
                         {Array.isArray(card.features) && card.features.length > 0 ? (
-                          card.features.map((feature, featureIdx) => (
+                          card.features.slice(0, MAX_CARD_FEATURES).map((feature, featureIdx) => (
                             <div key={featureIdx} className="flex items-center gap-2">
                               <Input
                                 value={feature ?? ""}
@@ -647,11 +675,16 @@ export default function AdwallConfigFormEditor(props: {
                             No features added yet. Click <span className="font-medium text-general-primary">Add feature</span> to create the first item.
                           </div>
                         )}
+                        {Array.isArray(card.features) && card.features.length >= MAX_CARD_FEATURES ? (
+                          <div className="text-xs text-general-muted-foreground">
+                            You can add up to {MAX_CARD_FEATURES} bullet points per card.
+                          </div>
+                        ) : null}
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-btnText`}>Button text</Label>
+                      <Label htmlFor={`c-${idx}-btnText`}>Button label</Label>
                       <Input
                         id={`c-${idx}-btnText`}
                         value={card.buttonText ?? ""}
@@ -675,7 +708,7 @@ export default function AdwallConfigFormEditor(props: {
                           placeholder="/logos/autoins/statefarm.avif"
                           uploadBasePath={`${uploadBasePath}/cards/${idx}`}
                           uploadName="logo"
-                          onChange={(next) => emitPatch(["cards", idx, "logo"], next)}
+                          onChange={(next) => updateCardMedia(idx, "logo", next)}
                         />
                         <ImageUploadField
                           label="Credit card image (optional)"
@@ -683,17 +716,17 @@ export default function AdwallConfigFormEditor(props: {
                           placeholder="/images/card.png"
                           uploadBasePath={`${uploadBasePath}/cards/${idx}`}
                           uploadName="credit-card"
-                          onChange={(next) => emitPatch(["cards", idx, "creditCardImage"], next)}
+                          onChange={(next) => updateCardMedia(idx, "creditCardImage", next)}
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-logoText`}>Logo text (optional)</Label>
+                      <Label htmlFor={`c-${idx}-logoText`}>Logo Bottom Text (optional)</Label>
                       <Input
                         id={`c-${idx}-logoText`}
                         value={card.logoText ?? ""}
                         onChange={(e) => emitPatch(["cards", idx, "logoText"], e.target.value)}
-                        placeholder="Shown under logo if no image"
+                        placeholder="NMLS ID"
                       />
                     </div>
                     <div className="space-y-2">
@@ -716,30 +749,13 @@ export default function AdwallConfigFormEditor(props: {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-badgeText`}>Badge text</Label>
+                      <Label htmlFor={`c-${idx}-badgeText`}>Banner text</Label>
                       <Input
                         id={`c-${idx}-badgeText`}
                         value={card.badgeText ?? ""}
                         onChange={(e) => emitPatch(["cards", idx, "badgeText"], e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label>Highlight border</Label>
-                      <div className="flex items-center gap-3 rounded-xl border border-general-border bg-[#fafafa] px-3 py-3">
-                        <Checkbox
-                          id={`c-${idx}-differentBorder`}
-                          checked={!!card.isDifferentBorder}
-                          onCheckedChange={(checked) => emitPatch(["cards", idx, "isDifferentBorder"], checked === true)}
-                        />
-                        <label
-                          htmlFor={`c-${idx}-differentBorder`}
-                          className="text-sm text-general-primary cursor-pointer"
-                        >
-                          Use the highlighted border style for this publisher card
-                        </label>
-                      </div>
-                    </div>
-
                     <div className="space-y-2">
                       <Label htmlFor={`c-${idx}-rating`}>Rating number</Label>
                       <Input
@@ -780,38 +796,11 @@ export default function AdwallConfigFormEditor(props: {
                         placeholder="18,267"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-minCreditScore`}>Min credit score (optional)</Label>
-                      <Input
-                        id={`c-${idx}-minCreditScore`}
-                        value={card.minCreditScore ?? ""}
-                        onChange={(e) => emitPatch(["cards", idx, "minCreditScore"], e.target.value)}
-                        placeholder="620"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-maxLoanAmount`}>Max loan amount (optional)</Label>
-                      <Input
-                        id={`c-${idx}-maxLoanAmount`}
-                        value={card.maxLoanAmount ?? ""}
-                        onChange={(e) => emitPatch(["cards", idx, "maxLoanAmount"], e.target.value)}
-                        placeholder="$2,000,000"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-aprRange`}>APR range (optional)</Label>
-                      <Input
-                        id={`c-${idx}-aprRange`}
-                        value={card.aprRange ?? ""}
-                        onChange={(e) => emitPatch(["cards", idx, "aprRange"], e.target.value)}
-                        placeholder="6.5% – 18%"
-                      />
-                    </div>
                     <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor={`c-${idx}-bottomBoxHtml`}>Bottom callout HTML (optional)</Label>
+                      <Label htmlFor={`c-${idx}-bottomBoxHtml`}>Offer tile Footer (optional)</Label>
                       <textarea
                         id={`c-${idx}-bottomBoxHtml`}
-                        className="w-full min-h-[110px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px] font-mono text-xs"
+                        className={cn(adminTextareaInput, "min-h-[110px] font-mono text-xs")}
                         value={card.bottomBoxHtml ?? ""}
                         onChange={(e) => emitPatch(["cards", idx, "bottomBoxHtml"], e.target.value)}
                         placeholder="<p>Optional disclosure, licensing, or lender details.</p>"
@@ -826,7 +815,8 @@ export default function AdwallConfigFormEditor(props: {
                       <textarea
                         id={`c-${idx}-impression`}
                         className={cn(
-                          "w-full min-h-[110px] p-3 rounded-md border border-general-border outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px] font-mono text-xs",
+                          adminTextareaInput,
+                          "min-h-[110px] font-mono text-xs",
                           !canScripts && "bg-[#fafafa]"
                         )}
                         value={card.impressionScript ?? ""}

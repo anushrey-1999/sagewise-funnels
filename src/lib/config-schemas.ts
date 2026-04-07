@@ -176,6 +176,10 @@ export const adwallConfigSchema = z
     adwallType: z.string().min(1),
     title: z.string(),
     subtitle: z.string(),
+    staticTitle: z.string().optional(),
+    staticSubtitle: z.string().optional(),
+    dynamicTitle: z.string().optional(),
+    dynamicSubtitle: z.string().optional(),
     updatedAt: z.string(),
     navbar: z
       .object({

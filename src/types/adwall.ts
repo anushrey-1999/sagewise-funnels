@@ -42,6 +42,10 @@ export interface AdwallConfig {
   adwallType: string;
   title: string;
   subtitle: string;
+  staticTitle?: string;
+  staticSubtitle?: string;
+  dynamicTitle?: string;
+  dynamicSubtitle?: string;
   updatedAt: string;
   navbar?: {
     tagline?: string; // e.g., "Speak to a licensed agent:"
