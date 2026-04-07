@@ -89,9 +89,19 @@ const AdsWallCards = ({
 }: AdsWallCardsProps) => {
   const affiliateParamName = "sub4";
   const transactionParamName = "sub5";
+  const mobileLogoWidthPx = 100;
+  const desktopLogoWidthPx = 140;
 
   const displayReviews = trustpilotReviews?.trim() || null;
   const fullStars = Math.max(0, Math.min(5, Number.isFinite(ratingsCount) ? ratingsCount : 5));
+  const parsedLogoWidth = Number.parseFloat(logoWidth);
+  const parsedLogoHeight = Number.parseFloat(logoHeight);
+  const getScaledLogoHeight = (targetWidth: number) =>
+    Number.isFinite(parsedLogoWidth) && parsedLogoWidth > 0 && Number.isFinite(parsedLogoHeight) && parsedLogoHeight > 0
+      ? Math.round(targetWidth * (parsedLogoHeight / parsedLogoWidth))
+      : 48;
+  const mobileLogoHeightPx = getScaledLogoHeight(mobileLogoWidthPx);
+  const desktopLogoHeightPx = getScaledLogoHeight(desktopLogoWidthPx);
 
   const hasBadgeText =
     typeof badgeText === "string" ? badgeText.trim().length > 0 : Boolean(badgeText);
@@ -153,7 +163,7 @@ const AdsWallCards = ({
             <div className="flex flex-col items-start">
               <div
                 className="relative overflow-hidden rounded-lg"
-                style={{ width: logoWidth || "180px", height: logoHeight || "84px" }}
+                style={{ width: mobileLogoWidthPx, height: mobileLogoHeightPx }}
               >
                 <Image src={logo} alt={heading} fill className="object-contain" />
               </div>
@@ -177,7 +187,7 @@ const AdsWallCards = ({
               <div className="flex flex-col items-center">
                 <div
                   className="relative overflow-hidden rounded-lg flex items-center justify-center"
-                  style={{ width: logoWidth || "200px", height: logoHeight || "69px" }}
+                  style={{ width: desktopLogoWidthPx, height: desktopLogoHeightPx }}
                 >
                   <Image src={logo} alt={heading} fill className="object-contain" />
                 </div>
@@ -199,15 +209,9 @@ const AdsWallCards = ({
             )}
           </div>
 
-          {/* Title + Tagline + Features */}
+          {/* Description + Features */}
           <div className="flex flex-col gap-2 lg:gap-3 flex-1 min-w-0">
             <div className="text-xs lg:text-base text-black">
-              {heading ? (
-                <h3
-                  className="mb-1 text-[22px] lg:text-[28px] font-semibold leading-[1.2] tracking-tight text-primary-main"
-                  dangerouslySetInnerHTML={{ __html: heading }}
-                />
-              ) : null}
               {description ? (
                 <p
                   className="mb-1 text-[15px] lg:text-[16px] font-semibold leading-[1.4] text-black"
