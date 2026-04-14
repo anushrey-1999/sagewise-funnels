@@ -476,6 +476,10 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
         : undefined;
   const progress = mortgageStepProgress ?? computedProgress;
 
+  const finalStepDisclaimer =
+    config.finalStep?.disclaimerText ||
+    `By pressing "${config.finalStep?.buttonText || "See Instant Matches"}" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.`;
+
   useEffect(() => {
     if (onProgressChange) {
       onProgressChange(progress);
@@ -806,8 +810,8 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   return (
     <>
       <ProgressBar progress={progress} />
-      <div className="w-full flex flex-col gap-[48px] items-center">
-        <Card className="w-full border-none rounded-lg pt-6 pb-10 px-6 shadow-xl">
+      <div className={cn("w-full flex flex-col gap-[48px] items-center", isLastStep ? "pb-64 md:pb-0" : "pb-32 md:pb-0")}>
+        <Card className={cn("w-full border-none rounded-lg pt-6 px-6 shadow-xl", isLastStep ? "pb-28 md:pb-10" : "pb-24 md:pb-10")}>
           <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
             <CardTitle className="text-3xl lg:text-[40px] font-bold text-primary-main">
               {currentStepData.title}
@@ -877,7 +881,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
             
             {/* For last step, render Continue button inside card after checkbox */}
             {isLastStep && (
-              <>
+              <div className="hidden md:flex md:w-full md:flex-col md:items-center">
                 <Button
                   type="button"
                   variant="secondary"
@@ -899,28 +903,25 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                   )}
                 </Button>
                 <p className="text-[11px] text-[#9CA3AF] text-left w-full sm:w-[380px] md:w-[342px] mt-3 leading-relaxed">
-                  {config.finalStep?.disclaimerText?.includes("<a ") ? (
+                  {finalStepDisclaimer.includes("<a ") ? (
                     <span
                       className="[&_a]:underline [&_a]:text-inherit [&_a]:hover:opacity-90"
                       dangerouslySetInnerHTML={{
-                        __html:
-                          config.finalStep.disclaimerText ||
-                          `By pressing "${config.finalStep?.buttonText || "See Instant Matches"}" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.`,
+                        __html: finalStepDisclaimer,
                       }}
                     />
                   ) : (
-                    config.finalStep?.disclaimerText ||
-                    `By pressing "${config.finalStep?.buttonText || "See Instant Matches"}" you agree to our privacy policy and consent to have an agent from one our partners contact you by email, phone call, text/SMS message at the phone number and email you provide. Consent isn't a condition to purchase our products.`
+                    finalStepDisclaimer
                   )}
                 </p>
-              </>
+              </div>
             )}
           </CardContent>
         </Card>
 
         {/* Buttons outside card for non-last steps, Go Back button for last step */}
         {!isLastStep && (
-          <div className={`flex gap-3 w-full ${isFirstStep ? 'max-w-[445px]' : 'w-full'}`}>
+          <div className={`hidden md:flex gap-3 w-full ${isFirstStep ? 'max-w-[445px]' : 'w-full'}`}>
             {!isFirstStep && (
               <Button
                 type="button"
@@ -955,10 +956,46 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
             </Button>
           </div>
         )}
+
+        {!isLastStep && (
+          <div className="fixed inset-x-0 bottom-0 z-30 border-t border-black/10 bg-white px-4 py-3 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] md:hidden">
+            <div className={cn("mx-auto flex w-full flex-col gap-3", isFirstStep ? "max-w-[445px]" : "max-w-[445px]")}>
+              {!isFirstStep && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleBack}
+                  className="w-full bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
+                >
+                  <ArrowLeft className="h-[13.25px] w-[13.25px]" />
+                  <span className="text-base font-medium leading-none">Go Back</span>
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="default"
+                onClick={handleNext}
+                disabled={!isStepValid()}
+                style={firstStepButtonVars}
+                className={cn(
+                  "w-full px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
+                  isFirstStep && config.firstStepButton
+                    ? "bg-(--sw-first-step-cta-bg) hover:bg-(--sw-first-step-cta-hover) text-(--sw-first-step-cta-text)"
+                    : "bg-primary-main hover:bg-primary-main/90 text-white"
+                )}
+              >
+                <span className="text-base font-medium leading-none">
+                  {firstStepButtonText}
+                </span>
+                <ArrowRight className="h-[13.25px] w-[13.25px]" />
+              </Button>
+            </div>
+          </div>
+        )}
         
         {/* Go Back button for last step (outside card) */}
         {isLastStep && !isFirstStep && (
-          <div className="flex gap-3 w-full justify-start">
+          <div className="hidden md:flex gap-3 w-full justify-start">
             <Button
               type="button"
               variant="outline"
@@ -968,6 +1005,56 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
               <ArrowLeft className="h-[13.25px] w-[13.25px]" />
               <span className="text-base font-medium leading-none">Go Back</span>
             </Button>
+          </div>
+        )}
+
+        {isLastStep && (
+          <div className="fixed inset-x-0 bottom-0 z-30 border-t border-black/10 bg-white px-4 py-3 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] md:hidden">
+            <div className="mx-auto flex w-full max-w-[380px] flex-col gap-3">
+              {!isFirstStep && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleBack}
+                  className="w-full bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
+                >
+                  <ArrowLeft className="h-[13.25px] w-[13.25px]" />
+                  <span className="text-base font-medium leading-none">Go Back</span>
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleNext}
+                disabled={!isStepValid() || isSubmitting}
+                className="w-full px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                    <span className="text-base font-medium leading-none">
+                      Submitting...
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-base font-medium leading-none">
+                    {config.finalStep?.buttonText || "See Instant Matches"}
+                  </span>
+                )}
+              </Button>
+              <p className="text-[11px] text-[#9CA3AF] text-left leading-relaxed">
+                {finalStepDisclaimer.includes("<a ") ? (
+                  <span
+                    className="[&_a]:underline [&_a]:text-inherit [&_a]:hover:opacity-90"
+                    dangerouslySetInnerHTML={{
+                      __html: finalStepDisclaimer,
+                    }}
+                  />
+                ) : (
+                  finalStepDisclaimer
+                )}
+              </p>
+            </div>
           </div>
         )}
       </div>
