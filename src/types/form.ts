@@ -25,6 +25,7 @@ export interface FormField {
   type: InputType;
   label?: string; // Optional label - if not provided, no label and no required asterisk will be shown
   placeholder?: string;
+  defaultValue?: string | number | boolean | string[];
   required?: boolean;
   autoForward?: boolean; // Control whether this field triggers auto-forward when complete
   redirectOnAnswer?: RedirectOnAnswer; // Optional: redirect after submission based on this field's answer

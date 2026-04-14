@@ -4,34 +4,15 @@
   "subtitle": "Compare rates from 100+ top lenders and find your best match.",
   "metaDescription": "Find the best mortgage rates for 2026. Compare loans from 100+ lenders for buying a home, refinancing, or cash-out options.",
   "finalStep": {
-    "buttonText": "SEE MATCHES",
+    "buttonText": "Get My Rates",
     "loaderText": "Searching 100+ top lenders... Finding your best matches...",
-    "disclaimerText": "By pressing \"SEE MATCHES\" you agree to our privacy policy and consent to have an agent from one of our partners contact you by email, phone call, and/or text/SMS at the phone number and email you provide. Consent isn't a condition to purchase products."
+    "disclaimerText": "By clicking \"Get My Rates,\" you agree to our <a href=\"https://sagewise.net/terms-of-use/\" target=\"_blank\" rel=\"noopener noreferrer\">Terms of Use</a> and <a href=\"https://sagewise.net/privacy-policy/\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and expressly consent to receive calls, texts, emails, pre-recorded messages, and AI-generated voice messages from Sagewise and participating lenders or marketing partners at the telephone number provided, even if your number is listed on a Do Not Call registry. Consent is not a condition of purchase. Message and data rates may apply. You may opt out at any time by replying STOP."
   },
   "steps": [
     {
-      "id": "zip-code",
-      "title": "Enter your Zip Code",
-      "description": "",
-      "fields": [
-        {
-          "id": "zipCode",
-          "type": "text",
-          "label": "",
-          "placeholder": "5-Digit Number",
-          "required": true,
-          "autoForward": true,
-          "validation": {
-            "pattern": "^[0-9]{5}$",
-            "message": "Please enter a valid 5-digit zip code"
-          }
-        }
-      ]
-    },
-    {
       "id": "loan-type",
       "title": "What type of loan are you looking for?",
-      "description": "We'll match you with the best options.",
+      "description": "Your answer helps us personalize your rate results.",
       "fields": [
         {
           "id": "loanType",
@@ -40,17 +21,15 @@
           "required": true,
           "autoForward": true,
           "options": [
-            { "value": "home-equity-heloc", "label": "Tap into your home's equity" },
-            { "value": "refinance", "label": "Lower my rate or payment" },
-            { "value": "purchase", "label": "Buy a new home" },
-            { "value": "cash-out-refinance", "label": "Access cash from my home" }
+            { "value": "home-equity-heloc", "label": "Access My Equity" },
+            { "value": "refinance", "label": "Lower My Rate" },
+            { "value": "purchase", "label": "Buy a Home" }
           ],
           "redirectOnAnswer": {
             "rules": [
               { "whenValues": ["home-equity-heloc"], "to": "/adwall/mortgage/heloc" },
               { "whenValues": ["refinance"], "to": "/adwall/mortgage/refi" },
-              { "whenValues": ["purchase"], "to": "/adwall/mortgage/purchase" },
-              { "whenValues": ["cash-out-refinance"], "to": "/adwall/mortgage/heloc" }
+              { "whenValues": ["purchase"], "to": "/adwall/mortgage/purchase" }
             ]
           }
         }
@@ -59,12 +38,12 @@
 
     {
       "id": "refinance-goal",
-      "title": "What's your refinance goal?",
-      "description": "We'll tailor your results.",
+      "title": "What will you use your equity for?",
+      "description": "Different uses may qualify for different rates and terms.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
-        "whenValues": ["home-equity-heloc", "purchase", "cash-out-refinance"]
+        "whenValues": ["home-equity-heloc", "purchase"]
       },
       "fields": [
         {
@@ -90,7 +69,7 @@
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
-        "whenValues": ["home-equity-heloc", "refinance", "cash-out-refinance"]
+        "whenValues": ["home-equity-heloc", "refinance"]
       },
       "fields": [
         {
@@ -116,7 +95,7 @@
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
-        "whenValues": ["home-equity-heloc", "refinance", "cash-out-refinance"]
+        "whenValues": ["home-equity-heloc", "refinance"]
       },
       "fields": [
         {
@@ -136,7 +115,7 @@
     {
       "id": "property-type",
       "title": "What type of property is this for?",
-      "description": "Property type affects your final rate.",
+      "description": "Different property types qualify for different programs.",
       "fields": [
         {
           "id": "propertyType",
@@ -154,13 +133,38 @@
     },
 
     {
-      "id": "property-use",
-      "title": "How do you use this property?",
-      "description": "This helps determine your rate options.",
+      "id": "zip-code-refi-purchase",
+      "title": "Where are you located?",
+      "description": "Rates vary by location — we'll find what's available near you.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
-        "whenValues": ["purchase", "cash-out-refinance"]
+        "whenValues": ["home-equity-heloc"]
+      },
+      "fields": [
+        {
+          "id": "zipCode",
+          "type": "text",
+          "label": "",
+          "placeholder": "5-Digit Number",
+          "required": true,
+          "autoForward": true,
+          "validation": {
+            "pattern": "^[0-9]{5}$",
+            "message": "Please enter a valid 5-digit zip code"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "property-use",
+      "title": "How do you use this property?",
+      "description": "Primary homes often qualify for the lowest available rates.",
+      "skipIf": {
+        "checkStepId": "loan-type",
+        "checkFieldId": "loanType",
+        "whenValues": ["purchase"]
       },
       "fields": [
         {
@@ -179,6 +183,31 @@
     },
 
     {
+      "id": "zip-code-heloc",
+      "title": "Where are you located?",
+      "description": "Rates vary by location — we'll find what's available near you.",
+      "skipIf": {
+        "checkStepId": "loan-type",
+        "checkFieldId": "loanType",
+        "whenValues": ["refinance", "purchase"]
+      },
+      "fields": [
+        {
+          "id": "zipCode",
+          "type": "text",
+          "label": "",
+          "placeholder": "5-Digit Number",
+          "required": true,
+          "autoForward": true,
+          "validation": {
+            "pattern": "^[0-9]{5}$",
+            "message": "Please enter a valid 5-digit zip code"
+          }
+        }
+      ]
+    },
+
+    {
       "id": "home-value",
       "title": "Estimated home value?",
       "description": "Take your best guess — it's okay to estimate.",
@@ -192,6 +221,7 @@
           "id": "homeValue",
           "type": "slider",
           "label": "",
+          "defaultValue": 400000,
           "required": true,
           "validation": {
             "min": 50000,
@@ -204,7 +234,7 @@
     {
       "id": "mortgage-balance",
       "title": "Current loan balance?",
-      "description": "It's okay to estimate.",
+      "description": "Helps us calculate your available equity.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
@@ -215,6 +245,7 @@
           "id": "mortgageBalance",
           "type": "slider",
           "label": "",
+          "defaultValue": 200000,
           "required": true,
           "validation": {
             "min": 0,
@@ -226,12 +257,12 @@
 
     {
       "id": "equity-display",
-      "title": "Your estimated available equity",
-      "description": "Calculated as your home value minus your mortgage balance.",
+      "title": "Here's what you could access.",
+      "description": "Based on what you've shared, here's your potential borrowing power.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
-        "whenValues": ["refinance", "purchase", "cash-out-refinance"]
+        "whenValues": ["refinance", "purchase"]
       },
       "fields": [
         {
@@ -247,12 +278,12 @@
 
     {
       "id": "heloc-loan-purpose",
-      "title": "What do you plan to use the funds for?",
-      "description": "Helps us find the right program for you.",
+      "title": "What will you use your equity for?",
+      "description": "Different uses may qualify for different rates and terms.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
-        "whenValues": ["refinance", "purchase", "cash-out-refinance"]
+        "whenValues": ["refinance", "purchase"]
       },
       "fields": [
         {
@@ -273,68 +304,20 @@
     },
 
     {
-      "id": "desired-cash-amount",
-      "title": "How much cash do you need?",
-      "description": "It's okay to estimate.",
-      "skipIf": {
-        "checkStepId": "loan-type",
-        "checkFieldId": "loanType",
-        "whenValues": ["home-equity-heloc", "refinance", "purchase"]
-      },
-      "fields": [
-        {
-          "id": "desiredCashAmount",
-          "type": "slider",
-          "label": "",
-          "required": true,
-          "validation": {
-            "min": 10000,
-            "max": 500000
-          }
-        }
-      ]
-    },
-
-    {
-      "id": "cashout-purpose",
-      "title": "What will you use the cash for?",
-      "description": "Helps us match the best program.",
-      "skipIf": {
-        "checkStepId": "loan-type",
-        "checkFieldId": "loanType",
-        "whenValues": ["home-equity-heloc", "refinance", "purchase"]
-      },
-      "fields": [
-        {
-          "id": "cashoutPurpose",
-          "type": "radio",
-          "label": "",
-          "required": true,
-          "autoForward": true,
-          "options": [
-            { "value": "debt-consolidation", "label": "Debt Consolidation" },
-            { "value": "home-improvement", "label": "Home Improvement" },
-            { "value": "emergency", "label": "Emergency Expenses" },
-            { "value": "other", "label": "Other" }
-          ]
-        }
-      ]
-    },
-
-    {
       "id": "purchase-price",
       "title": "Estimated purchase price?",
-      "description": "It's okay to estimate.",
+      "description": "Helps match you with the right loan amount options.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
-        "whenValues": ["home-equity-heloc", "refinance", "cash-out-refinance"]
+        "whenValues": ["home-equity-heloc", "refinance"]
       },
       "fields": [
         {
           "id": "purchasePrice",
           "type": "slider",
           "label": "",
+          "defaultValue": 350000,
           "required": true,
           "validation": {
             "min": 50000,
@@ -347,11 +330,11 @@
     {
       "id": "down-payment",
       "title": "Planned down payment?",
-      "description": "Select a percentage or enter a custom amount.",
+      "description": "Lower down payments may still qualify for competitive rates.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
-        "whenValues": ["home-equity-heloc", "refinance", "cash-out-refinance"]
+        "whenValues": ["home-equity-heloc", "refinance"]
       },
       "fields": [
         {
@@ -374,17 +357,18 @@
     {
       "id": "current-interest-rate",
       "title": "Current interest rate?",
-      "description": "Your best estimate is fine.",
+      "description": "We'll compare this to today's rates to show your potential savings.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
-        "whenValues": ["home-equity-heloc", "purchase", "cash-out-refinance"]
+        "whenValues": ["home-equity-heloc", "purchase"]
       },
       "fields": [
         {
           "id": "currentInterestRate",
           "type": "slider",
           "label": "",
+          "defaultValue": 6.9,
           "required": true,
           "validation": {
             "min": 1,
@@ -417,7 +401,7 @@
     {
       "id": "employment-status",
       "title": "What's your employment status?",
-      "description": "This helps lenders evaluate your application.",
+      "description": "Helps lenders determine your qualifying loan options.",
       "skipIf": {
         "checkStepId": "loan-type",
         "checkFieldId": "loanType",
@@ -435,24 +419,6 @@
             { "value": "self-employed", "label": "Self-Employed" },
             { "value": "retired", "label": "Retired" },
             { "value": "unemployed", "label": "Unemployed" }
-          ]
-        }
-      ]
-    },
-
-    {
-      "id": "military-service",
-      "title": "Served in the military?",
-      "description": "Veterans qualify for $0-down programs.",
-      "fields": [
-        {
-          "id": "veteranStatus",
-          "type": "radio",
-          "label": "",
-          "required": true,
-          "options": [
-            { "value": "yes", "label": "YES" },
-            { "value": "no", "label": "NO" }
           ]
         }
       ]
@@ -482,13 +448,6 @@
           "type": "email",
           "label": "Email",
           "placeholder": "john.doe@email.com",
-          "required": true
-        },
-        {
-          "id": "phone",
-          "type": "tel",
-          "label": "Phone Number",
-          "placeholder": "(555) 123-4567",
           "required": true
         }
       ]

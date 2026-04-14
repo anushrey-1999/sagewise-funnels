@@ -34,6 +34,7 @@ const formFieldSchema = z
     type: inputTypeSchema,
     label: z.string().optional(),
     placeholder: z.string().optional(),
+    defaultValue: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]).optional(),
     required: z.boolean().optional(),
     autoForward: z.boolean().optional(),
     redirectOnAnswer: redirectOnAnswerSchema.optional(),

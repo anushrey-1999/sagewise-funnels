@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckIcon } from "lucide-react";
-import React, { useId, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 
 type FieldValue = string | string[] | number | boolean;
 
@@ -31,11 +31,15 @@ function SliderField({
   const isPercent = max <= 100;
   const step = isPercent ? 0.25 : Math.max(1, Math.round((max - min) / 100));
   const midpoint = isPercent ? parseFloat(((min + max) / 2).toFixed(2)) : Math.round((min + max) / 2);
+  const fallbackValue = typeof field.defaultValue === "number" ? field.defaultValue : midpoint;
+  const currentNum = typeof value === "number" ? value : fallbackValue;
 
-  const currentNum = typeof value === "number" ? value : min;
-
-  const [sliderVal, setSliderVal] = useState(currentNum || midpoint);
+  const [sliderVal, setSliderVal] = useState(currentNum);
   const [inputText, setInputText] = useState("");
+
+  useEffect(() => {
+    setSliderVal(currentNum);
+  }, [currentNum]);
 
   const effectiveValue = inputText.trim() ? currentNum : sliderVal;
   const isValid = isValidValue(field, effectiveValue);
@@ -85,7 +89,6 @@ function SliderField({
       {field.label && (
         <Label htmlFor={field.id} className="text-base font-medium text-foreground">
           {field.label}
-          {field.required && <span className="text-red-500 ml-1" aria-label="required">*</span>}
         </Label>
       )}
       <div className="relative">
@@ -353,7 +356,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 <div
                   key={option.value}
                   className={cn(
-                    "border-[3px] border-gray-200 h-[55px] min-h-[55px] rounded-lg flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto mb-3 relative !bg-white outline-none",
+                    "border-[3px] border-gray-200 h-[55px] min-h-[55px] rounded-lg flex items-center justify-center px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto mb-3 relative !bg-white outline-none",
                     "focus-visible:!bg-[var(--sw-input-bg)] focus-visible:!border-[var(--sw-green-accent)]",
                     isValid && "border-[var(--sw-green-accent)]",
                     error && "border-red-500"
@@ -365,12 +368,11 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                   role="radio"
                   aria-checked={isSelected}
                 >
-                  <RadioGroupItem value={option.value} id={option.value} className="h-4 w-4" />
-                  <Label htmlFor={option.value} className="text-base text-foreground cursor-pointer flex-1">
+                  <Label htmlFor={option.value} className="text-base text-foreground cursor-pointer text-center">
                     {option.label}
                   </Label>
                   {isValid && (
-                    <CheckIcon className="size-5 text-[var(--sw-success-green)] pointer-events-none shrink-0" />
+                    <CheckIcon className="absolute right-4 size-5 text-[var(--sw-success-green)] pointer-events-none shrink-0" />
                   )}
                 </div>
               );
@@ -400,7 +402,6 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
             {field.label && (
               <Label htmlFor={field.id} className="text-base font-medium text-foreground mb-2 block">
                 {field.label}
-                {field.required && <span className="text-red-500 ml-1" aria-label="required">*</span>}
               </Label>
             )}
             <div className="relative">
@@ -453,7 +454,6 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
             {field.label && (
               <Label htmlFor={field.id} className="text-base font-medium text-foreground mb-2 block">
                 {field.label}
-                {field.required && <span className="text-red-500 ml-1" aria-label="required">*</span>}
               </Label>
             )}
             <div className="relative">

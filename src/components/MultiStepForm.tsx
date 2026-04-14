@@ -57,6 +57,45 @@ function ProgressBar({ progress }: { progress: number }) {
   );
 }
 
+const mortgageProgressByLoanType: Record<string, Record<string, number>> = {
+  "home-equity-heloc": {
+    "loan-type": 10,
+    "property-type": 30,
+    "property-use": 35,
+    "zip-code-heloc": 38,
+    "home-value": 40,
+    "mortgage-balance": 45,
+    "equity-display": 50,
+    "heloc-loan-purpose": 55,
+    "credit-score": 85,
+    "contact": 100,
+  },
+  "refinance": {
+    "loan-type": 10,
+    "refinance-goal": 15,
+    "property-type": 30,
+    "zip-code-refi-purchase": 35,
+    "home-value": 40,
+    "mortgage-balance": 45,
+    "current-interest-rate": 80,
+    "credit-score": 85,
+    "employment-status": 90,
+    "contact": 100,
+  },
+  "purchase": {
+    "loan-type": 10,
+    "purchase-timeline": 20,
+    "first-time-buyer": 25,
+    "property-type": 30,
+    "zip-code-refi-purchase": 35,
+    "purchase-price": 70,
+    "down-payment": 75,
+    "credit-score": 85,
+    "employment-status": 90,
+    "contact": 100,
+  },
+};
+
 interface MultiStepFormProps {
   config: FormConfig;
   onSubmit?: (data: FormData) => void;
@@ -76,10 +115,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   const currentStepRef = useRef(currentStep);
 
   const isFirstStep = currentStep === 0;
-  const isLastStep = currentStep === config.steps.length - 1;
   const currentStepData = config.steps[currentStep];
-  const totalSteps = config.steps.length;
-  const progress = Math.round(((currentStep + 1) / totalSteps) * 100);
   const isCreditScoreQuestion = Boolean(
     currentStepData?.title.toLowerCase().includes("credit score") &&
     currentStepData.fields.some((field) => {
@@ -127,12 +163,6 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
     ? (config.firstStepButton?.text || "Continue")
     : "Continue";
 
-  useEffect(() => {
-    if (onProgressChange) {
-      onProgressChange(progress);
-    }
-  }, [progress, onProgressChange]);
-
   // Inject onLoadScript when funnel first loads
   useEffect(() => {
     if (config.onLoadScript) {
@@ -166,9 +196,13 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
         defaults.newsletter = [f.id];
       }
       if (f.type === "slider" && stepData[f.id] === undefined) {
-        const min = f.validation?.min ?? 0;
-        const max = f.validation?.max ?? 1000000;
-        defaults[f.id] = Math.round((min + max) / 2);
+        if (typeof f.defaultValue === "number") {
+          defaults[f.id] = f.defaultValue;
+        } else {
+          const min = f.validation?.min ?? 0;
+          const max = f.validation?.max ?? 1000000;
+          defaults[f.id] = Math.round((min + max) / 2);
+        }
       }
     }
 
@@ -417,6 +451,36 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
       return whenValues.includes(valueToCheck);
     });
   };
+
+  const visibleStepIndices = useMemo(() => {
+    return config.steps.reduce<number[]>((indices, _step, index) => {
+      if (!shouldSkipStep(index)) {
+        indices.push(index);
+      }
+      return indices;
+    }, []);
+  }, [config.steps, formData]);
+
+  const currentVisibleStepPosition = Math.max(visibleStepIndices.indexOf(currentStep), 0);
+  const isLastStep = currentVisibleStepPosition === visibleStepIndices.length - 1;
+  const totalVisibleSteps = Math.max(visibleStepIndices.length, 1);
+  const computedProgress = Math.round(((currentVisibleStepPosition + 1) / totalVisibleSteps) * 100);
+  const selectedLoanType = typeof formData["loan-type"]?.loanType === "string"
+    ? formData["loan-type"].loanType
+    : null;
+  const mortgageStepProgress =
+    config.id === "mortgage" && currentStepData && selectedLoanType
+      ? mortgageProgressByLoanType[selectedLoanType]?.[currentStepData.id]
+      : currentStepData?.id === "loan-type" && config.id === "mortgage"
+        ? 10
+        : undefined;
+  const progress = mortgageStepProgress ?? computedProgress;
+
+  useEffect(() => {
+    if (onProgressChange) {
+      onProgressChange(progress);
+    }
+  }, [progress, onProgressChange]);
 
   // Get the next valid step index, skipping any steps that should be skipped
   // Optionally accepts formDataOverride to use updated data that might not be in state yet
@@ -797,10 +861,19 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                       </p>
                     </div>
                     <p className="text-3xl lg:text-4xl font-bold text-primary-main">~{formatCurrency(equity)} available</p>
+                    <p className="text-base font-semibold text-primary-main">
+                      Lenders are ready to compete for your business.
+                    </p>
                   </div>
                 </div>
               );
             })()}
+
+            {config.id === "mortgage" && currentStepData.id === "contact" && (
+              <p className="w-full sm:w-[380px] md:w-[342px] text-sm text-general-muted-foreground">
+                {"\uD83D\uDD12"} Your information is secure and never sold to third parties.
+              </p>
+            )}
             
             {/* For last step, render Continue button inside card after checkbox */}
             {isLastStep && (
@@ -825,10 +898,10 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                     </span>
                   )}
                 </Button>
-                <p className="text-xs text-general-muted-foreground text-left w-full sm:w-[380px] md:w-[342px] mt-3">
+                <p className="text-[11px] text-[#9CA3AF] text-left w-full sm:w-[380px] md:w-[342px] mt-3 leading-relaxed">
                   {config.finalStep?.disclaimerText?.includes("<a ") ? (
                     <span
-                      className="[&_a]:underline [&_a]:text-primary-main [&_a]:hover:opacity-90"
+                      className="[&_a]:underline [&_a]:text-inherit [&_a]:hover:opacity-90"
                       dangerouslySetInnerHTML={{
                         __html:
                           config.finalStep.disclaimerText ||
