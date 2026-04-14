@@ -736,7 +736,7 @@ export default function ConfigEditorClient(props: {
               {adwallTab === "publishers" ? (
                 <Button type="button" variant="outline" className={adminButtonSecondary} onClick={addPublisherCard}>
                   <Users className="h-4 w-4" />
-                  Add Publisher
+                  Add Offer Tile
                 </Button>
               ) : null}
             </div>
