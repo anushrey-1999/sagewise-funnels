@@ -176,6 +176,89 @@ function SliderField({
   );
 }
 
+function FloatingLabelInput({
+  field,
+  value,
+  onChange,
+  error,
+  errorId,
+  isValidValue,
+}: {
+  field: FormField;
+  value: FieldValue | undefined;
+  onChange: (v: FieldValue) => void;
+  error?: string;
+  errorId: string;
+  isValidValue: (f: FormField, v: FieldValue | undefined) => boolean;
+}) {
+  const [isFocused, setIsFocused] = useState(false);
+  const isZipCode = field.id === "zipCode";
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let inputValue = e.target.value;
+    if (isZipCode) {
+      inputValue = inputValue.replace(/\D/g, "").slice(0, 5);
+    }
+    onChange(inputValue);
+  };
+
+  const isValid = isValidValue(field, value);
+  const hasValue =
+    typeof value === "string"
+      ? value.length > 0
+      : typeof value === "number" && !Number.isNaN(value);
+  const isFloating = isFocused || hasValue;
+
+  return (
+    <div className="w-full sm:w-[380px] md:w-[342px]">
+      <div className="relative">
+        {field.label && (
+          <label
+            htmlFor={field.id}
+            className={cn(
+              "absolute left-3 pointer-events-none transition-all duration-200 ease-out z-10 origin-left",
+              isFloating
+                ? "top-[8px] text-[11px] text-muted-foreground"
+                : "top-1/2 -translate-y-1/2 text-base text-muted-foreground"
+            )}
+          >
+            {field.label}
+          </label>
+        )}
+        <Input
+          id={field.id}
+          type={field.type}
+          placeholder={!field.label ? field.placeholder : undefined}
+          value={typeof value === "string" || typeof value === "number" ? String(value) : ""}
+          onChange={handleInputChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          maxLength={isZipCode ? 5 : undefined}
+          className={cn(
+            "h-[55px] min-h-[55px] rounded-lg pr-10",
+            field.label ? "pt-5 pb-1" : "",
+            isValid && "border-[var(--sw-green-accent)]",
+            error && "border-red-500"
+          )}
+          required={field.required}
+          aria-label={field.label || field.placeholder || field.id}
+          aria-invalid={!!error}
+          aria-describedby={error ? errorId : undefined}
+          aria-required={field.required}
+        />
+        {isValid && (
+          <CheckIcon className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-[var(--sw-success-green)] pointer-events-none" />
+        )}
+      </div>
+      {error && (
+        <p id={errorId} className="text-sm text-red-500 mt-1" role="alert" aria-live="polite">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 interface DynamicFormFieldProps {
   field: FormField;
   value: FieldValue | undefined;
@@ -187,7 +270,6 @@ interface DynamicFormFieldProps {
 
 export function DynamicFormField({ field, value, onChange, error }: DynamicFormFieldProps) {
   const errorId = useId();
-  const descriptionId = useId();
   
   // Validation function to check if value is valid
   const isValidValue = (fieldToValidate: FormField, valueToValidate: FieldValue | undefined): boolean => {
@@ -418,65 +500,15 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
       case "email":
       case "tel":
       case "number":
-        // Special handling for zip code field
-        const isZipCode = field.id === "zipCode";
-        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-          let inputValue = e.target.value;
-          if (isZipCode) {
-            // Only allow digits and limit to 5 characters
-            inputValue = inputValue.replace(/\D/g, "").slice(0, 5);
-          }
-          onChange(inputValue);
-        };
-        
-        const isValid = isValidValue(field, value);
-        
         return (
-          <div className="w-full sm:w-[380px] md:w-[342px]">
-            {field.label && (
-              <Label htmlFor={field.id} className="text-base font-medium text-foreground mb-2 block">
-                {field.label}
-              </Label>
-            )}
-            <div className="relative">
-              <Input
-                id={field.id}
-                type={field.type}
-                placeholder={field.placeholder}
-                value={typeof value === "string" || typeof value === "number" ? String(value) : ""}
-                onChange={handleInputChange}
-                maxLength={isZipCode ? 5 : undefined}
-                className={cn(
-                  "h-[55px] min-h-[55px] rounded-lg pr-10",
-                  isValid && "border-[var(--sw-green-accent)]",
-                  error && "border-red-500"
-                )}
-                required={field.required}
-                aria-label={field.label || field.placeholder || field.id}
-                aria-invalid={!!error}
-                aria-describedby={error ? errorId : field.placeholder ? descriptionId : undefined}
-                aria-required={field.required}
-              />
-              {isValid && (
-                <CheckIcon className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-[var(--sw-success-green)] pointer-events-none" />
-              )}
-            </div>
-            {field.placeholder && (
-              <span id={descriptionId} className="sr-only">
-                {field.placeholder}
-              </span>
-            )}
-            {error && (
-              <p 
-                id={errorId}
-                className="text-sm text-red-500 mt-1" 
-                role="alert"
-                aria-live="polite"
-              >
-                {error}
-              </p>
-            )}
-          </div>
+          <FloatingLabelInput
+            field={field}
+            value={value}
+            onChange={onChange}
+            error={error}
+            errorId={errorId}
+            isValidValue={isValidValue}
+          />
         );
 
       case "select":
