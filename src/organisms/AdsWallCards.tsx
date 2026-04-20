@@ -136,7 +136,7 @@ const AdsWallCards = ({
     <div className="relative w-full">
       <div
         className={cn(
-          "border-[1.5px] lg:border-2 relative rounded-xl w-full flex flex-col overflow-hidden bg-white gap-2 lg:gap-3 border-primary-main"
+          "border-[1.5px] lg:border-2 relative rounded-xl w-full flex flex-col overflow-hidden bg-white gap-2 lg:gap-3 border-gray-200 transition-shadow duration-200 hover:shadow-md"
         )}
       >
         {/* ── Badge (top-left on all breakpoints) ── */}

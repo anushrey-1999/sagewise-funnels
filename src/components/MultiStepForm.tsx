@@ -15,43 +15,47 @@ import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
 import { useSearchParams } from "next/navigation";
 import { injectImpressionScript } from "@/lib/injectImpressionScript";
 
-// Progress bar component
-function ProgressBar({ progress }: { progress: number }) {
-  // Ensure progress is between 0 and 100
+// Progress bar with circular back control (mobile + desktop)
+function ProgressBarRow({
+  progress,
+  currentStep,
+  totalSteps,
+  onBack,
+  backDisabled,
+}: {
+  progress: number;
+  currentStep: number;
+  totalSteps: number;
+  onBack: () => void;
+  backDisabled: boolean;
+}) {
   const clampedProgress = Math.max(0, Math.min(100, progress));
-  
-  // Calculate position for percentage text to follow the progress
-  // Position it at the end of the progress fill, but keep it within bounds
-  const percentagePosition = Math.max(0, Math.min(100, clampedProgress));
-  
+
   return (
-    <div className="flex flex-col items-center w-full">
-      <div className="h-[20px] overflow-visible relative rounded-[10px] w-full mb-2.5">
-        <div className="absolute bg-[#DEF1F1] inset-0 rounded-[10px]" />
+    <div className="flex w-full flex-col gap-2">
+      {/* Top row: back button (left) + centered step label */}
+      <div className="relative flex items-center">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onBack}
+          disabled={backDisabled}
+          aria-label="Go back"
+          className="size-8 shrink-0 rounded-full border-general-border bg-white p-0 shadow-sm hover:bg-gray-50 disabled:opacity-40"
+        >
+          <ArrowLeft className="size-4 text-primary-main" aria-hidden />
+        </Button>
+        <p className="absolute left-1/2 -translate-x-1/2 text-sm font-medium text-primary-main whitespace-nowrap">
+          Step {currentStep} of {totalSteps}
+        </p>
+      </div>
+      {/* Full-width progress bar */}
+      <div className="h-1.5 relative rounded-full w-full">
+        <div className="absolute bg-[#DEF1F1] inset-0 rounded-full" />
         <div
-          className="absolute bottom-0 left-0 top-0 bg-primary-main rounded-[10px] transition-all duration-300"
+          className="absolute bottom-0 left-0 top-0 bg-primary-main rounded-full transition-all duration-300"
           style={{ width: `${clampedProgress}%` }}
         />
-        {/* Percentage label that moves with progress */}
-        <div
-          className="absolute top-[-28px] transition-all duration-300"
-          style={{ 
-            left: percentagePosition <= 5 
-              ? '0%' 
-              : percentagePosition >= 95 
-              ? '100%' 
-              : `${percentagePosition}%`,
-            transform: percentagePosition <= 5 
-              ? 'translateX(0)' 
-              : percentagePosition >= 95 
-              ? 'translateX(-100%)' 
-              : 'translateX(-50%)'
-          }}
-        >
-          <p className="font-medium leading-normal text-[18px] text-primary-main whitespace-nowrap">
-            {clampedProgress}%
-          </p>
-        </div>
       </div>
     </div>
   );
@@ -807,11 +811,31 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   // Render form step
   if (!currentStepData) return null;
 
+  // Show Continue button only for steps that require manual input
+  // (text, email, tel, number, slider, checkbox) or informational/display steps.
+  // Pure radio / select / dropdown steps auto-advance on selection — no button needed.
+  // Exception: radio/select with no options can't auto-advance, so they also need a button.
+  const AUTO_ADVANCE_TYPES = new Set(["radio", "select", "dropdown"]);
+  const stepNeedsManualContinue =
+    currentStepData.fields.length === 0 ||
+    currentStepData.fields.some((f) => {
+      if (!AUTO_ADVANCE_TYPES.has(f.type)) return true;
+      // A radio/select/dropdown with no options can never auto-advance
+      if (!f.options || f.options.length === 0) return true;
+      return false;
+    });
+
   return (
     <>
-      <ProgressBar progress={progress} />
-      <div className={cn("w-full flex flex-col gap-[48px] items-center", isLastStep ? "pb-64 md:pb-0" : "pb-32 md:pb-0")}>
-        <Card className={cn("w-full border-none rounded-lg pt-6 px-6 shadow-xl", isLastStep ? "pb-28 md:pb-10" : "pb-24 md:pb-10")}>
+      <ProgressBarRow
+        progress={progress}
+        currentStep={currentVisibleStepPosition + 1}
+        totalSteps={totalVisibleSteps}
+        onBack={handleBack}
+        backDisabled={isFirstStep}
+      />
+      <div className="w-full flex flex-col gap-[48px] items-center">
+        <Card className="w-full border-none rounded-lg pt-4 px-3 md:px-6 pb-4 shadow-xl">
           <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
             <CardTitle className="text-3xl lg:text-[40px] font-bold text-primary-main">
               {currentStepData.title}
@@ -822,7 +846,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
               </CardDescription>
             ) : null}
           </CardHeader>
-          <CardContent className="flex flex-col gap-3 items-center p-0 pt-6">
+          <CardContent className="flex flex-col gap-2 items-center p-0">
             {currentStepData.fields.map((field, index) => {
               const fieldValue = formData[currentStepData.id]?.[field.id];
               const fieldError = errors[currentStepData.id]?.[field.id];
@@ -878,99 +902,9 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 {"\uD83D\uDD12"} Your information is secure and never sold to third parties.
               </p>
             )}
-            
-            {/* For last step, render Continue button inside card after checkbox */}
-            {isLastStep && (
-              <div className="hidden md:flex md:w-full md:flex-col md:items-center">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={handleNext}
-                  disabled={!isStepValid() || isSubmitting}
-                  className="w-full sm:w-[380px] md:w-[342px] px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-3"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                      <span className="text-base font-medium leading-none">
-                        Submitting...
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-base font-medium leading-none">
-                      {config.finalStep?.buttonText || "See Instant Matches"}
-                    </span>
-                  )}
-                </Button>
-                <p className="text-[11px] text-[#9CA3AF] text-left w-full sm:w-[380px] md:w-[342px] mt-3 leading-relaxed">
-                  {finalStepDisclaimer.includes("<a ") ? (
-                    <span
-                      className="[&_a]:underline [&_a]:text-inherit [&_a]:hover:opacity-90"
-                      dangerouslySetInnerHTML={{
-                        __html: finalStepDisclaimer,
-                      }}
-                    />
-                  ) : (
-                    finalStepDisclaimer
-                  )}
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
 
-        {/* Buttons outside card for non-last steps, Go Back button for last step */}
-        {!isLastStep && (
-          <div className={`hidden md:flex gap-3 w-full ${isFirstStep ? 'max-w-[445px]' : 'w-full'}`}>
-            {!isFirstStep && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleBack}
-                className="flex-1 bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
-              >
-                <ArrowLeft className="h-[13.25px] w-[13.25px]" />
-                <span className="text-base font-medium leading-none">Go Back</span>
-              </Button>
-            )}
-            <Button
-              type="button"
-              variant="default"
-              onClick={handleNext}
-              disabled={!isStepValid()}
-              style={firstStepButtonVars}
-              className={cn(
-                "px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
-                isFirstStep
-                  ? "w-full"
-                  : "flex-1",
-                isFirstStep && config.firstStepButton
-                  ? "bg-(--sw-first-step-cta-bg) hover:bg-(--sw-first-step-cta-hover) text-(--sw-first-step-cta-text)"
-                  : "bg-primary-main hover:bg-primary-main/90 text-white"
-              )}
-            >
-              <span className="text-base font-medium leading-none">
-                {firstStepButtonText}
-              </span>
-              <ArrowRight className="h-[13.25px] w-[13.25px]" />
-            </Button>
-          </div>
-        )}
-
-        {!isLastStep && (
-          <div className="fixed inset-x-0 bottom-0 z-30 border-t border-black/10 bg-white px-4 py-3 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] md:hidden">
-            <div className={cn("mx-auto flex w-full flex-col gap-3", isFirstStep ? "max-w-[445px]" : "max-w-[445px]")}>
-              {!isFirstStep && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleBack}
-                  className="w-full bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
-                >
-                  <ArrowLeft className="h-[13.25px] w-[13.25px]" />
-                  <span className="text-base font-medium leading-none">Go Back</span>
-                </Button>
-              )}
+            {/* Continue button inside card for non-last manual-input steps */}
+            {!isLastStep && stepNeedsManualContinue && (
               <Button
                 type="button"
                 variant="default"
@@ -978,85 +912,54 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 disabled={!isStepValid()}
                 style={firstStepButtonVars}
                 className={cn(
-                  "w-full px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
+                  "w-full sm:w-[380px] md:w-[342px] px-6 py-[9.5px] mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
                   isFirstStep && config.firstStepButton
                     ? "bg-(--sw-first-step-cta-bg) hover:bg-(--sw-first-step-cta-hover) text-(--sw-first-step-cta-text)"
                     : "bg-primary-main hover:bg-primary-main/90 text-white"
                 )}
               >
-                <span className="text-base font-medium leading-none">
-                  {firstStepButtonText}
-                </span>
+                <span className="text-base font-medium leading-none">{firstStepButtonText}</span>
                 <ArrowRight className="h-[13.25px] w-[13.25px]" />
               </Button>
-            </div>
-          </div>
-        )}
-        
-        {/* Go Back button for last step (outside card) */}
-        {isLastStep && !isFirstStep && (
-          <div className="hidden md:flex gap-3 w-full justify-start">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleBack}
-              className="bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
-            >
-              <ArrowLeft className="h-[13.25px] w-[13.25px]" />
-              <span className="text-base font-medium leading-none">Go Back</span>
-            </Button>
-          </div>
-        )}
+            )}
 
-        {isLastStep && (
-          <div className="fixed inset-x-0 bottom-0 z-30 border-t border-black/10 bg-white px-4 py-3 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] md:hidden">
-            <div className="mx-auto flex w-full max-w-[380px] flex-col gap-3">
-              {!isFirstStep && (
+            {/* Submit button + disclaimer inside card for last step */}
+            {isLastStep && (
+              <>
                 <Button
                   type="button"
-                  variant="outline"
-                  onClick={handleBack}
-                  className="w-full bg-white border border-general-border text-primary-main hover:bg-gray-50 px-6 py-[9.5px] flex items-center justify-center gap-2"
+                  variant="secondary"
+                  onClick={handleNext}
+                  disabled={!isStepValid() || isSubmitting}
+                  className="w-full sm:w-[380px] md:w-[342px] px-6 py-[9.5px] mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  <ArrowLeft className="h-[13.25px] w-[13.25px]" />
-                  <span className="text-base font-medium leading-none">Go Back</span>
-                </Button>
-              )}
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={handleNext}
-                disabled={!isStepValid() || isSubmitting}
-                className="w-full px-6 py-[9.5px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                      <span className="text-base font-medium leading-none">Submitting...</span>
+                    </>
+                  ) : (
                     <span className="text-base font-medium leading-none">
-                      Submitting...
+                      {config.finalStep?.buttonText || "See Instant Matches"}
                     </span>
-                  </>
-                ) : (
-                  <span className="text-base font-medium leading-none">
-                    {config.finalStep?.buttonText || "See Instant Matches"}
-                  </span>
-                )}
-              </Button>
-              <p className="text-[11px] text-[#9CA3AF] text-left leading-relaxed">
-                {finalStepDisclaimer.includes("<a ") ? (
-                  <span
-                    className="[&_a]:underline [&_a]:text-inherit [&_a]:hover:opacity-90"
-                    dangerouslySetInnerHTML={{
-                      __html: finalStepDisclaimer,
-                    }}
-                  />
-                ) : (
-                  finalStepDisclaimer
-                )}
-              </p>
-            </div>
-          </div>
-        )}
+                  )}
+                </Button>
+                <p className="text-[11px] text-[#9CA3AF] text-left w-full sm:w-[380px] md:w-[342px] leading-relaxed">
+                  {finalStepDisclaimer.includes("<a ") ? (
+                    <span
+                      className="[&_a]:underline [&_a]:text-inherit [&_a]:hover:opacity-90"
+                      dangerouslySetInnerHTML={{ __html: finalStepDisclaimer }}
+                    />
+                  ) : (
+                    finalStepDisclaimer
+                  )}
+                </p>
+              </>
+            )}
+          </CardContent>
+        </Card>
+
+        
       </div>
     </>
   );

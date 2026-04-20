@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, Minus, Plus } from "lucide-react";
 import React, { useEffect, useId, useState } from "react";
 
 type FieldValue = string | string[] | number | boolean;
@@ -77,6 +77,20 @@ function SliderField({
     }
   };
 
+  const handleDecrement = () => {
+    const next = Math.max(min, isPercent ? parseFloat((sliderVal - step).toFixed(2)) : sliderVal - step);
+    setSliderVal(next);
+    setInputText("");
+    onChange(next);
+  };
+
+  const handleIncrement = () => {
+    const next = Math.min(max, isPercent ? parseFloat((sliderVal + step).toFixed(2)) : sliderVal + step);
+    setSliderVal(next);
+    setInputText("");
+    onChange(next);
+  };
+
   const displayInput = inputText.trim()
     ? isPercent ? inputText : parseInt(inputText, 10).toLocaleString("en-US")
     : "";
@@ -119,16 +133,36 @@ function SliderField({
           <CheckIcon className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-[var(--sw-success-green)] pointer-events-none" />
         )}
       </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={sliderVal}
-        onChange={(e) => handleSliderChange(parseFloat(e.target.value))}
-        className="w-full h-2 rounded-full appearance-none cursor-pointer bg-gray-200 accent-primary-main [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary-main [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary-main [&::-moz-range-thumb]:border-none"
-        aria-label={`${field.label || field.id} slider`}
-      />
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={handleDecrement}
+          disabled={sliderVal <= min}
+          aria-label="Decrease value"
+          className="size-9 shrink-0 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          <Minus className="size-4 text-primary-main" />
+        </button>
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={sliderVal}
+          onChange={(e) => handleSliderChange(parseFloat(e.target.value))}
+          className="flex-1 h-2 rounded-full appearance-none cursor-pointer bg-gray-200 accent-primary-main [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-7 [&::-webkit-slider-thumb]:h-7 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary-main [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-moz-range-thumb]:w-7 [&::-moz-range-thumb]:h-7 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary-main [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md"
+          aria-label={`${field.label || field.id} slider`}
+        />
+        <button
+          type="button"
+          onClick={handleIncrement}
+          disabled={sliderVal >= max}
+          aria-label="Increase value"
+          className="size-9 shrink-0 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          <Plus className="size-4 text-primary-main" />
+        </button>
+      </div>
       <div className="flex justify-between text-xs text-general-muted-foreground">
         <span>{formatValue(min)}</span>
         <span>{formatValue(max)}</span>
@@ -344,7 +378,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
           <RadioGroup
             value={typeof value === "string" ? value : ""}
             onValueChange={(v) => onChange(v)}
-            className="w-full sm:w-[380px] md:w-[342px]"
+            className="w-full sm:w-[380px] md:w-[342px] gap-2 md:gap-5 md:pt-5"
             aria-label={field.label || field.id}
             aria-invalid={!!error}
             aria-describedby={error ? errorId : undefined}
@@ -356,7 +390,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 <div
                   key={option.value}
                   className={cn(
-                    "border-[3px] border-gray-200 h-[55px] min-h-[55px] rounded-lg flex items-center justify-center px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto mb-3 relative !bg-white outline-none",
+                    "border-[3px] border-gray-200 h-[55px] min-h-[55px] rounded-lg flex items-center justify-center px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative !bg-white outline-none",
                     "focus-visible:!bg-[var(--sw-input-bg)] focus-visible:!border-[var(--sw-green-accent)]",
                     isValid && "border-[var(--sw-green-accent)]",
                     error && "border-red-500"
