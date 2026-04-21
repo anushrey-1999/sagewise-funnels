@@ -263,12 +263,12 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
       } else if (field.type === "radio") {
         const msg = selectMsg(field);
         schemaFields[field.id] = field.required
-          ? z.string({ required_error: msg }).min(1, msg)
+          ? z.string({ error: msg }).min(1, msg)
           : z.string().optional();
       } else if (field.type === "select" || field.type === "dropdown") {
         const msg = selectMsg(field);
         schemaFields[field.id] = field.required
-          ? z.string({ required_error: msg }).min(1, msg)
+          ? z.string({ error: msg }).min(1, msg)
           : z.string().optional();
       } else if (field.type === "slider") {
         let numSchema = z.number();
@@ -294,7 +294,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
           const isEmail = field.type === "email";
 
           schemaFields[field.id] = z
-            .string({ required_error: msg })
+            .string({ error: msg })
             .superRefine((val, ctx) => {
               if (!val || val.trim() === "") {
                 ctx.addIssue({ code: z.ZodIssueCode.custom, message: msg });
