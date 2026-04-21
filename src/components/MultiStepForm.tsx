@@ -114,6 +114,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   const [formData, setFormData] = useState<FormData>({});
   const [errors, setErrors] = useState<Record<string, Record<string, string>>>({});
   const [showLoader, setShowLoader] = useState(false);
+  const [loaderSubheading, setLoaderSubheading] = useState<string | undefined>(undefined);
   const autoForwardTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const checkCompleteTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const currentStepRef = useRef(currentStep);
@@ -388,6 +389,35 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
     return { affiliateId, transactionId };
   };
 
+  const getLoaderSubheading = (destination: string): string => {
+    const LABELS: Record<string, string> = {
+      "mortgage/heloc":     "Curating your HELOC matches...",
+      "mortgage/refi":      "Curating your Refinance matches...",
+      "mortgage/purchase":  "Curating your Home Purchase matches...",
+      "cc/one":             "Curating your Credit Card matches...",
+      "cc/two":             "Curating your Credit Card matches...",
+      "cc/three":           "Curating your Credit Card matches...",
+      "autoins/one":        "Curating your Auto Insurance matches...",
+      "autoins/two":        "Curating your Auto Insurance matches...",
+      "autoins/three":      "Curating your Auto Insurance matches...",
+      "homeWarranty/one":   "Curating your Home Warranty matches...",
+      "tubs/one":           "Curating your Walk-In Tub matches...",
+      "reverse/one":        "Curating your Reverse Mortgage matches...",
+      "dental/one":         "Curating your Dental Plan matches...",
+      "gold/one":           "Curating your Gold IRA matches...",
+      "taxprep/one":        "Curating your Tax Prep matches...",
+    };
+
+    // Match the last two path segments: /adwall/{funnel}/{type}
+    const match = destination.match(/adwall\/([^/?#]+\/[^/?#]+)/);
+    if (match) {
+      const key = match[1];
+      if (LABELS[key]) return LABELS[key];
+    }
+
+    return config.finalStep?.loaderText || "Curating your best matches...";
+  };
+
   const handleLoaderComplete = () => {
     // Generate IDs for s1 and s2
     const { affiliateId, transactionId } = generateIds();
@@ -537,6 +567,8 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
       }
       
       // Show loader which will redirect to ad wall on completion
+      const destination = resolvePostSubmitRedirect(config, formData);
+      setLoaderSubheading(getLoaderSubheading(destination));
       setShowLoader(true);
       return;
     }
@@ -805,7 +837,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
 
   // Show loader if on last step and button was clicked
   if (showLoader) {
-    return <Loader onComplete={handleLoaderComplete} loaderText={config.finalStep?.loaderText || "Sit tight while we secure your free quotes."} />;
+    return <Loader onComplete={handleLoaderComplete} loaderText={loaderSubheading} />;
   }
 
   // Render form step
