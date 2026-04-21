@@ -1,5 +1,5 @@
 export const adminButtonPrimary =
-  "h-11 rounded-xl bg-[#204c4b] px-5 text-white hover:bg-[#1b403f]";
+  "h-11 rounded-xl bg-sg-funnel-header px-5 text-white hover:bg-sg-primary-dark";
 
 export const adminButtonSecondary =
   "h-11 rounded-xl border-[#d9e0e7] bg-white px-4 text-general-primary hover:bg-[#f8fafc]";

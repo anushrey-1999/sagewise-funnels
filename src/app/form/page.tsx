@@ -55,14 +55,14 @@ export default async function FormPage({
       {formConfig ? (
         <FormPageContent formConfig={formConfig} funnelId={funnelId || formConfig.id} />
       ) : (
-        <div className="bg-[#F8F8F8] flex flex-col items-center justify-center min-h-screen w-full px-4">
+        <div className="bg-sg-canvas flex flex-col items-center justify-center min-h-screen w-full px-4">
           <div className="text-center max-w-md">
             <h1 className="text-2xl font-semibold mb-4">Funnel Not Found</h1>
             <p className="text-muted-foreground mb-6">
               The funnel you&apos;re looking for doesn&apos;t exist. Please check the URL and try
               again.
             </p>
-            <Link href="/" className="text-[#204c4b] hover:underline">
+            <Link href="/" className="text-sg-funnel-header hover:underline">
               Return to Homepage
             </Link>
           </div>

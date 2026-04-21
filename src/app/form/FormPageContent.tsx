@@ -17,7 +17,7 @@ const INFO_BAR_ICONS = {
 export function FormPageContent({ formConfig, funnelId }: { formConfig: FormConfig; funnelId: string }) {
 
   return (
-    <div className="flex flex-col items-start w-full bg-[#F8F8F8] min-h-[90vh] pt-2">
+    <div className="flex flex-col items-start w-full bg-sg-canvas min-h-[90vh] pt-2">
       {/* Main Container - Contains form, separator, and logos */}
       <div className="flex flex-col items-start w-full pb-9 px-3 md:px-6 pt-3 md:pt-5 justify-between">
         <div className=" flex flex-col w-full flex-1 justify-between ">
@@ -58,7 +58,7 @@ export function FormPageContent({ formConfig, funnelId }: { formConfig: FormConf
                         className="h-[22px] w-[22px] object-contain"
                       />
                     ) : Icon ? (
-                      <Icon className="h-[22px] w-[22px] text-green-600" aria-hidden />
+                      <Icon className="h-[22px] w-[22px] text-sg-primary" aria-hidden />
                     ) : null}
                     <span className="text-general-muted-foreground text-base font-medium">{item.text}</span>
                   </div>

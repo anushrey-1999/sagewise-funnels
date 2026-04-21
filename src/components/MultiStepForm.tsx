@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react"
 import { FormConfig, FormData } from "@/types/form";
 import { DynamicFormField } from "./DynamicFormField";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
@@ -33,8 +32,8 @@ function ProgressBarRow({
 
   return (
     <div className="flex w-full flex-col gap-2">
-      {/* Top row: back button (left) + centered step label */}
-      <div className="relative flex items-center">
+      {/* Top row: back button only */}
+      <div className="flex items-center">
         <Button
           type="button"
           variant="outline"
@@ -45,15 +44,12 @@ function ProgressBarRow({
         >
           <ArrowLeft className="size-4 text-primary-main" aria-hidden />
         </Button>
-        <p className="absolute left-1/2 -translate-x-1/2 text-sm font-medium text-primary-main whitespace-nowrap">
-          Step {currentStep} of {totalSteps}
-        </p>
       </div>
       {/* Full-width progress bar */}
       <div className="h-1.5 relative rounded-full w-full">
-        <div className="absolute bg-[#DEF1F1] inset-0 rounded-full" />
+        <div className="absolute bg-sg-primary-tint inset-0 rounded-full" />
         <div
-          className="absolute bottom-0 left-0 top-0 bg-primary-main rounded-full transition-all duration-300"
+          className="absolute bottom-0 left-0 top-0 bg-sg-primary-green rounded-full transition-all duration-300"
           style={{ width: `${clampedProgress}%` }}
         />
       </div>
@@ -115,6 +111,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   const [errors, setErrors] = useState<Record<string, Record<string, string>>>({});
   const [showLoader, setShowLoader] = useState(false);
   const [loaderSubheading, setLoaderSubheading] = useState<string | undefined>(undefined);
+  const [isShaking, setIsShaking] = useState(false);
   const autoForwardTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const checkCompleteTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const currentStepRef = useRef(currentStep);
@@ -241,15 +238,37 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   const createStepSchema = (step: typeof currentStepData) => {
     if (!step) return z.object({});
     
+    // Derive a human-readable name from label → placeholder → humanised field id
+    const getFieldName = (field: (typeof step.fields)[number]): string => {
+      const label = typeof field.label === "string" ? field.label.trim() : "";
+      if (label) return label;
+      // camelCase / kebab-case → "zip code", "full name", etc.
+      // Do NOT fall back to placeholder — placeholder text (e.g. "12345") makes
+      // no sense in error messages like "Please enter 12345".
+      return field.id
+        .replace(/([A-Z])/g, " $1")
+        .replace(/[-_]/g, " ")
+        .trim()
+        .toLowerCase();
+    };
+    const enterMsg  = (field: (typeof step.fields)[number]) => `Please enter ${getFieldName(field)}`;
+    const selectMsg = (field: (typeof step.fields)[number]) => `Please select ${getFieldName(field)}`;
+
     const schemaFields: Record<string, z.ZodTypeAny> = {};
     step.fields.forEach((field) => {
       if (field.type === "checkbox") {
         schemaFields[field.id] = field.required
-          ? z.array(z.string()).min(1, `${field.label} is required`)
+          ? z.array(z.string()).min(1, selectMsg(field))
           : z.array(z.string()).optional();
       } else if (field.type === "radio") {
+        const msg = selectMsg(field);
         schemaFields[field.id] = field.required
-          ? z.string().min(1, `${field.label} is required`)
+          ? z.string({ required_error: msg }).min(1, msg)
+          : z.string().optional();
+      } else if (field.type === "select" || field.type === "dropdown") {
+        const msg = selectMsg(field);
+        schemaFields[field.id] = field.required
+          ? z.string({ required_error: msg }).min(1, msg)
           : z.string().optional();
       } else if (field.type === "slider") {
         let numSchema = z.number();
@@ -257,20 +276,39 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
         if (field.validation?.max !== undefined) numSchema = numSchema.max(field.validation.max, field.validation.message || "Value is too high");
         schemaFields[field.id] = field.required ? numSchema : numSchema.optional();
       } else {
-        let fieldSchema = z.string();
-        if (field.required) {
-          fieldSchema = fieldSchema.min(1, `${field.label} is required`);
+        const msg = enterMsg(field);
+        if (!field.required) {
+          // Optional text fields: skip validation when empty
+          let optSchema = z.string().optional();
+          if (field.validation?.pattern) {
+            optSchema = z.string().regex(
+              new RegExp(field.validation.pattern),
+              field.validation.message || `Please enter a valid ${field.label ?? "value"}`
+            ).optional();
+          }
+          schemaFields[field.id] = optSchema;
+        } else {
+          // Required: use superRefine so empty-field error always wins over pattern error
+          const patternRe = field.validation?.pattern ? new RegExp(field.validation.pattern) : null;
+          const patternMsg = field.validation?.message || `Please enter a valid ${getFieldName(field)}`;
+          const isEmail = field.type === "email";
+
+          schemaFields[field.id] = z
+            .string({ required_error: msg })
+            .superRefine((val, ctx) => {
+              if (!val || val.trim() === "") {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: msg });
+                return;
+              }
+              if (isEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please enter a valid email address" });
+                return;
+              }
+              if (patternRe && !patternRe.test(val)) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: patternMsg });
+              }
+            });
         }
-        if (field.validation?.pattern) {
-          fieldSchema = fieldSchema.regex(
-            new RegExp(field.validation.pattern),
-            field.validation.message || "Invalid format"
-          );
-        }
-        if (field.type === "email") {
-          fieldSchema = fieldSchema.email("Invalid email address");
-        }
-        schemaFields[field.id] = fieldSchema;
       }
     });
     return z.object(schemaFields);
@@ -283,10 +321,17 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
     const stepData = formData[currentStepData.id] || {};
     
     // Ensure all checkbox fields have arrays (even if empty)
+    // Normalize undefined text/email/tel/number fields to "" so superRefine runs
+    // (Zod v4 no longer honours required_error for undefined values before superRefine)
     const normalizedData = { ...stepData };
     currentStepData.fields.forEach((field) => {
       if (field.type === "checkbox" && !normalizedData[field.id]) {
         normalizedData[field.id] = [];
+      } else if (
+        ["text", "email", "tel", "number"].includes(field.type) &&
+        normalizedData[field.id] === undefined
+      ) {
+        normalizedData[field.id] = "";
       }
     });
     
@@ -305,7 +350,11 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
         if (error.issues && Array.isArray(error.issues)) {
           error.issues.forEach((issue) => {
             if (issue.path && issue.path.length > 0 && issue.path[0] !== undefined) {
-              stepErrors[issue.path[0].toString()] = issue.message;
+              const key = issue.path[0].toString();
+              // Keep the first error per field so empty-field message always wins over format errors
+              if (!stepErrors[key]) {
+                stepErrors[key] = issue.message;
+              }
             }
           });
         }
@@ -546,11 +595,17 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
     return Math.max(0, prevIndex);
   };
 
+  const triggerShake = () => {
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 450);
+  };
+
   const handleNext = () => {
     // If we're on the last step, show loader and then redirect
     if (isLastStep) {
       // Validate the last step first
       if (!currentStepData || !validateStep()) {
+        triggerShake();
         return;
       }
       
@@ -577,6 +632,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
     if (!currentStepData) return;
     
     if (!validateStep()) {
+      triggerShake();
       return;
     }
 
@@ -867,18 +923,18 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
         backDisabled={isFirstStep}
       />
       <div className="w-full flex flex-col gap-[48px] items-center">
-        <Card className="w-full border-none rounded-lg pt-4 px-3 md:px-6 pb-4 shadow-xl">
-          <CardHeader className="text-center space-y-0.5 p-0 pb-0 flex  flex-col justify-center items-center gap-1">
-            <CardTitle className="text-3xl lg:text-[40px] font-bold text-primary-main">
+        <div className="w-full">
+          <div className="text-center space-y-0.5 flex flex-col justify-center items-center gap-1">
+            <h2 className="text-2xl lg:text-[40px] font-bold text-primary-main">
               {currentStepData.title}
-            </CardTitle>
+            </h2>
             {currentStepDescription ? (
-              <CardDescription className="text-base text-muted-foreground">
+              <p className="hidden md:block text-base text-muted-foreground">
                 {currentStepDescription}
-              </CardDescription>
+              </p>
             ) : null}
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2 items-center p-0">
+          </div>
+          <div className="flex flex-col gap-2 md:gap-5 items-center mt-6 md:mt-8">
             {currentStepData.fields.map((field, index) => {
               const fieldValue = formData[currentStepData.id]?.[field.id];
               const fieldError = errors[currentStepData.id]?.[field.id];
@@ -912,7 +968,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 });
 
               return (
-                <div className="w-full sm:w-[380px] md:w-[342px] rounded-xl bg-[#DEF1F1] px-6 py-5 text-center">
+                <div className="w-full sm:w-[380px] md:w-[342px] rounded-xl bg-sg-primary-tint px-6 py-5 text-center">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-general-muted-foreground">Home Value - Mortgage Balance</p>
                     <div className="rounded-lg bg-white/70 px-4 py-3">
@@ -941,16 +997,16 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 type="button"
                 variant="default"
                 onClick={handleNext}
-                disabled={!isStepValid()}
                 style={firstStepButtonVars}
                 className={cn(
-                  "w-full sm:w-[380px] md:w-[342px] px-6 py-[9.5px] mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
+                  "w-full sm:w-[380px] md:w-[342px] h-[52px] px-6 mt-1 flex items-center justify-center gap-2 rounded-full",
                   isFirstStep && config.firstStepButton
                     ? "bg-(--sw-first-step-cta-bg) hover:bg-(--sw-first-step-cta-hover) text-(--sw-first-step-cta-text)"
-                    : "bg-primary-main hover:bg-primary-main/90 text-white"
+                    : "bg-sw-cta-primary hover:bg-sw-cta-hover text-white",
+                  isShaking && "animate-shake"
                 )}
               >
-                <span className="text-base font-medium leading-none">{firstStepButtonText}</span>
+                <span className="text-base font-bold leading-none">{firstStepButtonText}</span>
                 <ArrowRight className="h-[13.25px] w-[13.25px]" />
               </Button>
             )}
@@ -960,20 +1016,26 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
               <>
                 <Button
                   type="button"
-                  variant="secondary"
+                  variant="default"
                   onClick={handleNext}
-                  disabled={!isStepValid() || isSubmitting}
-                  className="w-full sm:w-[380px] md:w-[342px] px-6 py-[9.5px] mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  disabled={isSubmitting}
+                  className={cn(
+                    "w-full sm:w-[380px] md:w-[342px] h-[52px] px-6 mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-full bg-sw-cta-primary hover:bg-sw-cta-hover text-white",
+                    isShaking && "animate-shake"
+                  )}
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                      <span className="text-base font-medium leading-none">Submitting...</span>
+                      <span className="text-base font-bold leading-none">Submitting...</span>
                     </>
                   ) : (
-                    <span className="text-base font-medium leading-none">
-                      {config.finalStep?.buttonText || "See Instant Matches"}
-                    </span>
+                    <>
+                      <span className="text-base font-bold leading-none">
+                        {config.finalStep?.buttonText || "See Instant Matches"}
+                      </span>
+                      <ArrowRight className="h-[13.25px] w-[13.25px]" />
+                    </>
                   )}
                 </Button>
                 <p className="text-[11px] text-[#9CA3AF] text-left w-full sm:w-[380px] md:w-[342px] leading-relaxed">
@@ -988,8 +1050,8 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 </p>
               </>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         
       </div>

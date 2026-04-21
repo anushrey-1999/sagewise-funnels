@@ -40,7 +40,7 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <div className="bg-[#204c4b] flex flex-col gap-4 sm:gap-4 md:gap-4 p-6 sm:p-10 md:p-16 w-full">
+    <div className="bg-sg-funnel-header flex flex-col gap-4 sm:gap-4 md:gap-4 p-6 sm:p-10 md:p-16 w-full">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4">
         <Logo color="white" />
         {/* <div className="flex gap-3">
@@ -141,15 +141,12 @@ export function Footer() {
 
       <Typography
         variant="p"
-        color="text-primary-light"
-        className="text-[10px] md:text-xs  tracking-[0.5px]"
+        className="text-[10px] md:text-xs tracking-[0.5px] text-red-500"
       >
         © Copyright 2026, Sagewise® • All Rights Reserved
       </Typography>
       <Typography
         variant="p"
-        color="text-primary-light"
-        className="text-[10px] md:text-xs  tracking-[0.5px] mt-1"
       >
         C3 Data LLC dba Massive and Co | 4376 Forestdale Drive #4 Park City, UT
         84098

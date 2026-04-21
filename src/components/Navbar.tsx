@@ -83,7 +83,7 @@ export function Navbar() {
   }, [preview]);
 
   return (
-    <div className="bg-[#204c4b] flex items-center justify-between px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative gap-4">
+      <div className="bg-sg-primary flex items-center justify-between px-6 sm:px-6 py-3 sm:py-4 md:p-6 w-full relative gap-4">
       {/* <Button
         variant="ghost"
         size="icon"

@@ -46,14 +46,14 @@ const MinimalFooter = () => {
         <div className="text-center">
         <Typography
         variant="p"
-        color="text-primary-light"
+        color="text-sg-primary"
         className="text-[10px] md:text-xs  tracking-[0.5px]"
       >
         © Copyright 2026, Sagewise® • All Rights Reserved
       </Typography>
       <Typography
         variant="p"
-        color="text-primary-light"
+        color="text-sg-primary"
         className="text-[10px] md:text-xs  tracking-[0.5px] mt-1"
       >
         C3 Data LLC dba Massive and Co | 4376 Forestdale Drive #4 Park City, UT

@@ -117,9 +117,9 @@ function SliderField({
           value={displayInput}
           onChange={(e) => handleInputChange(e.target.value)}
           className={cn(
-            "h-[55px] min-h-[55px] rounded-lg text-lg font-semibold text-primary-main",
+            "h-[55px] min-h-[55px] rounded-2xl text-lg font-semibold text-primary-main",
             prefix ? "pl-8" : "pl-4",
-            isValid && "border-[var(--sw-green-accent)]",
+            isValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
           )}
           aria-label={field.label || field.placeholder || field.id}
@@ -130,7 +130,9 @@ function SliderField({
           <span className="absolute right-10 top-1/2 -translate-y-1/2 text-lg font-semibold text-primary-main pointer-events-none">{suffix}</span>
         )}
         {isValid && (
-          <CheckIcon className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-[var(--sw-success-green)] pointer-events-none" />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none">
+            <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
+          </div>
         )}
       </div>
       <div className="flex items-center gap-3">
@@ -235,9 +237,9 @@ function FloatingLabelInput({
           onBlur={() => setIsFocused(false)}
           maxLength={isZipCode ? 5 : undefined}
           className={cn(
-            "h-[55px] min-h-[55px] rounded-lg pr-10",
+            "h-[55px] min-h-[55px] rounded-2xl pr-10",
             field.label ? "pt-5 pb-1" : "",
-            isValid && "border-[var(--sw-green-accent)]",
+            isValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
           )}
           required={field.required}
@@ -247,7 +249,9 @@ function FloatingLabelInput({
           aria-required={field.required}
         />
         {isValid && (
-          <CheckIcon className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-[var(--sw-success-green)] pointer-events-none" />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none">
+            <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
+          </div>
         )}
       </div>
       {error && (
@@ -403,9 +407,9 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
         return (
           <div
             className={cn(
-              "border-[3px] border-[#e5e5e5] h-[55px] min-h-[55px] rounded-lg w-full max-w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
-              "focus-visible:!bg-[var(--sw-input-bg)] focus-visible:!border-[var(--sw-green-accent)] !bg-white outline-none",
-              isCheckboxValid && "border-[var(--sw-green-accent)]",
+              "border-[3px] border-[#e5e5e5] h-[55px] min-h-[55px] rounded-lg w-full max-w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sg-primary-green)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
+              "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)] !bg-white outline-none",
+              isCheckboxValid && "border-[var(--sg-primary-green)]",
               error && "border-red-500"
             )}
             onClick={() => {
@@ -460,7 +464,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
           <RadioGroup
             value={typeof value === "string" ? value : ""}
             onValueChange={(v) => onChange(v)}
-            className="w-full sm:w-[380px] md:w-[342px] gap-2 md:gap-5 md:pt-5"
+            className="w-full sm:w-[380px] md:w-[650px] gap-2 md:gap-5 md:pt-5"
             aria-label={field.label || field.id}
             aria-invalid={!!error}
             aria-describedby={error ? errorId : undefined}
@@ -472,9 +476,9 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 <div
                   key={option.value}
                   className={cn(
-                    "border-[3px] border-gray-200 h-[55px] min-h-[55px] rounded-lg flex items-center justify-center px-4 cursor-pointer hover:border-[var(--sw-green-accent)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative !bg-white outline-none",
-                    "focus-visible:!bg-[var(--sw-input-bg)] focus-visible:!border-[var(--sw-green-accent)]",
-                    isValid && "border-[var(--sw-green-accent)]",
+                    "border-[3px] border-gray-200 h-[72px] min-h-[72px] rounded-3xl flex items-center justify-center px-4 cursor-pointer hover:border-[var(--sg-primary-green)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative !bg-white outline-none",
+                    "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)]",
+                    isValid && "border-[var(--sg-primary-green)] !bg-sg-green-50",
                     error && "border-red-500"
                   )}
                   onClick={() => onChange(option.value)}
@@ -484,11 +488,13 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                   role="radio"
                   aria-checked={isSelected}
                 >
-                  <Label htmlFor={option.value} className="text-base text-foreground cursor-pointer text-center">
+                  <Label htmlFor={option.value} className="text-base font-bold text-sg-primary-text cursor-pointer text-center">
                     {option.label}
                   </Label>
                   {isValid && (
-                    <CheckIcon className="absolute right-4 size-5 text-[var(--sw-success-green)] pointer-events-none shrink-0" />
+                    <div className="absolute right-4 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none shrink-0">
+                      <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
+                    </div>
                   )}
                 </div>
               );
@@ -528,10 +534,10 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 value={typeof value === "string" ? value : ""}
                 onChange={(e) => onChange(e.target.value)}
                 className={cn(
-                  "h-[55px] min-h-[55px] w-full rounded-lg border-[3px] border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-[var(--sw-green-accent)] hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+                  "h-[55px] min-h-[55px] w-full rounded-2xl border-[3px] border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-[var(--sg-primary-green)] hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
                   "!bg-white",
-                  "focus-visible:!bg-[var(--sw-input-bg)] focus-visible:!border-[var(--sw-green-accent)]",
-                  isSelectValid && "border-[var(--sw-green-accent)]",
+                  "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)]",
+                  isSelectValid && "border-[var(--sg-primary-green)]",
                   error && "border-red-500"
                 )}
                 required={field.required}
@@ -548,7 +554,9 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 ))}
               </select>
               {isSelectValid && (
-                <CheckIcon className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-[var(--sw-success-green)] pointer-events-none" />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none">
+                  <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
+                </div>
               )}
             </div>
             {error && (

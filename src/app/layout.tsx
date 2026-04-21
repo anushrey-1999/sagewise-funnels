@@ -26,7 +26,7 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <Navbar />
           </Suspense>
-          <main className="flex-1 bg-[#F8F8F8]">
+          <main className="flex-1 bg-sg-canvas">
             {children}
           </main>
           <MinimalFooter />

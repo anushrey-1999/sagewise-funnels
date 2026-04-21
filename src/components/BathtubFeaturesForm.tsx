@@ -60,7 +60,7 @@ export function BathtubFeaturesForm() {
                 <div
                   className={cn(
                     "bg-white border border-gray-200 h-[43px] min-h-[40px] rounded-lg w-full sm:w-[380px] md:w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-colors",
-                    field.state.value.includes(feature.id) && "border-[#204c4b]"
+                    field.state.value.includes(feature.id) && "border-sg-primary"
                   )}
                   onClick={() => {
                     const currentValue = field.state.value;
@@ -96,7 +96,7 @@ export function BathtubFeaturesForm() {
           <Button
             type="submit"
             disabled={!hasFeatures || isSubmitting}
-            className="bg-[#204c4b] hover:bg-[#204c4b]/90 text-white px-6 mt-8 sm:mt-10 md:mt-12 w-full sm:w-[400px] md:w-[445px] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-sg-primary hover:bg-sg-primary-dark text-white px-6 mt-8 sm:mt-10 md:mt-12 w-full sm:w-[400px] md:w-[445px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="text-base font-medium">Continue</span>
             <ArrowRight className="h-3.5 w-3.5 ml-2" />

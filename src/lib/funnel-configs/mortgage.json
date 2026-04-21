@@ -145,13 +145,13 @@
         {
           "id": "zipCode",
           "type": "text",
-          "label": "",
-          "placeholder": "5-Digit Number",
+          "label": "Zip code",
+          "placeholder": "12345",
           "required": true,
           "autoForward": true,
           "validation": {
             "pattern": "^[0-9]{5}$",
-            "message": "Please enter a valid 5-digit zip code"
+            "message": "Please enter a valid 5-digit zip code."
           }
         }
       ]
@@ -195,13 +195,13 @@
         {
           "id": "zipCode",
           "type": "text",
-          "label": "",
-          "placeholder": "5-Digit Number",
+          "label": "Zip code",
+          "placeholder": "12345",
           "required": true,
           "autoForward": true,
           "validation": {
             "pattern": "^[0-9]{5}$",
-            "message": "Please enter a valid 5-digit zip code"
+            "message": "Please enter a valid 5-digit zip code."
           }
         }
       ]

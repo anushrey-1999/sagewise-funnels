@@ -42,54 +42,83 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   
-  /* Sagewise Design System Colors - Base Variables */
-  /* Green Colors */
-  --sw-green-primary: #2F4F4F; /* Dark green for selected states, text */
-  --sw-green-accent: #8FBC8F; /* Light green for borders, focus states */
-  --sw-success-green: #10B981; /* Checkmark icons, success indicators */
-  
-  /* CTA Colors */
-  --sw-cta-primary: #ECA400; /* Primary call-to-action buttons */
-  --sw-cta-hover: #D89400; /* Primary CTA hover state */
-  
-  /* Border & Input Colors */
-  --sw-border-gray: #D1D5DB; /* Default border color */
-  --sw-input-bg: #F0F9FF; /* Light blue input focus background */
-  
-  /* Text & Background Colors */
-  --sw-text-primary: #1F2937; /* Main text color */
-  --sw-bg-light: #F8F8F8; /* Page background color */
-  
-  /* Error Color */
-  --sw-error-red: #DC2626; /* Error states, validation messages */
-  
-  /* Sagewise Design System Colors - Tailwind Utilities */
+  /* ── Sagewise Design System ──────────────────────────────────────────── */
+
+  /* Core palette */
+  --sg-primary:          #2F6B57; /* Brand green */
+  --sg-primary-dark:     #1F4A3C; /* Deep brand green */
+  --sg-primary-tint:     #E4EDEA; /* Light green tint — inputs, highlights */
+  --sg-charcoal:         #1A2B2B; /* Near-black for body text */
+  --sg-interstitial-bg:  #0D1B2A; /* Dark overlay / interstitial screens */
+  --sg-funnel-header:    #2F4F4F; /* Funnel header surface */
+  --sg-canvas:           #FAFAF7; /* Page / canvas background */
+  --sg-white:            #FFFFFF; /* Pure white */
+  --sg-primary-green:    #22C98A; /* Vivid green — progress bar, active input border */
+  --sg-green-50:         #F1FCF7; /* Lightest green tint — selected option background */
+  --sg-green-tint:       #D8F8EA; /* Green tint — check icon circle background */
+  --sg-primary-text:     #214E4A; /* Primary text color */
+  --sg-green-medium:     #7DB99A; /* Medium green — footer copyright text */
+
+  /* Tailwind utilities — sg-* */
+  --color-sg-primary:         var(--sg-primary);
+  --color-sg-primary-dark:    var(--sg-primary-dark);
+  --color-sg-primary-tint:    var(--sg-primary-tint);
+  --color-sg-charcoal:        var(--sg-charcoal);
+  --color-sg-interstitial-bg: var(--sg-interstitial-bg);
+  --color-sg-funnel-header:   var(--sg-funnel-header);
+  --color-sg-canvas:          var(--sg-canvas);
+  --color-sg-white:           var(--sg-white);
+  --color-sg-primary-green:   var(--sg-primary-green);
+  --color-sg-green-50:        var(--sg-green-50);
+  --color-sg-green-tint:      var(--sg-green-tint);
+  --color-sg-primary-text:    var(--sg-primary-text);
+  --color-sg-green-medium:    var(--sg-green-medium);
+
+  /* CTA (unchanged) */
+  --sw-cta-primary: #ECA400;
+  --sw-cta-hover:   #D89400;
+
+  /* Error (unchanged) */
+  --sw-error-red: #DC2626;
+
+  /* Border */
+  --sw-border-gray: #D1D5DB;
+
+  /* ── Legacy sw-* aliases → new sg-* tokens ───────────────────────── */
+  --sw-green-primary: var(--sg-funnel-header);  /* selected states */
+  --sw-green-accent:  var(--sg-primary);        /* focus / valid borders */
+  --sw-success-green: var(--sg-primary);        /* checkmark icons */
+  --sw-input-bg:      var(--sg-primary-tint);   /* input focus background */
+  --sw-text-primary:  var(--sg-charcoal);       /* body text */
+  --sw-bg-light:      var(--sg-canvas);         /* page background */
+
+  /* Tailwind utilities — sw-* (kept for backward compat) */
   --color-sw-green-primary: var(--sw-green-primary);
-  --color-sw-green-accent: var(--sw-green-accent);
+  --color-sw-green-accent:  var(--sw-green-accent);
   --color-sw-success-green: var(--sw-success-green);
-  --color-sw-cta-primary: var(--sw-cta-primary);
-  --color-sw-cta-hover: var(--sw-cta-hover);
-  --color-sw-border-gray: var(--sw-border-gray);
-  --color-sw-input-bg: var(--sw-input-bg);
-  --color-sw-text-primary: var(--sw-text-primary);
-  --color-sw-bg-light: var(--sw-bg-light);
-  --color-sw-error-red: var(--sw-error-red);
-  
-  /* Legacy/Compatibility Colors (keeping for backward compatibility) */
+  --color-sw-cta-primary:   var(--sw-cta-primary);
+  --color-sw-cta-hover:     var(--sw-cta-hover);
+  --color-sw-border-gray:   var(--sw-border-gray);
+  --color-sw-input-bg:      var(--sw-input-bg);
+  --color-sw-text-primary:  var(--sw-text-primary);
+  --color-sw-bg-light:      var(--sw-bg-light);
+  --color-sw-error-red:     var(--sw-error-red);
+
+  /* ── Misc legacy tokens ──────────────────────────────────────────── */
   --color-white: #ffffff;
   --color-black: #000000;
-  --color-primary-main: var(--sw-green-primary);
-  --color-primary-dark: #001918;
-  --color-primary-light: #4D706F;
-  --color-secondary-main: var(--sw-cta-primary);
-  --color-secondary-light: #FCD34D;
-  --color-general-border: var(--sw-border-gray);
-  --color-general-border-three: #D4D4D4;
-  --color-general-primary: var(--sw-text-primary);
-  --color-general-secondary: var(--sw-bg-light);
-  --color-general-foreground: #0A0A0A;
-  --color-general-muted-foreground: #737373;
-  --color-general-primary-foreground: #FAFAFA;
+  --color-primary-main:              var(--sg-primary);
+  --color-primary-dark:              var(--sg-primary-dark);
+  --color-primary-light:             var(--sg-primary-tint);
+  --color-secondary-main:            var(--sw-cta-primary);
+  --color-secondary-light:           #FCD34D;
+  --color-general-border:            var(--sw-border-gray);
+  --color-general-border-three:      #D4D4D4;
+  --color-general-primary:           var(--sg-charcoal);
+  --color-general-secondary:         var(--sg-canvas);
+  --color-general-foreground:        #0A0A0A;
+  --color-general-muted-foreground:  #737373;
+  --color-general-primary-foreground: var(--sg-canvas);
 }
 
 :root {
@@ -159,6 +188,20 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-6px); }
+  30%       { transform: translateX(6px); }
+  45%       { transform: translateX(-4px); }
+  60%       { transform: translateX(4px); }
+  75%       { transform: translateX(-2px); }
+  90%       { transform: translateX(2px); }
+}
+
+.animate-shake {
+  animation: shake 0.45s ease-in-out;
 }
 
 @layer base {
