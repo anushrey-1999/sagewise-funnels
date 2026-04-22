@@ -99,7 +99,7 @@ function SliderField({
   const suffix = isPercent ? "%" : "";
 
   return (
-    <div className="w-full sm:w-[380px] md:w-[342px] flex flex-col gap-4">
+    <div className="w-full sm:w-[460px] flex flex-col gap-4">
       {field.label && (
         <Label htmlFor={field.id} className="text-base font-medium text-foreground">
           {field.label}
@@ -117,7 +117,7 @@ function SliderField({
           value={displayInput}
           onChange={(e) => handleInputChange(e.target.value)}
           className={cn(
-            "h-[55px] min-h-[55px] rounded-2xl text-lg font-semibold text-primary-main",
+            "h-[58px] min-h-[58px] rounded-2xl text-lg font-semibold text-primary-main",
             prefix ? "pl-8" : "pl-4",
             isValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
@@ -212,7 +212,7 @@ function FloatingLabelInput({
   const isFloating = isFocused || hasValue;
 
   return (
-    <div className="w-full sm:w-[380px] md:w-[342px]">
+    <div className="w-full sm:w-[460px]">
       <div className="relative">
         {field.label && (
           <label
@@ -237,7 +237,7 @@ function FloatingLabelInput({
           onBlur={() => setIsFocused(false)}
           maxLength={isZipCode ? 5 : undefined}
           className={cn(
-            "h-[55px] min-h-[55px] rounded-2xl pr-10",
+            "h-[58px] min-h-[58px] rounded-2xl pr-10",
             field.label ? "pt-5 pb-1" : "",
             isValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
@@ -360,7 +360,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
         // Plain checkbox style for newsletter
         if (isNewsletter) {
           return (
-            <div className="w-full sm:w-[380px] md:w-[342px] flex flex-col gap-3 mt-3">
+            <div className="w-full sm:w-[460px] flex flex-col gap-3 mt-3">
               <div className="flex items-center gap-2">
                 <Checkbox
                   checked={isChecked}
@@ -407,7 +407,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
         return (
           <div
             className={cn(
-              "border-[3px] border-[#e5e5e5] h-[55px] min-h-[55px] rounded-lg w-full max-w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sg-primary-green)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
+              "border-[3px] border-[#e5e5e5] h-[58px] min-h-[58px] rounded-lg w-full max-w-[460px] flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sg-primary-green)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
               "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)] !bg-white outline-none",
               isCheckboxValid && "border-[var(--sg-primary-green)]",
               error && "border-red-500"
@@ -522,7 +522,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
         const isSelectValid = isValidValue(field, value);
         
         return (
-          <div className="w-full sm:w-[380px] md:w-[342px]">
+          <div className="w-full sm:w-[460px]">
             {field.label && (
               <Label htmlFor={field.id} className="text-base font-medium text-foreground mb-2 block">
                 {field.label}
@@ -534,7 +534,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 value={typeof value === "string" ? value : ""}
                 onChange={(e) => onChange(e.target.value)}
                 className={cn(
-                  "h-[55px] min-h-[55px] w-full rounded-2xl border-[3px] border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-[var(--sg-primary-green)] hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+                  "h-[58px] min-h-[58px] w-full rounded-2xl border-[3px] border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-[var(--sg-primary-green)] hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
                   "!bg-white",
                   "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)]",
                   isSelectValid && "border-[var(--sg-primary-green)]",

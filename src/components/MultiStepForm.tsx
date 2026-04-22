@@ -968,7 +968,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 });
 
               return (
-                <div className="w-full sm:w-[380px] md:w-[342px] rounded-xl bg-sg-primary-tint px-6 py-5 text-center">
+                <div className="w-full sm:w-[460px] rounded-xl bg-sg-primary-tint px-6 py-5 text-center">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-general-muted-foreground">Home Value - Mortgage Balance</p>
                     <div className="rounded-lg bg-white/70 px-4 py-3">
@@ -986,7 +986,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
             })()}
 
             {config.id === "mortgage" && currentStepData.id === "contact" && (
-              <p className="w-full sm:w-[380px] md:w-[342px] text-sm text-general-muted-foreground">
+              <p className="w-full sm:w-[460px] text-sm text-general-muted-foreground">
                 {"\uD83D\uDD12"} Your information is secure and never sold to third parties.
               </p>
             )}
@@ -999,7 +999,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 onClick={handleNext}
                 style={firstStepButtonVars}
                 className={cn(
-                  "w-full sm:w-[380px] md:w-[342px] h-[52px] px-6 mt-1 flex items-center justify-center gap-2 rounded-full",
+                  "w-full sm:w-[460px] h-[52px] px-6 mt-1 flex items-center justify-center gap-2 rounded-full",
                   isFirstStep && config.firstStepButton
                     ? "bg-(--sw-first-step-cta-bg) hover:bg-(--sw-first-step-cta-hover) text-(--sw-first-step-cta-text)"
                     : "bg-sw-cta-primary hover:bg-sw-cta-hover text-white",
@@ -1038,7 +1038,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                   onClick={handleNext}
                   disabled={isSubmitting}
                   className={cn(
-                    "w-full sm:w-[380px] md:w-[342px] h-[52px] px-6 mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-full bg-sw-cta-primary hover:bg-sw-cta-hover text-white",
+                    "w-full sm:w-[460px] h-[52px] px-6 mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-full bg-sw-cta-primary hover:bg-sw-cta-hover text-white",
                     isShaking && "animate-shake"
                   )}
                 >
@@ -1056,7 +1056,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                     </>
                   )}
                 </Button>
-                <p className="text-[11px] text-[#9CA3AF] text-left w-full sm:w-[380px] md:w-[342px] leading-relaxed">
+                <p className="text-[11px] text-[#9CA3AF] text-left w-full sm:w-[460px] leading-relaxed">
                   {finalStepDisclaimer.includes("<a ") ? (
                     <span
                       className="[&_a]:underline [&_a]:text-inherit [&_a]:hover:opacity-90"

@@ -1,0 +1,112 @@
+{
+  "id": "cash4home-one",
+  "funnelId": "cash4home",
+  "adwallType": "one",
+  "title": "Top Cash Home Buyers Near You",
+  "subtitle": "Compare trusted cash buyers and get a no-obligation offer on your home.",
+  "updatedAt": "Updated April 22, 2026",
+  "trackingParams": {
+    "affiliateIdParam": "s1",
+    "transactionIdParam": "s2"
+  },
+  "metadata": {
+    "title": "Best Cash Home Buyers - Sagewise",
+    "description": "Compare top cash home buyers near you. Get a no-obligation offer and close in as little as 7 days."
+  },
+  "cards": [
+    {
+      "heading": "Opendoor",
+      "description": "Get a competitive cash offer on your home in minutes.",
+      "features": [
+        "Competitive cash offer in 24 hours",
+        "Close on your timeline — as fast as 14 days",
+        "No repairs or showings required"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Get My Offer",
+      "ratingsNumber": "9.8",
+      "ratingsCount": 5,
+      "logo": "/logos/cash4home/opendoor.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "MOST POPULAR",
+      "badgeIcon": "card",
+      "advertiserName": "Opendoor"
+    },
+    {
+      "heading": "Offerpad",
+      "description": "Sell your home fast with a guaranteed cash offer.",
+      "features": [
+        "Free local move included",
+        "Close in as little as 8 days",
+        "Flexible closing date up to 90 days out"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Get My Offer",
+      "ratingsNumber": "9.5",
+      "ratingsCount": 5,
+      "logo": "/logos/cash4home/offerpad.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "FREE LOCAL MOVE",
+      "badgeIcon": "card",
+      "advertiserName": "Offerpad"
+    },
+    {
+      "heading": "HomeVestors",
+      "description": "America's #1 cash home buyer — we buy houses as-is.",
+      "features": [
+        "No repairs, no cleaning required",
+        "Close in as little as 3 weeks",
+        "Over 140,000 homes purchased"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Get My Offer",
+      "ratingsNumber": "9.2",
+      "ratingsCount": 5,
+      "logo": "/logos/cash4home/homevestors.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeIcon": "card",
+      "advertiserName": "HomeVestors"
+    },
+    {
+      "heading": "Clever Offers",
+      "description": "Compare multiple cash offers from local buyers in one place.",
+      "features": [
+        "Receive up to 10 cash offers",
+        "Free, no-obligation service",
+        "Compare and choose the best offer"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Get My Offer",
+      "ratingsNumber": "9.0",
+      "ratingsCount": 5,
+      "logo": "/logos/cash4home/clever-offers.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeText": "COMPARE OFFERS",
+      "badgeIcon": "card",
+      "advertiserName": "Clever Offers"
+    },
+    {
+      "heading": "MarketPro Homebuyers",
+      "description": "Local cash buyers with a proven track record.",
+      "features": [
+        "Close in 7 days guaranteed",
+        "Zero fees or commissions",
+        "Cash offer same day"
+      ],
+      "buttonLink": "#",
+      "buttonText": "Get My Offer",
+      "ratingsNumber": "8.8",
+      "ratingsCount": 5,
+      "logo": "/logos/cash4home/marketpro.avif",
+      "logoWidth": "120px",
+      "logoHeight": "80px",
+      "badgeIcon": "card",
+      "advertiserName": "MarketPro Homebuyers"
+    }
+  ],
+  "disclaimers": "<div><strong>Opendoor</strong><p class=\"mt-2\">Offer eligibility and availability may vary by market. Terms and conditions apply.</p></div><div><strong>Offerpad</strong><p class=\"mt-2\">Free local move offer available in select markets. Terms and conditions apply.</p></div><div><strong>HomeVestors</strong><p class=\"mt-2\">Each HomeVestors franchise is independently owned and operated. Offers vary by location.</p></div>"
+}
