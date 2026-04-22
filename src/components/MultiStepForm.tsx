@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react"
 import { FormConfig, FormData } from "@/types/form";
 import { DynamicFormField } from "./DynamicFormField";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, Check } from "lucide-react";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Loader } from "./Loader";
@@ -1009,6 +1009,24 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 <span className="text-base font-bold leading-none">{firstStepButtonText}</span>
                 <ArrowRight className="h-[13.25px] w-[13.25px]" />
               </Button>
+            )}
+
+            {/* Trust bar — shown on all steps except the final form step */}
+            {!isLastStep && (
+              <div className="w-full mt-2">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 pt-3 w-full border-t border-general-border">
+                {[
+                  "Free to check",
+                  "Secure and confidential",
+                  "No pressure to commit",
+                ].map((label) => (
+                  <span key={label} className="flex items-center gap-1.5 text-xs md:text-sm text-general-muted-foreground">
+                    <Check className="size-3.5 shrink-0 text-sg-primary-green" strokeWidth={2.5} />
+                    {label}
+                  </span>
+                ))}
+              </div>
+              </div>
             )}
 
             {/* Submit button + disclaimer inside card for last step */}
