@@ -12,7 +12,7 @@ const PlainPageHeader = ({ title, subtitle, headingFont, subheadingFont, updated
   // Default font classes
   const defaultHeadingFont = "text-2xl lg:text-4xl text-center";
   const defaultSubheadingFont = "hidden lg:block text-center font-normal text-base lg:text-[17px] lg:max-w-[62.5rem] text-[#8A8A8A]";
-  const defaultUpdatedAtFont = "hidden lg:block text-center font-normal text-sm lg:text-sm text-primary-light";
+  const defaultUpdatedAtFont = "hidden lg:block text-center font-normal text-sm lg:text-sm text-sg-primary-green";
 
   const hasTitle = Boolean(title?.trim?.());
 

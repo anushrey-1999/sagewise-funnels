@@ -6,7 +6,7 @@
   "finalStep": {
     "buttonText": "Get My Rates",
     "loaderText": "Searching 100+ top lenders... Finding your best matches...",
-    "disclaimerText": "By clicking \"Get My Rates,\" you agree to our <a href=\"https://sagewise.net/terms-of-use/\" target=\"_blank\" rel=\"noopener noreferrer\">Terms of Use</a> and <a href=\"https://sagewise.net/privacy-policy/\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a> and expressly consent to receive calls, texts, emails, pre-recorded messages, and AI-generated voice messages from Sagewise and participating lenders or marketing partners at the telephone number provided, even if your number is listed on a Do Not Call registry. Consent is not a condition of purchase. Message and data rates may apply. You may opt out at any time by replying STOP."
+    "disclaimerText": "By clicking on the view results button above, I consent, acknowledge, and agree to our <a href=\"https://sagewise.net/terms-of-use/\" target=\"_blank\" rel=\"noopener noreferrer\">Terms of Use Agreement</a> and <a href=\"https://sagewise.net/privacy-policy/\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a>, and I am providing my ESIGN/electronic signature and express written consent agreement to permit the selected lenders, and parties calling on their behalf to contact me at the number provided on this page for marketing purposes relating to these companies' mortgages and other products, services, and financing, including through the use of automated dialing technology, AI generated/prerecorded/artificial voice, SMS/MMS text, even if my number is on any internal, federal or state Do Not Call registry list."
   },
   "steps": [
     {
@@ -392,7 +392,8 @@
             { "value": "excellent", "label": "Excellent (720+)" },
             { "value": "good", "label": "Good (680–719)" },
             { "value": "fair", "label": "Fair (620–679)" },
-            { "value": "poor", "label": "Poor (580–619)" }
+            { "value": "poor", "label": "Poor (580–619)" },
+            { "value": "below-580", "label": "Below 580" }
           ]
         }
       ]

@@ -70,7 +70,7 @@ export function Loader({
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center -mt-16 sm:-mt-24"
       style={{
         background:
           "linear-gradient(160deg, #0c1d35 0%, #0a1628 60%, #081220 100%)",
@@ -135,7 +135,7 @@ export function Loader({
         </div>
 
         {/* Static subheading from config */}
-        <p className="text-white text-[20px] font-semibold tracking-[-0.02em]">
+        <p className="text-white text-[20px] font-semibold tracking-[-0.02em] text-center px-6">
           {loaderText}
         </p>
 

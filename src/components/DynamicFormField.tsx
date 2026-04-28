@@ -195,6 +195,8 @@ function FloatingLabelInput({
 }) {
   const [isFocused, setIsFocused] = useState(false);
   const isZipCode = field.id === "zipCode";
+  const inputMode: React.InputHTMLAttributes<HTMLInputElement>["inputMode"] =
+    field.type === "tel" ? "tel" : isZipCode ? "numeric" : undefined;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value;
@@ -230,6 +232,7 @@ function FloatingLabelInput({
         <Input
           id={field.id}
           type={field.type}
+          inputMode={inputMode}
           placeholder={!field.label ? field.placeholder : undefined}
           value={typeof value === "string" || typeof value === "number" ? String(value) : ""}
           onChange={handleInputChange}

@@ -14,42 +14,36 @@ import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
 import { useSearchParams } from "next/navigation";
 import { injectImpressionScript } from "@/lib/injectImpressionScript";
 
-// Progress bar with circular back control (mobile + desktop)
 function ProgressBarRow({
   progress,
-  currentStep,
-  totalSteps,
   onBack,
-  backDisabled,
+  isFirstStep,
 }: {
   progress: number;
-  currentStep: number;
-  totalSteps: number;
   onBack: () => void;
-  backDisabled: boolean;
+  isFirstStep: boolean;
 }) {
   const clampedProgress = Math.max(0, Math.min(100, progress));
 
   return (
-    <div className="flex w-full flex-col gap-2">
-      {/* Top row: back button only */}
-      <div className="flex items-center">
-        <Button
+    <div className="flex w-full items-center gap-3">
+      {/* Back button — hidden on the first step */}
+      {!isFirstStep && (
+        <button
           type="button"
-          variant="outline"
           onClick={onBack}
-          disabled={backDisabled}
           aria-label="Go back"
-          className="size-8 shrink-0 rounded-full border-general-border bg-white p-0 shadow-sm hover:bg-gray-50 disabled:opacity-40"
+          className="flex shrink-0 items-center gap-1 text-primary-main transition-opacity hover:opacity-70 cursor-pointer"
         >
-          <ArrowLeft className="size-4 text-primary-main" aria-hidden />
-        </Button>
-      </div>
-      {/* Full-width progress bar */}
-      <div className="h-1.5 relative rounded-full w-full">
-        <div className="absolute bg-sg-primary-tint inset-0 rounded-full" />
+          <ArrowLeft className="size-4" aria-hidden />
+          <span className="hidden sm:inline text-sm font-medium">Back</span>
+        </button>
+      )}
+      {/* Progress bar fills remaining space */}
+      <div className="relative h-1.5 flex-1 rounded-full">
+        <div className="absolute inset-0 rounded-full bg-sg-primary-tint" />
         <div
-          className="absolute bottom-0 left-0 top-0 bg-sg-primary-green rounded-full transition-all duration-300"
+          className="absolute bottom-0 left-0 top-0 rounded-full bg-sg-primary-green transition-all duration-300"
           style={{ width: `${clampedProgress}%` }}
         />
       </div>
@@ -915,13 +909,15 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
 
   return (
     <>
-      <ProgressBarRow
-        progress={progress}
-        currentStep={currentVisibleStepPosition + 1}
-        totalSteps={totalVisibleSteps}
-        onBack={handleBack}
-        backDisabled={isFirstStep}
-      />
+      <div className="flex w-full justify-center">
+        <div className="w-full sm:w-[380px] md:w-[650px]">
+          <ProgressBarRow
+            progress={progress}
+            onBack={handleBack}
+            isFirstStep={isFirstStep}
+          />
+        </div>
+      </div>
       <div className="w-full flex flex-col gap-[48px] items-center">
         <div className="w-full">
           <div className="text-center space-y-0.5 flex flex-col justify-center items-center gap-1">
@@ -934,7 +930,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
               </p>
             ) : null}
           </div>
-          <div className="flex flex-col gap-2 md:gap-5 items-center mt-6 md:mt-8">
+          <div className="flex flex-col gap-1.5 md:gap-[14px] items-center mt-4 md:mt-5">
             {currentStepData.fields.map((field, index) => {
               const fieldValue = formData[currentStepData.id]?.[field.id];
               const fieldError = errors[currentStepData.id]?.[field.id];
