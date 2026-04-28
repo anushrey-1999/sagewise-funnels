@@ -4,7 +4,15 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Input({ className, type, value, "aria-invalid": ariaInvalid, ...props }: React.ComponentProps<"input">) {
+function Input({
+  className,
+  type,
+  value,
+  "aria-invalid": ariaInvalid,
+  onFocus,
+  onBlur,
+  ...props
+}: React.ComponentProps<"input">) {
   const [isFocused, setIsFocused] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
   
@@ -32,7 +40,7 @@ function Input({ className, type, value, "aria-invalid": ariaInvalid, ...props }
           input.style.removeProperty('-webkit-box-shadow')
           input.style.removeProperty('box-shadow')
         }
-      } catch (e) {
+      } catch {
         // If matches() fails, just remove inline styles
         input.style.removeProperty('-webkit-box-shadow')
         input.style.removeProperty('box-shadow')
@@ -53,22 +61,24 @@ function Input({ className, type, value, "aria-invalid": ariaInvalid, ...props }
       data-slot="input"
       value={value}
       aria-invalid={ariaInvalid}
-      onFocus={() => {
+      {...props}
+      onFocus={(event) => {
         setIsFocused(true)
+        onFocus?.(event)
       }}
-      onBlur={() => {
+      onBlur={(event) => {
         setIsFocused(false)
+        onBlur?.(event)
       }}
       className={cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input w-full min-w-0 rounded-md border-[3px] h-[55px] min-h-[55px] px-3 py-1 text-base shadow-xs transition-[color,box-shadow,background-color,border-color] duration-200 ease-out will-change-[color,box-shadow,transform,opacity] motion-reduce:transition-none motion-reduce:will-change-auto outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm cursor-pointer hover:border-[var(--sg-primary-green)] hover:shadow-md",
+        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input w-full min-w-0 rounded-md border-[3px] h-[55px] min-h-[55px] px-3 py-1 text-base shadow-xs transition-[color,box-shadow,background-color,border-color] duration-200 ease-out will-change-[color,box-shadow,transform,opacity] motion-reduce:transition-none motion-reduce:will-change-auto outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm cursor-pointer hover:border-sg-primary-green hover:shadow-md",
         isFocused 
-          ? "!bg-sg-primary-tint !border-[var(--sg-primary-green)]" 
-          : "!bg-white",
+          ? "bg-sg-primary-tint! border-sg-primary-green!" 
+          : "bg-white!",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         "forced-colors:border-[ButtonBorder] forced-colors:bg-[Field] forced-colors:text-[ButtonText]",
         className
       )}
-      {...props}
     />
   )
 }

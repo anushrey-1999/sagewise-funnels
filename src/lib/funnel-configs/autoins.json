@@ -395,7 +395,8 @@
             "rules": [
               {
                 "whenValues": [
-                  "bad"
+                  "bad",
+                  "poor"
                 ],
                 "to": "/adwall/autoins/one"
               },
@@ -417,19 +418,23 @@
           "options": [
             {
               "value": "excellent",
-              "label": "Excellent (720-850)"
+              "label": "Excellent (720+)"
             },
             {
               "value": "good",
-              "label": "Good (690-719)"
+              "label": "Good (680-719)"
             },
             {
               "value": "fair",
-              "label": "Fair (630-689)"
+              "label": "Fair (620-679)"
             },
             {
               "value": "bad",
-              "label": "Bad (350-629)"
+              "label": "Bad (580-619)"
+            },
+            {
+              "value": "poor",
+              "label": "Poor (Below 580)"
             }
           ]
         }
@@ -444,7 +449,8 @@
         "checkFieldId": "credit-score",
         "whenValues": [
           "fair",
-          "bad"
+          "bad",
+          "poor"
         ]
       },
       "fields": [
@@ -474,7 +480,8 @@
         "checkStepId": "credit-score",
         "checkFieldId": "credit-score",
         "whenValues": [
-          "bad"
+          "bad",
+          "poor"
         ]
       },
       "fields": [
@@ -505,7 +512,8 @@
           "checkStepId": "credit-score",
           "checkFieldId": "credit-score",
           "whenValues": [
-            "bad"
+            "bad",
+            "poor"
           ]
         },
         {

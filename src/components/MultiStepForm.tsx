@@ -780,19 +780,24 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
       }
     }
 
+    const isZipCodeField = field.id === "zipCode";
+
     // Determine if this field should trigger auto-forward
     // Check field.autoForward property first (manual control)
     // If not set, default to true only for radio, checkbox, and select
     // All other types (text, email, tel, number) default to false unless explicitly set
-    const shouldAutoForward = field.autoForward !== undefined 
-      ? field.autoForward 
-      : (field.type === "radio" || field.type === "checkbox" || field.type === "select" || field.type === "dropdown");
+    // Zip code steps must wait for the Continue CTA even if config opts into autoForward.
+    const shouldAutoForward =
+      !isZipCodeField &&
+      (field.autoForward !== undefined
+        ? field.autoForward
+        : (field.type === "radio" || field.type === "checkbox" || field.type === "select" || field.type === "dropdown"));
 
     // Determine if this field should be debounced
     // Only debounce text inputs (text, email, tel, number), but NOT zip code
     const shouldDebounce = 
       (field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "number") &&
-      field.id !== "zipCode";
+      !isZipCodeField;
 
     // Only proceed with auto-forward logic if this field should auto-forward
     if (shouldAutoForward) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import Link from "next/link";
 
 const FOOTER_LINKS = [
@@ -15,10 +16,9 @@ const MinimalFooter = () => {
       <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-gray-500">
         <span className="font-medium text-gray-700">Sagewise&reg;</span>
         {FOOTER_LINKS.map((link) => (
-          <>
+          <Fragment key={link.href}>
             <span aria-hidden>|</span>
             <Link
-              key={link.href}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
@@ -26,7 +26,7 @@ const MinimalFooter = () => {
             >
               {link.label}
             </Link>
-          </>
+          </Fragment>
         ))}
       </div>
     </div>
