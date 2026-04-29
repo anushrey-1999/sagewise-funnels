@@ -6,6 +6,8 @@ import type { FormConfig } from "@/types/form";
 import { Typography } from "@/components/ui/typography";
 import { Clock, Lock, Monitor, ShieldCheck } from "lucide-react";
 import { FunnelPostContent } from "@/components/FunnelPostContent";
+import AdsWallTemplate from "@/templates/AdsWallTemplate";
+import type { AdwallConfig } from "@/types/adwall";
 
 const INFO_BAR_ICONS = {
   monitor: Monitor,
@@ -14,7 +16,69 @@ const INFO_BAR_ICONS = {
   shield: ShieldCheck,
 } as const;
 
-export function FormPageContent({ formConfig, funnelId }: { formConfig: FormConfig; funnelId: string }) {
+function FunnelFormPanel({ formConfig, funnelId }: { formConfig: FormConfig; funnelId: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center w-full">
+      <div className="flex flex-col gap-5 items-start w-full max-w-[890px]">
+        <FormSection
+          config={formConfig}
+          funnelId={funnelId || formConfig.id}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ModalFunnelPageContent({
+  formConfig,
+  funnelId,
+  modalAdwallConfig,
+}: {
+  formConfig: FormConfig;
+  funnelId: string;
+  modalAdwallConfig: AdwallConfig;
+}) {
+  return (
+    <div className="relative min-h-[90vh] w-full overflow-hidden bg-white">
+      <div className="absolute inset-0 pointer-events-none select-none" aria-hidden="true">
+        <div className="min-h-screen scale-[1.02] opacity-75 blur-sm">
+          <AdsWallTemplate config={modalAdwallConfig} disableImpressions />
+        </div>
+        <div className="absolute inset-0 bg-white/55" />
+      </div>
+
+      <div className="relative z-10 flex min-h-[90vh] w-full items-start justify-center px-3 py-6 md:px-6 md:py-10">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={formConfig.title}
+          className="w-full max-w-[940px] rounded-3xl border border-general-border bg-sg-canvas px-3 py-5 shadow-2xl md:px-6 md:py-8"
+        >
+          <FunnelFormPanel formConfig={formConfig} funnelId={funnelId} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function FormPageContent({
+  formConfig,
+  funnelId,
+  modalAdwallConfig,
+}: {
+  formConfig: FormConfig;
+  funnelId: string;
+  modalAdwallConfig?: AdwallConfig | null;
+}) {
+  if (modalAdwallConfig) {
+    return (
+      <ModalFunnelPageContent
+        formConfig={formConfig}
+        funnelId={funnelId}
+        modalAdwallConfig={modalAdwallConfig}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col items-start w-full bg-sg-canvas min-h-[90vh] pt-2">
@@ -22,14 +86,7 @@ export function FormPageContent({ formConfig, funnelId }: { formConfig: FormConf
       <div className="flex flex-col items-start w-full pb-9 px-3 md:px-6 pt-3 md:pt-5 justify-between">
         <div className=" flex flex-col w-full flex-1 justify-between ">
           {/* Form Section */}
-          <div className="flex flex-col  items-center justify-center w-full">
-            <div className="flex flex-col gap-5 items-start w-full max-w-[890px]">
-              <FormSection
-                config={formConfig}
-                funnelId={funnelId || formConfig.id}
-              />
-            </div>
-          </div>
+          <FunnelFormPanel formConfig={formConfig} funnelId={funnelId} />
 
         </div>
       </div>

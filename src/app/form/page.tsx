@@ -1,19 +1,40 @@
 import { Suspense } from "react";
 import { FormPageContent } from "./FormPageContent";
 import type { Metadata } from "next";
-import { getPublishedFunnelConfig } from "@/lib/published-config";
+import { getPublishedAdwallConfig, getPublishedFunnelConfig } from "@/lib/published-config";
 import { getAdminUserFromCookies } from "@/lib/admin/session";
+import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
+type FormPageSearchParams = {
+  funnel?: string | string[];
+  preview?: string | string[];
+  funnelType?: string | string[];
+};
+
+function firstParam(value: string | string[] | undefined): string | undefined {
+  if (Array.isArray(value)) return value[0];
+  return value;
+}
+
+function parseAdwallRoute(path: string): { routePrefix: string; adwallType: string } | null {
+  const match = path.match(/^\/adwall\/([^/?#]+)\/([^/?#]+)/);
+  if (!match) return null;
+  return {
+    routePrefix: decodeURIComponent(match[1]),
+    adwallType: decodeURIComponent(match[2]),
+  };
+}
+
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: Promise<{ funnel?: string }>;
+  searchParams: Promise<FormPageSearchParams>;
 }): Promise<Metadata> {
   const params = await searchParams;
-  const funnel = params?.funnel;
+  const funnel = firstParam(params?.funnel);
   
   if (funnel) {
     const config = await getPublishedFunnelConfig(funnel);
@@ -34,15 +55,22 @@ export async function generateMetadata({
 export default async function FormPage({
   searchParams,
 }: {
-  searchParams: Promise<{ funnel?: string; preview?: string }>;
+  searchParams: Promise<FormPageSearchParams>;
 }) {
   const params = await searchParams;
-  const funnelId = params?.funnel || null;
-  const wantsPreview = params?.preview === "1";
+  const funnelId = firstParam(params?.funnel) || null;
+  const wantsPreview = firstParam(params?.preview) === "1";
+  const funnelType = firstParam(params?.funnelType)?.toLowerCase();
+  const isModalFunnel = funnelType === "modal";
   const adminUser = wantsPreview ? await getAdminUserFromCookies() : null;
   const useDraft = wantsPreview && !!adminUser;
 
   const formConfig = await getPublishedFunnelConfig(funnelId, { useDraft });
+  const modalAdwallRoute =
+    formConfig && isModalFunnel ? parseAdwallRoute(resolvePostSubmitRedirect(formConfig, {})) : null;
+  const modalAdwallConfig = modalAdwallRoute
+    ? await getPublishedAdwallConfig(modalAdwallRoute.routePrefix, modalAdwallRoute.adwallType, { useDraft })
+    : null;
 
   return (
     <Suspense
@@ -53,7 +81,11 @@ export default async function FormPage({
       }
     >
       {formConfig ? (
-        <FormPageContent formConfig={formConfig} funnelId={funnelId || formConfig.id} />
+        <FormPageContent
+          formConfig={formConfig}
+          funnelId={funnelId || formConfig.id}
+          modalAdwallConfig={isModalFunnel ? modalAdwallConfig : null}
+        />
       ) : (
         <div className="bg-sg-canvas flex flex-col items-center justify-center min-h-screen w-full px-4">
           <div className="text-center max-w-md">

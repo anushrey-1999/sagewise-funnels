@@ -12,6 +12,7 @@ interface AdsWallTemplateProps {
   config: AdwallConfig;
   resolvedCity?: string | null;
   updatedAtOverride?: string | null;
+  disableImpressions?: boolean;
 }
 
 /**
@@ -32,7 +33,7 @@ function interpolateTemplate(template: string, variables: Record<string, string>
   return out;
 }
 
-const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTemplateProps) => {
+const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpressions = false }: AdsWallTemplateProps) => {
   const searchParams = useSearchParams();
 
   const cleanParam = (value: string | null): string | null => {
@@ -131,6 +132,21 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
           <div ref={containerRef} className="flex flex-col gap-4">
             {config.cards?.filter((item) => !item?.isHidden).map((item, index) => {
               const { impressionScript, ...cardProps } = item;
+              const card = (
+                <AdsWallCards
+                  {...cardProps}
+                  buttonText={cardProps.buttonText || "View My Rates"}
+                  affiliateId={affiliateId}
+                  transactionId={transactionId}
+                  extraTrackingParams={config.trackingParams?.sub3 ? { sub3: config.trackingParams.sub3 } : undefined}
+                  ctaMinWidthPx={ctaMinWidthPx}
+                />
+              );
+
+              if (disableImpressions) {
+                return <div key={index}>{card}</div>;
+              }
+
               return (
                 <ImpressionOnView
                   key={index}
@@ -138,14 +154,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride }: AdsWallTem
                   dedupeKey={`${config.id}:${index}`}
                   debugLabel={item.advertiserName || item.heading}
                 >
-                  <AdsWallCards
-                    {...cardProps}
-                    buttonText={cardProps.buttonText || "View My Rates"}
-                    affiliateId={affiliateId}
-                    transactionId={transactionId}
-                    extraTrackingParams={config.trackingParams?.sub3 ? { sub3: config.trackingParams.sub3 } : undefined}
-                    ctaMinWidthPx={ctaMinWidthPx}
-                  />
+                  {card}
                 </ImpressionOnView>
               );
             })}
