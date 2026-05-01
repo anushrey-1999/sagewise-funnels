@@ -312,3 +312,39 @@
     }
   }
 }
+
+@layer components {
+  .rich-text-editor:empty::before {
+    color: var(--color-general-muted-foreground);
+    content: attr(data-placeholder);
+    pointer-events: none;
+  }
+
+  .rich-text-editor :where(p, div) {
+    margin-block: 0 0.5rem;
+  }
+
+  .rich-text-editor :where(h1, h2, h3, h4) {
+    margin-block: 0.75rem 0.35rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .rich-text-editor :where(ul, ol) {
+    margin-block: 0.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .rich-text-editor ul {
+    list-style: disc;
+  }
+
+  .rich-text-editor ol {
+    list-style: decimal;
+  }
+
+  .rich-text-editor a {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+}

@@ -23,8 +23,6 @@ import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 
-const MAX_CARD_FEATURES = 3;
-
 function normalizeTemplateVariables(value: string | undefined): string | undefined {
   if (value == null) return value;
   return value
@@ -214,6 +212,175 @@ function ImageUploadField(props: {
   );
 }
 
+function RichTextEditor(props: {
+  id: string;
+  label: string;
+  value: string;
+  placeholder?: string;
+  onChange: (next: string) => void;
+}) {
+  const editorRef = React.useRef<HTMLDivElement | null>(null);
+  const lastHtmlRef = React.useRef("");
+
+  React.useEffect(() => {
+    const next = props.value ?? "";
+    if (!editorRef.current || next === lastHtmlRef.current) return;
+    editorRef.current.innerHTML = next;
+    lastHtmlRef.current = next;
+  }, [props.value]);
+
+  const emitFromEditor = React.useCallback(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const html = editor.textContent?.trim() ? editor.innerHTML : "";
+    lastHtmlRef.current = html;
+    props.onChange(html);
+  }, [props]);
+
+  const runCommand = React.useCallback(
+    (command: string, value?: string) => {
+      editorRef.current?.focus();
+      document.execCommand(command, false, value);
+      emitFromEditor();
+    },
+    [emitFromEditor]
+  );
+
+  const addLink = React.useCallback(() => {
+    const url = window.prompt("Enter the link URL");
+    if (url == null) return;
+
+    const trimmed = url.trim();
+    if (!trimmed) {
+      runCommand("unlink");
+      return;
+    }
+
+    const href = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+    runCommand("createLink", href);
+  }, [runCommand]);
+
+  const toolbarButtonClass = cn(adminSmallButton, "h-8 px-2 text-xs");
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={props.id}>{props.label}</Label>
+      <div className="overflow-hidden rounded-xl border border-general-border bg-white">
+        <div className="flex flex-wrap items-center gap-1 border-b border-general-border bg-[#fafafa] p-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={toolbarButtonClass}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => runCommand("formatBlock", "p")}
+          >
+            Normal
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={toolbarButtonClass}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => runCommand("formatBlock", "h3")}
+          >
+            Heading
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={cn(toolbarButtonClass, "font-bold")}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => runCommand("bold")}
+          >
+            B
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={cn(toolbarButtonClass, "italic")}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => runCommand("italic")}
+          >
+            I
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={cn(toolbarButtonClass, "underline")}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => runCommand("underline")}
+          >
+            U
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={toolbarButtonClass}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => runCommand("insertUnorderedList")}
+          >
+            Bullets
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={toolbarButtonClass}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => runCommand("insertOrderedList")}
+          >
+            Numbers
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={toolbarButtonClass}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={addLink}
+          >
+            Link
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className={toolbarButtonClass}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => runCommand("removeFormat")}
+          >
+            Clear
+          </Button>
+        </div>
+        <div
+          id={props.id}
+          ref={editorRef}
+          role="textbox"
+          aria-label={props.label}
+          aria-multiline="true"
+          contentEditable
+          suppressContentEditableWarning
+          className="rich-text-editor min-h-[170px] w-full px-4 py-3 text-sm leading-6 outline-none focus-visible:bg-(--sw-input-bg)"
+          data-placeholder={props.placeholder}
+          onInput={emitFromEditor}
+          onBlur={emitFromEditor}
+          onKeyDown={stopAccordionFieldKeyPropagation}
+        />
+      </div>
+      <div className="text-xs text-general-muted-foreground">
+        Use the toolbar to format text, add lists, and turn selected text into links.
+      </div>
+    </div>
+  );
+}
+
 export default function AdwallConfigFormEditor(props: {
   initialDraft: unknown;
   resetKey: string;
@@ -329,7 +496,6 @@ export default function AdwallConfigFormEditor(props: {
   const addFeature = (cardIndex: number) => {
     const next = cloneJson(draft) as AdwallConfig;
     const current = Array.isArray(next.cards[cardIndex]?.features) ? next.cards[cardIndex]!.features : [];
-    if (current.length >= MAX_CARD_FEATURES) return;
     next.cards[cardIndex]!.features = [...current, ""];
     emitNext(next);
   };
@@ -542,16 +708,13 @@ export default function AdwallConfigFormEditor(props: {
 
           <Separator />
 
-          <div className="space-y-2">
-            <Label htmlFor="disclaimers">Disclaimers</Label>
-            <textarea
-              id="disclaimers"
-              className={cn(adminTextareaInput, "min-h-[90px]")}
-              value={values.disclaimers ?? ""}
-              onChange={(e) => emitPatch(["disclaimers"], e.target.value)}
-              placeholder="Optional disclaimer text"
-            />
-          </div>
+          <RichTextEditor
+            id="disclaimers"
+            label="Disclaimers"
+            value={values.disclaimers ?? ""}
+            onChange={(next) => emitPatch(["disclaimers"], next)}
+            placeholder="Optional disclaimer text"
+          />
         </div>
       ) : null}
 
@@ -643,7 +806,6 @@ export default function AdwallConfigFormEditor(props: {
                           size="sm"
                           className={adminSmallButton}
                           onClick={() => addFeature(idx)}
-                          disabled={(card.features?.length ?? 0) >= MAX_CARD_FEATURES}
                         >
                           <Plus className="h-4 w-4" />
                           Add feature
@@ -651,7 +813,7 @@ export default function AdwallConfigFormEditor(props: {
                       </div>
                       <div className="space-y-2">
                         {Array.isArray(card.features) && card.features.length > 0 ? (
-                          card.features.slice(0, MAX_CARD_FEATURES).map((feature, featureIdx) => (
+                          card.features.map((feature, featureIdx) => (
                             <div key={featureIdx} className="flex items-center gap-2">
                               <Input
                                 value={feature ?? ""}
@@ -675,11 +837,6 @@ export default function AdwallConfigFormEditor(props: {
                             No features added yet. Click <span className="font-medium text-general-primary">Add feature</span> to create the first item.
                           </div>
                         )}
-                        {Array.isArray(card.features) && card.features.length >= MAX_CARD_FEATURES ? (
-                          <div className="text-xs text-general-muted-foreground">
-                            You can add up to {MAX_CARD_FEATURES} bullet points per card.
-                          </div>
-                        ) : null}
                       </div>
                     </div>
 

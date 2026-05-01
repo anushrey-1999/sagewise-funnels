@@ -219,10 +219,9 @@ const AdsWallCards = ({
                 />
               ) : null}
               <ul className="list-disc ml-5 flex flex-col gap-0.5">
-                {features.slice(0, 3).map((feature, index) => (
+                {features.map((feature, index) => (
                   <li
                     key={index}
-                    className={index >= 2 ? "hidden lg:list-item" : undefined}
                     dangerouslySetInnerHTML={{ __html: feature }}
                   />
                 ))}
