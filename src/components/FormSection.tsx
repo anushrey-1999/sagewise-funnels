@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { MultiStepForm } from "./MultiStepForm";
 import { FormConfig, FormData } from "@/types/form";
-import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { Loader } from "./Loader";
 import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
 import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
+import { buildMortgageRankingParams } from "@/lib/mortgage-adwall-ranking";
 
 interface FormSectionProps {
   config: FormConfig;
@@ -15,7 +15,6 @@ interface FormSectionProps {
 }
 
 export function FormSection({ config, funnelId }: FormSectionProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -140,6 +139,14 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       name: firstName,
       zip: zipCode,
     };
+    const mortgageRankingParams =
+      config.id === "mortgage" ? buildMortgageRankingParams(formData, destinationPath) : null;
+
+    if (mortgageRankingParams) {
+      params.rankCredit = mortgageRankingParams.rankCredit;
+      params.rankAmount = mortgageRankingParams.rankAmount;
+    }
+
     if (config.id === "cc-finbuzz") {
       params.sub4 = affiliateId;
       params.sub5 = transactionId;

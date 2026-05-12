@@ -7,6 +7,7 @@ import { useCallback, useMemo } from "react";
 import { AdwallConfig } from "@/types/adwall";
 import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
 import ImpressionOnView from "@/components/ImpressionOnView";
+import { sortAdwallCards } from "@/lib/generic-adwall-ranking";
 
 interface AdsWallTemplateProps {
   config: AdwallConfig;
@@ -33,13 +34,13 @@ function interpolateTemplate(template: string, variables: Record<string, string>
   return out;
 }
 
+function cleanParam(value: string | null): string | null {
+  const cleaned = value?.replace(/^["']|["']$/g, "").trim();
+  return cleaned ? cleaned : null;
+}
+
 const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpressions = false }: AdsWallTemplateProps) => {
   const searchParams = useSearchParams();
-
-  const cleanParam = (value: string | null): string | null => {
-    const cleaned = value?.replace(/^["']|["']$/g, "").trim();
-    return cleaned ? cleaned : null;
-  };
 
   // Extract and clean the IDs from URL parameters based on config
   const affiliateId = useMemo(() => {
@@ -111,7 +112,26 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
     return interpolateTemplate(selectedSubtitle, templateVars);
   }, [selectedSubtitle, templateVars]);
 
-  const { containerRef: ctaRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([config.cards]);
+  const visibleCards = useMemo(() => {
+    const cards = config.cards?.filter((item) => !item?.isHidden) ?? [];
+    
+    // Extract ranking params from URL (any param starting with "rank")
+    const rankingParams: Record<string, string> = {};
+    for (const [key, value] of searchParams.entries()) {
+      if (key.startsWith("rank") && value) {
+        rankingParams[key] = cleanParam(value) || value;
+      }
+    }
+
+    // If no ranking params or no ranking config, return cards as-is
+    if (Object.keys(rankingParams).length === 0 || !config.rankingConfig) {
+      return cards;
+    }
+
+    return sortAdwallCards(cards, config, rankingParams);
+  }, [config, searchParams]);
+
+  const { containerRef: ctaRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([visibleCards]);
   const containerRef = useCallback((node: HTMLDivElement | null) => {
     ctaRef.current = node;
   }, [ctaRef]);
@@ -130,7 +150,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
       <div className="relative z-0 flex flex-col items-center w-full px-2 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
           <div ref={containerRef} className="flex flex-col gap-4">
-            {config.cards?.filter((item) => !item?.isHidden).map((item, index) => {
+            {visibleCards.map((item, index) => {
               const { impressionScript, ...cardProps } = item;
               const card = (
                 <AdsWallCards
@@ -163,10 +183,10 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
       </div>
 
       {/* Mobile-only: card-level disclosures in page footer */}
-      {config.cards?.some((item) => !item?.isHidden && item.bottomBoxHtml) && (
+      {visibleCards.some((item) => item.bottomBoxHtml) && (
         <div className="lg:hidden w-full max-w-[970px] mx-auto px-2 sm:px-6 mb-6 flex flex-col gap-3">
-          {config.cards
-            .filter((item) => !item?.isHidden && item.bottomBoxHtml)
+          {visibleCards
+            .filter((item) => item.bottomBoxHtml)
             .map((item, index) => (
               <div key={index} className="rounded-lg border border-general-border bg-white px-4 py-3 text-[10px] leading-relaxed text-[#9CA3AF] [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2">
                 <span dangerouslySetInnerHTML={{ __html: item.bottomBoxHtml! }} />

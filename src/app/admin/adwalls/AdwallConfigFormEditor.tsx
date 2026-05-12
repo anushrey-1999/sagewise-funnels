@@ -470,6 +470,10 @@ export default function AdwallConfigFormEditor(props: {
     sanitizePathSegment(values.adwallType ?? "") || "type"
   }`;
 
+  const rankingLenderNames = draft.rankingConfig?.lenders 
+    ? Object.keys(draft.rankingConfig.lenders).sort() 
+    : [];
+
   const deleteCard = (idx: number) => {
     const next = cloneJson(draft) as AdwallConfig;
     next.cards = cards.filter((_, i) => i !== idx);
@@ -480,16 +484,6 @@ export default function AdwallConfigFormEditor(props: {
     const next = cloneJson(draft) as AdwallConfig;
     const copy = cloneJson(cards[idx]) as AdwallCard;
     next.cards = [...cards.slice(0, idx + 1), copy, ...cards.slice(idx + 1)];
-    emitNext(next);
-  };
-
-  const moveCard = (from: number, to: number) => {
-    if (to < 0 || to >= cards.length) return;
-    const next = cloneJson(draft) as AdwallConfig;
-    const arr = [...cards];
-    const [item] = arr.splice(from, 1);
-    arr.splice(to, 0, item!);
-    next.cards = arr;
     emitNext(next);
   };
 
@@ -739,19 +733,6 @@ export default function AdwallConfigFormEditor(props: {
                 </AccordionTrigger>
                 <AccordionContent className="pb-4">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <Button type="button" variant="outline" size="sm" className={adminSmallButton} onClick={() => moveCard(idx, idx - 1)} disabled={idx === 0}>
-                      Move up
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className={adminSmallButton}
-                      onClick={() => moveCard(idx, idx + 1)}
-                      disabled={idx === cards.length - 1}
-                    >
-                      Move down
-                    </Button>
                     <Button type="button" variant="outline" size="sm" className={adminSmallButton} onClick={() => duplicateCard(idx)}>
                       Duplicate
                     </Button>
@@ -781,12 +762,70 @@ export default function AdwallConfigFormEditor(props: {
                     onKeyDownCapture={stopAccordionFieldKeyPropagation}
                   >
                     <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-heading`}>Title</Label>
-                      <Input
-                        id={`c-${idx}-heading`}
-                        value={card.heading ?? ""}
-                        onChange={(e) => emitPatch(["cards", idx, "heading"], e.target.value)}
-                      />
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor={`c-${idx}-heading`}>
+                          Lender Name
+                        </Label>
+                        {rankingLenderNames.length > 0 && (
+                          <span className="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                            Matrix Ranking Active
+                          </span>
+                        )}
+                      </div>
+                      {rankingLenderNames.length > 0 ? (
+                        <>
+                          <select
+                            id={`c-${idx}-heading`}
+                            value={card.heading ?? ""}
+                            onChange={(e) => emitPatch(["cards", idx, "heading"], e.target.value)}
+                            className={cn(
+                              "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            )}
+                          >
+                            <option value="">Select a lender from matrix...</option>
+                            {rankingLenderNames.map((lenderName) => (
+                              <option key={lenderName} value={lenderName}>
+                                {lenderName}
+                              </option>
+                            ))}
+                            <option value="__custom__">Custom lender (not in matrix)</option>
+                          </select>
+                          <div className="text-[10px] text-general-muted-foreground">
+                            {card.heading && rankingLenderNames.includes(card.heading) 
+                              ? "This card will be ranked according to your matrix configuration" 
+                              : card.heading === "__custom__"
+                              ? "Enter a custom lender name below"
+                              : card.heading
+                              ? "This lender is not in your matrix and will appear after all ranked lenders"
+                              : "Select a lender to enable smart ranking"}
+                          </div>
+                          {card.heading && !rankingLenderNames.includes(card.heading) && card.heading !== "__custom__" ? (
+                            <div className="text-xs text-orange-600 bg-orange-50 border border-orange-200 rounded px-2 py-1.5 mt-1">
+                              <strong>Not in Matrix:</strong> This lender will appear after ranked lenders. Add &quot;{card.heading}&quot; to your Matrix to enable ranking.
+                            </div>
+                          ) : null}
+                          {card.heading === "__custom__" ? (
+                            <Input
+                              value=""
+                              onChange={(e) => emitPatch(["cards", idx, "heading"], e.target.value)}
+                              placeholder="Enter custom lender name"
+                              className="mt-2"
+                            />
+                          ) : null}
+                        </>
+                      ) : (
+                        <>
+                          <Input
+                            id={`c-${idx}-heading`}
+                            value={card.heading ?? ""}
+                            onChange={(e) => emitPatch(["cards", idx, "heading"], e.target.value)}
+                            placeholder="Enter lender name"
+                          />
+                          <div className="text-[10px] text-general-muted-foreground">
+                            Configure a ranking matrix to enable smart lender ordering
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div className="space-y-2 md:col-span-2">
                       <Label htmlFor={`c-${idx}-desc`}>Headline</Label>

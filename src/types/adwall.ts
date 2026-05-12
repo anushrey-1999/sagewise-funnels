@@ -1,3 +1,35 @@
+export interface RankingDimensionBucket {
+  id: string;
+  label: string;
+  /** Optional: Map form field values to this bucket. If not specified, matches by bucket id */
+  matchValues?: string[];
+  /** For calculated/numeric dimensions: minimum value (inclusive) */
+  min?: number;
+  /** For calculated/numeric dimensions: maximum value (exclusive). Use null or undefined for "plus" ranges */
+  max?: number;
+}
+
+export interface RankingDimension {
+  id: string;
+  label: string;
+  /** The form field ID to read the value from. Defaults to dimension id if not specified. */
+  fieldId?: string;
+  /** How to derive the value: 'direct' (use field value), 'calculated' (run custom logic). Defaults to 'direct'. */
+  valueType?: "direct" | "calculated";
+  /** For calculated values: specify the calculation type */
+  calculation?: {
+    type: "mortgage-amount" | "custom";
+    /** Fields needed for calculation */
+    requiredFields?: string[];
+  };
+  buckets: RankingDimensionBucket[];
+}
+
+export interface RankingConfig {
+  dimensions: RankingDimension[];
+  lenders: Record<string, Record<string, number>>;
+}
+
 export interface AdwallCard {
   heading: string;
   description: string;
@@ -51,6 +83,7 @@ export interface AdwallConfig {
     tagline?: string; // e.g., "Speak to a licensed agent:"
     phone?: string; // display value, e.g., "1-833-906-2737"
   };
+  rankingConfig?: RankingConfig;
   cards: AdwallCard[];
   disclaimers?: string;
   metadata?: {

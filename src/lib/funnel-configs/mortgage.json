@@ -389,11 +389,10 @@
           "label": "",
           "required": true,
           "options": [
-            { "value": "excellent", "label": "Excellent (720+)" },
-            { "value": "good", "label": "Good (680-719)" },
+            { "value": "excellent", "label": "Excellent (740+)" },
+            { "value": "good", "label": "Good (680-739)" },
             { "value": "fair", "label": "Fair (620-679)" },
-            { "value": "bad", "label": "Bad (580-619)" },
-            { "value": "poor", "label": "Poor (Below 580)" }
+            { "value": "poor", "label": "Poor (Below 620)" }
           ]
         }
       ]

@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 import AdwallConfigFormEditor from "./adwalls/AdwallConfigFormEditor";
+import MetricsEditor from "./adwalls/MetricsEditor";
 import {
   adminButtonPrimary,
   adminButtonSecondary,
@@ -34,6 +35,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { adwallConfigSchema } from "@/lib/config-schemas";
 import { cn } from "@/lib/utils";
+import type { RankingConfig } from "@/types/adwall";
 
 type ConfigKind = "funnel" | "adwall" | "demo-adwall";
 
@@ -44,7 +46,7 @@ type VersionRow = {
   createdBy: string | null;
 };
 
-type AdwallEditorTab = "basic" | "publishers";
+type AdwallEditorTab = "basic" | "metrics" | "publishers";
 type AdwallContentTab = "form" | "json" | "versions";
 
 function createEmptyPublisherCard() {
@@ -725,6 +727,10 @@ export default function ConfigEditorClient(props: {
                   <LayoutTemplate className="mr-2 h-4 w-4" />
                   Basic
                 </TabsTrigger>
+                <TabsTrigger value="metrics">
+                  <PencilLine className="mr-2 h-4 w-4" />
+                  Matrix
+                </TabsTrigger>
                 <TabsTrigger value="publishers">
                   <Users className="mr-2 h-4 w-4" />
                   Offers Tiles
@@ -752,6 +758,37 @@ export default function ConfigEditorClient(props: {
                     draftObjRef.current = next;
                     hasDirtyEditsRef.current = true;
                     setDraftObj(next);
+                  }}
+                />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="metrics" className="mt-0">
+              <div className="bg-[#fafafa] p-5">
+                <MetricsEditor
+                  rankingConfig={
+                    draftObj && typeof draftObj === "object" && "rankingConfig" in draftObj
+                      ? (draftObj as { rankingConfig?: RankingConfig }).rankingConfig ?? null
+                      : null
+                  }
+                  funnelId={
+                    draftObj && typeof draftObj === "object" && "funnelId" in draftObj
+                      ? String((draftObj as { funnelId?: unknown }).funnelId ?? "")
+                      : ""
+                  }
+                  adwallType={
+                    draftObj && typeof draftObj === "object" && "adwallType" in draftObj
+                      ? String((draftObj as { adwallType?: unknown }).adwallType ?? "")
+                      : ""
+                  }
+                  onChange={(next) => {
+                    const updated = {
+                      ...(draftObj as object),
+                      rankingConfig: next,
+                    };
+                    draftObjRef.current = updated;
+                    hasDirtyEditsRef.current = true;
+                    setDraftObj(updated);
                   }}
                 />
               </div>

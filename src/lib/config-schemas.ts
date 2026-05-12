@@ -140,6 +140,33 @@ export const funnelConfigSchema = z
   .passthrough();
 
 // Adwall
+const rankingDimensionBucketSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  matchValues: z.array(z.string()).optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+});
+
+const rankingDimensionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  fieldId: z.string().optional(),
+  valueType: z.enum(["direct", "calculated"]).optional(),
+  calculation: z
+    .object({
+      type: z.enum(["mortgage-amount", "custom"]),
+      requiredFields: z.array(z.string()).optional(),
+    })
+    .optional(),
+  buckets: z.array(rankingDimensionBucketSchema),
+});
+
+const rankingConfigSchema = z.object({
+  dimensions: z.array(rankingDimensionSchema),
+  lenders: z.record(z.string(), z.record(z.string(), z.number())),
+});
+
 const adwallCardSchema = z
   .object({
     heading: z.string(),
@@ -189,6 +216,7 @@ export const adwallConfigSchema = z
       })
       .passthrough()
       .optional(),
+    rankingConfig: rankingConfigSchema.optional(),
     cards: z.array(adwallCardSchema).min(1),
     disclaimers: z.string().optional(),
     metadata: z
