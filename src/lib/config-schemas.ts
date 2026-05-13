@@ -165,6 +165,7 @@ const rankingDimensionSchema = z.object({
 const rankingConfigSchema = z.object({
   dimensions: z.array(rankingDimensionSchema),
   lenders: z.record(z.string(), z.record(z.string(), z.number())),
+  rankingNumbers: z.record(z.string(), z.string()).optional(),
 });
 
 const adwallCardSchema = z

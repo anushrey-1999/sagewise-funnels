@@ -8,7 +8,7 @@ import type { PutBlobResult } from "@vercel/blob";
 import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 
 import { adwallConfigSchema } from "@/lib/config-schemas";
-import type { AdwallCard, AdwallConfig } from "@/types/adwall";
+import type { AdwallCard, AdwallConfig, RankingConfig } from "@/types/adwall";
 import {
   adminIconDestructiveButton,
   adminSmallButton,
@@ -120,6 +120,26 @@ function isPreviewableImageSrc(src: string): boolean {
   } catch {
     return false;
   }
+}
+
+function normalizeLenderName(value: string | undefined): string {
+  return (value ?? "").trim().toLowerCase();
+}
+
+function getMatrixRankingNumber(card: AdwallCard, rankingConfig: RankingConfig | undefined): string | undefined {
+  const rankingNumbers = rankingConfig?.rankingNumbers;
+  if (!rankingNumbers) return undefined;
+
+  for (const lenderName of [card.heading, card.advertiserName]) {
+    const exactMatch = lenderName ? rankingNumbers[lenderName] : undefined;
+    if (exactMatch !== undefined) return exactMatch;
+
+    const normalizedLenderName = normalizeLenderName(lenderName);
+    const matchedEntry = Object.entries(rankingNumbers).find(([name]) => normalizeLenderName(name) === normalizedLenderName);
+    if (matchedEntry) return matchedEntry[1];
+  }
+
+  return undefined;
 }
 
 function ImageUploadField(props: {
@@ -719,6 +739,8 @@ export default function AdwallConfigFormEditor(props: {
             const heading = card?.heading?.trim() || `Card ${idx + 1}`;
             const badge = card?.badgeText?.trim();
             const hidden = !!card?.isHidden;
+            const matrixRankingNumber = getMatrixRankingNumber(card, draft.rankingConfig);
+            const isMatrixRankingNumberActive = rankingLenderNames.length > 0;
 
             return (
               <AccordionItem key={idx} value={`card-${idx}`} className="px-4">
@@ -953,13 +975,28 @@ export default function AdwallConfigFormEditor(props: {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor={`c-${idx}-rating`}>Rating number</Label>
-                      <Input
-                        id={`c-${idx}-rating`}
-                        value={card.ratingsNumber ?? ""}
-                        onChange={(e) => emitPatch(["cards", idx, "ratingsNumber"], e.target.value)}
-                        placeholder="4.8"
-                      />
+                      <Label htmlFor={`c-${idx}-rating`}>Ranking number</Label>
+                      {isMatrixRankingNumberActive ? (
+                        <div
+                          id={`c-${idx}-rating`}
+                          aria-readonly="true"
+                          className="flex h-[55px] min-h-[55px] w-full select-none items-center rounded-md border-[3px] border-input bg-[#fafafa] px-3 py-1 text-base text-general-muted-foreground shadow-xs md:text-sm"
+                        >
+                          {matrixRankingNumber ?? card.ratingsNumber ?? ""}
+                        </div>
+                      ) : (
+                        <Input
+                          id={`c-${idx}-rating`}
+                          value={card.ratingsNumber ?? ""}
+                          onChange={(e) => emitPatch(["cards", idx, "ratingsNumber"], e.target.value)}
+                          placeholder="9.6"
+                        />
+                      )}
+                      {isMatrixRankingNumberActive ? (
+                        <div className="text-[10px] text-general-muted-foreground">
+                          Controlled by the Matrix tab&apos;s Ranking number column.
+                        </div>
+                      ) : null}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor={`c-${idx}-ratingCount`}>Rating count (stars)</Label>

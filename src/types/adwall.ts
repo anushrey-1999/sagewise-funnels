@@ -28,6 +28,7 @@ export interface RankingDimension {
 export interface RankingConfig {
   dimensions: RankingDimension[];
   lenders: Record<string, Record<string, number>>;
+  rankingNumbers?: Record<string, string>;
 }
 
 export interface AdwallCard {

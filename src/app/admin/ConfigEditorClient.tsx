@@ -35,7 +35,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { adwallConfigSchema } from "@/lib/config-schemas";
 import { cn } from "@/lib/utils";
-import type { RankingConfig } from "@/types/adwall";
+import type { AdwallCard, AdwallConfig, RankingConfig } from "@/types/adwall";
 
 type ConfigKind = "funnel" | "adwall" | "demo-adwall";
 
@@ -79,6 +79,44 @@ function createEmptyPublisherCard() {
 
 function canEditRole(role: string): boolean {
   return role === "client_editor" || role === "internal_admin" || role === "superadmin";
+}
+
+function normalizeLenderName(value: string | undefined): string {
+  return (value ?? "").trim().toLowerCase();
+}
+
+function getMatrixRankingNumber(card: AdwallCard, rankingConfig: RankingConfig | undefined): string | undefined {
+  const rankingNumbers = rankingConfig?.rankingNumbers;
+  if (!rankingNumbers) return undefined;
+
+  for (const lenderName of [card.heading, card.advertiserName]) {
+    const exactMatch = lenderName ? rankingNumbers[lenderName] : undefined;
+    if (exactMatch !== undefined) return exactMatch;
+
+    const normalizedLenderName = normalizeLenderName(lenderName);
+    const matchedEntry = Object.entries(rankingNumbers).find(([name]) => normalizeLenderName(name) === normalizedLenderName);
+    if (matchedEntry) return matchedEntry[1];
+  }
+
+  return undefined;
+}
+
+function syncCardRankingNumbers(config: unknown): unknown {
+  if (!config || typeof config !== "object") return config;
+
+  const adwallConfig = config as AdwallConfig;
+  if (!Array.isArray(adwallConfig.cards) || !adwallConfig.rankingConfig?.rankingNumbers) return config;
+
+  let changed = false;
+  const cards = adwallConfig.cards.map((card) => {
+    const rankingNumber = getMatrixRankingNumber(card, adwallConfig.rankingConfig);
+    if (rankingNumber === undefined || card.ratingsNumber === rankingNumber) return card;
+
+    changed = true;
+    return { ...card, ratingsNumber: rankingNumber };
+  });
+
+  return changed ? { ...adwallConfig, cards } : config;
 }
 
 export default function ConfigEditorClient(props: {
@@ -301,6 +339,7 @@ export default function ConfigEditorClient(props: {
     }
 
     if (isAdwall) {
+      parsed = syncCardRankingNumbers(parsed);
       const v = adwallConfigSchema.safeParse(parsed);
       if (!v.success) {
         setError("Validation failed.");
@@ -755,9 +794,10 @@ export default function ConfigEditorClient(props: {
                   userRole={props.userRole}
                   section="basic"
                   onDraftChange={(next) => {
-                    draftObjRef.current = next;
+                    const synced = syncCardRankingNumbers(next);
+                    draftObjRef.current = synced;
                     hasDirtyEditsRef.current = true;
-                    setDraftObj(next);
+                    setDraftObj(synced);
                   }}
                 />
               </div>
@@ -771,6 +811,11 @@ export default function ConfigEditorClient(props: {
                       ? (draftObj as { rankingConfig?: RankingConfig }).rankingConfig ?? null
                       : null
                   }
+                  cards={
+                    draftObj && typeof draftObj === "object" && "cards" in draftObj && Array.isArray((draftObj as { cards?: unknown }).cards)
+                      ? ((draftObj as { cards: AdwallCard[] }).cards)
+                      : []
+                  }
                   funnelId={
                     draftObj && typeof draftObj === "object" && "funnelId" in draftObj
                       ? String((draftObj as { funnelId?: unknown }).funnelId ?? "")
@@ -782,10 +827,10 @@ export default function ConfigEditorClient(props: {
                       : ""
                   }
                   onChange={(next) => {
-                    const updated = {
+                    const updated = syncCardRankingNumbers({
                       ...(draftObj as object),
                       rankingConfig: next,
-                    };
+                    });
                     draftObjRef.current = updated;
                     hasDirtyEditsRef.current = true;
                     setDraftObj(updated);
@@ -803,9 +848,10 @@ export default function ConfigEditorClient(props: {
                   section="publishers"
                   onAddCard={addPublisherCard}
                   onDraftChange={(next) => {
-                    draftObjRef.current = next;
+                    const synced = syncCardRankingNumbers(next);
+                    draftObjRef.current = synced;
                     hasDirtyEditsRef.current = true;
-                    setDraftObj(next);
+                    setDraftObj(synced);
                   }}
                 />
               </div>
@@ -824,9 +870,10 @@ export default function ConfigEditorClient(props: {
               resetKey={`${keyStr}:${formResetNonce}`}
               userRole={props.userRole}
               onDraftChange={(next) => {
-                draftObjRef.current = next;
+                const synced = syncCardRankingNumbers(next);
+                draftObjRef.current = synced;
                 hasDirtyEditsRef.current = true;
-                setDraftObj(next);
+                setDraftObj(synced);
               }}
             />
           </div>
