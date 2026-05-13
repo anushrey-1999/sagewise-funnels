@@ -190,22 +190,35 @@ function getRankingMatrix(
   dimensionValues: Record<string, string>
 ): Record<string, number> | null {
   // Build combination key from dimension bucket IDs
-  const comboKey = rankingConfig.dimensions
-    .map((dim) => dimensionValues[dim.id])
+  const getComboKey = (values: Record<string, string>) =>
+    rankingConfig.dimensions
+    .map((dim) => values[dim.id])
     .filter(Boolean)
     .join(":");
 
+  const buildMatrix = (comboKey: string) => {
+    const matrix: Record<string, number> = {};
+
+    for (const [lenderName, rankings] of Object.entries(rankingConfig.lenders)) {
+      if (rankings[comboKey] !== undefined) {
+        matrix[lenderName.toLowerCase()] = rankings[comboKey];
+      }
+    }
+
+    return Object.keys(matrix).length > 0 ? matrix : null;
+  };
+
+  const comboKey = getComboKey(dimensionValues);
   if (!comboKey) return null;
 
-  const matrix: Record<string, number> = {};
+  const matrix = buildMatrix(comboKey);
+  if (matrix) return matrix;
 
-  for (const [lenderName, rankings] of Object.entries(rankingConfig.lenders)) {
-    if (rankings[comboKey] !== undefined) {
-      matrix[lenderName.toLowerCase()] = rankings[comboKey];
-    }
+  if (dimensionValues.creditScore === "poor") {
+    return buildMatrix(getComboKey({ ...dimensionValues, creditScore: "fair" }));
   }
 
-  return Object.keys(matrix).length > 0 ? matrix : null;
+  return null;
 }
 
 /**

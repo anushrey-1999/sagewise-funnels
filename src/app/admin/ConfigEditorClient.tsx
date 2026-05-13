@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { adwallConfigSchema } from "@/lib/config-schemas";
+import { ensureMortgagePoorCreditBucket } from "@/lib/mortgage-ranking-defaults";
 import { cn } from "@/lib/utils";
 import type { AdwallCard, AdwallConfig, RankingConfig } from "@/types/adwall";
 
@@ -105,18 +106,28 @@ function syncCardRankingNumbers(config: unknown): unknown {
   if (!config || typeof config !== "object") return config;
 
   const adwallConfig = config as AdwallConfig;
-  if (!Array.isArray(adwallConfig.cards) || !adwallConfig.rankingConfig?.rankingNumbers) return config;
-
+  let nextConfig = adwallConfig;
   let changed = false;
-  const cards = adwallConfig.cards.map((card) => {
-    const rankingNumber = getMatrixRankingNumber(card, adwallConfig.rankingConfig);
+
+  if (nextConfig.funnelId === "mortgage" && nextConfig.rankingConfig) {
+    nextConfig = {
+      ...nextConfig,
+      rankingConfig: ensureMortgagePoorCreditBucket(nextConfig.rankingConfig),
+    };
+    changed = true;
+  }
+
+  if (!Array.isArray(nextConfig.cards) || !nextConfig.rankingConfig?.rankingNumbers) return changed ? nextConfig : config;
+
+  const cards = nextConfig.cards.map((card) => {
+    const rankingNumber = getMatrixRankingNumber(card, nextConfig.rankingConfig);
     if (rankingNumber === undefined || card.ratingsNumber === rankingNumber) return card;
 
     changed = true;
     return { ...card, ratingsNumber: rankingNumber };
   });
 
-  return changed ? { ...adwallConfig, cards } : config;
+  return changed ? { ...nextConfig, cards } : config;
 }
 
 export default function ConfigEditorClient(props: {

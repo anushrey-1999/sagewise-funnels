@@ -11,7 +11,7 @@ import {
   adminIconDestructiveButton,
   adminButtonSecondary,
 } from "../admin-button-styles";
-import { getDefaultMortgageRankings } from "@/lib/mortgage-ranking-defaults";
+import { ensureMortgagePoorCreditBucket, getDefaultMortgageRankings } from "@/lib/mortgage-ranking-defaults";
 import { Label } from "@/components/ui/label";
 
 interface MetricsEditorProps {
@@ -33,6 +33,7 @@ function getDefaultMortgageRankingConfig(): RankingConfig {
           { id: "excellent", label: "Excellent (740+)" },
           { id: "good", label: "Good (680-739)" },
           { id: "fair", label: "Fair (620-679)" },
+          { id: "poor", label: "Poor (<620)" },
         ],
       },
       {
@@ -641,11 +642,12 @@ export default function MetricsEditor({
 
   const effectiveConfig = React.useMemo(() => {
     const baseConfig = rankingConfig ?? (isMortgage ? getDefaultMortgageRankingConfig() : { dimensions: [], lenders: {} });
+    const normalizedConfig = isMortgage ? ensureMortgagePoorCreditBucket(baseConfig) : baseConfig;
     return {
-      ...baseConfig,
+      ...normalizedConfig,
       rankingNumbers: {
-        ...inferRankingNumbers(baseConfig.lenders, cards),
-        ...(baseConfig.rankingNumbers ?? {}),
+        ...inferRankingNumbers(normalizedConfig.lenders, cards),
+        ...(normalizedConfig.rankingNumbers ?? {}),
       },
     };
   }, [rankingConfig, isMortgage, cards]);

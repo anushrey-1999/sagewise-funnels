@@ -3,7 +3,6 @@ import type { FormData } from "@/types/form";
 
 export type MortgageAdwallType = "heloc" | "refi" | "purchase";
 export type MortgageCreditBucket = "excellent" | "good" | "fair" | "poor";
-export type MortgageRankCreditBucket = Exclude<MortgageCreditBucket, "poor">;
 export type MortgageAmountBucket = "50-150" | "150-300" | "300-500" | "500-plus";
 
 export interface MortgageRankingParams {
@@ -29,13 +28,9 @@ export function normalizeMortgageCreditBucket(value: string | null | undefined):
     return value;
   }
   if (value === "bad") {
-    return "fair";
+    return "poor";
   }
   return null;
-}
-
-function toRankCreditBucket(value: MortgageCreditBucket): MortgageRankCreditBucket {
-  return value === "poor" ? "fair" : value;
 }
 
 export function getMortgageAmountBucket(amount: number | null | undefined): MortgageAmountBucket | null {
@@ -108,7 +103,7 @@ export function buildMortgageRankingParams(
 
 function getRankingMatrix(
   config: AdwallConfig | null | undefined,
-  creditBucket: MortgageRankCreditBucket,
+  creditBucket: MortgageCreditBucket,
   amountBucket: MortgageAmountBucket
 ): Record<string, number> | null {
   if (!config?.rankingConfig) return null;
@@ -117,7 +112,7 @@ function getRankingMatrix(
 
 function getRankingMatrixFromConfig(
   rankingConfig: RankingConfig,
-  creditBucket: MortgageRankCreditBucket,
+  creditBucket: MortgageCreditBucket,
   amountBucket: MortgageAmountBucket
 ): Record<string, number> | null {
   const creditDim = rankingConfig.dimensions.find((d) => d.id === "creditScore");
@@ -156,7 +151,9 @@ export function sortMortgageAdwallCards<T extends AdwallCard>(
   const creditBucket = normalizeMortgageCreditBucket(rankCredit);
   if (!creditBucket) return cards;
 
-  const matrix = getRankingMatrix(config, toRankCreditBucket(creditBucket), rankAmount);
+  const matrix =
+    getRankingMatrix(config, creditBucket, rankAmount) ??
+    (creditBucket === "poor" ? getRankingMatrix(config, "fair", rankAmount) : null);
   if (!matrix) return cards;
 
   return cards

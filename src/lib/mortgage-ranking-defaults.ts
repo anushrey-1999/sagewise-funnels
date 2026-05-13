@@ -14,7 +14,8 @@ export const MORTGAGE_RANKING_DIMENSIONS: RankingConfig["dimensions"] = [
     buckets: [
       { id: "excellent", label: "Excellent (740+)", matchValues: ["excellent"] },
       { id: "good", label: "Good (680-739)", matchValues: ["good"] },
-      { id: "fair", label: "Fair (620-679)", matchValues: ["fair", "poor", "bad"] },
+      { id: "fair", label: "Fair (620-679)", matchValues: ["fair"] },
+      { id: "poor", label: "Poor (<620)", matchValues: ["poor", "bad"] },
     ],
   },
   {
@@ -226,6 +227,62 @@ export const DEFAULT_PURCHASE_RANKINGS: RankingConfig["lenders"] = {
   },
 };
 
+export function withPoorCreditRankings(lenders: RankingConfig["lenders"]): RankingConfig["lenders"] {
+  const nextLenders: RankingConfig["lenders"] = {};
+
+  for (const [lenderName, rankings] of Object.entries(lenders)) {
+    const nextRankings = { ...rankings };
+
+    for (const [comboKey, rank] of Object.entries(rankings)) {
+      if (comboKey.startsWith("fair:")) {
+        const poorComboKey = comboKey.replace(/^fair:/, "poor:");
+        nextRankings[poorComboKey] ??= rank;
+      }
+    }
+
+    nextLenders[lenderName] = nextRankings;
+  }
+
+  return nextLenders;
+}
+
+export function ensureMortgagePoorCreditBucket(config: RankingConfig): RankingConfig {
+  const dimensions = config.dimensions.map((dimension) => {
+    if (dimension.id !== "creditScore") return dimension;
+
+    const hasPoorBucket = dimension.buckets.some((bucket) => bucket.id === "poor");
+    const buckets = dimension.buckets.map((bucket) => {
+      if (bucket.id !== "fair") return bucket;
+      return {
+        ...bucket,
+        matchValues: bucket.matchValues?.filter((value) => value !== "poor" && value !== "bad"),
+      };
+    });
+
+    if (!hasPoorBucket) {
+      const fairIndex = buckets.findIndex((bucket) => bucket.id === "fair");
+      const poorBucket = { id: "poor", label: "Poor (<620)", matchValues: ["poor", "bad"] };
+
+      if (fairIndex === -1) {
+        buckets.push(poorBucket);
+      } else {
+        buckets.splice(fairIndex + 1, 0, poorBucket);
+      }
+    }
+
+    return {
+      ...dimension,
+      buckets,
+    };
+  });
+
+  return {
+    ...config,
+    dimensions,
+    lenders: withPoorCreditRankings(config.lenders),
+  };
+}
+
 export function getDefaultMortgageRankings(adwallType: string): RankingConfig | null {
   const lenders =
     adwallType === "heloc"
@@ -238,8 +295,8 @@ export function getDefaultMortgageRankings(adwallType: string): RankingConfig | 
 
   if (!lenders) return null;
 
-  return {
+  return ensureMortgagePoorCreditBucket({
     dimensions: MORTGAGE_RANKING_DIMENSIONS,
     lenders,
-  };
+  });
 }
