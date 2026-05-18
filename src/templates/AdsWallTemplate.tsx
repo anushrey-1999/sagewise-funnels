@@ -39,6 +39,48 @@ function cleanParam(value: string | null): string | null {
   return cleaned ? cleaned : null;
 }
 
+function hashString(value: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i++) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function createSeededRandom(seed: number) {
+  let state = seed || 1;
+  return () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+}
+
+function shuffleNumbers(values: number[], seed: number): number[] {
+  const next = [...values];
+  const random = createSeededRandom(seed);
+
+  for (let i = next.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [next[i], next[j]] = [next[j]!, next[i]!];
+  }
+
+  return next;
+}
+
+function getOrderBasedRatingNumbers(count: number, seedKey: string): string[] {
+  const decimals = count <= 21 ? 1 : 2;
+  const scale = decimals === 1 ? 10 : 100;
+  const min = 7.5 * scale;
+  const max = 9.9 * scale;
+  const pool = Array.from({ length: max - min + 1 }, (_, index) => min + index);
+
+  return shuffleNumbers(pool, hashString(seedKey))
+    .slice(0, count)
+    .sort((a, b) => b - a)
+    .map((value) => (value / scale).toFixed(decimals));
+}
+
 const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpressions = false }: AdsWallTemplateProps) => {
   const searchParams = useSearchParams();
 
@@ -131,6 +173,21 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
     return sortAdwallCards(cards, config, rankingParams);
   }, [config, searchParams]);
 
+  const visibleCardsWithRatings = useMemo(() => {
+    if (!config.rankingConfig) return visibleCards;
+
+    const seedKey = [
+      config.id,
+      ...visibleCards.map((card) => card.advertiserName || card.heading),
+    ].join("|");
+    const ratingNumbers = getOrderBasedRatingNumbers(visibleCards.length, seedKey);
+
+    return visibleCards.map((card, index) => ({
+      ...card,
+      ratingsNumber: ratingNumbers[index] ?? card.ratingsNumber,
+    }));
+  }, [config.id, config.rankingConfig, visibleCards]);
+
   const { containerRef: ctaRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([visibleCards]);
   const containerRef = useCallback((node: HTMLDivElement | null) => {
     ctaRef.current = node;
@@ -150,7 +207,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
       <div className="relative z-0 flex flex-col items-center w-full px-2 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
           <div ref={containerRef} className="flex flex-col gap-4">
-            {visibleCards.map((item, index) => {
+            {visibleCardsWithRatings.map((item, index) => {
               const { impressionScript, ...cardProps } = item;
               const card = (
                 <AdsWallCards

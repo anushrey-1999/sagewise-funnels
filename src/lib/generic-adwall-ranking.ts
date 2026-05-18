@@ -139,6 +139,14 @@ function mapValueToBucket(value: string | number | null, dimension: RankingDimen
   return null;
 }
 
+function mapRankingParamToBucket(value: string, dimension: RankingDimension): string | null {
+  const directMatch = mapValueToBucket(value, dimension);
+  if (directMatch) return directMatch;
+
+  const numericValue = toNumber(value);
+  return mapValueToBucket(numericValue, dimension);
+}
+
 /**
  * Build ranking parameters from form data based on adwall config
  */
@@ -170,16 +178,20 @@ export function buildRankingParams(
 /**
  * Normalize lender name for matching
  */
-function normalizeLenderName(card: Pick<AdwallCard, "advertiserName" | "heading">): string {
-  const rawName = (card.advertiserName || card.heading).trim().toLowerCase();
+function normalizeLenderKey(rawName: string): string {
+  const normalizedName = rawName.trim().toLowerCase();
 
   // Common name mappings
-  if (rawName === "quicken loans") return "quicken";
-  if (rawName === "figure") return "figure.com";
-  if (rawName === "loandepot" || rawName === "loan depot") return "loandepot";
-  if (rawName === "veterans united home loans") return "veterans united";
+  if (normalizedName === "quicken loans") return "quicken";
+  if (normalizedName === "figure") return "figure.com";
+  if (normalizedName === "loandepot" || normalizedName === "loan depot") return "loandepot";
+  if (normalizedName === "veterans united home loans") return "veterans united";
 
-  return rawName;
+  return normalizedName;
+}
+
+function normalizeLenderName(card: Pick<AdwallCard, "advertiserName" | "heading">): string {
+  return normalizeLenderKey(card.advertiserName || card.heading);
 }
 
 /**
@@ -201,7 +213,7 @@ function getRankingMatrix(
 
     for (const [lenderName, rankings] of Object.entries(rankingConfig.lenders)) {
       if (rankings[comboKey] !== undefined) {
-        matrix[lenderName.toLowerCase()] = rankings[comboKey];
+        matrix[normalizeLenderKey(lenderName)] = rankings[comboKey];
       }
     }
 
@@ -239,7 +251,10 @@ export function sortAdwallCards<T extends AdwallCard>(
     const paramKey = `rank${dimension.id.charAt(0).toUpperCase()}${dimension.id.slice(1)}`;
     const value = rankingParams[paramKey];
     if (value) {
-      dimensionValues[dimension.id] = value;
+      const bucketId = mapRankingParamToBucket(value, dimension);
+      if (bucketId) {
+        dimensionValues[dimension.id] = bucketId;
+      }
     }
   }
 

@@ -12,15 +12,19 @@ export interface MortgageRankingParams {
 
 const amountBuckets: MortgageAmountBucket[] = ["50-150", "150-300", "300-500", "500-plus"];
 
+function normalizeLenderKey(rawName: string): string {
+  const normalizedName = rawName.trim().toLowerCase();
+
+  if (normalizedName === "quicken loans") return "quicken";
+  if (normalizedName === "figure") return "figure.com";
+  if (normalizedName === "loandepot" || normalizedName === "loan depot") return "loandepot";
+  if (normalizedName === "veterans united home loans") return "veterans united";
+
+  return normalizedName;
+}
+
 function normalizeLenderName(card: Pick<AdwallCard, "advertiserName" | "heading">): string {
-  const rawName = (card.advertiserName || card.heading).trim().toLowerCase();
-
-  if (rawName === "quicken loans") return "quicken";
-  if (rawName === "figure") return "figure.com";
-  if (rawName === "loandepot" || rawName === "loan depot") return "loandepot";
-  if (rawName === "veterans united home loans") return "veterans united";
-
-  return rawName;
+  return normalizeLenderKey(card.advertiserName || card.heading);
 }
 
 export function normalizeMortgageCreditBucket(value: string | null | undefined): MortgageCreditBucket | null {
@@ -130,7 +134,7 @@ function getRankingMatrixFromConfig(
 
   for (const [lenderName, rankings] of Object.entries(rankingConfig.lenders)) {
     if (rankings[comboKey] !== undefined) {
-      matrix[lenderName.toLowerCase()] = rankings[comboKey];
+      matrix[normalizeLenderKey(lenderName)] = rankings[comboKey];
     }
   }
 

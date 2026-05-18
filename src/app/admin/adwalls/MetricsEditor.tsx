@@ -48,33 +48,7 @@ function getDefaultMortgageRankingConfig(): RankingConfig {
       },
     ],
     lenders: {},
-    rankingNumbers: {},
   };
-}
-
-function normalizeLenderName(value: string | undefined): string {
-  return (value ?? "").trim().toLowerCase();
-}
-
-function inferRankingNumbers(
-  lenders: RankingConfig["lenders"],
-  cards: AdwallCard[] | undefined
-): Record<string, string> {
-  const rankingNumbers: Record<string, string> = {};
-  if (!cards?.length) return rankingNumbers;
-
-  for (const lenderName of Object.keys(lenders)) {
-    const normalizedLenderName = normalizeLenderName(lenderName);
-    const matchingCard = cards.find((card) => {
-      return [card.heading, card.advertiserName].some((name) => normalizeLenderName(name) === normalizedLenderName);
-    });
-
-    if (matchingCard?.ratingsNumber) {
-      rankingNumbers[lenderName] = matchingCard.ratingsNumber;
-    }
-  }
-
-  return rankingNumbers;
 }
 
 interface GroupedColumn {
@@ -632,7 +606,6 @@ function DimensionsManager({ dimensions, onUpdate, funnelId, adwallType }: Dimen
 
 export default function MetricsEditor({
   rankingConfig,
-  cards,
   funnelId,
   adwallType,
   onChange,
@@ -642,15 +615,8 @@ export default function MetricsEditor({
 
   const effectiveConfig = React.useMemo(() => {
     const baseConfig = rankingConfig ?? (isMortgage ? getDefaultMortgageRankingConfig() : { dimensions: [], lenders: {} });
-    const normalizedConfig = isMortgage ? ensureMortgagePoorCreditBucket(baseConfig) : baseConfig;
-    return {
-      ...normalizedConfig,
-      rankingNumbers: {
-        ...inferRankingNumbers(normalizedConfig.lenders, cards),
-        ...(normalizedConfig.rankingNumbers ?? {}),
-      },
-    };
-  }, [rankingConfig, isMortgage, cards]);
+    return isMortgage ? ensureMortgagePoorCreditBucket(baseConfig) : baseConfig;
+  }, [rankingConfig, isMortgage]);
 
   const [showImportCSV, setShowImportCSV] = React.useState(false);
   const [showImportAdwall, setShowImportAdwall] = React.useState(false);
@@ -712,22 +678,15 @@ export default function MetricsEditor({
         ...effectiveConfig.lenders,
         [newName]: newLenderRankings,
       },
-      rankingNumbers: {
-        ...(effectiveConfig.rankingNumbers ?? {}),
-        [newName]: "",
-      },
     });
   };
 
   const removeLender = (lenderName: string) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [lenderName]: _, ...rest } = effectiveConfig.lenders;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { [lenderName]: _rankingNumber, ...rankingNumbers } = effectiveConfig.rankingNumbers ?? {};
     onChange({
       ...effectiveConfig,
       lenders: rest,
-      rankingNumbers,
     });
   };
 
@@ -741,16 +700,11 @@ export default function MetricsEditor({
     }
 
     const { [oldName]: rankings, ...rest } = effectiveConfig.lenders;
-    const { [oldName]: rankingNumber, ...rankingNumbers } = effectiveConfig.rankingNumbers ?? {};
     onChange({
       ...effectiveConfig,
       lenders: {
         ...rest,
         [newName.trim()]: rankings ?? {},
-      },
-      rankingNumbers: {
-        ...rankingNumbers,
-        [newName.trim()]: rankingNumber ?? "",
       },
     });
     setEditingLenderName(null);
@@ -776,16 +730,6 @@ export default function MetricsEditor({
     setEditingCell(null);
   };
 
-  const updateRankingNumber = (lenderName: string, rankingNumber: string) => {
-    onChange({
-      ...effectiveConfig,
-      rankingNumbers: {
-        ...(effectiveConfig.rankingNumbers ?? {}),
-        [lenderName]: rankingNumber,
-      },
-    });
-  };
-
   const handleImportCSV = () => {
     if (!csvFile) return;
     setImportError(null);
@@ -803,7 +747,6 @@ export default function MetricsEditor({
 
         const headers = lines[0]!.split(",").map((h) => h.trim());
         const lenderNameIndex = headers.findIndex((h) => h.toLowerCase() === "lender" || h.toLowerCase() === "lender name");
-        const rankingNumberIndex = headers.findIndex((h) => h.toLowerCase() === "ranking number");
         
         if (lenderNameIndex === -1) {
           setImportError("CSV must have a 'Lender' or 'Lender Name' column");
@@ -811,7 +754,6 @@ export default function MetricsEditor({
         }
 
         const newLenders: RankingConfig["lenders"] = {};
-        const rankingNumbers: NonNullable<RankingConfig["rankingNumbers"]> = {};
 
         for (let i = 1; i < lines.length; i++) {
           const values = lines[i]!.split(",").map((v) => v.trim());
@@ -820,13 +762,10 @@ export default function MetricsEditor({
           if (!lenderName) continue;
 
           const rankings: Record<string, number> = {};
-          if (rankingNumberIndex !== -1) {
-            rankingNumbers[lenderName] = values[rankingNumberIndex] ?? "";
-          }
           
           // Map CSV columns to combo keys
           for (let j = 0; j < headers.length; j++) {
-            if (j === lenderNameIndex || j === rankingNumberIndex) continue;
+            if (j === lenderNameIndex) continue;
             
             const header = headers[j]!;
             const value = values[j];
@@ -844,7 +783,6 @@ export default function MetricsEditor({
         onChange({
           ...effectiveConfig,
           lenders: newLenders,
-          rankingNumbers,
         });
 
         setShowImportCSV(false);
@@ -985,9 +923,6 @@ export default function MetricsEditor({
                       <th className="sticky left-0 z-20 bg-[#fafafa] px-3 py-2 text-left font-medium text-xs whitespace-nowrap border-r border-general-border">
                         Lender Name
                       </th>
-                      <th className="px-3 py-2 text-center font-medium text-xs whitespace-nowrap min-w-[120px] border-r border-general-border">
-                        Ranking number
-                      </th>
                       {groupedColumns[0]?.subColumns.map((subCol) => (
                         <th key={subCol.key} className="px-3 py-2 text-center font-medium text-xs whitespace-nowrap min-w-[100px]">
                           {subCol.label}
@@ -1006,12 +941,6 @@ export default function MetricsEditor({
                           className="sticky left-0 z-20 bg-[#fafafa] px-3 py-2 text-left font-medium text-xs whitespace-nowrap border-r border-general-border"
                         >
                           Lender Name
-                        </th>
-                        <th
-                          rowSpan={2}
-                          className="px-3 py-2 text-center font-medium text-xs whitespace-nowrap min-w-[120px] border-r border-general-border"
-                        >
-                          Ranking number
                         </th>
                         {groupedColumns.map((group) => (
                           <th
@@ -1074,14 +1003,6 @@ export default function MetricsEditor({
                             }}
                             className="h-8 text-xs font-medium"
                             placeholder="Lender name"
-                          />
-                        </td>
-                        <td className="px-3 py-2 border-r border-general-border">
-                          <Input
-                            value={effectiveConfig.rankingNumbers?.[lenderName] ?? ""}
-                            onChange={(e) => updateRankingNumber(lenderName, e.target.value)}
-                            className="h-8 text-xs text-center"
-                            placeholder="9.6"
                           />
                         </td>
                         {groupedColumns.map((group) =>

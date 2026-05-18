@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { Loader } from "./Loader";
 import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
 import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
-import { buildMortgageRankingParams } from "@/lib/mortgage-adwall-ranking";
+import { buildAdwallRankingQueryParams } from "@/lib/adwall-ranking-query-params";
 
 interface FormSectionProps {
   config: FormConfig;
@@ -136,16 +136,11 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
       s2: transactionId,
       sub5: transactionId,
       fromFunnel: "1",
+      preview: cleanParam(searchParams.get("preview")) === "1" ? "1" : undefined,
       name: firstName,
       zip: zipCode,
+      ...buildAdwallRankingQueryParams(config, formData, destinationPath),
     };
-    const mortgageRankingParams =
-      config.id === "mortgage" ? buildMortgageRankingParams(formData, destinationPath) : null;
-
-    if (mortgageRankingParams) {
-      params.rankCredit = mortgageRankingParams.rankCredit;
-      params.rankAmount = mortgageRankingParams.rankAmount;
-    }
 
     if (config.id === "cc-finbuzz") {
       params.sub4 = affiliateId;

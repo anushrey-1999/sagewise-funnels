@@ -11,6 +11,7 @@ import { Loader } from "./Loader";
 import { useRouter } from "next/navigation";
 import { resolvePostSubmitRedirect, resolveRedirectOnAnswer } from "@/lib/funnel-redirect";
 import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
+import { buildAdwallRankingQueryParams } from "@/lib/adwall-ranking-query-params";
 import { useSearchParams } from "next/navigation";
 import { injectImpressionScript } from "@/lib/injectImpressionScript";
 
@@ -466,11 +467,16 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
     const { affiliateId, transactionId } = generateIds();
 
     const destination = resolvePostSubmitRedirect(config, formData);
+    const destinationPath = destination.split("?")[0];
     const baseParams: Record<string, string> = {
       s1: affiliateId,
       s2: transactionId,
       fromFunnel: "1",
+      ...buildAdwallRankingQueryParams(config, formData, destinationPath),
     };
+    if (searchParams.get("preview") === "1") {
+      baseParams.preview = "1";
+    }
     if (config.id === "cc-finbuzz") {
       baseParams.sub4 = affiliateId;
       baseParams.sub5 = transactionId;
