@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { Plus, Trash2, Download, Upload, Copy } from "lucide-react";
+import { Plus, Trash2, Download, Upload, Copy, FileDown } from "lucide-react";
 import type { AdwallCard, RankingConfig } from "@/types/adwall";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import {
   adminSmallButton,
@@ -13,6 +14,8 @@ import {
 } from "../admin-button-styles";
 import { ensureMortgagePoorCreditBucket, getDefaultMortgageRankings } from "@/lib/mortgage-ranking-defaults";
 import { Label } from "@/components/ui/label";
+
+const DEFAULT_NEW_LENDER_RANK = 30;
 
 interface MetricsEditorProps {
   rankingConfig: RankingConfig | null | undefined;
@@ -658,25 +661,30 @@ export default function MetricsEditor({
   );
 
   const lenderNames = React.useMemo(
-    () => Object.keys(effectiveConfig.lenders).sort(),
+    () => Object.keys(effectiveConfig.lenders),
     [effectiveConfig.lenders]
   );
 
   const addLender = () => {
-    const newName = `Lender ${lenderNames.length + 1}`;
+    let nextIndex = lenderNames.length + 1;
+    let newName = `Lender ${nextIndex}`;
+    while (effectiveConfig.lenders[newName]) {
+      nextIndex += 1;
+      newName = `Lender ${nextIndex}`;
+    }
     const newLenderRankings: Record<string, number> = {};
     
-    // Initialize all combination keys with rank 1
+    // Start new lenders below existing prioritized rows until the user edits them.
     const allKeys = getAllCombinationKeys(effectiveConfig.dimensions);
     for (const key of allKeys) {
-      newLenderRankings[key] = 1;
+      newLenderRankings[key] = DEFAULT_NEW_LENDER_RANK;
     }
 
     onChange({
       ...effectiveConfig,
       lenders: {
-        ...effectiveConfig.lenders,
         [newName]: newLenderRankings,
+        ...effectiveConfig.lenders,
       },
     });
   };
@@ -715,7 +723,7 @@ export default function MetricsEditor({
 
   const updateRank = (lenderName: string, comboKey: string, rank: string) => {
     const parsed = parseInt(rank, 10);
-    const value = Number.isNaN(parsed) || parsed < 1 ? 1 : parsed;
+    const value = Number.isNaN(parsed) || parsed < 1 ? DEFAULT_NEW_LENDER_RANK : parsed;
 
     onChange({
       ...effectiveConfig,
@@ -728,6 +736,38 @@ export default function MetricsEditor({
       },
     });
     setEditingCell(null);
+  };
+
+  const downloadCSV = () => {
+    const comboKeys = getAllCombinationKeys(effectiveConfig.dimensions);
+    const escapeCSVValue = (value: string | number) => {
+      const stringValue = String(value);
+      return /[",\n\r]/.test(stringValue)
+        ? `"${stringValue.replace(/"/g, '""')}"`
+        : stringValue;
+    };
+    const rows = [
+      ["Lender", ...comboKeys],
+      ...lenderNames.map((lenderName) => {
+        const rankings = effectiveConfig.lenders[lenderName] ?? {};
+        return [
+          lenderName,
+          ...comboKeys.map((comboKey) => rankings[comboKey] ?? DEFAULT_NEW_LENDER_RANK),
+        ];
+      }),
+    ];
+    const csv = rows
+      .map((row) => row.map(escapeCSVValue).join(","))
+      .join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${funnelId}-${adwallType}-ranking-matrix.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
   };
 
   const handleImportCSV = () => {
@@ -857,50 +897,88 @@ export default function MetricsEditor({
                 Configure rankings for each lender across all dimension combinations
               </div>
             </div>
-            <div className="flex items-center gap-2">
-            {hasDefaults && lenderNames.length === 0 && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className={adminButtonSecondary}
-                onClick={loadDefaults}
-              >
-                <Download className="h-4 w-4" />
-                Load Defaults
-              </Button>
-            )}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className={adminButtonSecondary}
-              onClick={() => setShowImportCSV(true)}
-            >
-              <Upload className="h-4 w-4" />
-              Import CSV
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className={adminButtonSecondary}
-              onClick={() => setShowImportAdwall(true)}
-            >
-              <Copy className="h-4 w-4" />
-              Import from Adwall
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className={adminSmallButton}
-              onClick={addLender}
-            >
-              <Plus className="h-4 w-4" />
-              Add Lender
-            </Button>
-          </div>
+            <TooltipProvider>
+              <div className="flex items-center gap-2">
+                {hasDefaults && lenderNames.length === 0 && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        className={cn(adminButtonSecondary, "h-9 w-9 px-0")}
+                        onClick={loadDefaults}
+                        aria-label="Load defaults"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Load defaults</TooltipContent>
+                  </Tooltip>
+                )}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      className={cn(adminButtonSecondary, "h-9 w-9 px-0")}
+                      onClick={downloadCSV}
+                      disabled={lenderNames.length === 0}
+                      aria-label="Download CSV"
+                    >
+                      <FileDown className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Download CSV</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      className={cn(adminButtonSecondary, "h-9 w-9 px-0")}
+                      onClick={() => setShowImportCSV(true)}
+                      aria-label="Import CSV"
+                    >
+                      <Upload className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Import CSV</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      className={cn(adminButtonSecondary, "h-9 w-9 px-0")}
+                      onClick={() => setShowImportAdwall(true)}
+                      aria-label="Import from adwall"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Import from adwall</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      className={cn(adminButtonSecondary, "h-9 w-9 px-0")}
+                      onClick={addLender}
+                      aria-label="Add lender"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Add lender</TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
         </div>
 
         <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-xs text-blue-800">
@@ -1009,7 +1087,7 @@ export default function MetricsEditor({
                           group.subColumns.map((subCol, idx) => {
                             const cellKey = `${lenderName}:${subCol.key}`;
                             const isEditingThisCell = editingCell === cellKey;
-                            const currentRank = rankings[subCol.key] ?? 1;
+                            const currentRank = rankings[subCol.key] ?? DEFAULT_NEW_LENDER_RANK;
                             const displayValue = isEditingThisCell ? tempRankValue : String(currentRank);
                             
                             return (
@@ -1029,6 +1107,7 @@ export default function MetricsEditor({
                                   }}
                                   onChange={(e) => setTempRankValue(e.target.value)}
                                   onBlur={(e) => updateRank(lenderName, subCol.key, e.target.value)}
+                                  onWheel={(e) => e.currentTarget.blur()}
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                       updateRank(lenderName, subCol.key, e.currentTarget.value);
