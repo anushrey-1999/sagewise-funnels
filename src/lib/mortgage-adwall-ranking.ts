@@ -31,7 +31,7 @@ export function normalizeMortgageCreditBucket(value: string | null | undefined):
   if (value === "excellent" || value === "good" || value === "fair" || value === "poor") {
     return value;
   }
-  if (value === "bad") {
+  if (value === "bad" || value === "below-580") {
     return "poor";
   }
   return null;
@@ -41,6 +41,13 @@ export function getMortgageAmountBucket(amount: number | null | undefined): Mort
   if (typeof amount !== "number" || Number.isNaN(amount)) return null;
   if (amount < 300000) return amount < 150000 ? "50-150" : "150-300";
   return amount < 500000 ? "300-500" : "500-plus";
+}
+
+export function getMortgageAmountBucketFromString(value: string | null | undefined): MortgageAmountBucket | null {
+  if (value === "50-150" || value === "150-300" || value === "300-500" || value === "500-plus") {
+    return value;
+  }
+  return null;
 }
 
 function getFormValue(data: FormData, fieldId: string): string | number | boolean | string[] | undefined {
@@ -95,7 +102,12 @@ export function buildMortgageRankingParams(
   if (!adwallType) return null;
 
   const creditBucket = normalizeMortgageCreditBucket(String(getFormValue(data, "creditScore") ?? ""));
-  const amountBucket = getMortgageAmountBucket(getDerivedMortgageAmount(data, adwallType));
+
+  // Prefer the new direct loanAmount string field; fall back to the legacy derived calculation
+  const loanAmountStr = String(getFormValue(data, "loanAmount") ?? "");
+  const amountBucket =
+    getMortgageAmountBucketFromString(loanAmountStr) ??
+    getMortgageAmountBucket(getDerivedMortgageAmount(data, adwallType));
 
   if (!creditBucket || !amountBucket) return null;
 

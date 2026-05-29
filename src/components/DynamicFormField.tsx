@@ -6,8 +6,14 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckIcon, Minus, Plus } from "lucide-react";
+import { CheckIcon, Minus, Plus, icons } from "lucide-react";
 import React, { useEffect, useId, useState } from "react";
+
+function LucideIcon({ name, className }: { name: string; className?: string }) {
+  const Icon = icons[name as keyof typeof icons] as React.ComponentType<{ className?: string }> | undefined;
+  if (!Icon) return null;
+  return <Icon className={className} />;
+}
 
 type FieldValue = string | string[] | number | boolean;
 
@@ -462,12 +468,18 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
           </div>
         );
 
-      case "radio":
+      case "radio": {
+        const hasIcons = field.options?.some((o) => o.icon);
         return (
           <RadioGroup
             value={typeof value === "string" ? value : ""}
             onValueChange={(v) => onChange(v)}
-            className="w-full sm:w-[380px] md:w-[650px] gap-2 md:gap-5 md:pt-5"
+            className={cn(
+              "w-full gap-2 md:gap-5 md:pt-5",
+              hasIcons
+                ? "sm:w-[380px] md:w-[460px] flex flex-col"
+                : "sm:w-[380px] md:w-[650px]"
+            )}
             aria-label={field.label || field.id}
             aria-invalid={!!error}
             aria-describedby={error ? errorId : undefined}
@@ -479,10 +491,11 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                 <div
                   key={option.value}
                   className={cn(
-                    "border-[3px] border-gray-200 h-[72px] min-h-[72px] rounded-3xl flex items-center justify-center px-4 cursor-pointer hover:border-[var(--sg-primary-green)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative !bg-white outline-none",
+                    "border-[3px] border-gray-200 rounded-3xl flex items-center px-4 cursor-pointer hover:border-[var(--sg-primary-green)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative !bg-white outline-none",
                     "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)]",
                     isValid && "border-[var(--sg-primary-green)] !bg-sg-green-50",
-                    error && "border-red-500"
+                    error && "border-red-500",
+                    hasIcons ? "h-[72px] min-h-[72px] gap-4" : "h-[72px] min-h-[72px] justify-center"
                   )}
                   onClick={() => onChange(option.value)}
                   onKeyDown={(e) => onKeyboardActivate(e, () => onChange(option.value))}
@@ -491,7 +504,20 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
                   role="radio"
                   aria-checked={isSelected}
                 >
-                  <Label htmlFor={option.value} className="text-base font-bold text-sg-primary-text cursor-pointer text-center">
+                  {option.icon && (
+                    <div className={cn(
+                      "shrink-0 size-11 rounded-2xl flex items-center justify-center transition-colors duration-200",
+                      isValid
+                        ? "bg-sg-primary-green text-white"
+                        : "bg-sg-green-tint text-sg-primary-green"
+                    )}>
+                      <LucideIcon name={option.icon} className="size-5" />
+                    </div>
+                  )}
+                  <Label htmlFor={option.value} className={cn(
+                    "text-base font-bold text-sg-primary-text cursor-pointer",
+                    !hasIcons && "text-center"
+                  )}>
                     {option.label}
                   </Label>
                   {isValid && (
@@ -504,6 +530,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
             })}
           </RadioGroup>
         );
+      }
 
       case "text":
       case "email":

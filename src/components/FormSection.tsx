@@ -62,11 +62,6 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
 
       console.log("Extracted user data:", userData);
 
-      // Validate that we have at least email or phone
-      if (!email && !phone) {
-        throw new Error("Email or phone is required to submit the form");
-      }
-
       // Complete the API call before showing the loader so the request is not cancelled when we redirect
       const response = await fetch("/api/users", {
         method: "POST",

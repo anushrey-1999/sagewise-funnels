@@ -52,44 +52,6 @@ function ProgressBarRow({
   );
 }
 
-const mortgageProgressByLoanType: Record<string, Record<string, number>> = {
-  "home-equity-heloc": {
-    "loan-type": 10,
-    "property-type": 30,
-    "property-use": 35,
-    "zip-code-heloc": 38,
-    "home-value": 40,
-    "mortgage-balance": 45,
-    "equity-display": 50,
-    "heloc-loan-purpose": 55,
-    "credit-score": 85,
-    "contact": 100,
-  },
-  "refinance": {
-    "loan-type": 10,
-    "refinance-goal": 15,
-    "property-type": 30,
-    "zip-code-refi-purchase": 35,
-    "home-value": 40,
-    "mortgage-balance": 45,
-    "current-interest-rate": 80,
-    "credit-score": 85,
-    "employment-status": 90,
-    "contact": 100,
-  },
-  "purchase": {
-    "loan-type": 10,
-    "purchase-timeline": 20,
-    "first-time-buyer": 25,
-    "property-type": 30,
-    "zip-code-refi-purchase": 35,
-    "purchase-price": 70,
-    "down-payment": 75,
-    "credit-score": 85,
-    "employment-status": 90,
-    "contact": 100,
-  },
-};
 
 interface MultiStepFormProps {
   config: FormConfig;
@@ -548,16 +510,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
   const isLastStep = currentVisibleStepPosition === visibleStepIndices.length - 1;
   const totalVisibleSteps = Math.max(visibleStepIndices.length, 1);
   const computedProgress = Math.round(((currentVisibleStepPosition + 1) / totalVisibleSteps) * 100);
-  const selectedLoanType = typeof formData["loan-type"]?.loanType === "string"
-    ? formData["loan-type"].loanType
-    : null;
-  const mortgageStepProgress =
-    config.id === "mortgage" && currentStepData && selectedLoanType
-      ? mortgageProgressByLoanType[selectedLoanType]?.[currentStepData.id]
-      : currentStepData?.id === "loan-type" && config.id === "mortgage"
-        ? 10
-        : undefined;
-  const progress = mortgageStepProgress ?? computedProgress;
+  const progress = computedProgress;
 
   const finalStepDisclaimer =
     config.finalStep?.disclaimerText ||
@@ -960,37 +913,6 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
               );
             })}
 
-            {/* Equity estimate shown on the equity-display step */}
-            {currentStepData.id === "equity-display" && (() => {
-              const homeVal = formData["home-value"]?.homeValue;
-              const balVal = formData["mortgage-balance"]?.mortgageBalance;
-              const home = typeof homeVal === "number" ? homeVal : 0;
-              const mortgageBalance = typeof balVal === "number" ? balVal : 0;
-              const equity = Math.max(0, home - mortgageBalance);
-              const formatCurrency = (amount: number) =>
-                amount.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                  maximumFractionDigits: 0,
-                });
-
-              return (
-                <div className="w-full sm:w-[460px] rounded-xl bg-sg-primary-tint px-6 py-5 text-center">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-general-muted-foreground">Home Value - Mortgage Balance</p>
-                    <div className="rounded-lg bg-white/70 px-4 py-3">
-                      <p className="text-sm text-general-muted-foreground">
-                        {formatCurrency(home)} - {formatCurrency(mortgageBalance)}
-                      </p>
-                    </div>
-                    <p className="text-3xl lg:text-4xl font-bold text-primary-main">~{formatCurrency(equity)} available</p>
-                    <p className="text-base font-semibold text-primary-main">
-                      Lenders are ready to compete for your business.
-                    </p>
-                  </div>
-                </div>
-              );
-            })()}
 
             {config.id === "mortgage" && currentStepData.id === "contact" && (
               <p className="w-full sm:w-[460px] text-sm text-general-muted-foreground">
