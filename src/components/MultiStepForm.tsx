@@ -799,14 +799,25 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                 delete updatedFormData[stepId];
               }
               
-              setCurrentStep((prev) => {
-                // Get the next step index, skipping any steps that should be skipped
-                // Pass updated form data so skip conditions can check the latest values
-                const nextStepIndex = getNextStepIndex(prev, updatedFormData);
-                // Don't go beyond the last step (which is at config.steps.length - 1)
-                const maxStep = config.steps.length - 1;
-                return Math.min(nextStepIndex, maxStep);
-              });
+              const nextStepIndex = getNextStepIndex(stepAtCheck, updatedFormData);
+
+              if (nextStepIndex >= config.steps.length) {
+                // On the last visible step — trigger submission directly
+                if (config.finalStep?.onSubmitScript) {
+                  void injectImpressionScript(config.finalStep.onSubmitScript);
+                }
+                // Ensure state has the latest step data before submitting
+                setFormData(updatedFormData);
+                if (onSubmit) {
+                  onSubmit(updatedFormData);
+                } else {
+                  const destination = resolvePostSubmitRedirect(config, updatedFormData);
+                  setLoaderSubheading(getLoaderSubheading(destination));
+                  setShowLoader(true);
+                }
+              } else {
+                setCurrentStep(Math.min(nextStepIndex, config.steps.length - 1));
+              }
             }
             autoForwardTimeoutRef.current = null;
           }, 500);
@@ -914,12 +925,6 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
             })}
 
 
-            {config.id === "mortgage" && currentStepData.id === "contact" && (
-              <p className="w-full sm:w-[460px] text-sm text-general-muted-foreground">
-                {"\uD83D\uDD12"} Your information is secure and never sold to third parties.
-              </p>
-            )}
-
             {/* Continue button inside card for non-last manual-input steps */}
             {!isLastStep && stepNeedsManualContinue && (
               <Button
@@ -958,8 +963,8 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
               </div>
             )}
 
-            {/* Submit button + disclaimer inside card for last step */}
-            {isLastStep && (
+            {/* Submit button + disclaimer inside card for last step (only when manual input is needed) */}
+            {isLastStep && stepNeedsManualContinue && (
               <>
                 <Button
                   type="button"

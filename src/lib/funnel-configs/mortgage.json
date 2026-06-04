@@ -95,28 +95,6 @@
           ]
         }
       ]
-    },
-
-    {
-      "id": "contact",
-      "title": "Ready to see your matches?",
-      "description": "Your data is safe and secure. Match Engine",
-      "fields": [
-        {
-          "id": "firstName",
-          "type": "text",
-          "label": "First Name",
-          "placeholder": "John",
-          "required": true
-        },
-        {
-          "id": "lastName",
-          "type": "text",
-          "label": "Last Name",
-          "placeholder": "Doe",
-          "required": true
-        }
-      ]
     }
   ]
 }
