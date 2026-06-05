@@ -82,6 +82,11 @@
       "id": "military",
       "title": "Are you or have you been a member of the U.S. military?",
       "description": "Veterans may qualify for special VA loan programs.",
+      "skipIf": {
+        "checkStepId": "loan-type",
+        "checkFieldId": "loanType",
+        "whenValues": ["refinance", "home-equity-heloc"]
+      },
       "fields": [
         {
           "id": "militaryService",
