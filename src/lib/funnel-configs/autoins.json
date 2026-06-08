@@ -676,6 +676,29 @@
       ]
     },
     {
+      "id": "military-membership",
+      "title": "Are you or have you been a member of the U.S. military?",
+      "description": "Get rates with no credit check required!",
+      "fields": [
+        {
+          "id": "militaryMembership",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "contact-info",
       "title": "Ready to see your matches?",
       "description": "Your data is safe and secure.",
