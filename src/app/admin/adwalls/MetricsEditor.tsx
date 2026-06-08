@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Plus, Trash2, Download, Upload, Copy, FileDown } from "lucide-react";
-import type { AdwallCard, RankingConfig } from "@/types/adwall";
+import { Plus, Trash2, Download, Upload, Copy, FileDown, Eye, EyeOff } from "lucide-react";
+import type { AdwallCard, RankingCell, RankingConfig } from "@/types/adwall";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -16,6 +16,19 @@ import { ensureMortgagePoorCreditBucket, getDefaultMortgageRankings } from "@/li
 import { Label } from "@/components/ui/label";
 
 const DEFAULT_NEW_LENDER_RANK = 30;
+
+function getRankingCellRank(cell: RankingCell | undefined): number | undefined {
+  if (typeof cell === "number") return cell;
+  return cell?.rank;
+}
+
+function isRankingCellHidden(cell: RankingCell | undefined): boolean {
+  return typeof cell === "object" && cell !== null && cell.isHidden === true;
+}
+
+function createRankingCell(rank: number, isHidden: boolean): RankingCell {
+  return isHidden ? { rank, isHidden: true } : rank;
+}
 
 interface MetricsEditorProps {
   rankingConfig: RankingConfig | null | undefined;
@@ -672,7 +685,7 @@ export default function MetricsEditor({
       nextIndex += 1;
       newName = `Lender ${nextIndex}`;
     }
-    const newLenderRankings: Record<string, number> = {};
+    const newLenderRankings: Record<string, RankingCell> = {};
     
     // Start new lenders below existing prioritized rows until the user edits them.
     const allKeys = getAllCombinationKeys(effectiveConfig.dimensions);
@@ -724,6 +737,8 @@ export default function MetricsEditor({
   const updateRank = (lenderName: string, comboKey: string, rank: string) => {
     const parsed = parseInt(rank, 10);
     const value = Number.isNaN(parsed) || parsed < 1 ? DEFAULT_NEW_LENDER_RANK : parsed;
+    const existingCell = effectiveConfig.lenders[lenderName]?.[comboKey];
+    const isHidden = isRankingCellHidden(existingCell);
 
     onChange({
       ...effectiveConfig,
@@ -731,11 +746,28 @@ export default function MetricsEditor({
         ...effectiveConfig.lenders,
         [lenderName]: {
           ...(effectiveConfig.lenders[lenderName] ?? {}),
-          [comboKey]: value,
+          [comboKey]: createRankingCell(value, isHidden),
         },
       },
     });
     setEditingCell(null);
+  };
+
+  const toggleCellVisibility = (lenderName: string, comboKey: string) => {
+    const existingCell = effectiveConfig.lenders[lenderName]?.[comboKey];
+    const rank = getRankingCellRank(existingCell) ?? DEFAULT_NEW_LENDER_RANK;
+    const nextHidden = !isRankingCellHidden(existingCell);
+
+    onChange({
+      ...effectiveConfig,
+      lenders: {
+        ...effectiveConfig.lenders,
+        [lenderName]: {
+          ...(effectiveConfig.lenders[lenderName] ?? {}),
+          [comboKey]: createRankingCell(rank, nextHidden),
+        },
+      },
+    });
   };
 
   const downloadCSV = () => {
@@ -752,7 +784,7 @@ export default function MetricsEditor({
         const rankings = effectiveConfig.lenders[lenderName] ?? {};
         return [
           lenderName,
-          ...comboKeys.map((comboKey) => rankings[comboKey] ?? DEFAULT_NEW_LENDER_RANK),
+          ...comboKeys.map((comboKey) => getRankingCellRank(rankings[comboKey]) ?? DEFAULT_NEW_LENDER_RANK),
         ];
       }),
     ];
@@ -801,7 +833,7 @@ export default function MetricsEditor({
           
           if (!lenderName) continue;
 
-          const rankings: Record<string, number> = {};
+          const rankings: Record<string, RankingCell> = {};
           
           // Map CSV columns to combo keys
           for (let j = 0; j < headers.length; j++) {
@@ -880,6 +912,7 @@ export default function MetricsEditor({
   const showDimensionsEditor = false;
 
   return (
+    <TooltipProvider>
     <div className={cn("space-y-4", className)}>
       {showDimensionsEditor ? (
         <DimensionsManager
@@ -1087,7 +1120,9 @@ export default function MetricsEditor({
                           group.subColumns.map((subCol, idx) => {
                             const cellKey = `${lenderName}:${subCol.key}`;
                             const isEditingThisCell = editingCell === cellKey;
-                            const currentRank = rankings[subCol.key] ?? DEFAULT_NEW_LENDER_RANK;
+                            const currentCell = rankings[subCol.key];
+                            const currentRank = getRankingCellRank(currentCell) ?? DEFAULT_NEW_LENDER_RANK;
+                            const isHidden = isRankingCellHidden(currentCell);
                             const displayValue = isEditingThisCell ? tempRankValue : String(currentRank);
                             
                             return (
@@ -1095,29 +1130,54 @@ export default function MetricsEditor({
                                 key={subCol.key}
                                 className={cn(
                                   "px-3 py-2",
+                                  isHidden && "bg-slate-50",
                                   idx === group.subColumns.length - 1 && "border-r border-general-border"
                                 )}
                               >
-                                <Input
-                                  type="number"
-                                  value={displayValue}
-                                  onFocus={() => {
-                                    setEditingCell(cellKey);
-                                    setTempRankValue(String(currentRank));
-                                  }}
-                                  onChange={(e) => setTempRankValue(e.target.value)}
-                                  onBlur={(e) => updateRank(lenderName, subCol.key, e.target.value)}
-                                  onWheel={(e) => e.currentTarget.blur()}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      updateRank(lenderName, subCol.key, e.currentTarget.value);
-                                    } else if (e.key === "Escape") {
-                                      setEditingCell(null);
-                                      setTempRankValue("");
-                                    }
-                                  }}
-                                  className="h-8 text-xs text-center"
-                                />
+                                <div className="flex items-center gap-1">
+                                  <Input
+                                    type="number"
+                                    value={displayValue}
+                                    onFocus={() => {
+                                      setEditingCell(cellKey);
+                                      setTempRankValue(String(currentRank));
+                                    }}
+                                    onChange={(e) => setTempRankValue(e.target.value)}
+                                    onBlur={(e) => updateRank(lenderName, subCol.key, e.target.value)}
+                                    onWheel={(e) => e.currentTarget.blur()}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        updateRank(lenderName, subCol.key, e.currentTarget.value);
+                                      } else if (e.key === "Escape") {
+                                        setEditingCell(null);
+                                        setTempRankValue("");
+                                      }
+                                    }}
+                                    className={cn("h-8 text-xs text-center", isHidden && "text-general-muted-foreground")}
+                                  />
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        className={cn(
+                                          "h-8 w-8 shrink-0",
+                                          isHidden ? "text-general-muted-foreground" : "text-sg-primary-green"
+                                        )}
+                                        onClick={() => toggleCellVisibility(lenderName, subCol.key)}
+                                        aria-label={
+                                          isHidden
+                                            ? `Show ${lenderName} for ${subCol.label}`
+                                            : `Hide ${lenderName} for ${subCol.label}`
+                                        }
+                                      >
+                                        {isHidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{isHidden ? "Hidden for this option" : "Shown for this option"}</TooltipContent>
+                                  </Tooltip>
+                                </div>
                               </td>
                             );
                           })
@@ -1286,5 +1346,6 @@ Figure,8.6,2,2,...`}
         </div>
       )}
     </div>
+    </TooltipProvider>
   );
 }

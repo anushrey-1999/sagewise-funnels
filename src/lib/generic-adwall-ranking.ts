@@ -3,8 +3,22 @@
  * Works with any funnel by reading dimension configurations
  */
 
-import type { AdwallCard, AdwallConfig, RankingConfig, RankingDimension } from "@/types/adwall";
+import type { AdwallCard, AdwallConfig, RankingCell, RankingConfig, RankingDimension } from "@/types/adwall";
 import type { FormData } from "@/types/form";
+
+interface RankingMatrixEntry {
+  rank: number;
+  isHidden: boolean;
+}
+
+function getRankingCellRank(cell: RankingCell | undefined): number | undefined {
+  if (typeof cell === "number") return cell;
+  return cell?.rank;
+}
+
+function isRankingCellHidden(cell: RankingCell | undefined): boolean {
+  return typeof cell === "object" && cell !== null && cell.isHidden === true;
+}
 
 /**
  * Extract a field value from form data
@@ -200,7 +214,7 @@ function normalizeLenderName(card: Pick<AdwallCard, "advertiserName" | "heading"
 function getRankingMatrix(
   rankingConfig: RankingConfig,
   dimensionValues: Record<string, string>
-): Record<string, number> | null {
+): Record<string, RankingMatrixEntry> | null {
   // Build combination key from dimension bucket IDs
   const getComboKey = (values: Record<string, string>) =>
     rankingConfig.dimensions
@@ -209,11 +223,16 @@ function getRankingMatrix(
     .join(":");
 
   const buildMatrix = (comboKey: string) => {
-    const matrix: Record<string, number> = {};
+    const matrix: Record<string, RankingMatrixEntry> = {};
 
     for (const [lenderName, rankings] of Object.entries(rankingConfig.lenders)) {
-      if (rankings[comboKey] !== undefined) {
-        matrix[normalizeLenderKey(lenderName)] = rankings[comboKey];
+      const cell = rankings[comboKey];
+      const rank = getRankingCellRank(cell);
+      if (rank !== undefined) {
+        matrix[normalizeLenderKey(lenderName)] = {
+          rank,
+          isHidden: isRankingCellHidden(cell),
+        };
       }
     }
 
@@ -262,10 +281,11 @@ export function sortAdwallCards<T extends AdwallCard>(
   if (!matrix) return cards;
 
   return cards
+    .filter((card) => !matrix[normalizeLenderName(card)]?.isHidden)
     .map((card, index) => ({
       card,
       index,
-      rank: matrix[normalizeLenderName(card)] ?? Number.POSITIVE_INFINITY,
+      rank: matrix[normalizeLenderName(card)]?.rank ?? Number.POSITIVE_INFINITY,
     }))
     .sort((a, b) => {
       if (a.rank !== b.rank) return a.rank - b.rank;

@@ -1,4 +1,4 @@
-import type { AdwallCard, AdwallConfig, RankingConfig } from "@/types/adwall";
+import type { AdwallCard, AdwallConfig, RankingCell, RankingConfig } from "@/types/adwall";
 import type { FormData } from "@/types/form";
 
 export type MortgageAdwallType = "heloc" | "refi" | "purchase";
@@ -10,7 +10,21 @@ export interface MortgageRankingParams {
   rankAmount: MortgageAmountBucket;
 }
 
+interface RankingMatrixEntry {
+  rank: number;
+  isHidden: boolean;
+}
+
 const amountBuckets: MortgageAmountBucket[] = ["50-150", "150-300", "300-500", "500-plus"];
+
+function getRankingCellRank(cell: RankingCell | undefined): number | undefined {
+  if (typeof cell === "number") return cell;
+  return cell?.rank;
+}
+
+function isRankingCellHidden(cell: RankingCell | undefined): boolean {
+  return typeof cell === "object" && cell !== null && cell.isHidden === true;
+}
 
 function normalizeLenderKey(rawName: string): string {
   const normalizedName = rawName.trim().toLowerCase();
@@ -121,7 +135,7 @@ function getRankingMatrix(
   config: AdwallConfig | null | undefined,
   creditBucket: MortgageCreditBucket,
   amountBucket: MortgageAmountBucket
-): Record<string, number> | null {
+): Record<string, RankingMatrixEntry> | null {
   if (!config?.rankingConfig) return null;
   return getRankingMatrixFromConfig(config.rankingConfig, creditBucket, amountBucket);
 }
@@ -130,7 +144,7 @@ function getRankingMatrixFromConfig(
   rankingConfig: RankingConfig,
   creditBucket: MortgageCreditBucket,
   amountBucket: MortgageAmountBucket
-): Record<string, number> | null {
+): Record<string, RankingMatrixEntry> | null {
   const creditDim = rankingConfig.dimensions.find((d) => d.id === "creditScore");
   const amountDim = rankingConfig.dimensions.find((d) => d.id === "loanAmount");
 
@@ -142,11 +156,16 @@ function getRankingMatrixFromConfig(
   if (!creditBucketExists || !amountBucketExists) return null;
 
   const comboKey = `${creditBucket}:${amountBucket}`;
-  const matrix: Record<string, number> = {};
+  const matrix: Record<string, RankingMatrixEntry> = {};
 
   for (const [lenderName, rankings] of Object.entries(rankingConfig.lenders)) {
-    if (rankings[comboKey] !== undefined) {
-      matrix[normalizeLenderKey(lenderName)] = rankings[comboKey];
+    const cell = rankings[comboKey];
+    const rank = getRankingCellRank(cell);
+    if (rank !== undefined) {
+      matrix[normalizeLenderKey(lenderName)] = {
+        rank,
+        isHidden: isRankingCellHidden(cell),
+      };
     }
   }
 
@@ -173,10 +192,11 @@ export function sortMortgageAdwallCards<T extends AdwallCard>(
   if (!matrix) return cards;
 
   return cards
+    .filter((card) => !matrix[normalizeLenderName(card)]?.isHidden)
     .map((card, index) => ({
       card,
       index,
-      rank: matrix[normalizeLenderName(card)] ?? Number.POSITIVE_INFINITY,
+      rank: matrix[normalizeLenderName(card)]?.rank ?? Number.POSITIVE_INFINITY,
     }))
     .sort((a, b) => {
       if (a.rank !== b.rank) return a.rank - b.rank;

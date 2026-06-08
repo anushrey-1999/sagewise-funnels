@@ -25,9 +25,16 @@ export interface RankingDimension {
   buckets: RankingDimensionBucket[];
 }
 
+export type RankingCell =
+  | number
+  | {
+      rank: number;
+      isHidden?: boolean;
+    };
+
 export interface RankingConfig {
   dimensions: RankingDimension[];
-  lenders: Record<string, Record<string, number>>;
+  lenders: Record<string, Record<string, RankingCell>>;
   rankingNumbers?: Record<string, string>;
 }
 

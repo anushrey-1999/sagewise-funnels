@@ -162,9 +162,19 @@ const rankingDimensionSchema = z.object({
   buckets: z.array(rankingDimensionBucketSchema),
 });
 
+const rankingCellSchema = z.union([
+  z.number(),
+  z
+    .object({
+      rank: z.number(),
+      isHidden: z.boolean().optional(),
+    })
+    .passthrough(),
+]);
+
 const rankingConfigSchema = z.object({
   dimensions: z.array(rankingDimensionSchema),
-  lenders: z.record(z.string(), z.record(z.string(), z.number())),
+  lenders: z.record(z.string(), z.record(z.string(), rankingCellSchema)),
   rankingNumbers: z.record(z.string(), z.string()).optional(),
 });
 
