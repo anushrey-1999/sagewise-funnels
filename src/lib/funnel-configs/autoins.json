@@ -15,20 +15,59 @@
   },
   "postFormInfoBar": {
     "items": [
-      { "icon": "monitor", "text": "Won't affect credit score" },
-      { "icon": "lock", "text": "100% secure" },
-      { "icon": "clock", "text": "Takes 1 minute" }
+      {
+        "icon": "monitor",
+        "text": "Won't affect credit score"
+      },
+      {
+        "icon": "lock",
+        "text": "100% secure"
+      },
+      {
+        "icon": "clock",
+        "text": "Takes 1 minute"
+      }
     ]
   },
   "providerLogos": {
     "heading": "Some of our leading partners",
     "logos": [
-      { "src": "/logos/autoins/statefarm.avif", "alt": "State Farm", "width": 132, "height": 34 },
-      { "src": "/logos/autoins/geico.avif", "alt": "Geico", "width": 175, "height": 34 },
-      { "src": "/logos/autoins/amica.avif", "alt": "Amica", "width": 121, "height": 34 },
-      { "src": "/logos/autoins/liberty-manual.avif", "alt": "Liberty Mutual", "width": 196, "height": 34 },
-      { "src": "/logos/autoins/progressive.avif", "alt": "Progressive", "width": 192, "height": 34 },
-      { "src": "/logos/autoins/allState.avif", "alt": "Allstate", "width": 141, "height": 30 }
+      {
+        "src": "/logos/autoins/statefarm.avif",
+        "alt": "State Farm",
+        "width": 132,
+        "height": 34
+      },
+      {
+        "src": "/logos/autoins/geico.avif",
+        "alt": "Geico",
+        "width": 175,
+        "height": 34
+      },
+      {
+        "src": "/logos/autoins/amica.avif",
+        "alt": "Amica",
+        "width": 121,
+        "height": 34
+      },
+      {
+        "src": "/logos/autoins/liberty-manual.avif",
+        "alt": "Liberty Mutual",
+        "width": 196,
+        "height": 34
+      },
+      {
+        "src": "/logos/autoins/progressive.avif",
+        "alt": "Progressive",
+        "width": 192,
+        "height": 34
+      },
+      {
+        "src": "/logos/autoins/allState.avif",
+        "alt": "Allstate",
+        "width": 141,
+        "height": 30
+      }
     ]
   },
   "belowLogosImage": {
@@ -40,25 +79,47 @@
   "postContent": {
     "details": {
       "blocks": [
-        { "type": "h2", "text": "Compare Top Car Insurance Providers & Save Today" },
+        {
+          "type": "h2",
+          "text": "Compare Top Car Insurance Providers & Save Today"
+        },
         {
           "type": "pHtml",
           "html": "Finding the right car insurance doesn’t have to be complicated. Sagewise makes it fast and easy by connecting you with trusted providers like State Farm, The General, Progressive, GEICO, Allstate, Liberty Mutual, and Bristol West—so you can compare rates and coverage in minutes."
         },
-
-        { "type": "h3", "text": "Why compare with Sagewise?" },
+        {
+          "type": "h3",
+          "text": "Why compare with Sagewise?"
+        },
         {
           "type": "iconList",
           "items": [
-            { "icon": "DollarSign", "textHtml": "<strong>Save more:</strong> Drivers save an average of $762/year by switching." },
-            { "icon": "Zap", "textHtml": "<strong>Fast &amp; easy:</strong> Get personalized quotes in under 1 minute—no long forms." },
-            { "icon": "ShieldCheck", "textHtml": "<strong>Won't affect credit:</strong> Checking car insurance quotes won’t impact your credit score." },
-            { "icon": "Target", "textHtml": "<strong>100% free:</strong> Get matched with the right insurer for your needs, at no cost." },
-            { "icon": "Trophy", "textHtml": "<strong>Top providers:</strong> Sagewise only works with highly rated insurance partners." }
+            {
+              "icon": "DollarSign",
+              "textHtml": "<strong>Save more:</strong> Drivers save an average of $762/year by switching."
+            },
+            {
+              "icon": "Zap",
+              "textHtml": "<strong>Fast &amp; easy:</strong> Get personalized quotes in under 1 minute—no long forms."
+            },
+            {
+              "icon": "ShieldCheck",
+              "textHtml": "<strong>Won't affect credit:</strong> Checking car insurance quotes won’t impact your credit score."
+            },
+            {
+              "icon": "Target",
+              "textHtml": "<strong>100% free:</strong> Get matched with the right insurer for your needs, at no cost."
+            },
+            {
+              "icon": "Trophy",
+              "textHtml": "<strong>Top providers:</strong> Sagewise only works with highly rated insurance partners."
+            }
           ]
         },
-
-        { "type": "h3", "text": "Our leading partners" },
+        {
+          "type": "h3",
+          "text": "Our leading partners"
+        },
         {
           "type": "pHtml",
           "html": "Since every insurance provider offers different coverage options and pricing, <strong>Sagewise brings the top-rated companies together in one place</strong>—so you can easily compare and choose the policy that fits your needs."
@@ -67,8 +128,10 @@
           "type": "pHtml",
           "html": "Our partners may include: </br> Allstate, GEICO, Progressive, Farmers Insurance, Gainsco, Liberty Mutual, The General, Nationwide, AAA, Amica, Root, USAA, State Farm, Bristol West, Costco, Mercury, Travelers, American Family, Freeway, Elephant, Experian, Direct Auto, Erie, Farm Bureau, and Dairyland."
         },
-
-        { "type": "h3", "text": "Understanding car insurance basics" },
+        {
+          "type": "h3",
+          "text": "Understanding car insurance basics"
+        },
         {
           "type": "pHtml",
           "html": "Car insurance is legally required in most states—except for New Hampshire and Virginia. Whether you need basic liability or full coverage, here are the most common policy types:"
@@ -88,8 +151,10 @@
           "type": "pHtml",
           "html": "<strong data-accent=\"true\">Not sure what you need? Take the Sagewise quiz above to find coverage tailored to your situation.</strong>"
         },
-
-        { "type": "h3", "text": "Choosing the right car insurance coverage" },
+        {
+          "type": "h3",
+          "text": "Choosing the right car insurance coverage"
+        },
         {
           "type": "pHtml",
           "html": "Every driver's situation is different, which means coverage needs vary. Before choosing a policy, consider:"
@@ -120,9 +185,14 @@
           "text": "Click to read more about the",
           "linkText": "7 Ways to Lower Your Car Insurance Rate"
         },
-
-        { "type": "h3", "text": "9 factors that affect car insurance rates" },
-        { "type": "pHtml", "html": "Insurance premiums are calculated using several factors:" },
+        {
+          "type": "h3",
+          "text": "9 factors that affect car insurance rates"
+        },
+        {
+          "type": "pHtml",
+          "html": "Insurance premiums are calculated using several factors:"
+        },
         {
           "type": "numberedHtml",
           "itemsHtml": [
@@ -137,9 +207,14 @@
             "<strong>Deductibles:</strong> Higher deductible = lower monthly payment"
           ]
         },
-
-        { "type": "h3", "text": "How to file a car insurance claim" },
-        { "type": "pHtml", "html": "If you need to file a claim:" },
+        {
+          "type": "h3",
+          "text": "How to file a car insurance claim"
+        },
+        {
+          "type": "pHtml",
+          "html": "If you need to file a claim:"
+        },
         {
           "type": "numberedHtml",
           "itemsHtml": [
@@ -177,7 +252,10 @@
         {
           "q": "How is my premium determined?",
           "aBlocks": [
-            { "type": "p", "text": "Rates depend on:" },
+            {
+              "type": "p",
+              "text": "Rates depend on:"
+            },
             {
               "type": "bullets",
               "items": [
@@ -242,7 +320,10 @@
         {
           "q": "Does credit score affect my rate?",
           "aBlocks": [
-            { "type": "p", "text": "Yes, in many states a higher score = lower rates." }
+            {
+              "type": "p",
+              "text": "Yes, in many states a higher score = lower rates."
+            }
           ]
         },
         {
@@ -288,13 +369,19 @@
         {
           "q": "How long does the quiz take?",
           "aBlocks": [
-            { "type": "p", "text": "Less than 2 minutes." }
+            {
+              "type": "p",
+              "text": "Less than 2 minutes."
+            }
           ]
         },
         {
           "q": "Will this affect my credit?",
           "aBlocks": [
-            { "type": "p", "text": "No. No credit checks required." }
+            {
+              "type": "p",
+              "text": "No. No credit checks required."
+            }
           ]
         },
         {
@@ -309,7 +396,10 @@
         {
           "q": "Am I obligated to buy?",
           "aBlocks": [
-            { "type": "p", "text": "No. Compare freely, decide on your timeline." }
+            {
+              "type": "p",
+              "text": "No. Compare freely, decide on your timeline."
+            }
           ]
         },
         {
@@ -324,7 +414,10 @@
         {
           "q": "How often should I compare quotes?",
           "aBlocks": [
-            { "type": "p", "text": "At least once per year or after life changes." }
+            {
+              "type": "p",
+              "text": "At least once per year or after life changes."
+            }
           ]
         },
         {
@@ -339,13 +432,19 @@
         {
           "q": "Need SR-22 insurance?",
           "aBlocks": [
-            { "type": "p", "text": "Sagewise matches you with SR-22 providers in your state." }
+            {
+              "type": "p",
+              "text": "Sagewise matches you with SR-22 providers in your state."
+            }
           ]
         },
         {
           "q": "Can I switch anytime?",
           "aBlocks": [
-            { "type": "p", "text": "Yes. Many insurers refund unused premiums." }
+            {
+              "type": "p",
+              "text": "Yes. Many insurers refund unused premiums."
+            }
           ]
         }
       ]
@@ -382,80 +481,12 @@
       ]
     },
     {
-      "id": "credit-score",
-      "title": "What's your estimated credit score?",
-      "description": "Checking won't impact your score.",
+      "id": "military-membership",
+      "title": "Are you or your spouse currently serving, or have served, in the U.S. military?",
+      "description": "Get rates with no credit check required!",
       "fields": [
         {
-          "id": "credit-score",
-          "type": "radio",
-          "label": "",
-          "required": true,
-          "redirectOnAnswer": {
-            "rules": [
-              {
-                "whenValues": [
-                  "bad",
-                  "poor"
-                ],
-                "to": "/adwall/autoins/one"
-              },
-              {
-                "whenValues": [
-                  "fair"
-                ],
-                "to": "/adwall/autoins/two"
-              },
-              {
-                "whenValues": [
-                  "excellent",
-                  "good"
-                ],
-                "to": "/adwall/autoins/three"
-              }
-            ]
-          },
-          "options": [
-            {
-              "value": "excellent",
-              "label": "Excellent (720+)"
-            },
-            {
-              "value": "good",
-              "label": "Good (680-719)"
-            },
-            {
-              "value": "fair",
-              "label": "Fair (620-679)"
-            },
-            {
-              "value": "bad",
-              "label": "Bad (580-619)"
-            },
-            {
-              "value": "poor",
-              "label": "Poor (Below 580)"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "home-ownership",
-      "title": "Do you own your home?",
-      "description": "Helps us find multi-policy bundling discounts.",
-      "skipIf": {
-        "checkStepId": "credit-score",
-        "checkFieldId": "credit-score",
-        "whenValues": [
-          "fair",
-          "bad",
-          "poor"
-        ]
-      },
-      "fields": [
-        {
-          "id": "homeOwner",
+          "id": "militaryMembership",
           "type": "radio",
           "label": "",
           "required": true,
@@ -473,60 +504,601 @@
       ]
     },
     {
-      "id": "currently-insured",
-      "title": "Are you currently insured?",
-      "description": "Unlocks loyalty and \"no-lapse\" savings.",
-      "skipIf": {
-        "checkStepId": "credit-score",
-        "checkFieldId": "credit-score",
-        "whenValues": [
-          "bad",
-          "poor"
-        ]
-      },
-      "fields": [
-        {
-          "id": "currentlyInsured",
-          "type": "radio",
-          "label": "",
-          "required": true,
-          "options": [
-            {
-              "value": "yes",
-              "label": "Yes"
-            },
-            {
-              "value": "no",
-              "label": "No"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "current-carrier",
-      "title": "Who are you currently insured with?",
+      "id": "military-branch",
+      "title": "Which branch of the military did you or your spouse serve in?",
       "description": "",
-      "skipIf": [
-        {
-          "checkStepId": "credit-score",
-          "checkFieldId": "credit-score",
-          "whenValues": [
-            "bad",
-            "poor"
-          ]
-        },
-        {
-          "checkStepId": "currently-insured",
-          "checkFieldId": "currentlyInsured",
-          "whenValues": [
-            "no"
-          ]
-        }
-      ],
+      "skipIf": {
+        "checkStepId": "military-membership",
+        "checkFieldId": "militaryMembership",
+        "whenValues": [
+          "no"
+        ]
+      },
       "fields": [
         {
-          "id": "currentCarrier",
+          "id": "militaryBranch",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "army",
+              "label": "Army"
+            },
+            {
+              "value": "navy",
+              "label": "Navy"
+            },
+            {
+              "value": "coast-guard",
+              "label": "Coast Guard"
+            },
+            {
+              "value": "military-spouse",
+              "label": "Military Spouse"
+            },
+            {
+              "value": "civilian",
+              "label": "Civilian"
+            },
+            {
+              "value": "marine-corps",
+              "label": "Marine Corps"
+            },
+            {
+              "value": "air-force",
+              "label": "Air Force"
+            },
+            {
+              "value": "national-guard",
+              "label": "National Guard"
+            },
+            {
+              "value": "space-force",
+              "label": "Space Force"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vehicle-year",
+      "title": "What year is your vehicle?",
+      "description": "Not 100% sure? That's okay—just estimate.",
+      "fields": [
+        {
+          "id": "vehicleYear",
+          "type": "year-slider",
+          "label": "",
+          "required": true,
+          "defaultValue": 2015,
+          "validation": {
+            "min": 1985,
+            "max": 2026,
+            "message": "Please enter a year from 1985 or later"
+          }
+        }
+      ]
+    },
+    {
+      "id": "vehicle-make",
+      "title": "What's the make of your vehicle?",
+      "description": "",
+      "fields": [
+        {
+          "id": "vehicleMake",
+          "type": "dropdown",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "Acura",
+              "label": "Acura"
+            },
+            {
+              "value": "Audi",
+              "label": "Audi"
+            },
+            {
+              "value": "BMW",
+              "label": "BMW"
+            },
+            {
+              "value": "Buick",
+              "label": "Buick"
+            },
+            {
+              "value": "Cadillac",
+              "label": "Cadillac"
+            },
+            {
+              "value": "Chevrolet",
+              "label": "Chevrolet"
+            },
+            {
+              "value": "Chrysler",
+              "label": "Chrysler"
+            },
+            {
+              "value": "Dodge",
+              "label": "Dodge"
+            },
+            {
+              "value": "Ford",
+              "label": "Ford"
+            },
+            {
+              "value": "GMC",
+              "label": "GMC"
+            },
+            {
+              "value": "Hyundai",
+              "label": "Hyundai"
+            },
+            {
+              "value": "Infiniti",
+              "label": "Infiniti"
+            },
+            {
+              "value": "Jeep",
+              "label": "Jeep"
+            },
+            {
+              "value": "Kia",
+              "label": "Kia"
+            },
+            {
+              "value": "Lexus",
+              "label": "Lexus"
+            },
+            {
+              "value": "Lincoln",
+              "label": "Lincoln"
+            },
+            {
+              "value": "Mazda",
+              "label": "Mazda"
+            },
+            {
+              "value": "Mercedes-Benz",
+              "label": "Mercedes-Benz"
+            },
+            {
+              "value": "Mercury",
+              "label": "Mercury"
+            },
+            {
+              "value": "Mini",
+              "label": "Mini"
+            },
+            {
+              "value": "Mitsubishi",
+              "label": "Mitsubishi"
+            },
+            {
+              "value": "Nissan",
+              "label": "Nissan"
+            },
+            {
+              "value": "Plymouth",
+              "label": "Plymouth"
+            },
+            {
+              "value": "Pontiac",
+              "label": "Pontiac"
+            },
+            {
+              "value": "Ram",
+              "label": "Ram"
+            },
+            {
+              "value": "Saab",
+              "label": "Saab"
+            },
+            {
+              "value": "Saturn",
+              "label": "Saturn"
+            },
+            {
+              "value": "Scion",
+              "label": "Scion"
+            },
+            {
+              "value": "Subaru",
+              "label": "Subaru"
+            },
+            {
+              "value": "Suzuki",
+              "label": "Suzuki"
+            },
+            {
+              "value": "Tesla",
+              "label": "Tesla"
+            },
+            {
+              "value": "Toyota",
+              "label": "Toyota"
+            },
+            {
+              "value": "Volkswagen",
+              "label": "Volkswagen"
+            },
+            {
+              "value": "Volvo",
+              "label": "Volvo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vehicle-model",
+      "title": "What's the model of your vehicle?",
+      "description": "",
+      "fields": [
+        {
+          "id": "vehicleModel",
+          "type": "dependent-dropdown",
+          "label": "",
+          "required": true,
+          "dependsOn": {
+            "stepId": "vehicle-make",
+            "fieldId": "vehicleMake"
+          }
+        }
+      ]
+    },
+    {
+      "id": "annual-mileage",
+      "title": "About how many miles do you drive each year?",
+      "description": "",
+      "fields": [
+        {
+          "id": "annualMileage",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "5000_or_less",
+              "label": "5,000 or less"
+            },
+            {
+              "value": "7500",
+              "label": "7,500"
+            },
+            {
+              "value": "10000",
+              "label": "10,000"
+            },
+            {
+              "value": "12500",
+              "label": "12,500"
+            },
+            {
+              "value": "15000",
+              "label": "15,000"
+            },
+            {
+              "value": "18000",
+              "label": "18,000"
+            },
+            {
+              "value": "25000",
+              "label": "25,000"
+            },
+            {
+              "value": "50000",
+              "label": "50,000"
+            },
+            {
+              "value": "more_than_50000",
+              "label": "More than 50,000"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multi-car-discount",
+      "title": "Would you like to add another vehicle to see if you qualify for a multi-car discount?",
+      "description": "",
+      "fields": [
+        {
+          "id": "multiCarDiscount",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "yes",
+              "label": "Yes, add a second vehicle"
+            },
+            {
+              "value": "no",
+              "label": "No, just the one vehicle"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vehicle-year-2",
+      "title": "Select your second vehicle year",
+      "description": "Not 100% sure? That's okay—just estimate.",
+      "skipIf": {
+        "checkStepId": "multi-car-discount",
+        "checkFieldId": "multiCarDiscount",
+        "whenValues": [
+          "no"
+        ]
+      },
+      "fields": [
+        {
+          "id": "vehicleYear2",
+          "type": "year-slider",
+          "label": "",
+          "required": true,
+          "defaultValue": 2015,
+          "validation": {
+            "min": 1985,
+            "max": 2026,
+            "message": "Please enter a year from 1985 or later"
+          }
+        }
+      ]
+    },
+    {
+      "id": "vehicle-make-2",
+      "title": "What's the make of your second vehicle?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "multi-car-discount",
+        "checkFieldId": "multiCarDiscount",
+        "whenValues": [
+          "no"
+        ]
+      },
+      "fields": [
+        {
+          "id": "vehicleMake2",
+          "type": "dropdown",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "Acura",
+              "label": "Acura"
+            },
+            {
+              "value": "Audi",
+              "label": "Audi"
+            },
+            {
+              "value": "BMW",
+              "label": "BMW"
+            },
+            {
+              "value": "Buick",
+              "label": "Buick"
+            },
+            {
+              "value": "Cadillac",
+              "label": "Cadillac"
+            },
+            {
+              "value": "Chevrolet",
+              "label": "Chevrolet"
+            },
+            {
+              "value": "Chrysler",
+              "label": "Chrysler"
+            },
+            {
+              "value": "Dodge",
+              "label": "Dodge"
+            },
+            {
+              "value": "Ford",
+              "label": "Ford"
+            },
+            {
+              "value": "GMC",
+              "label": "GMC"
+            },
+            {
+              "value": "Hyundai",
+              "label": "Hyundai"
+            },
+            {
+              "value": "Infiniti",
+              "label": "Infiniti"
+            },
+            {
+              "value": "Jeep",
+              "label": "Jeep"
+            },
+            {
+              "value": "Kia",
+              "label": "Kia"
+            },
+            {
+              "value": "Lexus",
+              "label": "Lexus"
+            },
+            {
+              "value": "Lincoln",
+              "label": "Lincoln"
+            },
+            {
+              "value": "Mazda",
+              "label": "Mazda"
+            },
+            {
+              "value": "Mercedes-Benz",
+              "label": "Mercedes-Benz"
+            },
+            {
+              "value": "Mercury",
+              "label": "Mercury"
+            },
+            {
+              "value": "Mini",
+              "label": "Mini"
+            },
+            {
+              "value": "Mitsubishi",
+              "label": "Mitsubishi"
+            },
+            {
+              "value": "Nissan",
+              "label": "Nissan"
+            },
+            {
+              "value": "Plymouth",
+              "label": "Plymouth"
+            },
+            {
+              "value": "Pontiac",
+              "label": "Pontiac"
+            },
+            {
+              "value": "Ram",
+              "label": "Ram"
+            },
+            {
+              "value": "Saab",
+              "label": "Saab"
+            },
+            {
+              "value": "Saturn",
+              "label": "Saturn"
+            },
+            {
+              "value": "Scion",
+              "label": "Scion"
+            },
+            {
+              "value": "Subaru",
+              "label": "Subaru"
+            },
+            {
+              "value": "Suzuki",
+              "label": "Suzuki"
+            },
+            {
+              "value": "Tesla",
+              "label": "Tesla"
+            },
+            {
+              "value": "Toyota",
+              "label": "Toyota"
+            },
+            {
+              "value": "Volkswagen",
+              "label": "Volkswagen"
+            },
+            {
+              "value": "Volvo",
+              "label": "Volvo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vehicle-model-2",
+      "title": "What's the model of your second vehicle?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "multi-car-discount",
+        "checkFieldId": "multiCarDiscount",
+        "whenValues": [
+          "no"
+        ]
+      },
+      "fields": [
+        {
+          "id": "vehicleModel2",
+          "type": "dependent-dropdown",
+          "label": "",
+          "required": true,
+          "dependsOn": {
+            "stepId": "vehicle-make-2",
+            "fieldId": "vehicleMake2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "annual-mileage-2",
+      "title": "How many miles do you drive your second vehicle each year?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "multi-car-discount",
+        "checkFieldId": "multiCarDiscount",
+        "whenValues": [
+          "no"
+        ]
+      },
+      "fields": [
+        {
+          "id": "annualMileage2",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "5000_or_less",
+              "label": "5,000 or less"
+            },
+            {
+              "value": "7500",
+              "label": "7,500"
+            },
+            {
+              "value": "10000",
+              "label": "10,000"
+            },
+            {
+              "value": "12500",
+              "label": "12,500"
+            },
+            {
+              "value": "15000",
+              "label": "15,000"
+            },
+            {
+              "value": "18000",
+              "label": "18,000"
+            },
+            {
+              "value": "25000",
+              "label": "25,000"
+            },
+            {
+              "value": "50000",
+              "label": "50,000"
+            },
+            {
+              "value": "more_than_50000",
+              "label": "More than 50,000"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "current-insurer",
+      "title": "Who's your current insurer?",
+      "description": "",
+      "fields": [
+        {
+          "id": "currentInsurer",
           "type": "radio",
           "label": "",
           "required": true,
@@ -540,12 +1112,8 @@
               "label": "American Family"
             },
             {
-              "value": "farmers",
-              "label": "Farmers Insurance"
-            },
-            {
               "value": "geico",
-              "label": "GEICO"
+              "label": "Geico"
             },
             {
               "value": "liberty-mutual",
@@ -565,7 +1133,7 @@
             },
             {
               "value": "travelers",
-              "label": "Travelers Insurance"
+              "label": "Travelers"
             },
             {
               "value": "usaa",
@@ -573,26 +1141,96 @@
             },
             {
               "value": "other",
-              "label": "Other (My insurer is not listed)"
+              "label": "Other"
+            },
+            {
+              "value": "no-insurance",
+              "label": "I don't have Insurance"
             }
           ]
         }
       ]
     },
     {
-      "id": "sr-22",
-      "title": "Do you need an SR-22?",
-      "description": "Helps us find specialized high-risk carriers.",
+      "id": "insured-duration",
+      "title": "How long have you been insured with your current company?",
+      "description": "",
       "skipIf": {
-        "checkStepId": "currently-insured",
-        "checkFieldId": "currentlyInsured",
+        "checkStepId": "current-insurer",
+        "checkFieldId": "currentInsurer",
         "whenValues": [
-          "yes"
+          "no-insurance"
         ]
       },
       "fields": [
         {
-          "id": "needsSr22",
+          "id": "insuredDuration",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "0-1",
+              "label": "0-1 years"
+            },
+            {
+              "value": "1-2",
+              "label": "1-2 years"
+            },
+            {
+              "value": "2-4",
+              "label": "2-4 years"
+            },
+            {
+              "value": "4+",
+              "label": "4+ years"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tickets-accidents",
+      "title": "Have you had any tickets or accidents in the past 3 years?",
+      "description": "",
+      "fields": [
+        {
+          "id": "ticketsAccidents",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "0",
+              "label": "0"
+            },
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            },
+            {
+              "value": "3",
+              "label": "3"
+            },
+            {
+              "value": "4_or_more",
+              "label": "4 or more"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dui-dwi",
+      "title": "Have you had a DUI or DWI in the last 3 years?",
+      "description": "",
+      "fields": [
+        {
+          "id": "duiDwi",
           "type": "radio",
           "label": "",
           "required": true,
@@ -610,28 +1248,390 @@
       ]
     },
     {
-      "id": "major-violations",
-      "title": "Any major violations in the last 3 years?",
-      "description": "(DUI, At-fault, Reckless)",
+      "id": "sr-22-required",
+      "title": "Are you required to have an SR-22?",
+      "description": "An SR-22 is a certificate of financial responsibility required by some states after certain violations like DUI, driving without insurance, or multiple traffic offenses.",
+      "fields": [
+        {
+          "id": "sr22Required",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "current-address",
+      "title": "What's your current address?",
+      "description": "",
+      "fields": [
+        {
+          "id": "currentAddress",
+          "type": "text",
+          "label": "Street address",
+          "placeholder": "123 Main St, City, State",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "home-ownership-type",
+      "title": "Do you own or rent your home?",
+      "description": "",
+      "fields": [
+        {
+          "id": "homeOwnershipType",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "own",
+              "label": "Own"
+            },
+            {
+              "value": "rent",
+              "label": "Rent"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bundle-home-auto",
+      "title": "Would you like to see if bundling your home and auto insurance could save you money?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "home-ownership-type",
+        "checkFieldId": "homeOwnershipType",
+        "whenValues": [
+          "rent",
+          "other"
+        ]
+      },
+      "fields": [
+        {
+          "id": "bundleHomeAuto",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "renting-duration",
+      "title": "How long have you been renting your current unit?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "home-ownership-type",
+        "checkFieldId": "homeOwnershipType",
+        "whenValues": [
+          "own",
+          "other"
+        ]
+      },
+      "fields": [
+        {
+          "id": "rentingDuration",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "less_than_6_months",
+              "label": "Less than 6 months"
+            },
+            {
+              "value": "6_months_to_1_year",
+              "label": "6 months to 1 year"
+            },
+            {
+              "value": "1_to_2_years",
+              "label": "1 to 2 years"
+            },
+            {
+              "value": "2_to_3_years",
+              "label": "2 to 3 years"
+            },
+            {
+              "value": "3_to_5_years",
+              "label": "3 to 5 years"
+            },
+            {
+              "value": "more_than_5_years",
+              "label": "More than 5 years"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "renters-insurance",
+      "title": "Want to include renters insurance for extra savings?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "home-ownership-type",
+        "checkFieldId": "homeOwnershipType",
+        "whenValues": [
+          "own",
+          "other"
+        ]
+      },
+      "fields": [
+        {
+          "id": "rentersInsurance",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-type",
+      "title": "What type of home is it?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "home-ownership-type",
+        "checkFieldId": "homeOwnershipType",
+        "whenValues": [
+          "rent",
+          "other"
+        ]
+      },
+      "fields": [
+        {
+          "id": "homeType",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "single-family",
+              "label": "Single-family home"
+            },
+            {
+              "value": "condominium",
+              "label": "Condominium"
+            },
+            {
+              "value": "townhome",
+              "label": "Townhome"
+            },
+            {
+              "value": "multi-family",
+              "label": "Multi Family home"
+            },
+            {
+              "value": "new-construction",
+              "label": "New Construction"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "property-coverage",
+      "title": "How much personal property coverage do you need?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "home-ownership-type",
+        "checkFieldId": "homeOwnershipType",
+        "whenValues": [
+          "rent",
+          "other"
+        ]
+      },
+      "fields": [
+        {
+          "id": "propertyCoverage",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "less_than_10k",
+              "label": "Less than $10,000"
+            },
+            {
+              "value": "10k_to_50k",
+              "label": "$10,000–$50,000"
+            },
+            {
+              "value": "50k_to_100k",
+              "label": "$50,000–$100,000"
+            },
+            {
+              "value": "100k_to_200k",
+              "label": "$100,000–$200,000"
+            },
+            {
+              "value": "200k_plus",
+              "label": "$200,000+"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-insurer",
+      "title": "Who's your current insurer?",
+      "description": "",
+      "skipIf": {
+        "checkStepId": "home-ownership-type",
+        "checkFieldId": "homeOwnershipType",
+        "whenValues": [
+          "rent",
+          "other"
+        ]
+      },
+      "fields": [
+        {
+          "id": "homeInsurer",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "allstate",
+              "label": "Allstate"
+            },
+            {
+              "value": "american-family",
+              "label": "American Family"
+            },
+            {
+              "value": "geico",
+              "label": "Geico"
+            },
+            {
+              "value": "liberty-mutual",
+              "label": "Liberty Mutual"
+            },
+            {
+              "value": "nationwide",
+              "label": "Nationwide"
+            },
+            {
+              "value": "progressive",
+              "label": "Progressive"
+            },
+            {
+              "value": "state-farm",
+              "label": "State Farm"
+            },
+            {
+              "value": "travelers",
+              "label": "Travelers"
+            },
+            {
+              "value": "usaa",
+              "label": "USAA"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            },
+            {
+              "value": "no-insurance",
+              "label": "I don't have Insurance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-insured-duration",
+      "title": "How long have you been insured at your current home?",
+      "description": "",
       "skipIf": [
         {
-          "checkStepId": "sr-22",
-          "checkFieldId": "needsSr22",
+          "checkStepId": "home-ownership-type",
+          "checkFieldId": "homeOwnershipType",
           "whenValues": [
-            "no"
+            "rent",
+            "other"
           ]
         },
         {
-          "checkStepId": "currently-insured",
-          "checkFieldId": "currentlyInsured",
+          "checkStepId": "home-insurer",
+          "checkFieldId": "homeInsurer",
           "whenValues": [
-            "yes"
+            "no-insurance"
           ]
         }
       ],
       "fields": [
         {
-          "id": "majorViolations",
+          "id": "homeInsuredDuration",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "0-1",
+              "label": "0-1 years"
+            },
+            {
+              "value": "1-2",
+              "label": "1-2 years"
+            },
+            {
+              "value": "2-4",
+              "label": "2-4 years"
+            },
+            {
+              "value": "4+",
+              "label": "4+ years"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-claims",
+      "title": "Have you filed any home insurance claims in the past 3 years?",
+      "description": "",
+      "fields": [
+        {
+          "id": "homeClaims",
           "type": "radio",
           "label": "",
           "required": true,
@@ -646,53 +1646,113 @@
             }
           ]
         }
-      ]
+      ],
+      "skipIf": {
+        "checkStepId": "home-ownership-type",
+        "checkFieldId": "homeOwnershipType",
+        "whenValues": [
+          "rent",
+          "other"
+        ]
+      }
     },
     {
-      "id": "vehicle-use",
-      "title": "What's your primary vehicle use?",
-      "description": "Helps us calculate accurate mileage rates.",
+      "id": "credit-description",
+      "title": "How would you describe your credit?",
+      "description": "This helps carriers estimate potential savings. Answering won't affect your credit score and is only used to calculate your quote.",
       "fields": [
         {
-          "id": "primaryVehicleUse",
-          "type": "dropdown",
+          "id": "creditDescription",
+          "type": "radio",
           "label": "",
           "required": true,
           "options": [
             {
-              "value": "commute",
-              "label": "Commute"
+              "value": "excellent",
+              "label": "Excellent (720+)"
             },
             {
-              "value": "leisure",
-              "label": "Leisure / Pleasure"
+              "value": "good",
+              "label": "Good (680-719)"
             },
             {
-              "value": "business",
-              "label": "Business / Rideshare"
+              "value": "fair",
+              "label": "Fair (620-679)"
+            },
+            {
+              "value": "poor",
+              "label": "Poor (580-619)"
+            },
+            {
+              "value": "bad",
+              "label": "Bad (Below 580)"
             }
           ]
         }
       ]
     },
     {
-      "id": "military-membership",
-      "title": "Are you or have you been a member of the U.S. military?",
-      "description": "Get rates with no credit check required!",
+      "id": "gender",
+      "title": "What's your gender?",
+      "description": "",
       "fields": [
         {
-          "id": "militaryMembership",
+          "id": "gender",
           "type": "radio",
           "label": "",
           "required": true,
           "options": [
             {
-              "value": "yes",
-              "label": "Yes"
+              "value": "male",
+              "label": "Male"
             },
             {
-              "value": "no",
-              "label": "No"
+              "value": "female",
+              "label": "Female"
+            },
+            {
+              "value": "non-binary",
+              "label": "Non Binary"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "birthdate",
+      "title": "What is your birthdate?",
+      "description": "",
+      "fields": [
+        {
+          "id": "birthdate",
+          "type": "date",
+          "label": "Date of birth",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "marital-status",
+      "title": "What's your marital status?",
+      "description": "Used to calculate your rates and identify potential discounts for married couples.",
+      "fields": [
+        {
+          "id": "maritalStatus",
+          "type": "radio",
+          "label": "",
+          "required": true,
+          "options": [
+            {
+              "value": "married",
+              "label": "Married"
+            },
+            {
+              "value": "single",
+              "label": "Single"
             }
           ]
         }

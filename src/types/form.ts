@@ -8,7 +8,10 @@ export type InputType =
   | "email"
   | "tel"
   | "number"
-  | "slider";
+  | "slider"
+  | "year-slider"
+  | "dependent-dropdown"
+  | "date";
 
 export interface RedirectRule {
   whenValues: string[];
@@ -37,6 +40,10 @@ export interface FormField {
     message?: string;
   };
   options?: Array<{ value: string; label: string; icon?: string }>; // For radio, select, checkbox
+  dependsOn?: {
+    stepId: string;   // Step whose field value drives the options
+    fieldId: string;  // Field within that step
+  };
 }
 
 export interface SkipCondition {

@@ -41,6 +41,11 @@ export async function getPublishedFunnelConfig(
   opts?: { useDraft?: boolean }
 ): Promise<FormConfig | null> {
   const resolvedId = funnelId || "cc-one";
+  // Dev escape-hatch: FORCE_STATIC_CONFIG=1 in .env.dev bypasses DB so
+  // edits to funnel-configs/*.json are visible immediately without re-publishing.
+  if (process.env.FORCE_STATIC_CONFIG === "1") {
+    return getStaticFunnelConfig(resolvedId);
+  }
   const result = await getConfigFromDb<FormConfig>("funnel", resolvedId, opts);
   if (result.source === "db") return result.data;
   // Only fall back to static JSON when DB has no row at all (or is unavailable).

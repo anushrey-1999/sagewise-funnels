@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckIcon, Minus, Plus, icons } from "lucide-react";
 import React, { useEffect, useId, useState } from "react";
+import vehicleModels from "@/lib/vehicle-models.json";
 
 function LucideIcon({ name, className }: { name: string; className?: string }) {
   const Icon = icons[name as keyof typeof icons] as React.ComponentType<{ className?: string }> | undefined;
@@ -272,6 +273,215 @@ function FloatingLabelInput({
   );
 }
 
+function YearSliderField({
+  field,
+  value,
+  onChange,
+  error,
+  errorId,
+  isValidValue,
+}: {
+  field: FormField;
+  value: FieldValue | undefined;
+  onChange: (v: FieldValue) => void;
+  error?: string;
+  errorId: string;
+  isValidValue: (f: FormField, v: FieldValue | undefined) => boolean;
+}) {
+  const min = field.validation?.min ?? 1985;
+  const max = field.validation?.max ?? new Date().getFullYear();
+  const fallback = typeof field.defaultValue === "number" ? field.defaultValue : Math.round((min + max) / 2);
+  const currentNum = typeof value === "number" ? value : fallback;
+
+  const [sliderVal, setSliderVal] = useState(currentNum);
+  const [inputText, setInputText] = useState("");
+
+  useEffect(() => {
+    setSliderVal(currentNum);
+  }, [currentNum]);
+
+  const isValid = isValidValue(field, typeof inputText === "string" && inputText.trim() ? currentNum : sliderVal);
+
+  const handleInputChange = (raw: string) => {
+    const digits = raw.replace(/[^0-9]/g, "").slice(0, 4);
+    setInputText(digits);
+    if (digits === "") {
+      onChange(sliderVal);
+    } else {
+      const parsed = parseInt(digits, 10);
+      onChange(Number.isNaN(parsed) ? sliderVal : parsed);
+    }
+  };
+
+  const handleSliderChange = (val: number) => {
+    setSliderVal(val);
+    if (!inputText.trim()) {
+      onChange(val);
+    }
+  };
+
+  const handleDecrement = () => {
+    const next = Math.max(min, sliderVal - 1);
+    setSliderVal(next);
+    setInputText("");
+    onChange(next);
+  };
+
+  const handleIncrement = () => {
+    const next = Math.min(max, sliderVal + 1);
+    setSliderVal(next);
+    setInputText("");
+    onChange(next);
+  };
+
+  const displayInput = inputText.trim() ? inputText : "";
+
+  return (
+    <div className="w-full sm:w-[460px] flex flex-col gap-4">
+      {field.label && (
+        <Label htmlFor={field.id} className="text-base font-medium text-foreground">
+          {field.label}
+        </Label>
+      )}
+      <div className="relative">
+        <Input
+          id={field.id}
+          type="text"
+          inputMode="numeric"
+          placeholder={String(sliderVal)}
+          value={displayInput}
+          onChange={(e) => handleInputChange(e.target.value)}
+          className={cn(
+            "h-[58px] min-h-[58px] rounded-2xl text-lg font-semibold text-primary-main pl-4",
+            isValid && "border-[var(--sg-primary-green)]",
+            error && "border-red-500"
+          )}
+          aria-label={field.label || field.placeholder || field.id}
+          aria-invalid={!!error}
+          aria-describedby={error ? errorId : undefined}
+        />
+        {isValid && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none">
+            <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
+          </div>
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={handleDecrement}
+          disabled={sliderVal <= min}
+          aria-label="Decrease year"
+          className="size-9 shrink-0 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          <Minus className="size-4 text-primary-main" />
+        </button>
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={1}
+          value={sliderVal}
+          onChange={(e) => handleSliderChange(parseInt(e.target.value, 10))}
+          className="flex-1 h-2 rounded-full appearance-none cursor-pointer bg-gray-200 accent-primary-main [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-7 [&::-webkit-slider-thumb]:h-7 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary-main [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-moz-range-thumb]:w-7 [&::-moz-range-thumb]:h-7 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary-main [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md"
+          aria-label={`${field.label || field.id} slider`}
+        />
+        <button
+          type="button"
+          onClick={handleIncrement}
+          disabled={sliderVal >= max}
+          aria-label="Increase year"
+          className="size-9 shrink-0 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          <Plus className="size-4 text-primary-main" />
+        </button>
+      </div>
+      <div className="flex justify-between text-xs text-general-muted-foreground">
+        <span>{min}</span>
+        <span>{max}</span>
+      </div>
+      {error && (
+        <p id={errorId} className="text-sm text-red-500" role="alert" aria-live="polite">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function DependentDropdownField({
+  field,
+  value,
+  onChange,
+  error,
+  errorId,
+  isValidValue,
+  dependencyValue,
+}: {
+  field: FormField;
+  value: FieldValue | undefined;
+  onChange: (v: FieldValue) => void;
+  error?: string;
+  errorId: string;
+  isValidValue: (f: FormField, v: FieldValue | undefined) => boolean;
+  dependencyValue?: string;
+}) {
+  const models =
+    dependencyValue && dependencyValue in vehicleModels
+      ? (vehicleModels as Record<string, string[]>)[dependencyValue]
+      : [];
+  const isSelectValid = isValidValue(field, value);
+
+  return (
+    <div className="w-full sm:w-[460px]">
+      {field.label && (
+        <Label htmlFor={field.id} className="text-base font-medium text-foreground mb-2 block">
+          {field.label}
+        </Label>
+      )}
+      <div className="relative">
+        <select
+          id={field.id}
+          value={typeof value === "string" ? value : ""}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={!dependencyValue}
+          className={cn(
+            "h-[58px] min-h-[58px] w-full rounded-2xl border-[3px] border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-[var(--sg-primary-green)] hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+            "!bg-white",
+            "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)]",
+            isSelectValid && "border-[var(--sg-primary-green)]",
+            error && "border-red-500"
+          )}
+          required={field.required}
+          aria-label={field.label || field.placeholder || field.id}
+          aria-invalid={!!error}
+          aria-describedby={error ? errorId : undefined}
+          aria-required={field.required}
+        >
+          <option value="">
+            {dependencyValue ? "Select a model..." : "Select a make first..."}
+          </option>
+          {models.map((model) => (
+            <option key={model} value={model}>
+              {model}
+            </option>
+          ))}
+        </select>
+        {isSelectValid && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none">
+            <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
+          </div>
+        )}
+      </div>
+      {error && (
+        <p id={errorId} className="text-sm text-red-500 mt-1" role="alert" aria-live="polite">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 interface DynamicFormFieldProps {
   field: FormField;
   value: FieldValue | undefined;
@@ -279,9 +489,10 @@ interface DynamicFormFieldProps {
   error?: string;
   isLastStep?: boolean;
   isLastField?: boolean;
+  dependencyValue?: string;
 }
 
-export function DynamicFormField({ field, value, onChange, error }: DynamicFormFieldProps) {
+export function DynamicFormField({ field, value, onChange, error, dependencyValue }: DynamicFormFieldProps) {
   const errorId = useId();
   
   // Validation function to check if value is valid
@@ -536,6 +747,7 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
       case "email":
       case "tel":
       case "number":
+      case "date":
         return (
           <FloatingLabelInput
             field={field}
@@ -612,6 +824,33 @@ export function DynamicFormField({ field, value, onChange, error }: DynamicFormF
             error={error}
             errorId={errorId}
             isValidValue={isValidValue}
+          />
+        );
+      }
+
+      case "year-slider": {
+        return (
+          <YearSliderField
+            field={field}
+            value={value}
+            onChange={onChange}
+            error={error}
+            errorId={errorId}
+            isValidValue={isValidValue}
+          />
+        );
+      }
+
+      case "dependent-dropdown": {
+        return (
+          <DependentDropdownField
+            field={field}
+            value={value}
+            onChange={onChange}
+            error={error}
+            errorId={errorId}
+            isValidValue={isValidValue}
+            dependencyValue={dependencyValue}
           />
         );
       }

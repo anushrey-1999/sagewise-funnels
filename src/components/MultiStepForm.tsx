@@ -163,6 +163,15 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
           defaults[f.id] = Math.round((min + max) / 2);
         }
       }
+      if (f.type === "year-slider" && stepData[f.id] === undefined) {
+        if (typeof f.defaultValue === "number") {
+          defaults[f.id] = f.defaultValue;
+        } else {
+          const min = f.validation?.min ?? 1985;
+          const max = f.validation?.max ?? new Date().getFullYear();
+          defaults[f.id] = Math.round((min + max) / 2);
+        }
+      }
     }
 
     if (Object.keys(defaults).length > 0) {
@@ -232,6 +241,17 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
         if (field.validation?.min !== undefined) numSchema = numSchema.min(field.validation.min, field.validation.message || "Value is too low");
         if (field.validation?.max !== undefined) numSchema = numSchema.max(field.validation.max, field.validation.message || "Value is too high");
         schemaFields[field.id] = field.required ? numSchema : numSchema.optional();
+      } else if (field.type === "dependent-dropdown") {
+        const msg = selectMsg(field);
+        schemaFields[field.id] = field.required
+          ? z.string({ error: msg }).min(1, msg)
+          : z.string().optional();
+      } else if (field.type === "year-slider") {
+        const minYear = field.validation?.min ?? 1985;
+        const maxYear = field.validation?.max ?? new Date().getFullYear();
+        const minMsg = field.validation?.message || `Please enter a year from ${minYear} or later`;
+        let yearSchema = z.number().min(minYear, minMsg).max(maxYear, `Please enter a year no later than ${maxYear}`);
+        schemaFields[field.id] = field.required ? yearSchema : yearSchema.optional();
       } else {
         const msg = enterMsg(field);
         if (!field.required) {
@@ -911,6 +931,11 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
               const fieldError = errors[currentStepData.id]?.[field.id];
               const isLastField = index === currentStepData.fields.length - 1;
               
+              const dependencyValue =
+                field.type === "dependent-dropdown" && field.dependsOn
+                  ? String(formData[field.dependsOn.stepId]?.[field.dependsOn.fieldId] ?? "")
+                  : undefined;
+
               return (
                 <DynamicFormField
                   key={field.id}
@@ -920,6 +945,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
                   error={fieldError}
                   isLastStep={isLastStep}
                   isLastField={isLastField}
+                  dependencyValue={dependencyValue}
                 />
               );
             })}
