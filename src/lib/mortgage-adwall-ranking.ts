@@ -2,7 +2,7 @@ import type { AdwallCard, AdwallConfig, RankingCell, RankingConfig } from "@/typ
 import type { FormData } from "@/types/form";
 
 export type MortgageAdwallType = "heloc" | "refi" | "purchase";
-export type MortgageCreditBucket = "excellent" | "good" | "fair" | "poor";
+export type MortgageCreditBucket = "excellent" | "good" | "fair" | "poor" | "bad";
 export type MortgageAmountBucket = "50-150" | "150-300" | "300-500" | "500-plus";
 
 export interface MortgageRankingParams {
@@ -42,11 +42,11 @@ function normalizeLenderName(card: Pick<AdwallCard, "advertiserName" | "heading"
 }
 
 export function normalizeMortgageCreditBucket(value: string | null | undefined): MortgageCreditBucket | null {
-  if (value === "excellent" || value === "good" || value === "fair" || value === "poor") {
+  if (value === "excellent" || value === "good" || value === "fair" || value === "poor" || value === "bad") {
     return value;
   }
-  if (value === "bad" || value === "below-580") {
-    return "poor";
+  if (value === "below-580") {
+    return "bad";
   }
   return null;
 }
@@ -188,7 +188,8 @@ export function sortMortgageAdwallCards<T extends AdwallCard>(
 
   const matrix =
     getRankingMatrix(config, creditBucket, rankAmount) ??
-    (creditBucket === "poor" ? getRankingMatrix(config, "fair", rankAmount) : null);
+    (creditBucket === "poor" ? getRankingMatrix(config, "fair", rankAmount) : null) ??
+    (creditBucket === "bad" ? getRankingMatrix(config, "poor", rankAmount) : null);
   if (!matrix) return cards;
 
   return cards

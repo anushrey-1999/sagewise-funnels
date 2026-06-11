@@ -249,6 +249,10 @@ function getRankingMatrix(
     return buildMatrix(getComboKey({ ...dimensionValues, creditScore: "fair" }));
   }
 
+  if (dimensionValues.creditScore === "bad") {
+    return buildMatrix(getComboKey({ ...dimensionValues, creditScore: "poor" }));
+  }
+
   return null;
 }
 

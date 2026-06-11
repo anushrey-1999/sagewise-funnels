@@ -5,6 +5,7 @@ import type { FormConfig } from "@/types/form";
 import { getAdwallConfig as getStaticAdwallConfig } from "@/lib/adwall-loader";
 import { getDemoAdwallConfig as getStaticDemoAdwallConfig } from "@/lib/demo-adwall-loader";
 import { getFunnelConfig as getStaticFunnelConfig } from "@/lib/funnel-loader";
+import { ensureMortgagePoorCreditBucket } from "@/lib/mortgage-ranking-defaults";
 import { adwallConfigKey, getConfigRow, type ConfigKind } from "@/lib/config-service";
 
 type ConfigResult<T> = { source: "db"; data: T } | { source: "db-missing-field"; row: true } | { source: "no-row" } | { source: "db-error" };
@@ -36,6 +37,15 @@ async function getConfigFromDb<T>(
   return { source: "no-row" };
 }
 
+function normalizeAdwallConfig(config: AdwallConfig): AdwallConfig {
+  if (config.funnelId !== "mortgage" || !config.rankingConfig) return config;
+
+  return {
+    ...config,
+    rankingConfig: ensureMortgagePoorCreditBucket(config.rankingConfig),
+  };
+}
+
 export async function getPublishedFunnelConfig(
   funnelId: string | null,
   opts?: { useDraft?: boolean }
@@ -63,9 +73,10 @@ export async function getPublishedAdwallConfig(
 ): Promise<AdwallConfig | null> {
   const key = adwallConfigKey(routePrefix, adwallType);
   const result = await getConfigFromDb<AdwallConfig>("adwall", key, opts);
-  if (result.source === "db") return result.data;
+  if (result.source === "db") return normalizeAdwallConfig(result.data);
   if (result.source === "no-row" || result.source === "db-error") {
-    return getStaticAdwallConfig(routePrefix, adwallType);
+    const staticConfig = getStaticAdwallConfig(routePrefix, adwallType);
+    return staticConfig ? normalizeAdwallConfig(staticConfig) : null;
   }
   return null;
 }
@@ -77,9 +88,10 @@ export async function getPublishedDemoAdwallConfig(
 ): Promise<AdwallConfig | null> {
   const key = adwallConfigKey(routePrefix, adwallType);
   const result = await getConfigFromDb<AdwallConfig>("demo-adwall", key, opts);
-  if (result.source === "db") return result.data;
+  if (result.source === "db") return normalizeAdwallConfig(result.data);
   if (result.source === "no-row" || result.source === "db-error") {
-    return getStaticDemoAdwallConfig(routePrefix, adwallType);
+    const staticConfig = getStaticDemoAdwallConfig(routePrefix, adwallType);
+    return staticConfig ? normalizeAdwallConfig(staticConfig) : null;
   }
   return null;
 }

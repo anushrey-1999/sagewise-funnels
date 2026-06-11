@@ -12,10 +12,11 @@ export const MORTGAGE_RANKING_DIMENSIONS: RankingConfig["dimensions"] = [
     fieldId: "creditScore",
     valueType: "direct",
     buckets: [
-      { id: "excellent", label: "Excellent (760+)", matchValues: ["excellent"] },
-      { id: "good", label: "Good (700-759)", matchValues: ["good"] },
-      { id: "fair", label: "Fair (640-699)", matchValues: ["fair"] },
-      { id: "poor", label: "Poor (Below 640)", matchValues: ["poor", "bad", "below-580"] },
+      { id: "excellent", label: "Excellent (720+)", matchValues: ["excellent"] },
+      { id: "good", label: "Good (680-719)", matchValues: ["good"] },
+      { id: "fair", label: "Fair (620-679)", matchValues: ["fair"] },
+      { id: "poor", label: "Poor (580-619)", matchValues: ["poor"] },
+      { id: "bad", label: "Bad (Below 580)", matchValues: ["bad", "below-580"] },
     ],
   },
   {
@@ -223,16 +224,26 @@ export const DEFAULT_PURCHASE_RANKINGS: RankingConfig["lenders"] = {
   },
 };
 
-export function withPoorCreditRankings(lenders: RankingConfig["lenders"]): RankingConfig["lenders"] {
+export function withMortgageCreditRankings(lenders: RankingConfig["lenders"]): RankingConfig["lenders"] {
   const nextLenders: RankingConfig["lenders"] = {};
 
   for (const [lenderName, rankings] of Object.entries(lenders)) {
     const nextRankings = { ...rankings };
+    const hasLegacyPoorRankings = Object.keys(rankings).some((comboKey) => comboKey.startsWith("poor:"));
 
     for (const [comboKey, rank] of Object.entries(rankings)) {
       if (comboKey.startsWith("fair:")) {
         const poorComboKey = comboKey.replace(/^fair:/, "poor:");
-        nextRankings[poorComboKey] ??= rank;
+        const badComboKey = comboKey.replace(/^fair:/, "bad:");
+        nextRankings[poorComboKey] = rank;
+        if (!hasLegacyPoorRankings) {
+          nextRankings[badComboKey] ??= rank;
+        }
+      }
+
+      if (comboKey.startsWith("poor:")) {
+        const badComboKey = comboKey.replace(/^poor:/, "bad:");
+        nextRankings[badComboKey] ??= rank;
       }
     }
 
@@ -246,36 +257,16 @@ export function ensureMortgagePoorCreditBucket(config: RankingConfig): RankingCo
   const dimensions = config.dimensions.map((dimension) => {
     if (dimension.id !== "creditScore") return dimension;
 
-    const hasPoorBucket = dimension.buckets.some((bucket) => bucket.id === "poor");
-    const buckets = dimension.buckets.map((bucket) => {
-      if (bucket.id !== "fair") return bucket;
-      return {
-        ...bucket,
-        matchValues: bucket.matchValues?.filter((value) => value !== "poor" && value !== "bad"),
-      };
-    });
-
-    if (!hasPoorBucket) {
-      const fairIndex = buckets.findIndex((bucket) => bucket.id === "fair");
-      const poorBucket = { id: "poor", label: "Poor (<620)", matchValues: ["poor", "bad"] };
-
-      if (fairIndex === -1) {
-        buckets.push(poorBucket);
-      } else {
-        buckets.splice(fairIndex + 1, 0, poorBucket);
-      }
-    }
-
     return {
       ...dimension,
-      buckets,
+      buckets: MORTGAGE_RANKING_DIMENSIONS[0]!.buckets,
     };
   });
 
   return {
     ...config,
     dimensions,
-    lenders: withPoorCreditRankings(config.lenders),
+    lenders: withMortgageCreditRankings(config.lenders),
   };
 }
 

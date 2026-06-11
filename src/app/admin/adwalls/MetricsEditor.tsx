@@ -46,10 +46,11 @@ function getDefaultMortgageRankingConfig(): RankingConfig {
         id: "creditScore",
         label: "Credit Score",
         buckets: [
-          { id: "excellent", label: "Excellent (740+)" },
-          { id: "good", label: "Good (680-739)" },
+          { id: "excellent", label: "Excellent (720+)" },
+          { id: "good", label: "Good (680-719)" },
           { id: "fair", label: "Fair (620-679)" },
-          { id: "poor", label: "Poor (<620)" },
+          { id: "poor", label: "Poor (580-619)" },
+          { id: "bad", label: "Bad (Below 580)" },
         ],
       },
       {
@@ -1134,7 +1135,7 @@ export default function MetricsEditor({
                                   idx === group.subColumns.length - 1 && "border-r border-general-border"
                                 )}
                               >
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center justify-center gap-1">
                                   <Input
                                     type="number"
                                     value={displayValue}
@@ -1153,7 +1154,10 @@ export default function MetricsEditor({
                                         setTempRankValue("");
                                       }
                                     }}
-                                    className={cn("h-8 text-xs text-center", isHidden && "text-general-muted-foreground")}
+                                    className={cn(
+                                      "h-12! min-h-12! w-12! min-w-12! shrink-0 px-1! text-center text-sm font-medium [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+                                      isHidden && "text-general-muted-foreground"
+                                    )}
                                   />
                                   <Tooltip>
                                     <TooltipTrigger asChild>
