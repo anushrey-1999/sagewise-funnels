@@ -202,6 +202,7 @@ function FloatingLabelInput({
 }) {
   const [isFocused, setIsFocused] = useState(false);
   const isZipCode = field.id === "zipCode";
+  const isDateField = field.type === "date";
   const inputMode: React.InputHTMLAttributes<HTMLInputElement>["inputMode"] =
     field.type === "tel" ? "tel" : isZipCode ? "numeric" : undefined;
 
@@ -211,6 +212,17 @@ function FloatingLabelInput({
       inputValue = inputValue.replace(/\D/g, "").slice(0, 5);
     }
     onChange(inputValue);
+  };
+
+  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    if (!isDateField) return;
+
+    const input = e.currentTarget as HTMLInputElement & { showPicker?: () => void };
+    try {
+      input.showPicker?.();
+    } catch {
+      // Some browsers only allow showPicker from specific trusted interactions.
+    }
   };
 
   const isValid = isValidValue(field, value);
@@ -243,12 +255,15 @@ function FloatingLabelInput({
           placeholder={!field.label ? field.placeholder : undefined}
           value={typeof value === "string" || typeof value === "number" ? String(value) : ""}
           onChange={handleInputChange}
+          onClick={handleInputClick}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           maxLength={isZipCode ? 5 : undefined}
           className={cn(
             "h-[58px] min-h-[58px] rounded-2xl pr-10",
             field.label ? "pt-5 pb-1" : "",
+            isDateField && "pr-3 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none",
+            isDateField && !hasValue && "text-transparent caret-transparent selection:bg-transparent selection:text-transparent [&::-webkit-date-and-time-value]:text-transparent [&::-webkit-datetime-edit]:text-transparent [&::-webkit-datetime-edit-fields-wrapper]:text-transparent [&::-webkit-datetime-edit-text]:text-transparent [&::-webkit-datetime-edit-day-field]:text-transparent [&::-webkit-datetime-edit-month-field]:text-transparent [&::-webkit-datetime-edit-year-field]:text-transparent",
             isValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
           )}

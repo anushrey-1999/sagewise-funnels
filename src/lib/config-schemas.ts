@@ -12,6 +12,9 @@ const inputTypeSchema = z.enum([
   "tel",
   "number",
   "slider",
+  "year-slider",
+  "dependent-dropdown",
+  "date",
 ]);
 
 const redirectRuleSchema = z
@@ -49,6 +52,12 @@ const formFieldSchema = z
       .passthrough()
       .optional(),
     options: z.array(z.object({ value: z.string(), label: z.string() }).passthrough()).optional(),
+    dependsOn: z
+      .object({
+        stepId: z.string(),
+        fieldId: z.string(),
+      })
+      .optional(),
   })
   .passthrough();
 

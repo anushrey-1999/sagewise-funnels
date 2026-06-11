@@ -57,10 +57,17 @@ interface MultiStepFormProps {
   config: FormConfig;
   onSubmit?: (data: FormData) => void;
   onProgressChange?: (progress: number) => void;
+  onStepChange?: (stepIndex: number) => void;
   isSubmitting?: boolean;
 }
 
-export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting = false }: MultiStepFormProps) {
+export function MultiStepForm({
+  config,
+  onSubmit,
+  onProgressChange,
+  onStepChange,
+  isSubmitting = false,
+}: MultiStepFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(0);
@@ -250,7 +257,7 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
         const minYear = field.validation?.min ?? 1985;
         const maxYear = field.validation?.max ?? new Date().getFullYear();
         const minMsg = field.validation?.message || `Please enter a year from ${minYear} or later`;
-        let yearSchema = z.number().min(minYear, minMsg).max(maxYear, `Please enter a year no later than ${maxYear}`);
+        const yearSchema = z.number().min(minYear, minMsg).max(maxYear, `Please enter a year no later than ${maxYear}`);
         schemaFields[field.id] = field.required ? yearSchema : yearSchema.optional();
       } else {
         const msg = enterMsg(field);
@@ -541,6 +548,12 @@ export function MultiStepForm({ config, onSubmit, onProgressChange, isSubmitting
       onProgressChange(progress);
     }
   }, [progress, onProgressChange]);
+
+  useEffect(() => {
+    if (onStepChange) {
+      onStepChange(currentStep);
+    }
+  }, [currentStep, onStepChange]);
 
   // Get the next valid step index, skipping any steps that should be skipped
   // Optionally accepts formDataOverride to use updated data that might not be in state yet

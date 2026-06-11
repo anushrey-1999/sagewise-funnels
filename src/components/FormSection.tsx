@@ -12,9 +12,10 @@ import { buildAdwallRankingQueryParams } from "@/lib/adwall-ranking-query-params
 interface FormSectionProps {
   config: FormConfig;
   funnelId: string;
+  onStepChange?: (stepIndex: number) => void;
 }
 
-export function FormSection({ config, funnelId }: FormSectionProps) {
+export function FormSection({ config, funnelId, onStepChange }: FormSectionProps) {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -164,6 +165,7 @@ export function FormSection({ config, funnelId }: FormSectionProps) {
     <MultiStepForm
       config={config}
       onSubmit={handleFormSubmit}
+      onStepChange={onStepChange}
       isSubmitting={isSubmitting}
     />
   );
