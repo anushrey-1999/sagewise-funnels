@@ -9,7 +9,8 @@ const CYCLING_LINES = [
   "Almost ready with your matches...",
 ];
 
-const TOTAL_DURATION = 4500; // ms — must match the fill animation
+const TOTAL_DURATION = 2250; // ms — must match the fill animation
+const COMPLETION_DELAY = 100; // ms
 const LINE_DURATION = TOTAL_DURATION / CYCLING_LINES.length; // ms per line
 
 interface LoaderProps {
@@ -39,7 +40,7 @@ export function Loader({
       } else {
         setTimeout(() => {
           if (onComplete) onComplete();
-        }, 200);
+        }, COMPLETION_DELAY);
       }
     };
 
@@ -70,7 +71,7 @@ export function Loader({
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center -mt-16 sm:-mt-24"
+      className="fixed inset-0 z-9999 flex flex-col items-center justify-center -mt-16 sm:-mt-24"
       style={{
         background:
           "linear-gradient(160deg, #0c1d35 0%, #0a1628 60%, #081220 100%)",
