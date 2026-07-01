@@ -4,7 +4,7 @@ import { FormField } from "@/types/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckIcon, Minus, Plus, icons } from "lucide-react";
 import React, { useEffect, useId, useState } from "react";
@@ -695,7 +695,8 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
         );
 
       case "radio": {
-        const hasIcons = field.options?.some((o) => o.icon);
+        const visibleOptions = field.options?.filter((option) => !option.uiHidden) ?? [];
+        const hasIcons = visibleOptions.some((o) => o.icon);
         return (
           <RadioGroup
             value={typeof value === "string" ? value : ""}
@@ -710,7 +711,7 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
             aria-invalid={!!error}
             aria-describedby={error ? errorId : undefined}
           >
-            {field.options?.map((option) => {
+            {visibleOptions.map((option) => {
               const isSelected = value === option.value;
               const isValid = isSelected && isValidValue(field, value);
               return (
@@ -804,7 +805,7 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
                 aria-required={field.required}
               >
                 <option value="">Select an option...</option>
-                {field.options?.map((option) => (
+                {field.options?.filter((option) => !option.uiHidden).map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>

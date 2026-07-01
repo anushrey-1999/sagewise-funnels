@@ -39,7 +39,7 @@ export interface FormField {
     max?: number;
     message?: string;
   };
-  options?: Array<{ value: string; label: string; icon?: string }>; // For radio, select, checkbox
+  options?: Array<{ value: string; label: string; icon?: string; uiHidden?: boolean }>; // For radio, select, checkbox
   dependsOn?: {
     stepId: string;   // Step whose field value drives the options
     fieldId: string;  // Field within that step

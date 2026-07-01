@@ -52,7 +52,7 @@
             { "value": "good", "label": "Good (680-719)" },
             { "value": "fair", "label": "Fair (620-679)" },
             { "value": "poor", "label": "Poor (580-619)" },
-            { "value": "bad", "label": "Bad (Below 580)" }
+            { "value": "bad", "label": "Below 580" }
           ]
         }
       ]
@@ -70,7 +70,7 @@
           "required": true,
           "autoForward": true,
           "options": [
-            { "value": "50-150", "label": "$50K–$150K" },
+            { "value": "50-150", "label": "$50K–$150K", "uiHidden": true },
             { "value": "150-300", "label": "$150K–$300K" },
             { "value": "300-500", "label": "$300K–$500K" },
             { "value": "500-plus", "label": "$500K+" }

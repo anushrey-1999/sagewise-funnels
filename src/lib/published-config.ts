@@ -10,6 +10,21 @@ import { adwallConfigKey, getConfigRow, type ConfigKind } from "@/lib/config-ser
 
 type ConfigResult<T> = { source: "db"; data: T } | { source: "db-missing-field"; row: true } | { source: "no-row" } | { source: "db-error" };
 
+const MORTGAGE_CREDIT_SCORE_OPTIONS = [
+  { value: "excellent", label: "Excellent (720+)" },
+  { value: "good", label: "Good (680-719)" },
+  { value: "fair", label: "Fair (620-679)" },
+  { value: "poor", label: "Poor (580-619)" },
+  { value: "bad", label: "Below 580" },
+];
+
+const MORTGAGE_LOAN_AMOUNT_OPTIONS = [
+  { value: "50-150", label: "$50K–$150K", uiHidden: true },
+  { value: "150-300", label: "$150K–$300K" },
+  { value: "300-500", label: "$300K–$500K" },
+  { value: "500-plus", label: "$500K+" },
+];
+
 async function getConfigFromDb<T>(
   kind: ConfigKind,
   key: string,
@@ -46,6 +61,30 @@ function normalizeAdwallConfig(config: AdwallConfig): AdwallConfig {
   };
 }
 
+function normalizeMortgageFunnelConfig(config: FormConfig): FormConfig {
+  if (config.id !== "mortgage") return config;
+
+  return {
+    ...config,
+    steps: config.steps.map((step) => ({
+      ...step,
+      fields: step.fields.map((field) =>
+        field.id === "creditScore"
+          ? {
+              ...field,
+              options: MORTGAGE_CREDIT_SCORE_OPTIONS,
+            }
+          : field.id === "loanAmount"
+            ? {
+                ...field,
+                options: MORTGAGE_LOAN_AMOUNT_OPTIONS,
+              }
+          : field
+      ),
+    })),
+  };
+}
+
 export async function getPublishedFunnelConfig(
   funnelId: string | null,
   opts?: { useDraft?: boolean }
@@ -54,14 +93,16 @@ export async function getPublishedFunnelConfig(
   // Dev escape-hatch: FORCE_STATIC_CONFIG=1 in .env.dev bypasses DB so
   // edits to funnel-configs/*.json are visible immediately without re-publishing.
   if (process.env.FORCE_STATIC_CONFIG === "1") {
-    return getStaticFunnelConfig(resolvedId);
+    const staticConfig = getStaticFunnelConfig(resolvedId);
+    return staticConfig ? normalizeMortgageFunnelConfig(staticConfig) : null;
   }
   const result = await getConfigFromDb<FormConfig>("funnel", resolvedId, opts);
-  if (result.source === "db") return result.data;
+  if (result.source === "db") return normalizeMortgageFunnelConfig(result.data);
   // Only fall back to static JSON when DB has no row at all (or is unavailable).
   // If a row exists the DB version is authoritative — don't show stale static data.
   if (result.source === "no-row" || result.source === "db-error") {
-    return getStaticFunnelConfig(resolvedId);
+    const staticConfig = getStaticFunnelConfig(resolvedId);
+    return staticConfig ? normalizeMortgageFunnelConfig(staticConfig) : null;
   }
   return null;
 }
