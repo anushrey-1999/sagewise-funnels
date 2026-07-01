@@ -102,6 +102,7 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
     // Preserve incoming tracking IDs when present (funnel -> adwall -> offer)
     const incomingS1 = cleanParam(searchParams.get("s1"));
     const incomingS2 = cleanParam(searchParams.get("s2"));
+    const incomingS3 = cleanParam(searchParams.get("s3"));
     const incomingSub5 = cleanParam(searchParams.get("sub5"));
 
     // Generate IDs only if not provided on the funnel URL
@@ -130,6 +131,7 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
     const params: Record<string, string | undefined> = {
       s1: affiliateId,
       s2: transactionId,
+      s3: incomingS3 ?? "funnel",
       sub5: transactionId,
       fromFunnel: "1",
       preview: cleanParam(searchParams.get("preview")) === "1" ? "1" : undefined,

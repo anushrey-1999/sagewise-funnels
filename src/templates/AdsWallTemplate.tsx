@@ -115,6 +115,9 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
   }, [searchParams]);
 
   const isDynamicHeader = useMemo(() => searchParams.get("fromFunnel") === "1", [searchParams]);
+  const sub3TrackingValue = useMemo(() => {
+    return cleanParam(searchParams.get("s3")) ?? (isDynamicHeader ? "funnel" : "adwall");
+  }, [searchParams, isDynamicHeader]);
 
   const { monthName, yearNumber } = useMemo(() => {
     const effectiveUpdatedAt = updatedAtOverride ?? config.updatedAt ?? "";
@@ -215,7 +218,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
                   buttonText={cardProps.buttonText || "View My Rates"}
                   affiliateId={affiliateId}
                   transactionId={transactionId}
-                  extraTrackingParams={config.trackingParams?.sub3 ? { sub3: config.trackingParams.sub3 } : undefined}
+                  extraTrackingParams={{ sub3: sub3TrackingValue }}
                   ctaMinWidthPx={ctaMinWidthPx}
                 />
               );
