@@ -96,7 +96,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
 
   const transactionId = useMemo(() => {
     const paramName = config.trackingParams?.transactionIdParam || "s2";
-    // Canonical funnel -> adwall flow uses s1/s2. Fall back to config param (e.g. sub5) for legacy links.
+    // Canonical funnel -> adwall flow uses s1/s2. Fall back to config param for legacy links.
     return (
       cleanParam(searchParams.get("s2")) ??
       cleanParam(searchParams.get(paramName))
@@ -115,9 +115,11 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
   }, [searchParams]);
 
   const isDynamicHeader = useMemo(() => searchParams.get("fromFunnel") === "1", [searchParams]);
-  const sub3TrackingValue = useMemo(() => {
-    return cleanParam(searchParams.get("s3")) ?? (isDynamicHeader ? "funnel" : "adwall");
-  }, [searchParams, isDynamicHeader]);
+  const offerId = useMemo(() => cleanParam(searchParams.get("oid")), [searchParams]);
+
+  const ctaTrackingParams = useMemo(() => {
+    return offerId ? { sub3: offerId } : undefined;
+  }, [offerId]);
 
   const { monthName, yearNumber } = useMemo(() => {
     const effectiveUpdatedAt = updatedAtOverride ?? config.updatedAt ?? "";
@@ -218,7 +220,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
                   buttonText={cardProps.buttonText || "View My Rates"}
                   affiliateId={affiliateId}
                   transactionId={transactionId}
-                  extraTrackingParams={{ sub3: sub3TrackingValue }}
+                  extraTrackingParams={ctaTrackingParams}
                   ctaMinWidthPx={ctaMinWidthPx}
                 />
               );

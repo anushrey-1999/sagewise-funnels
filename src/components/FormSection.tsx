@@ -102,13 +102,14 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
     // Preserve incoming tracking IDs when present (funnel -> adwall -> offer)
     const incomingS1 = cleanParam(searchParams.get("s1"));
     const incomingS2 = cleanParam(searchParams.get("s2"));
+    const incomingEfTransactionId = cleanParam(searchParams.get("_ef_transaction_id"));
     const incomingS3 = cleanParam(searchParams.get("s3"));
-    const incomingSub5 = cleanParam(searchParams.get("sub5"));
+    const incomingOid = cleanParam(searchParams.get("oid"));
 
     // Generate IDs only if not provided on the funnel URL
     const affiliateId = incomingS1 ?? Math.random().toString(36).substring(2, 11);
     const transactionId =
-      incomingS2 ?? incomingSub5 ?? Math.random().toString(36).substring(2, 11);
+      incomingS2 ?? incomingEfTransactionId ?? Math.random().toString(36).substring(2, 11);
 
     // Extract form data for adwall personalization
     const formData = submittedData || {};
@@ -132,22 +133,16 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
       s1: affiliateId,
       s2: transactionId,
       s3: incomingS3 ?? "funnel",
-      sub5: transactionId,
+      oid: incomingOid ?? undefined,
+      sub1: transactionId,
+      sub2: affiliateId,
+      sub3: incomingOid ?? undefined,
       fromFunnel: "1",
       preview: cleanParam(searchParams.get("preview")) === "1" ? "1" : undefined,
       name: firstName,
       zip: zipCode,
       ...buildAdwallRankingQueryParams(config, formData, destinationPath),
     };
-
-    if (config.id === "cc-finbuzz") {
-      params.sub4 = affiliateId;
-      params.sub5 = transactionId;
-      params.sub3 = "155";
-    }
-    if (destinationPath === "/adwall/mortgage/heloc") {
-      params.sub3 = "180";
-    }
     const finalUrl = appendQueryParams(destination, params);
 
     // Use full page redirect so the destination page has a clean document (no leftover

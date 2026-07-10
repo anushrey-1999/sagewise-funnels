@@ -87,8 +87,8 @@ const AdsWallCards = ({
   trustpilotReviews,
   bottomBoxHtml,
 }: AdsWallCardsProps) => {
-  const affiliateParamName = "sub4";
-  const transactionParamName = "sub5";
+  const affiliateParamName = "sub2";
+  const transactionParamName = "sub1";
   const mobileLogoWidthPx = 100;
   const desktopLogoWidthPx = 140;
 

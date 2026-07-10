@@ -413,11 +413,11 @@ export function MultiStepForm({
 
     const incomingS1 = cleanParam(searchParams.get("s1"));
     const incomingS2 = cleanParam(searchParams.get("s2"));
-    const incomingSub5 = cleanParam(searchParams.get("sub5"));
+    const incomingEfTransactionId = cleanParam(searchParams.get("_ef_transaction_id"));
 
     const affiliateId = incomingS1 ?? Math.random().toString(36).substring(2, 11);
     const transactionId =
-      incomingS2 ?? incomingSub5 ?? Math.random().toString(36).substring(2, 11);
+      incomingS2 ?? incomingEfTransactionId ?? Math.random().toString(36).substring(2, 11);
 
     return { affiliateId, transactionId };
   };
@@ -457,6 +457,11 @@ export function MultiStepForm({
 
     const destination = resolvePostSubmitRedirect(config, formData);
     const destinationPath = destination.split("?")[0];
+    const clean = (value: string | null): string | null => {
+      const cleaned = value?.replace(/^["']|["']$/g, "").trim();
+      return cleaned ? cleaned : null;
+    };
+    const offerId = clean(searchParams.get("oid"));
     const baseParams: Record<string, string> = {
       s1: affiliateId,
       s2: transactionId,
@@ -466,10 +471,13 @@ export function MultiStepForm({
     if (searchParams.get("preview") === "1") {
       baseParams.preview = "1";
     }
-    if (config.id === "cc-finbuzz") {
-      baseParams.sub4 = affiliateId;
-      baseParams.sub5 = transactionId;
-      baseParams.sub3 = "155";
+    if (offerId) {
+      baseParams.oid = offerId;
+    }
+    baseParams.sub1 = transactionId;
+    baseParams.sub2 = affiliateId;
+    if (offerId) {
+      baseParams.sub3 = offerId;
     }
     const finalUrl = appendQueryParams(destination, baseParams);
     if (isAbsoluteUrl(finalUrl)) {
@@ -744,27 +752,19 @@ export function MultiStepForm({
           checkCompleteTimeoutRef.current = null;
         }
 
-        // cc-finbuzz only: pass s1/s2 from funnel URL as sub4/sub5 and sub3=155.
-        // For internal (relative) routes we also keep canonical s1/s2 for app-level tracking.
-        let finalUrl = appendQueryParams(destination, { fromFunnel: "1" });
-        if (config.id === "cc-finbuzz") {
-          const clean = (v: string | null) => v?.replace(/^["']|["']$/g, "").trim() || null;
-          const s1 = clean(searchParams.get("s1"));
-          const s2 = clean(searchParams.get("s2"));
-          const finbuzzParams = {
-            sub4: s1 ?? undefined,
-            sub5: s2 ?? undefined,
-            sub3: "155",
-          };
-          finalUrl = isAbsoluteUrl(destination)
-            ? appendQueryParams(destination, { fromFunnel: "1", ...finbuzzParams })
-            : appendQueryParams(destination, {
-                s1: s1 ?? undefined,
-                s2: s2 ?? undefined,
-                fromFunnel: "1",
-                ...finbuzzParams,
-              });
-        }
+        const clean = (v: string | null) => v?.replace(/^["']|["']$/g, "").trim() || null;
+        const affiliateId = clean(searchParams.get("s1"));
+        const transactionId = clean(searchParams.get("s2")) ?? clean(searchParams.get("_ef_transaction_id"));
+        const offerId = clean(searchParams.get("oid"));
+        const finalUrl = appendQueryParams(destination, {
+          s1: affiliateId,
+          s2: transactionId,
+          oid: offerId,
+          sub1: transactionId,
+          sub2: affiliateId,
+          sub3: offerId,
+          fromFunnel: "1",
+        });
 
         // Full page navigation so the destination has a clean document (no form-injected scripts)
         window.location.assign(finalUrl);

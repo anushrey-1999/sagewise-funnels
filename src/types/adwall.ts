@@ -100,8 +100,6 @@ export interface AdwallConfig {
   };
   trackingParams?: {
     affiliateIdParam?: string; // e.g., "s1", "s2"
-    transactionIdParam?: string; // e.g., "sub5", "s2"
-    /** Fixed sub3 value appended to every card's CTA link for this adwall */
-    sub3?: string;
+    transactionIdParam?: string; // e.g., "s2"
   };
 }

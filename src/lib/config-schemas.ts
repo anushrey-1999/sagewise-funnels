@@ -250,7 +250,6 @@ export const adwallConfigSchema = z
       .object({
         affiliateIdParam: z.string().optional(),
         transactionIdParam: z.string().optional(),
-        sub3: z.string().optional(),
       })
       .passthrough()
       .optional(),

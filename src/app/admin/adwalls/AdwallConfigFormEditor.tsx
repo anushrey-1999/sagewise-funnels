@@ -689,15 +689,6 @@ export default function AdwallConfigFormEditor(props: {
                 placeholder="s2"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="track-sub3">sub3 value (optional)</Label>
-              <Input
-                id="track-sub3"
-                value={values.trackingParams?.sub3 ?? ""}
-                onChange={(e) => emitPatch(["trackingParams", "sub3"], e.target.value)}
-                placeholder="e.g. 128"
-              />
-            </div>
           </div>
 
           <Separator />
