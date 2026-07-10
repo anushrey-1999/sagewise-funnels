@@ -25,10 +25,10 @@ export const MORTGAGE_RANKING_DIMENSIONS: RankingConfig["dimensions"] = [
     fieldId: "loanAmount",
     valueType: "direct",
     buckets: [
-      { id: "50-150", label: "$50K–$150K", matchValues: ["50-150"] },
-      { id: "150-300", label: "$150K–$300K", matchValues: ["150-300"] },
-      { id: "300-500", label: "$300K–$500K", matchValues: ["300-500"] },
-      { id: "500-plus", label: "$500K+", matchValues: ["500-plus"] },
+      { id: "upto-150", label: "Upto $150k", matchValues: ["upto-150", "50-150"] },
+      { id: "100-250", label: "$100k-$250k", matchValues: ["100-250", "150-300"] },
+      { id: "250-400", label: "$250k-$400k", matchValues: ["250-400", "300-500"] },
+      { id: "400-plus", label: "$400k and up", matchValues: ["400-plus", "500-plus"] },
     ],
   },
 ];
@@ -253,8 +253,48 @@ export function withMortgageCreditRankings(lenders: RankingConfig["lenders"]): R
   return nextLenders;
 }
 
+function getUpdatedMortgageAmountComboKey(comboKey: string): string | null {
+  const parts = comboKey.split(":");
+  const amountIndex = 1;
+  const legacyAmountBucket = parts[amountIndex];
+
+  if (legacyAmountBucket === "50-150") parts[amountIndex] = "upto-150";
+  else if (legacyAmountBucket === "150-300") parts[amountIndex] = "100-250";
+  else if (legacyAmountBucket === "300-500") parts[amountIndex] = "250-400";
+  else if (legacyAmountBucket === "500-plus") parts[amountIndex] = "400-plus";
+  else return null;
+
+  return parts.join(":");
+}
+
+export function withMortgageLoanAmountRankings(lenders: RankingConfig["lenders"]): RankingConfig["lenders"] {
+  const nextLenders: RankingConfig["lenders"] = {};
+
+  for (const [lenderName, rankings] of Object.entries(lenders)) {
+    const nextRankings = { ...rankings };
+
+    for (const [comboKey, rank] of Object.entries(rankings)) {
+      const updatedComboKey = getUpdatedMortgageAmountComboKey(comboKey);
+      if (updatedComboKey) {
+        nextRankings[updatedComboKey] ??= rank;
+      }
+    }
+
+    nextLenders[lenderName] = nextRankings;
+  }
+
+  return nextLenders;
+}
+
 export function ensureMortgagePoorCreditBucket(config: RankingConfig): RankingConfig {
   const dimensions = config.dimensions.map((dimension) => {
+    if (dimension.id === "loanAmount") {
+      return {
+        ...dimension,
+        buckets: MORTGAGE_RANKING_DIMENSIONS[1]!.buckets,
+      };
+    }
+
     if (dimension.id !== "creditScore") return dimension;
 
     return {
@@ -266,7 +306,7 @@ export function ensureMortgagePoorCreditBucket(config: RankingConfig): RankingCo
   return {
     ...config,
     dimensions,
-    lenders: withMortgageCreditRankings(config.lenders),
+    lenders: withMortgageLoanAmountRankings(withMortgageCreditRankings(config.lenders)),
   };
 }
 

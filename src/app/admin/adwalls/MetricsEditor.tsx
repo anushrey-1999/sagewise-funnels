@@ -57,10 +57,10 @@ function getDefaultMortgageRankingConfig(): RankingConfig {
         id: "loanAmount",
         label: "Loan Amount",
         buckets: [
-          { id: "50-150", label: "$50K–$150K" },
-          { id: "150-300", label: "$150K–$300K" },
-          { id: "300-500", label: "$300K–$500K" },
-          { id: "500-plus", label: "$500K+" },
+          { id: "upto-150", label: "Upto $150k" },
+          { id: "100-250", label: "$100k-$250k" },
+          { id: "250-400", label: "$250k-$400k" },
+          { id: "400-plus", label: "$400k and up" },
         ],
       },
     ],
@@ -75,8 +75,8 @@ interface GroupedColumn {
 
 /**
  * Generate all combination keys from dimensions
- * For 2 dimensions: ["excellent:50-150", "excellent:150-300", ...]
- * For 3 dimensions: ["excellent:50-150:sedan", "excellent:50-150:suv", ...]
+ * For 2 dimensions: ["excellent:upto-150", "excellent:100-250", ...]
+ * For 3 dimensions: ["excellent:upto-150:sedan", "excellent:upto-150:suv", ...]
  */
 function getAllCombinationKeys(dimensions: RankingConfig["dimensions"]): string[] {
   if (dimensions.length === 0) return [];
@@ -565,7 +565,7 @@ function DimensionsManager({ dimensions, onUpdate, funnelId, adwallType }: Dimen
                                 className="h-7 text-xs flex-1"
                                 placeholder={
                                   dim.valueType === "calculated"
-                                    ? "Range (e.g., 50-150 or 500+)"
+                                    ? "Range (e.g., upto-150 or 400-plus)"
                                     : "Bucket ID (e.g., excellent)"
                                 }
                               />
@@ -577,7 +577,7 @@ function DimensionsManager({ dimensions, onUpdate, funnelId, adwallType }: Dimen
                                 className="h-7 text-xs flex-1"
                                 placeholder={
                                   dim.valueType === "calculated"
-                                    ? "Label (e.g., $50K-$150K)"
+                                    ? "Label (e.g., Upto $150k)"
                                     : "Bucket Label (e.g., Excellent 740+)"
                                 }
                               />
@@ -1217,7 +1217,7 @@ export default function MetricsEditor({
             <div className="text-sm font-medium">Import Lenders from CSV</div>
             <div className="text-xs text-general-muted-foreground mt-1">
               Upload a CSV file with lender rankings. The file should have a &quot;Lender&quot; or &quot;Lender Name&quot; column,
-              an optional &quot;Ranking number&quot; column, followed by columns matching your dimension combinations (e.g., &quot;excellent:50-150&quot;).
+              an optional &quot;Ranking number&quot; column, followed by columns matching your dimension combinations (e.g., &quot;excellent:upto-150&quot;).
             </div>
           </div>
           
@@ -1245,7 +1245,7 @@ export default function MetricsEditor({
             <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-xs text-blue-800">
               <strong>CSV Format Example:</strong>
               <pre className="mt-2 text-[10px] overflow-x-auto">
-{`Lender,Ranking number,excellent:50-150,excellent:150-300,...
+{`Lender,Ranking number,excellent:upto-150,excellent:100-250,...
 Quicken Loans,9.6,13,13,...
 Figure,8.6,2,2,...`}
               </pre>

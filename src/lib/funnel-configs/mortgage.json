@@ -70,10 +70,10 @@
           "required": true,
           "autoForward": true,
           "options": [
-            { "value": "50-150", "label": "$50K–$150K", "uiHidden": true },
-            { "value": "150-300", "label": "$150K–$300K" },
-            { "value": "300-500", "label": "$300K–$500K" },
-            { "value": "500-plus", "label": "$500K+" }
+            { "value": "upto-150", "label": "Upto $150k" },
+            { "value": "100-250", "label": "$100k-$250k" },
+            { "value": "250-400", "label": "$250k-$400k" },
+            { "value": "400-plus", "label": "$400k and up" }
           ]
         }
       ]

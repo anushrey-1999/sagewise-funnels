@@ -3,7 +3,7 @@ import type { FormData } from "@/types/form";
 
 export type MortgageAdwallType = "heloc" | "refi" | "purchase";
 export type MortgageCreditBucket = "excellent" | "good" | "fair" | "poor" | "bad";
-export type MortgageAmountBucket = "50-150" | "150-300" | "300-500" | "500-plus";
+export type MortgageAmountBucket = "upto-150" | "100-250" | "250-400" | "400-plus";
 
 export interface MortgageRankingParams {
   rankCredit: MortgageCreditBucket;
@@ -15,7 +15,7 @@ interface RankingMatrixEntry {
   isHidden: boolean;
 }
 
-const amountBuckets: MortgageAmountBucket[] = ["50-150", "150-300", "300-500", "500-plus"];
+const amountBuckets: MortgageAmountBucket[] = ["upto-150", "100-250", "250-400", "400-plus"];
 
 function getRankingCellRank(cell: RankingCell | undefined): number | undefined {
   if (typeof cell === "number") return cell;
@@ -53,14 +53,18 @@ export function normalizeMortgageCreditBucket(value: string | null | undefined):
 
 export function getMortgageAmountBucket(amount: number | null | undefined): MortgageAmountBucket | null {
   if (typeof amount !== "number" || Number.isNaN(amount)) return null;
-  if (amount < 300000) return amount < 150000 ? "50-150" : "150-300";
-  return amount < 500000 ? "300-500" : "500-plus";
+  if (amount < 250000) return amount <= 150000 ? "upto-150" : "100-250";
+  return amount < 400000 ? "250-400" : "400-plus";
 }
 
 export function getMortgageAmountBucketFromString(value: string | null | undefined): MortgageAmountBucket | null {
-  if (value === "50-150" || value === "150-300" || value === "300-500" || value === "500-plus") {
+  if (value === "upto-150" || value === "100-250" || value === "250-400" || value === "400-plus") {
     return value;
   }
+  if (value === "50-150") return "upto-150";
+  if (value === "150-300") return "100-250";
+  if (value === "300-500") return "250-400";
+  if (value === "500-plus") return "400-plus";
   return null;
 }
 
