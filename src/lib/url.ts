@@ -13,7 +13,7 @@ export function appendQueryParams(baseUrl: string, params: Record<string, string
   // Absolute URL: use URL() for correctness
   if (isAbsoluteUrl(baseUrl)) {
     const url = new URL(baseUrl);
-    for (const [k, v] of entries) url.searchParams.set(k, v);
+    for (const [k, v] of entries) url.searchParams.set(k, v); 
     return url.toString();
   }
 
