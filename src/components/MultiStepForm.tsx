@@ -79,6 +79,7 @@ export function MultiStepForm({
   const autoForwardTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const checkCompleteTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const currentStepRef = useRef(currentStep);
+  const conversionFiredRef = useRef(false);
 
   const isFirstStep = currentStep === 0;
   const currentStepData = config.steps[currentStep];
@@ -603,8 +604,9 @@ export function MultiStepForm({
         return;
       }
       
-      // Inject script if provided in config before submission
-      if (config.finalStep?.onSubmitScript) {
+      // Inject script if provided in config before submission (with deduplication)
+      if (config.finalStep?.onSubmitScript && !conversionFiredRef.current) {
+        conversionFiredRef.current = true;
         void injectImpressionScript(config.finalStep.onSubmitScript);
       }
       
@@ -835,8 +837,9 @@ export function MultiStepForm({
               const nextStepIndex = getNextStepIndex(stepAtCheck, updatedFormData);
 
               if (nextStepIndex >= config.steps.length) {
-                // On the last visible step — trigger submission directly
-                if (config.finalStep?.onSubmitScript) {
+                // On the last visible step — trigger submission directly (with deduplication)
+                if (config.finalStep?.onSubmitScript && !conversionFiredRef.current) {
+                  conversionFiredRef.current = true;
                   void injectImpressionScript(config.finalStep.onSubmitScript);
                 }
                 // Ensure state has the latest step data before submitting
