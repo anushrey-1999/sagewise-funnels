@@ -129,6 +129,19 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
       }
     }
 
+    // Get sub5 value for mortgage funnel (first page selection)
+    let sub5Value: string | undefined;
+    if (funnelId === "mortgage" && formData["loan-type"]?.loanType) {
+      const loanType = String(formData["loan-type"].loanType);
+      // Map the values to the required format
+      const sub5Map: Record<string, string> = {
+        "refinance": "Refinance",
+        "home-equity-heloc": "Home_Equity",
+        "purchase": "Purchase",
+      };
+      sub5Value = sub5Map[loanType];
+    }
+
     const params: Record<string, string | undefined> = {
       s1: affiliateId,
       s2: transactionId,
@@ -137,6 +150,8 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
       sub1: transactionId,
       sub2: affiliateId,
       sub3: incomingOid ?? undefined,
+      sub4: incomingS3 ?? "funnel",
+      sub5: sub5Value,
       fromFunnel: "1",
       preview: cleanParam(searchParams.get("preview")) === "1" ? "1" : undefined,
       name: firstName,

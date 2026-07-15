@@ -463,6 +463,21 @@ export function MultiStepForm({
       return cleaned ? cleaned : null;
     };
     const offerId = clean(searchParams.get("oid"));
+    const incomingS3 = clean(searchParams.get("s3"));
+    
+    // Get sub5 value for mortgage funnel (first page selection)
+    let sub5Value: string | undefined;
+    if (config.id === "mortgage" && formData["loan-type"]?.loanType) {
+      const loanType = String(formData["loan-type"].loanType);
+      // Map the values to the required format
+      const sub5Map: Record<string, string> = {
+        "refinance": "Refinance",
+        "home-equity-heloc": "Home_Equity",
+        "purchase": "Purchase",
+      };
+      sub5Value = sub5Map[loanType];
+    }
+    
     const baseParams: Record<string, string> = {
       s1: affiliateId,
       s2: transactionId,
@@ -479,6 +494,10 @@ export function MultiStepForm({
     baseParams.sub2 = affiliateId;
     if (offerId) {
       baseParams.sub3 = offerId;
+    }
+    baseParams.sub4 = incomingS3 ?? "funnel";
+    if (sub5Value) {
+      baseParams.sub5 = sub5Value;
     }
     const finalUrl = appendQueryParams(destination, baseParams);
     if (isAbsoluteUrl(finalUrl)) {
@@ -758,15 +777,34 @@ export function MultiStepForm({
         const affiliateId = clean(searchParams.get("s1"));
         const transactionId = clean(searchParams.get("s2")) ?? clean(searchParams.get("_ef_transaction_id"));
         const offerId = clean(searchParams.get("oid"));
-        const finalUrl = appendQueryParams(destination, {
+        const incomingS3 = clean(searchParams.get("s3"));
+        
+        // Get sub5 value for mortgage funnel (first page selection)
+        let sub5Value: string | undefined;
+        if (config.id === "mortgage" && currentStepData.id === "loan-type" && fieldId === "loanType") {
+          const loanType = String(value);
+          // Map the values to the required format
+          const sub5Map: Record<string, string> = {
+            "refinance": "Refinance",
+            "home-equity-heloc": "Home_Equity",
+            "purchase": "Purchase",
+          };
+          sub5Value = sub5Map[loanType];
+        }
+        
+        const redirectParams: Record<string, string | undefined> = {
           s1: affiliateId,
           s2: transactionId,
           oid: offerId,
           sub1: transactionId,
           sub2: affiliateId,
           sub3: offerId,
+          sub4: incomingS3 ?? "funnel",
+          sub5: sub5Value,
           fromFunnel: "1",
-        });
+        };
+        
+        const finalUrl = appendQueryParams(destination, redirectParams);
 
         // Full page navigation so the destination has a clean document (no form-injected scripts)
         window.location.assign(finalUrl);
