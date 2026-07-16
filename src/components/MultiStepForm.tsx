@@ -793,12 +793,12 @@ export function MultiStepForm({
         }
         
         const redirectParams: Record<string, string | undefined> = {
-          s1: affiliateId,
-          s2: transactionId,
-          oid: offerId,
-          sub1: transactionId,
-          sub2: affiliateId,
-          sub3: offerId,
+          s1: affiliateId ?? undefined,
+          s2: transactionId ?? undefined,
+          oid: offerId ?? undefined,
+          sub1: transactionId ?? undefined,
+          sub2: affiliateId ?? undefined,
+          sub3: offerId ?? undefined,
           sub4: incomingS3 ?? "funnel",
           sub5: sub5Value,
           fromFunnel: "1",
