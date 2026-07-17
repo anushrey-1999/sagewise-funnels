@@ -116,10 +116,25 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
 
   const isDynamicHeader = useMemo(() => searchParams.get("fromFunnel") === "1", [searchParams]);
   const offerId = useMemo(() => cleanParam(searchParams.get("oid")), [searchParams]);
+  
+  // Get s3 value from URL, default to "adwall" since we're on an adwall page
+  const s3Value = useMemo(() => cleanParam(searchParams.get("s3")) ?? "adwall", [searchParams]);
+  
+  // Get sub5 value (mortgage funnel first page selection)
+  const sub5Value = useMemo(() => cleanParam(searchParams.get("sub5")), [searchParams]);
 
   const ctaTrackingParams = useMemo(() => {
-    return offerId ? { sub3: offerId } : undefined;
-  }, [offerId]);
+    const params: Record<string, string> = {
+      sub4: s3Value,
+    };
+    if (offerId) {
+      params.sub3 = offerId;
+    }
+    if (sub5Value) {
+      params.sub5 = sub5Value;
+    }
+    return params;
+  }, [offerId, s3Value, sub5Value]);
 
   const { monthName, yearNumber } = useMemo(() => {
     const effectiveUpdatedAt = updatedAtOverride ?? config.updatedAt ?? "";
