@@ -3,11 +3,12 @@
 import AdsWallCards from "@/organisms/AdsWallCards";
 import PlainPageHeader from "@/organisms/PlainPageHeader";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { AdwallConfig } from "@/types/adwall";
 import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
 import ImpressionOnView from "@/components/ImpressionOnView";
 import { sortAdwallCards } from "@/lib/generic-adwall-ranking";
+import { Minus, Plus } from "lucide-react";
 
 interface AdsWallTemplateProps {
   config: AdwallConfig;
@@ -81,7 +82,18 @@ function getOrderBasedRatingNumbers(count: number, seedKey: string): string[] {
     .map((value) => (value / scale).toFixed(decimals));
 }
 
+function normalizeDisclosureHtml(html: string): string {
+  // Some lender configs store the URL in a separate <p> that contains only the link,
+  // which makes it look like a "lonely" line. This merges a trailing "at" paragraph
+  // with a following link-only paragraph: `<p>... at</p><p><a>url</a></p>` -> `<p>... at <a>url</a></p>`.
+  return html.replace(
+    /<p>([\s\S]*?\bat\s*)<\/p>\s*<p>\s*(<a\b[^>]*>[\s\S]*?<\/a>)\s*<\/p>/gi,
+    "<p>$1$2</p>"
+  );
+}
+
 const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpressions = false }: AdsWallTemplateProps) => {
+  const [isDisclosureOpen, setIsDisclosureOpen] = useState(true);
   const searchParams = useSearchParams();
 
   // Extract and clean the IDs from URL parameters based on config
@@ -208,6 +220,10 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
     }));
   }, [config.id, config.rankingConfig, visibleCards]);
 
+  const disclosureCards = useMemo(() => {
+    return visibleCardsWithRatings.filter((item) => item.bottomBoxHtml || item.logoText);
+  }, [visibleCardsWithRatings]);
+
   const { containerRef: ctaRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([visibleCards]);
   const containerRef = useCallback((node: HTMLDivElement | null) => {
     ctaRef.current = node;
@@ -259,29 +275,57 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
         </div>
       </div>
 
-      {/* Mobile-only: card-level disclosures in page footer */}
-      {visibleCards.some((item) => item.bottomBoxHtml) && (
-        <div className="lg:hidden w-full max-w-[970px] mx-auto px-2 sm:px-6 mb-6 flex flex-col gap-3">
-          {visibleCards
-            .filter((item) => item.bottomBoxHtml)
-            .map((item, index) => (
-              <div key={index} className="rounded-lg border border-general-border bg-white px-4 py-3 text-[10px] leading-relaxed text-[#9CA3AF] [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2">
-                <span dangerouslySetInnerHTML={{ __html: item.bottomBoxHtml! }} />
-              </div>
-            ))}
-        </div>
-      )}
+      {/* Lender Disclosures (footer-style panel like design) */}
+      {(disclosureCards.length > 0 || config.disclaimers) && (
+        <div className="w-full px-2 sm:px-6 md:px-16 mb-8">
+          <div className="w-full max-w-[970px] mx-auto">
+            <div className="rounded-lg border border-general-border bg-white overflow-hidden">
+              <button
+                onClick={() => setIsDisclosureOpen((v) => !v)}
+                className="w-full flex items-center justify-between px-4 py-3 text-left"
+                aria-expanded={isDisclosureOpen}
+              >
+                <span className="text-[13px] font-semibold text-[#374151]">Lender Disclosures</span>
+                {isDisclosureOpen ? (
+                  <Minus className="w-4 h-4 text-[#6B7280]" aria-hidden="true" />
+                ) : (
+                  <Plus className="w-4 h-4 text-[#6B7280]" aria-hidden="true" />
+                )}
+              </button>
 
-      {/* Disclaimers */}
-      {config.disclaimers && (
-        <div className="w-full text-general-muted-foreground text-xs leading-relaxed space-y-4 max-w-[970px] mx-auto mb-10 px-6 lg:px-0 text-left">
-          <h3 className="text-base font-semibold mb-4">Full Disclaimers</h3>
-          <div
-            className="space-y-4 text-left"
-            dangerouslySetInnerHTML={{
-              __html: config.disclaimers,
-            }}
-          />
+              {isDisclosureOpen && (
+                <div className="border-t border-general-border divide-y divide-general-border">
+                  {disclosureCards.map((item, index) => (
+                      <div key={index} className="px-4 py-3">
+                        {item.heading && (
+                          <div className="text-[12px] font-semibold text-[#111827] mb-1">
+                            {item.heading}
+                          </div>
+                        )}
+                        {item.logoText && (
+                          <div className="text-[11px] text-[#6B7280] leading-relaxed">
+                            {item.logoText}
+                          </div>
+                        )}
+                        {item.bottomBoxHtml && (
+                          <div
+                            className="text-[11px] text-[#6B7280] leading-relaxed [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
+                            dangerouslySetInnerHTML={{ __html: normalizeDisclosureHtml(item.bottomBoxHtml) }}
+                          />
+                        )}
+                      </div>
+                    ))}
+
+                  {config.disclaimers && (
+                    <div
+                      className="px-4 py-3 text-[11px] text-[#6B7280] leading-relaxed [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2 space-y-3"
+                      dangerouslySetInnerHTML={{ __html: normalizeDisclosureHtml(config.disclaimers) }}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
