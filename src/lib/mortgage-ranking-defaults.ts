@@ -25,7 +25,7 @@ export const MORTGAGE_RANKING_DIMENSIONS: RankingConfig["dimensions"] = [
     fieldId: "loanAmount",
     valueType: "direct",
     buckets: [
-      { id: "upto-150", label: "Upto $150k", matchValues: ["upto-150", "50-150"] },
+      { id: "upto-150", label: "Up to $150k", matchValues: ["upto-150", "50-150"] },
       { id: "100-250", label: "$100k-$250k", matchValues: ["100-250", "150-300"] },
       { id: "250-400", label: "$250k-$400k", matchValues: ["250-400", "300-500"] },
       { id: "400-plus", label: "$400k and up", matchValues: ["400-plus", "500-plus"] },

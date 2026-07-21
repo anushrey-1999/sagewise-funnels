@@ -57,7 +57,7 @@ function getDefaultMortgageRankingConfig(): RankingConfig {
         id: "loanAmount",
         label: "Loan Amount",
         buckets: [
-          { id: "upto-150", label: "Upto $150k" },
+          { id: "upto-150", label: "Up to $150k" },
           { id: "100-250", label: "$100k-$250k" },
           { id: "250-400", label: "$250k-$400k" },
           { id: "400-plus", label: "$400k and up" },
@@ -577,7 +577,7 @@ function DimensionsManager({ dimensions, onUpdate, funnelId, adwallType }: Dimen
                                 className="h-7 text-xs flex-1"
                                 placeholder={
                                   dim.valueType === "calculated"
-                                    ? "Label (e.g., Upto $150k)"
+                                    ? "Label (e.g., Up to $150k)"
                                     : "Bucket Label (e.g., Excellent 740+)"
                                 }
                               />

@@ -19,7 +19,7 @@ const MORTGAGE_CREDIT_SCORE_OPTIONS = [
 ];
 
 const MORTGAGE_LOAN_AMOUNT_OPTIONS = [
-  { value: "upto-150", label: "Upto $150k" },
+  { value: "upto-150", label: "Up to $150k" },
   { value: "100-250", label: "$100k-$250k" },
   { value: "250-400", label: "$250k-$400k" },
   { value: "400-plus", label: "$400k and up" },
