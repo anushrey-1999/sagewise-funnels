@@ -235,29 +235,29 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
       {/* Header */}
       <PlainPageHeader
         title={personalizedTitle}
-        headingFont="text-[24px] text-center lg:text-[48px] font-bold text-primary-main"
+        headingFont="text-[28px] leading-[32px] mb-3 text-center lg:text-[48px] lg:leading-[52px] font-bold text-primary-main"
         subtitle={personalizedSubtitle}
         updatedAt={updatedAtOverride ?? config.updatedAt}
       />
 
       {/* Mortgage-only trust strip (below header, above cards) */}
       {config.funnelId === "mortgage" && (
-        <div className="w-full px-2 sm:px-6 md:px-16">
+        <div className="w-full px-5 sm:px-6 md:px-16">
           <div className="w-full max-w-[970px] mx-auto">
-            <div className="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2 pt-2 pb-2 mb-4 text-[13px] text-[#6B7280]">
+            <div className="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-y-2 py-0 sm:py-2 mb-1 sm:mb-4 text-[14px] text-aw-muted">
               <div className="hidden sm:flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-[#6B7280]" aria-hidden="true" />
-                <span className="font-medium">NMLS-verified lenders</span>
+                <ShieldCheck className="w-4 h-4 text-aw-muted" aria-hidden="true" />
+                <span className="font-semibold">NMLS-verified lenders</span>
               </div>
-              <span className="hidden sm:inline text-[#CBD5E1]" aria-hidden="true">•</span>
+              <span className="hidden sm:inline text-aw-border-strong" aria-hidden="true">•</span>
               <div className="hidden sm:flex items-center gap-1.5">
-                <BadgeCheck className="w-4 h-4 text-[#6B7280]" aria-hidden="true" />
-                <span className="font-medium">No impact to your credit</span>
+                <BadgeCheck className="w-4 h-4 text-aw-muted" aria-hidden="true" />
+                <span className="font-semibold">No impact to your credit</span>
               </div>
-              <span className="hidden sm:inline text-[#CBD5E1]" aria-hidden="true">•</span>
+              <span className="hidden sm:inline text-aw-border-strong" aria-hidden="true">•</span>
               <div className="flex items-center gap-1.5">
-                <Lock className="w-4 h-4 text-[#6B7280]" aria-hidden="true" />
-                <span className="font-medium">256-bit SSL secured</span>
+                <Lock className="w-4 h-4 text-aw-muted" aria-hidden="true" />
+                <span className="text-[12px] sm:text-[14px] font-semibold">256-bit SSL secured</span>
               </div>
             </div>
           </div>
@@ -265,7 +265,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
       )}
 
       {/* Cards */}
-      <div className="relative z-0 flex flex-col items-center w-full px-2 sm:px-6 md:px-16 pb-6 sm:pb-8 md:pb-12">
+      <div className="relative z-0 flex flex-col items-center w-full px-5 sm:px-6 md:px-16 pt-4 sm:pt-0 pb-3 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[970px] ">
           <div ref={containerRef} className="flex flex-col gap-4">
             {visibleCardsWithRatings.map((item, index) => {
@@ -302,7 +302,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
 
       {/* Lender Disclosures (footer-style panel like design) */}
       {disclosureCards.length > 0 && (
-        <div className="w-full px-2 sm:px-6 md:px-16 mb-8">
+        <div className="w-full px-5 sm:px-6 md:px-16 mb-8">
           <div className="w-full max-w-[970px] mx-auto">
             <div className="rounded-lg border border-general-border bg-white overflow-hidden">
               <button
@@ -310,11 +310,11 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
                 className="w-full flex items-center justify-between px-4 py-3 text-left"
                 aria-expanded={isDisclosureOpen}
               >
-                <span className="text-[13px] font-semibold text-[#374151]">Lender Disclosures</span>
+                <span className="text-[13px] font-semibold text-aw-ink-deep">Lender Disclosures</span>
                 {isDisclosureOpen ? (
-                  <Minus className="w-4 h-4 text-[#6B7280]" aria-hidden="true" />
+                  <Minus className="w-4 h-4 text-aw-muted" aria-hidden="true" />
                 ) : (
-                  <Plus className="w-4 h-4 text-[#6B7280]" aria-hidden="true" />
+                  <Plus className="w-4 h-4 text-aw-muted" aria-hidden="true" />
                 )}
               </button>
 
@@ -322,12 +322,12 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
                 <div className="border-t border-general-border divide-y divide-general-border">
                   {disclosureCards.map((item, index) => (
                       <div key={index} className="px-4 py-3">
-                        <div className="text-[12px] font-semibold text-[#111827] mb-1">
+                        <div className="text-[12px] font-semibold text-aw-ink-deep mb-1">
                           {item.advertiserName || item.heading}
                         </div>
                         {item.bottomBoxHtml && (
                           <div
-                            className="text-[11px] text-[#6B7280] leading-relaxed [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
+                            className="text-[11px] text-aw-muted leading-relaxed [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
                             dangerouslySetInnerHTML={{ __html: normalizeDisclosureHtml(item.bottomBoxHtml) }}
                           />
                         )}

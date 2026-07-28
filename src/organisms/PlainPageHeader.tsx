@@ -11,8 +11,8 @@ interface PageHeaderProps {
 const PlainPageHeader = ({ title, subtitle, headingFont, subheadingFont, updatedAt, updatedAtFont }: PageHeaderProps) => {
   // Default font classes
   const defaultHeadingFont = "text-2xl lg:text-4xl text-center";
-  const defaultSubheadingFont = "hidden lg:block text-center font-normal text-base lg:text-[17px] lg:max-w-[62.5rem] text-[#8A8A8A]";
-  const defaultUpdatedAtFont = "hidden lg:block text-center font-normal text-sm lg:text-sm text-[#8A8A8A]";
+  const defaultSubheadingFont = "block text-center font-normal text-[16px] leading-[22px] lg:text-[17px] lg:leading-normal lg:max-w-[62.5rem] text-aw-muted";
+  const defaultUpdatedAtFont = "hidden lg:block text-center font-normal text-sm lg:text-sm text-aw-muted";
 
   const hasTitle = Boolean(title?.trim?.());
 

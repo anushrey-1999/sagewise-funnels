@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ChevronDown, MoveRight, Phone, X } from "lucide-react";
+import { Check, ChevronDown, MoveRight, Phone, X } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -17,7 +17,7 @@ function ScoreStar({ filled }: { filled: boolean }) {
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className={cn("h-[14px] w-[14px]", filled ? "text-[#F59E0B]" : "text-[#F59E0B]/45")}
+      className={cn("h-[14px] w-[14px]", filled ? "text-star-amber" : "text-star-amber/45")}
       fill={filled ? "currentColor" : "none"}
       stroke="currentColor"
       strokeWidth={1.8}
@@ -243,7 +243,7 @@ const AdsWallCards = ({
     <div className="relative w-full">
       <div
         className={cn(
-          "border-[1.5px] lg:border-2 relative rounded-xl w-full flex flex-col overflow-hidden bg-white gap-2 lg:gap-3 border-gray-200 transition-shadow duration-200 hover:shadow-md"
+          "border-[1.5px] lg:border-2 relative rounded-xl w-full flex flex-col overflow-hidden bg-aw-surface gap-2 lg:gap-3 border-aw-border transition-shadow duration-200 hover:shadow-md"
         )}
       >
         {/* ── Badge (top-left on all breakpoints) ── */}
@@ -251,7 +251,7 @@ const AdsWallCards = ({
           {hasBadgeText ? (
             <div
               className={cn(
-                "text-[10px] font-bold px-[10px] py-[4px] bg-primary-main flex items-center gap-1.5 uppercase text-white whitespace-nowrap tracking-wide rounded-br-xl"
+                "text-[10px] font-bold px-[10px] py-[4px] bg-sg-primary flex items-center gap-1.5 uppercase text-white whitespace-nowrap tracking-wide rounded-br-xl"
               )}
             >
               {(badgeIcon ?? "card") ? (
@@ -265,7 +265,7 @@ const AdsWallCards = ({
         </div>
 
         {/* ── Mobile logo (below badge, own row) ── */}
-        <div className="lg:hidden px-[14px] pt-2 pb-2">
+        <div className="lg:hidden px-[14px] pt-2 pb-0">
           {logo ? (
             <div className="flex flex-col items-start">
               <div
@@ -286,7 +286,7 @@ const AdsWallCards = ({
         </div>
 
         {/* ── Main Content ── */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8 px-[14px] py-[12px]">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8 -mt-1 sm:mt-0 px-3 pt-1.5 pb-2.5 sm:px-[18px] sm:py-[14px]">
 
           {/* Desktop-only Logo */}
           <div className="hidden lg:flex shrink-0 self-center flex-col items-center justify-center gap-1">
@@ -322,14 +322,14 @@ const AdsWallCards = ({
             {(heading || displayReviews) && (
               <div className="flex flex-col gap-0.5">
                 {heading && (
-                  <h3 className="text-[18px] lg:text-[20px] font-semibold text-black leading-tight">
+                  <h3 className="hidden sm:block text-[18px] lg:text-[20px] font-semibold text-sg-primary-dark leading-tight">
                     {heading}
                   </h3>
                 )}
 
                 {/* Trustpilot reviews - Desktop only */}
                 {displayReviews && (
-                  <div className="hidden lg:flex items-center text-[13px] text-[#6B7280] leading-none">
+                  <div className="hidden lg:flex items-center text-[13px] text-sg-primary-dark leading-none">
                     <span>{displayReviews} reviews by</span>
                     <Image
                       src="/trustpilot-logo.svg"
@@ -346,16 +346,16 @@ const AdsWallCards = ({
             <div className="text-xs lg:text-base text-black">
               {description ? (
                 <p
-                  className="mb-1 text-[15px] lg:text-[16px] font-semibold leading-[1.4] text-black"
+                  className="mb-1 text-[15px] lg:text-[16px] font-semibold leading-[1.4] text-sg-primary-dark"
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
               ) : null}
-              <ul className="list-disc ml-5 flex flex-col gap-0.5">
+              <ul className="flex flex-col gap-0.5">
                 {features.map((feature, index) => (
-                  <li
-                    key={index}
-                    dangerouslySetInnerHTML={{ __html: feature }}
-                  />
+                  <li key={index} className="flex items-start gap-2">
+                    <Check className="mt-0.5 size-4 shrink-0 text-sg-primary-dark" strokeWidth={2.5} aria-hidden="true" />
+                    <span dangerouslySetInnerHTML={{ __html: feature }} />
+                  </li>
                 ))}
               </ul>
             </div>
@@ -393,16 +393,16 @@ const AdsWallCards = ({
           <div className="flex flex-col gap-2 lg:gap-3 self-center items-center lg:items-stretch justify-center shrink-0 w-full lg:w-auto lg:min-w-[200px]">
 
             {/* Rating */}
-            <div className="flex w-full flex-col items-start justify-center gap-1.5 border-t border-[#E5E7EB] pt-[10px] text-left lg:w-auto lg:items-center lg:border-t-0 lg:pt-0 lg:text-center">
+            <div className="flex w-full flex-col items-start justify-center gap-1.5 border-t border-aw-border pt-[10px] text-left lg:w-auto lg:items-center lg:border-t-0 lg:pt-0 lg:text-center">
               <div className="flex items-end justify-start gap-1 lg:justify-center">
-                <p className="text-[28px] lg:text-[36px] font-semibold leading-none tracking-tight text-[#204C4B]">
+                <p className="text-[32px] sm:text-[40px] font-bold leading-none tracking-tight text-sg-primary">
                   {ratingsNumber}
                 </p>
-                <span className="mb-1 text-[13px] font-medium leading-none text-[#94A3B8]">/10</span>
+                <span className="mb-1 text-[14px] sm:text-[15px] font-medium leading-none text-aw-tertiary">/10</span>
               </div>
               <button
                 type="button"
-                className="inline-flex items-center gap-1 text-[11px] font-semibold leading-none text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+                className="inline-flex items-center gap-1 text-[13px] sm:text-sm font-semibold leading-none text-aw-tertiary hover:text-aw-muted transition-colors"
                 ref={scoreTriggerRef}
                 onClick={() => {
                   // Position first so first render doesn't "jump" from top-left.
@@ -412,7 +412,8 @@ const AdsWallCards = ({
                 aria-haspopup="dialog"
                 aria-expanded={isScoreModalOpen}
               >
-                <span>Sagewise Score</span>
+                <span className="font-bold text-primary-main">Sagewise</span>
+                <span>Score</span>
                 <ChevronDown
                   className={cn("w-3.5 h-3.5 transition-transform", isScoreModalOpen ? "rotate-180" : "rotate-0")}
                   aria-hidden="true"
@@ -439,11 +440,11 @@ const AdsWallCards = ({
               {phoneNumber && (
                 <a
                   href={toTelHref(phoneNumber)}
-                  className="flex items-center justify-center gap-2 h-[41px] w-full rounded-lg border border-[#d4d4d4] bg-white px-3 py-0 text-[15px] font-medium text-black shadow-sm transition-colors hover:bg-gray-50"
+                  className="flex items-center justify-center gap-2 h-9 w-full rounded-lg border border-aw-border-strong bg-aw-surface px-3 py-0 text-[14px] font-medium text-aw-text shadow-sm transition-colors hover:bg-gray-50"
                   aria-label={`Call ${phoneNumber}`}
                 >
                   <Phone className="w-3.5 h-3.5" />
-                  <span>{phoneNumber}</span>
+                  <span className="font-semibold">{phoneNumber}</span>
                 </a>
               )}
             </div>
@@ -459,7 +460,7 @@ const AdsWallCards = ({
           aria-label="Sagewise Score breakdown"
           className={cn(
             "z-[1001] rounded-2xl shadow-2xl",
-            "bg-[#0B1F2A] text-white"
+            "bg-sg-primary-dark text-white"
           )}
           style={scorePopoverStyle}
           onClick={(e) => e.stopPropagation()}
@@ -523,50 +524,50 @@ const AdsWallCards = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4 px-4 py-3 border-b border-general-border">
-              <div className="text-sm font-semibold text-[#111827]">How the Sagewise Score Works</div>
+              <div className="text-sm font-semibold text-aw-ink-deep">How the Sagewise Score Works</div>
               <button
                 type="button"
                 onClick={() => setIsHowWeScoreOpen(false)}
-                className="text-[#6B7280] hover:text-[#111827] transition-colors"
+                className="text-aw-muted hover:text-aw-ink-deep transition-colors"
                 aria-label="Close"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="px-4 py-3 max-h-[70vh] overflow-y-auto text-[12px] text-[#374151] space-y-4">
+            <div className="px-4 py-3 max-h-[70vh] overflow-y-auto text-[12px] text-aw-text space-y-4">
               <p className="leading-relaxed">
                 The Sagewise Score is a 0–10 rating that combines four objective factors. We use it to rank lenders across
                 different loan categories, and we periodically update scores as lender performance data changes.
               </p>
 
               <div>
-                <div className="text-[11px] font-semibold tracking-wide text-[#6B7280] mb-2">
+                <div className="text-[11px] font-semibold tracking-wide text-aw-muted mb-2">
                   WHAT WE MEASURE
                 </div>
 
                 <div className="rounded-lg border border-general-border divide-y divide-general-border overflow-hidden">
                   <div className="px-3 py-2">
-                    <div className="text-[12px] font-semibold text-[#111827]">Reputation</div>
-                    <div className="text-[12px] text-[#6B7280] leading-relaxed">
+                    <div className="text-[12px] font-semibold text-aw-ink-deep">Reputation</div>
+                    <div className="text-[12px] text-aw-muted leading-relaxed">
                       Years in business, BBB rating, NMLS standing, and regulatory history.
                     </div>
                   </div>
                   <div className="px-3 py-2">
-                    <div className="text-[12px] font-semibold text-[#111827]">Customer Reviews</div>
-                    <div className="text-[12px] text-[#6B7280] leading-relaxed">
+                    <div className="text-[12px] font-semibold text-aw-ink-deep">Customer Reviews</div>
+                    <div className="text-[12px] text-aw-muted leading-relaxed">
                       Aggregated ratings across major review platforms (e.g., Trustpilot, Google).
                     </div>
                   </div>
                   <div className="px-3 py-2">
-                    <div className="text-[12px] font-semibold text-[#111827]">Funding Speed</div>
-                    <div className="text-[12px] text-[#6B7280] leading-relaxed">
+                    <div className="text-[12px] font-semibold text-aw-ink-deep">Funding Speed</div>
+                    <div className="text-[12px] text-aw-muted leading-relaxed">
                       Time-to-close benchmarks and ease-of-process signals from borrower feedback.
                     </div>
                   </div>
                   <div className="px-3 py-2">
-                    <div className="text-[12px] font-semibold text-[#111827]">Rate Competitiveness</div>
-                    <div className="text-[12px] text-[#6B7280] leading-relaxed">
+                    <div className="text-[12px] font-semibold text-aw-ink-deep">Rate Competitiveness</div>
+                    <div className="text-[12px] text-aw-muted leading-relaxed">
                       Typical APRs and advertised pricing relative to the market for similar borrower profiles.
                     </div>
                   </div>
@@ -574,17 +575,17 @@ const AdsWallCards = ({
               </div>
 
               <div>
-                <div className="text-[11px] font-semibold tracking-wide text-[#6B7280] mb-2">
+                <div className="text-[11px] font-semibold tracking-wide text-aw-muted mb-2">
                   WEIGHTED TO YOUR LOAN TYPE
                 </div>
-                <p className="leading-relaxed text-[#6B7280]">
+                <p className="leading-relaxed text-aw-muted">
                   Different loan types prioritize different factors. For example, cash-out and HELOC products may weigh
                   funding speed differently than purchase loans. We adjust weights so the score best reflects what matters
                   most for that loan category.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-general-border text-[11px] text-[#9CA3AF]">
+              <div className="pt-2 border-t border-general-border text-[11px] text-aw-tertiary">
                 Last updated May 2026 · Version 0.1.2
               </div>
             </div>
