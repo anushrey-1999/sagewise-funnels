@@ -6,12 +6,18 @@ type LogoProps = {
   color?: "primary" | "white";
   type?: "wordmark" | "logomark";
   href?: string;
+  width?: number;
+  height?: number;
 };
 
 const imgColorWhiteTypeWordmark = "/sagewise-logo.png";
-const imgColorPrimaryTypeWordmark = ""
+const imgColorPrimaryTypeWordmark = "/sagewise-logo.png";
 
-export function Logo({ className, color = "primary", type = "wordmark", href = "/" }: LogoProps) {
+// The source wordmark is white; on light backgrounds we tint it to brand sage.
+const PRIMARY_WORDMARK_FILTER =
+  "brightness(0) saturate(100%) invert(28%) sepia(18%) saturate(1080%) hue-rotate(128deg) brightness(88%) contrast(89%)";
+
+export function Logo({ className, color = "primary", type = "wordmark", href = "/", width = 161, height = 35 }: LogoProps) {
   const src = color === "white" && type === "wordmark" 
     ? imgColorWhiteTypeWordmark 
     : imgColorPrimaryTypeWordmark;
@@ -22,9 +28,13 @@ export function Logo({ className, color = "primary", type = "wordmark", href = "
         <Image
           src={src}
           alt="Sagewise Logo"
-          width={169}
-          height={35}
-          className="h-[24px] w-[116px] sm:h-[35px] sm:w-[169px]"
+          width={width}
+          height={height}
+          style={{
+            width: `${width}px`,
+            height: `${height}px`,
+            ...(color === "primary" ? { filter: PRIMARY_WORDMARK_FILTER } : null),
+          }}
         />
       </Link>
     </div>

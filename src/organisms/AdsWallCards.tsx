@@ -322,7 +322,7 @@ const AdsWallCards = ({
             {(heading || displayReviews) && (
               <div className="flex flex-col gap-0.5">
                 {heading && (
-                  <h3 className="hidden sm:block text-[18px] lg:text-[20px] font-semibold text-sg-primary-dark leading-tight">
+                  <h3 className="hidden sm:block text-[18px] font-bold text-sg-primary-dark leading-tight">
                     {heading}
                   </h3>
                 )}
@@ -346,15 +346,15 @@ const AdsWallCards = ({
             <div className="text-xs lg:text-base text-black">
               {description ? (
                 <p
-                  className="mb-1 text-[15px] lg:text-[16px] font-semibold leading-[1.4] text-sg-primary-dark"
+                  className="mb-1.5 text-[16px] font-semibold leading-[1.4] text-sg-primary-dark"
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
               ) : null}
-              <ul className="flex flex-col gap-0.5">
+              <ul className="flex flex-col">
                 {features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-2">
+                  <li key={index} className="flex items-start gap-2 py-1">
                     <Check className="mt-0.5 size-4 shrink-0 text-sg-primary-dark" strokeWidth={2.5} aria-hidden="true" />
-                    <span dangerouslySetInnerHTML={{ __html: feature }} />
+                    <span className="text-[15px]" dangerouslySetInnerHTML={{ __html: feature }} />
                   </li>
                 ))}
               </ul>
@@ -430,7 +430,7 @@ const AdsWallCards = ({
             <div className="flex flex-col gap-2 w-full pt-2 lg:pt-0">
               <Button
                 variant="secondary"
-                className="h-[41px] w-full rounded-lg px-3 py-0 text-[15px] font-bold text-white"
+                className="h-[41px] w-full rounded-lg px-3 py-0 text-[15px] font-bold text-white bg-cta-orange hover:bg-cta-orange-dark lg:h-[44px] lg:w-[220px]"
                 onClick={handleButtonClick}
                 icon={MoveRight}
                 iconClass="w-4 h-4"

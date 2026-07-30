@@ -9,6 +9,7 @@ import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
 import ImpressionOnView from "@/components/ImpressionOnView";
 import { sortAdwallCards } from "@/lib/generic-adwall-ranking";
 import { BadgeCheck, Lock, Minus, Plus, ShieldCheck } from "lucide-react";
+import { createPortal } from "react-dom";
 
 interface AdsWallTemplateProps {
   config: AdwallConfig;
@@ -231,20 +232,62 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
   }, [ctaRef]);
 
   return (
-    <div className="bg-white flex flex-col items-start min-h-screen w-full ">
+    <div className="bg-[#FAFAF7] flex flex-col items-start min-h-screen w-full ">
+      {/* Portal lender disclosures into the global footer */}
+      {typeof document !== "undefined" && disclosureCards.length > 0
+        ? createPortal(
+            <div className="w-full">
+              <div className="rounded-lg border border-general-border bg-white overflow-hidden">
+                <button
+                  onClick={() => setIsDisclosureOpen((v) => !v)}
+                  className="w-full h-[39px] flex items-center justify-between px-[14px] text-left"
+                  aria-expanded={isDisclosureOpen}
+                >
+                  <span className="text-[12px] font-semibold text-aw-muted">Lender Disclosures</span>
+                  {isDisclosureOpen ? (
+                    <Minus className="w-4 h-4 text-primary-main" aria-hidden="true" />
+                  ) : (
+                    <Plus className="w-4 h-4 text-primary-main" aria-hidden="true" />
+                  )}
+                </button>
+
+                {isDisclosureOpen && (
+                  <div className="border-t border-general-border divide-y divide-general-border">
+                    {disclosureCards.map((item, index) => (
+                      <div key={index} className="px-[14px] py-[11px]">
+                        <div className="text-[12px] font-semibold text-primary-dark mb-1">
+                          {item.advertiserName || item.heading}
+                        </div>
+                        {item.bottomBoxHtml && (
+                          <div
+                            className="text-[12px] text-primary-dark leading-relaxed [&_a]:text-primary-dark [&_a]:underline [&_a]:underline-offset-2"
+                            dangerouslySetInnerHTML={{ __html: normalizeDisclosureHtml(item.bottomBoxHtml) }}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            document.getElementById("minimal-footer-slot")!
+          )
+        : null}
+
       {/* Header */}
       <PlainPageHeader
         title={personalizedTitle}
-        headingFont="text-[28px] leading-[32px] mb-3 text-center lg:text-[48px] lg:leading-[52px] font-bold text-primary-main"
+        headingFont="text-[28px] leading-[32px] mb-3 text-center lg:text-[44px] lg:leading-[48px] font-bold text-primary-dark"
         subtitle={personalizedSubtitle}
-        updatedAt={updatedAtOverride ?? config.updatedAt}
+        subheadingFont="block w-full text-center font-normal text-[16px] leading-[22px] text-aw-muted lg:text-[18px] lg:leading-[28px] lg:max-w-[580px]"
       />
 
       {/* Mortgage-only trust strip (below header, above cards) */}
       {config.funnelId === "mortgage" && (
         <div className="w-full px-5 sm:px-6 md:px-16">
-          <div className="w-full max-w-[970px] mx-auto">
-            <div className="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-y-2 py-0 sm:py-2 mb-1 sm:mb-4 text-[14px] text-aw-muted">
+          <div className="w-full max-w-[1200px] mx-auto">
+            <div className="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-y-2 py-0 mb-1 sm:mb-4 text-[14px] text-aw-muted">
               <div className="hidden sm:flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-aw-muted" aria-hidden="true" />
                 <span className="font-semibold">NMLS-verified lenders</span>
@@ -266,7 +309,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
 
       {/* Cards */}
       <div className="relative z-0 flex flex-col items-center w-full px-5 sm:px-6 md:px-16 pt-4 sm:pt-0 pb-3 sm:pb-8 md:pb-12">
-        <div className="w-full max-w-[970px] ">
+        <div className="w-full max-w-[1152px]">
           <div ref={containerRef} className="flex flex-col gap-4">
             {visibleCardsWithRatings.map((item, index) => {
               const { impressionScript, ...cardProps } = item;
@@ -299,46 +342,6 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
           </div>
         </div>
       </div>
-
-      {/* Lender Disclosures (footer-style panel like design) */}
-      {disclosureCards.length > 0 && (
-        <div className="w-full px-5 sm:px-6 md:px-16 mb-8">
-          <div className="w-full max-w-[970px] mx-auto">
-            <div className="rounded-lg border border-general-border bg-white overflow-hidden">
-              <button
-                onClick={() => setIsDisclosureOpen((v) => !v)}
-                className="w-full flex items-center justify-between px-4 py-3 text-left"
-                aria-expanded={isDisclosureOpen}
-              >
-                <span className="text-[13px] font-semibold text-aw-ink-deep">Lender Disclosures</span>
-                {isDisclosureOpen ? (
-                  <Minus className="w-4 h-4 text-aw-muted" aria-hidden="true" />
-                ) : (
-                  <Plus className="w-4 h-4 text-aw-muted" aria-hidden="true" />
-                )}
-              </button>
-
-              {isDisclosureOpen && (
-                <div className="border-t border-general-border divide-y divide-general-border">
-                  {disclosureCards.map((item, index) => (
-                      <div key={index} className="px-4 py-3">
-                        <div className="text-[12px] font-semibold text-aw-ink-deep mb-1">
-                          {item.advertiserName || item.heading}
-                        </div>
-                        {item.bottomBoxHtml && (
-                          <div
-                            className="text-[11px] text-aw-muted leading-relaxed [&_a]:text-primary-main [&_a]:underline [&_a]:underline-offset-2"
-                            dangerouslySetInnerHTML={{ __html: normalizeDisclosureHtml(item.bottomBoxHtml) }}
-                          />
-                        )}
-                      </div>
-                    ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

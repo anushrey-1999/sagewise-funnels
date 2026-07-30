@@ -69,7 +69,7 @@ export default async function AdwallPage({ params, searchParams }: AdwallPagePro
   }).format(new Date())}`;
 
   return (
-    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#FAFAF7]" />}>
       <AdsWallTemplate
         config={config}
         resolvedCity={resolvedCity}
