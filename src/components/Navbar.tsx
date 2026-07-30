@@ -112,7 +112,13 @@ export function Navbar() {
           <Menu className="h-4 w-4 text-white" />
         </Button> */}
           <div className="shrink-0 flex justify-center sm:justify-start items-center">
-            <Logo color="white" href="https://sagewise.net/" />
+            <Logo
+              color="white"
+              href="https://sagewise.net/"
+              width={161}
+              height={35}
+              imgClassName="h-[24px] w-[110px] sm:h-[35px] sm:w-[161px]"
+            />
           </div>
 
           <div className="ml-auto flex items-center justify-end gap-4 sm:gap-6">

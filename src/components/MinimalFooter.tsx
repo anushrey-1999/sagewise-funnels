@@ -21,7 +21,7 @@ const SOCIAL_LINKS = [
 const MinimalFooter = () => {
   return (
     <footer className="w-full bg-white border-t border-general-border">
-      <div className="max-w-[1200px] mx-auto px-0 py-4">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-0 py-4">
         <div id="minimal-footer-slot" className="w-full empty:hidden mb-4" />
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
