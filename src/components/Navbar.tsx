@@ -86,7 +86,7 @@ export function Navbar() {
     <div className="w-full">
       {isAdwallRoute && (
         <div className="w-full bg-aw-canvas border-b border-aw-divider">
-          <div className="max-w-[1200px] mx-auto px-6 py-2.5">
+          <div className="max-w-[var(--container-max)] mx-auto px-5 py-2 sm:px-6 sm:py-2.5">
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] sm:text-xs text-aw-muted text-center">
               <span>
                 The listings featured on this site are from companies from which this site receives compensation.
@@ -103,7 +103,7 @@ export function Navbar() {
       )}
 
       <div className="bg-sg-primary w-full">
-        <div className="max-w-[1200px] mx-auto flex items-center justify-between px-6 py-4 w-full relative gap-4">
+        <div className="max-w-[var(--container-max)] mx-auto flex items-center justify-between px-6 py-3 sm:py-4 w-full relative gap-4">
           {/* <Button
           variant="ghost"
           size="icon"
@@ -115,9 +115,9 @@ export function Navbar() {
             <Logo
               color="white"
               href="https://sagewise.net/"
-              width={161}
+              width={169}
               height={35}
-              imgClassName="h-[24px] w-[110px] sm:h-[35px] sm:w-[161px]"
+              imgClassName="h-[29px] w-[140px] sm:h-[35px] sm:w-[169px]"
             />
           </div>
 

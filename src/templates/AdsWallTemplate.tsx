@@ -3,7 +3,7 @@
 import AdsWallCards from "@/organisms/AdsWallCards";
 import PlainPageHeader from "@/organisms/PlainPageHeader";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdwallConfig } from "@/types/adwall";
 import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
 import ImpressionOnView from "@/components/ImpressionOnView";
@@ -95,6 +95,7 @@ function normalizeDisclosureHtml(html: string): string {
 
 const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpressions = false }: AdsWallTemplateProps) => {
   const [isDisclosureOpen, setIsDisclosureOpen] = useState(false);
+  const [footerSlotEl, setFooterSlotEl] = useState<HTMLElement | null>(null);
   const searchParams = useSearchParams();
 
   // Extract and clean the IDs from URL parameters based on config
@@ -226,6 +227,11 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
     return visibleCardsWithRatings.filter((item) => item.bottomBoxHtml);
   }, [visibleCardsWithRatings]);
 
+  useEffect(() => {
+    // Avoid hydration mismatch: only portal after mount.
+    setFooterSlotEl(document.getElementById("minimal-footer-slot"));
+  }, []);
+
   const { containerRef: ctaRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([visibleCards]);
   const containerRef = useCallback((node: HTMLDivElement | null) => {
     ctaRef.current = node;
@@ -234,13 +240,13 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
   return (
     <div className="bg-[#FAFAF7] flex flex-col items-start min-h-screen w-full ">
       {/* Portal lender disclosures into the global footer */}
-      {typeof document !== "undefined" && disclosureCards.length > 0
+      {footerSlotEl && disclosureCards.length > 0
         ? createPortal(
             <div className="w-full">
-              <div className="rounded-lg border border-general-border bg-white overflow-hidden">
+              <div className="rounded-[var(--aw-radius-card)] border border-general-border bg-white overflow-hidden shadow-[var(--shadow-card)]">
                 <button
                   onClick={() => setIsDisclosureOpen((v) => !v)}
-                  className="w-full h-[39px] flex items-center justify-between px-[14px] text-left"
+                  className="w-full h-[39px] flex items-center justify-between px-[14px] text-left focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-neutral)]"
                   aria-expanded={isDisclosureOpen}
                 >
                   <span className="text-[12px] font-semibold text-aw-muted">Lender Disclosures</span>
@@ -270,8 +276,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
                 )}
               </div>
             </div>,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            document.getElementById("minimal-footer-slot")!
+            footerSlotEl
           )
         : null}
 
@@ -286,7 +291,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
       {/* Mortgage-only trust strip (below header, above cards) */}
       {config.funnelId === "mortgage" && (
         <div className="w-full px-5 sm:px-6 md:px-16">
-          <div className="w-full max-w-[1200px] mx-auto">
+          <div className="w-full max-w-[var(--container-max)] mx-auto">
             <div className="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-y-2 py-0 mb-1 sm:mb-4 text-[14px] text-aw-muted">
               <div className="hidden sm:flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-aw-muted" aria-hidden="true" />

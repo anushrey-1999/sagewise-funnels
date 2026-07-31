@@ -17,8 +17,8 @@ const PlainPageHeader = ({ title, subtitle, headingFont, subheadingFont, updated
   const hasTitle = Boolean(title?.trim?.());
 
   return (
-    <div className="flex items-center justify-center overflow-visible relative z-20 rounded-bl-[24px] rounded-br-[24px] w-full pt-10 px-6 pb-5">
-      <div className="flex flex-col items-center sm:px-8 md:px-16 z-10 w-full max-w-[1200px] mx-auto">
+    <div className="flex items-center justify-center overflow-visible relative z-20 rounded-bl-[24px] rounded-br-[24px] w-full pt-6 px-5 pb-4 sm:pt-10 sm:px-6 sm:pb-5">
+      <div className="flex flex-col items-center sm:px-8 md:px-16 z-10 w-full max-w-[var(--container-max)] mx-auto">
         {hasTitle ? (
           <Typography
             variant="h2"

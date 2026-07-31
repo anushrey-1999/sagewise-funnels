@@ -94,8 +94,8 @@ const AdsWallCards = ({
   const scorePopoverRef = useRef<HTMLDivElement>(null);
   const affiliateParamName = "sub2";
   const transactionParamName = "sub1";
-  const mobileLogoWidthPx = 100;
-  const desktopLogoWidthPx = 140;
+  const mobileLogoWidthPx = 140;
+  const desktopLogoWidthPx = 170;
 
   const displayReviews = trustpilotReviews?.trim() || null;
   const fullStars = Math.max(0, Math.min(5, Number.isFinite(ratingsCount) ? ratingsCount : 5));
@@ -243,7 +243,7 @@ const AdsWallCards = ({
     <div className="relative w-full">
       <div
         className={cn(
-          "border-[1.5px] lg:border-2 relative rounded-xl w-full flex flex-col overflow-hidden bg-aw-surface gap-2 lg:gap-3 border-aw-border transition-shadow duration-200 hover:shadow-md"
+          "border-[1.5px] lg:border-2 relative rounded-[var(--aw-radius-card)] w-full flex flex-col overflow-hidden bg-aw-surface gap-2 lg:gap-3 border-aw-border shadow-[var(--shadow-card)] transition-shadow duration-200 hover:shadow-[var(--shadow-card-hover)]"
         )}
       >
         {/* ── Badge (top-left on all breakpoints) ── */}
@@ -251,7 +251,7 @@ const AdsWallCards = ({
           {hasBadgeText ? (
             <div
               className={cn(
-                "text-[10px] font-bold px-[10px] py-[4px] bg-sg-primary flex items-center gap-1.5 uppercase text-white whitespace-nowrap tracking-wide rounded-br-xl"
+                "text-[10px] font-bold px-[10px] py-[4px] bg-sg-primary flex items-center gap-1.5 uppercase text-white whitespace-nowrap tracking-wide rounded-br-[var(--aw-radius-ribbon-corner)]"
               )}
             >
               {(badgeIcon ?? "card") ? (
@@ -265,7 +265,7 @@ const AdsWallCards = ({
         </div>
 
         {/* ── Mobile logo (below badge, own row) ── */}
-        <div className="lg:hidden px-[14px] pt-2 pb-0">
+        <div className="lg:hidden px-[14px] pt-[10px] pb-[6px]">
           {logo ? (
             <div className="flex flex-col items-start">
               <div
@@ -286,7 +286,7 @@ const AdsWallCards = ({
         </div>
 
         {/* ── Main Content ── */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8 -mt-1 sm:mt-0 px-3 pt-1.5 pb-2.5 sm:px-[18px] sm:py-[14px]">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8 -mt-1 sm:mt-0 px-[14px] pt-[6px] pb-3 sm:px-[18px] sm:py-[14px]">
 
           {/* Desktop-only Logo */}
           <div className="hidden lg:flex shrink-0 self-center flex-col items-center justify-center gap-1">
@@ -346,7 +346,7 @@ const AdsWallCards = ({
             <div className="text-xs lg:text-base text-black">
               {description ? (
                 <p
-                  className="mb-1.5 text-[16px] font-semibold leading-[1.4] text-sg-primary-dark"
+                  className="mb-1.5 text-[15px] sm:text-[16px] font-semibold leading-[1.4] text-sg-primary-dark"
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
               ) : null}
@@ -354,7 +354,7 @@ const AdsWallCards = ({
                 {features.map((feature, index) => (
                   <li key={index} className="flex items-start gap-2 py-1">
                     <Check className="mt-0.5 size-4 shrink-0 text-sg-primary-dark" strokeWidth={2.5} aria-hidden="true" />
-                    <span className="text-[15px]" dangerouslySetInnerHTML={{ __html: feature }} />
+                    <span className="text-[14px] sm:text-[15px]" dangerouslySetInnerHTML={{ __html: feature }} />
                   </li>
                 ))}
               </ul>
@@ -402,7 +402,7 @@ const AdsWallCards = ({
               </div>
               <button
                 type="button"
-                className="inline-flex items-center gap-1 text-[13px] sm:text-sm font-semibold leading-none text-aw-tertiary hover:text-aw-muted transition-colors"
+              className="inline-flex items-center gap-1 text-[13px] sm:text-sm font-semibold leading-none text-aw-tertiary hover:text-aw-muted transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-sage)] rounded-[var(--aw-radius-field)]"
                 ref={scoreTriggerRef}
                 onClick={() => {
                   // Position first so first render doesn't "jump" from top-left.
@@ -430,23 +430,25 @@ const AdsWallCards = ({
             <div className="flex flex-col gap-2 w-full pt-2 lg:pt-0">
               <Button
                 variant="secondary"
-                className="h-[41px] w-full rounded-lg px-3 py-0 text-[15px] font-bold text-white bg-cta-orange hover:bg-cta-orange-dark lg:h-[44px] lg:w-[220px]"
+                className="h-[44px] sm:h-[41px] w-full rounded-[var(--aw-radius-cta)] px-3 py-0 text-[15px] font-bold text-white bg-cta-orange hover:bg-cta-orange-dark shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)] transition-[background-color,box-shadow] lg:h-[44px] lg:w-[220px] focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-orange)]"
                 onClick={handleButtonClick}
                 icon={MoveRight}
                 iconClass="w-4 h-4"
               >
                 {buttonText}
               </Button>
-              {phoneNumber && (
-                <a
-                  href={toTelHref(phoneNumber)}
-                  className="flex items-center justify-center gap-2 h-9 w-full rounded-lg border border-aw-border-strong bg-aw-surface px-3 py-0 text-[14px] font-medium text-aw-text shadow-sm transition-colors hover:bg-gray-50"
-                  aria-label={`Call ${phoneNumber}`}
-                >
-                  <Phone className="w-3.5 h-3.5" />
-                  <span className="font-semibold">{phoneNumber}</span>
-                </a>
-              )}
+              <div className="w-full h-9 sm:h-[var(--phone-slot-h)]">
+                {phoneNumber ? (
+                  <a
+                    href={toTelHref(phoneNumber)}
+                    className="flex items-center justify-center gap-2 h-full w-full rounded-[var(--aw-radius-cta)] border border-aw-border bg-aw-surface px-3 py-0 text-[14px] font-semibold text-aw-text transition-colors hover:bg-aw-canvas focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-neutral)]"
+                    aria-label={`Call ${phoneNumber}`}
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span className="font-semibold">{phoneNumber}</span>
+                  </a>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
@@ -519,7 +521,7 @@ const AdsWallCards = ({
             className={cn(
               "fixed left-1/2 top-1/2 z-[1101] -translate-x-1/2 -translate-y-1/2",
               "w-[92vw] max-w-[520px]",
-              "rounded-xl bg-white shadow-2xl"
+              "rounded-[var(--aw-radius-card)] bg-white shadow-[var(--shadow-card-hover)]"
             )}
             onClick={(e) => e.stopPropagation()}
           >
@@ -528,7 +530,7 @@ const AdsWallCards = ({
               <button
                 type="button"
                 onClick={() => setIsHowWeScoreOpen(false)}
-                className="text-aw-muted hover:text-aw-ink-deep transition-colors"
+                className="text-aw-muted hover:text-aw-ink-deep transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-neutral)] rounded-[var(--aw-radius-field)]"
                 aria-label="Close"
               >
                 <X className="w-4 h-4" />
@@ -546,7 +548,7 @@ const AdsWallCards = ({
                   WHAT WE MEASURE
                 </div>
 
-                <div className="rounded-lg border border-general-border divide-y divide-general-border overflow-hidden">
+                <div className="rounded-[var(--aw-radius-card)] border border-general-border divide-y divide-general-border overflow-hidden bg-white shadow-[var(--shadow-card)]">
                   <div className="px-3 py-2">
                     <div className="text-[12px] font-semibold text-aw-ink-deep">Reputation</div>
                     <div className="text-[12px] text-aw-muted leading-relaxed">
