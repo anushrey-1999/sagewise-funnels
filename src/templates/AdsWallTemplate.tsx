@@ -266,7 +266,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
                         </div>
                         {item.bottomBoxHtml && (
                           <div
-                            className="text-[12px] text-primary-dark leading-relaxed [&_a]:text-primary-dark [&_a]:underline [&_a]:underline-offset-2"
+                            className="text-[12px] text-primary-dark leading-relaxed [&_a]:!text-primary-dark [&_a:hover]:!text-primary-dark [&_a:visited]:!text-primary-dark [&_a]:underline [&_a]:underline-offset-2"
                             dangerouslySetInnerHTML={{ __html: normalizeDisclosureHtml(item.bottomBoxHtml) }}
                           />
                         )}

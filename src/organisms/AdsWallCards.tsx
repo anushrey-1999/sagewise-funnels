@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Check, ChevronDown, MoveRight, Phone, X } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 function toTelHref(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, "");
@@ -89,6 +90,7 @@ const AdsWallCards = ({
 }: AdsWallCardsProps) => {
   const [isScoreModalOpen, setIsScoreModalOpen] = useState(false);
   const [isHowWeScoreOpen, setIsHowWeScoreOpen] = useState(false);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [scorePopoverStyle, setScorePopoverStyle] = useState<React.CSSProperties>({});
   const scoreTriggerRef = useRef<HTMLButtonElement>(null);
   const scorePopoverRef = useRef<HTMLDivElement>(null);
@@ -142,6 +144,10 @@ const AdsWallCards = ({
   }, [ratingsNumber]);
 
   useEffect(() => {
+    setPortalTarget(document.body);
+  }, []);
+
+  useEffect(() => {
     if (!isScoreModalOpen && !isHowWeScoreOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
@@ -166,20 +172,42 @@ const AdsWallCards = ({
     let left = rect.left + rect.width / 2 - width / 2;
     left = Math.max(gutter, Math.min(left, window.innerWidth - width - gutter));
 
-    const top = rect.bottom + 8;
+    const gap = 8;
+    const popover = scorePopoverRef.current;
+    const popoverHeight = popover ? popover.getBoundingClientRect().height : 0;
+
+    const topBelow = rect.bottom + gap;
+    const topAbove = rect.top - gap - popoverHeight;
+
+    // Prefer below when it fits; otherwise flip above. If neither fits, clamp within viewport.
+    const fitsBelow =
+      popoverHeight > 0 ? topBelow + popoverHeight <= window.innerHeight - gutter : true;
+    const fitsAbove =
+      popoverHeight > 0 ? topAbove >= gutter : false;
+
+    const unclampedTop = fitsBelow ? topBelow : fitsAbove ? topAbove : topBelow;
+    const clampedTop =
+      popoverHeight > 0
+        ? Math.max(gutter, Math.min(unclampedTop, window.innerHeight - gutter - popoverHeight))
+        : Math.max(gutter, unclampedTop);
 
     setScorePopoverStyle({
       position: "fixed",
-      top,
+      top: clampedTop,
       left,
       width,
     });
   };
 
-  useEffect(() => {
+  // Position synchronously before paint to avoid "jumping" (below → above).
+  useLayoutEffect(() => {
     if (!isScoreModalOpen) return;
     positionScorePopover();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isScoreModalOpen]);
 
+  useEffect(() => {
+    if (!isScoreModalOpen) return;
     const onScrollOrResize = () => positionScorePopover();
     window.addEventListener("resize", onScrollOrResize);
     window.addEventListener("scroll", onScrollOrResize, true);
@@ -332,11 +360,11 @@ const AdsWallCards = ({
                   <div className="hidden lg:flex items-center text-[13px] text-sg-primary-dark leading-none">
                     <span>{displayReviews} reviews by</span>
                     <Image
-                      src="/trustpilot-logo.svg"
+                      src="/Trustpilot_Logo.svg"
                       alt="Trustpilot"
-                      width={104}
-                      height={24}
-                      className="h-6 w-auto"
+                      width={60}
+                      height={15}
+                      className=" ml-1"
                     />
                   </div>
                 )}
@@ -508,91 +536,96 @@ const AdsWallCards = ({
       )}
 
       {isHowWeScoreOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-[1100] bg-black/50"
-            aria-hidden="true"
-            onClick={() => setIsHowWeScoreOpen(false)}
-          />
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="How the Sagewise Score works"
-            className={cn(
-              "fixed left-1/2 top-1/2 z-[1101] -translate-x-1/2 -translate-y-1/2",
-              "w-[92vw] max-w-[520px]",
-              "rounded-[var(--aw-radius-card)] bg-white shadow-[var(--shadow-card-hover)]"
-            )}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-4 px-4 py-3 border-b border-general-border">
-              <div className="text-sm font-semibold text-aw-ink-deep">How the Sagewise Score Works</div>
-              <button
-                type="button"
-                onClick={() => setIsHowWeScoreOpen(false)}
-                className="text-aw-muted hover:text-aw-ink-deep transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-neutral)] rounded-[var(--aw-radius-field)]"
-                aria-label="Close"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+        portalTarget
+          ? createPortal(
+              <>
+                <div
+                  className="fixed inset-0 z-[5000] bg-black/50"
+                  aria-hidden="true"
+                  onClick={() => setIsHowWeScoreOpen(false)}
+                />
+                <div
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="How the Sagewise Score works"
+                  className={cn(
+                    "fixed left-1/2 top-1/2 z-[5001] -translate-x-1/2 -translate-y-1/2",
+                    "w-[92vw] max-w-[520px]",
+                    "rounded-[var(--aw-radius-card)] bg-white shadow-[var(--shadow-card-hover)]"
+                  )}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex items-start justify-between gap-4 px-4 py-3 border-b border-general-border">
+                    <div className="text-sm font-semibold text-aw-ink-deep">How the Sagewise Score Works</div>
+                    <button
+                      type="button"
+                      onClick={() => setIsHowWeScoreOpen(false)}
+                      className="text-aw-muted hover:text-aw-ink-deep transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-neutral)] rounded-[var(--aw-radius-field)]"
+                      aria-label="Close"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
 
-            <div className="px-4 py-3 max-h-[70vh] overflow-y-auto text-[12px] text-aw-text space-y-4">
-              <p className="leading-relaxed">
-                The Sagewise Score is a 0–10 rating that combines four objective factors. We use it to rank lenders across
-                different loan categories, and we periodically update scores as lender performance data changes.
-              </p>
+                  <div className="px-4 py-3 max-h-[70vh] overflow-y-auto text-[12px] text-aw-text space-y-4">
+                    <p className="leading-relaxed">
+                      The Sagewise Score is a 0–10 rating that combines four objective factors. We use it to rank lenders across
+                      different loan categories, and we periodically update scores as lender performance data changes.
+                    </p>
 
-              <div>
-                <div className="text-[11px] font-semibold tracking-wide text-aw-muted mb-2">
-                  WHAT WE MEASURE
+                    <div>
+                      <div className="text-[11px] font-semibold tracking-wide text-aw-muted mb-2">
+                        WHAT WE MEASURE
+                      </div>
+
+                      <div className="rounded-[var(--aw-radius-card)] border border-general-border divide-y divide-general-border overflow-hidden bg-white shadow-[var(--shadow-card)]">
+                        <div className="px-3 py-2">
+                          <div className="text-[12px] font-semibold text-aw-ink-deep">Reputation</div>
+                          <div className="text-[12px] text-aw-muted leading-relaxed">
+                            Years in business, BBB rating, NMLS standing, and regulatory history.
+                          </div>
+                        </div>
+                        <div className="px-3 py-2">
+                          <div className="text-[12px] font-semibold text-aw-ink-deep">Customer Reviews</div>
+                          <div className="text-[12px] text-aw-muted leading-relaxed">
+                            Aggregated ratings across major review platforms (e.g., Trustpilot, Google).
+                          </div>
+                        </div>
+                        <div className="px-3 py-2">
+                          <div className="text-[12px] font-semibold text-aw-ink-deep">Funding Speed</div>
+                          <div className="text-[12px] text-aw-muted leading-relaxed">
+                            Time-to-close benchmarks and ease-of-process signals from borrower feedback.
+                          </div>
+                        </div>
+                        <div className="px-3 py-2">
+                          <div className="text-[12px] font-semibold text-aw-ink-deep">Rate Competitiveness</div>
+                          <div className="text-[12px] text-aw-muted leading-relaxed">
+                            Typical APRs and advertised pricing relative to the market for similar borrower profiles.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-[11px] font-semibold tracking-wide text-aw-muted mb-2">
+                        WEIGHTED TO YOUR LOAN TYPE
+                      </div>
+                      <p className="leading-relaxed text-aw-muted">
+                        Different loan types prioritize different factors. For example, cash-out and HELOC products may weigh
+                        funding speed differently than purchase loans. We adjust weights so the score best reflects what matters
+                        most for that loan category.
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-general-border text-[11px] text-aw-tertiary">
+                      Last updated May 2026 · Version 0.1.2
+                    </div>
+                  </div>
                 </div>
-
-                <div className="rounded-[var(--aw-radius-card)] border border-general-border divide-y divide-general-border overflow-hidden bg-white shadow-[var(--shadow-card)]">
-                  <div className="px-3 py-2">
-                    <div className="text-[12px] font-semibold text-aw-ink-deep">Reputation</div>
-                    <div className="text-[12px] text-aw-muted leading-relaxed">
-                      Years in business, BBB rating, NMLS standing, and regulatory history.
-                    </div>
-                  </div>
-                  <div className="px-3 py-2">
-                    <div className="text-[12px] font-semibold text-aw-ink-deep">Customer Reviews</div>
-                    <div className="text-[12px] text-aw-muted leading-relaxed">
-                      Aggregated ratings across major review platforms (e.g., Trustpilot, Google).
-                    </div>
-                  </div>
-                  <div className="px-3 py-2">
-                    <div className="text-[12px] font-semibold text-aw-ink-deep">Funding Speed</div>
-                    <div className="text-[12px] text-aw-muted leading-relaxed">
-                      Time-to-close benchmarks and ease-of-process signals from borrower feedback.
-                    </div>
-                  </div>
-                  <div className="px-3 py-2">
-                    <div className="text-[12px] font-semibold text-aw-ink-deep">Rate Competitiveness</div>
-                    <div className="text-[12px] text-aw-muted leading-relaxed">
-                      Typical APRs and advertised pricing relative to the market for similar borrower profiles.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div className="text-[11px] font-semibold tracking-wide text-aw-muted mb-2">
-                  WEIGHTED TO YOUR LOAN TYPE
-                </div>
-                <p className="leading-relaxed text-aw-muted">
-                  Different loan types prioritize different factors. For example, cash-out and HELOC products may weigh
-                  funding speed differently than purchase loans. We adjust weights so the score best reflects what matters
-                  most for that loan category.
-                </p>
-              </div>
-
-              <div className="pt-2 border-t border-general-border text-[11px] text-aw-tertiary">
-                Last updated May 2026 · Version 0.1.2
-              </div>
-            </div>
-          </div>
-        </>
+              </>,
+              portalTarget
+            )
+          : null
       )}
     </div>
   );
