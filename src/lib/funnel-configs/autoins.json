@@ -5,9 +5,9 @@
   "metaDescription": "Compare auto insurance options in seconds. Answer a few questions to see personalized matches.",
   "firstStepButton": {
     "text": "Get free quotes",
-    "bgColor": "var(--sw-cta-primary)",
-    "hoverBgColor": "var(--sw-cta-hover)",
-    "textColor": "#0a0a0a0"
+    "bgColor": "var(--cta-orange)",
+    "hoverBgColor": "var(--cta-orange-dark)",
+    "textColor": "#ffffff"
   },
   "navbar": {
     "tagline": "Speak to a licensed agent:",

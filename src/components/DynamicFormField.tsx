@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckIcon, Minus, Plus, icons } from "lucide-react";
-import React, { useEffect, useId, useState } from "react";
+import { CheckIcon, Minus, Plus, MapPin, icons } from "lucide-react";
+import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import vehicleModels from "@/lib/vehicle-models.json";
 
 function LucideIcon({ name, className }: { name: string; className?: string }) {
@@ -105,16 +105,76 @@ function SliderField({
   const prefix = isPercent ? "" : "$";
   const suffix = isPercent ? "%" : "";
 
+  const progressPercent = ((sliderVal - min) / (max - min)) * 100;
+
   return (
     <div className="w-full sm:w-[460px] flex flex-col gap-4">
       {field.label && (
-        <Label htmlFor={field.id} className="text-base font-medium text-foreground">
+        <Label htmlFor={field.id} className="text-base font-medium text-aw-text">
           {field.label}
         </Label>
       )}
+      
+      {/* Stepper row: minus button, value display, plus button */}
+      <div className="flex items-center justify-center gap-4">
+        <button
+          type="button"
+          onClick={handleDecrement}
+          disabled={sliderVal <= min}
+          aria-label="Decrease value"
+          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:[box-shadow:var(--focus-ring)] outline-none"
+        >
+          <Minus className="size-5 text-sg-primary-green" strokeWidth={2.5} />
+        </button>
+        
+        <div className="text-[32px] font-bold text-aw-text tracking-tight min-w-[140px] text-center">
+          {formatValue(sliderVal)}
+        </div>
+        
+        <button
+          type="button"
+          onClick={handleIncrement}
+          disabled={sliderVal >= max}
+          aria-label="Increase value"
+          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:[box-shadow:var(--focus-ring)] outline-none"
+        >
+          <Plus className="size-5 text-sg-primary-green" strokeWidth={2.5} />
+        </button>
+      </div>
+
+      {/* Slider track */}
+      <div className="relative w-full h-6 flex items-center">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={sliderVal}
+          onChange={(e) => handleSliderChange(parseFloat(e.target.value))}
+          className="w-full h-2 rounded-full appearance-none cursor-pointer bg-transparent relative z-10 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-sg-primary-green [&::-webkit-slider-thumb]:shadow-[0_2px_6px_rgba(0,0,0,0.2)] [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-runnable-track]:bg-transparent [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-sg-primary-green [&::-moz-range-thumb]:border-[3px] [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_2px_6px_rgba(0,0,0,0.2)] [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-track]:bg-transparent"
+          aria-label={`${field.label || field.id} slider`}
+          style={{ background: 'transparent' }}
+        />
+        {/* Track background */}
+        <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-2 rounded-full overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-gray-200" />
+          <div 
+            className="absolute top-0 left-0 h-full bg-sg-primary-green rounded-full" 
+            style={{ width: `${progressPercent}%` }} 
+          />
+        </div>
+      </div>
+
+      {/* Min/Max labels */}
+      <div className="flex justify-between text-sm text-aw-tertiary">
+        <span>{formatValue(min)}</span>
+        <span>{formatValue(max)}</span>
+      </div>
+
+      {/* Input field */}
       <div className="relative">
         {prefix && (
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-general-muted-foreground text-base pointer-events-none">{prefix}</span>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-aw-tertiary text-base pointer-events-none">{prefix}</span>
         )}
         <Input
           id={field.id}
@@ -124,7 +184,7 @@ function SliderField({
           value={displayInput}
           onChange={(e) => handleInputChange(e.target.value)}
           className={cn(
-            "h-[58px] min-h-[58px] rounded-2xl text-lg font-semibold text-primary-main",
+            "!rounded-[var(--radius-field)] h-[58px] min-h-[58px] text-lg font-semibold text-aw-text",
             prefix ? "pl-8" : "pl-4",
             isValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
@@ -134,48 +194,13 @@ function SliderField({
           aria-describedby={error ? errorId : undefined}
         />
         {suffix && displayInput && (
-          <span className="absolute right-10 top-1/2 -translate-y-1/2 text-lg font-semibold text-primary-main pointer-events-none">{suffix}</span>
+          <span className="absolute right-10 top-1/2 -translate-y-1/2 text-lg font-semibold text-aw-text pointer-events-none">{suffix}</span>
         )}
         {isValid && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none">
-            <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
-          </div>
+          <CheckIcon className="absolute right-4 top-1/2 -translate-y-1/2 size-6 text-sg-primary-green pointer-events-none" strokeWidth={2.5} />
         )}
       </div>
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={handleDecrement}
-          disabled={sliderVal <= min}
-          aria-label="Decrease value"
-          className="size-9 shrink-0 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          <Minus className="size-4 text-primary-main" />
-        </button>
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={sliderVal}
-          onChange={(e) => handleSliderChange(parseFloat(e.target.value))}
-          className="flex-1 h-2 rounded-full appearance-none cursor-pointer bg-gray-200 accent-primary-main [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-7 [&::-webkit-slider-thumb]:h-7 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary-main [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-moz-range-thumb]:w-7 [&::-moz-range-thumb]:h-7 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary-main [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md"
-          aria-label={`${field.label || field.id} slider`}
-        />
-        <button
-          type="button"
-          onClick={handleIncrement}
-          disabled={sliderVal >= max}
-          aria-label="Increase value"
-          className="size-9 shrink-0 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          <Plus className="size-4 text-primary-main" />
-        </button>
-      </div>
-      <div className="flex justify-between text-xs text-general-muted-foreground">
-        <span>{formatValue(min)}</span>
-        <span>{formatValue(max)}</span>
-      </div>
+
       {error && (
         <p id={errorId} className="text-sm text-red-500" role="alert" aria-live="polite">
           {error}
@@ -235,24 +260,31 @@ function FloatingLabelInput({
   return (
     <div className="w-full sm:w-[460px]">
       <div className="relative">
-        {field.label && (
+        {/* Location pin icon for ZIP code */}
+        {isZipCode && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+            <MapPin className="size-4 text-aw-tertiary" strokeWidth={2} />
+          </div>
+        )}
+        {(field.label || isZipCode) && (
           <label
             htmlFor={field.id}
             className={cn(
-              "absolute left-3 pointer-events-none transition-all duration-200 ease-out z-10 origin-left",
+              "absolute pointer-events-none transition-all duration-200 ease-out z-10 origin-left",
+              isZipCode ? "left-9" : "left-3",
               isFloating
-                ? "top-[8px] text-[11px] text-muted-foreground"
-                : "top-1/2 -translate-y-1/2 text-base text-muted-foreground"
+                ? "top-2 text-[11px] font-semibold tracking-[0.02em] uppercase text-aw-tertiary field-label"
+                : "top-1/2 -translate-y-1/2 text-[15px] font-medium text-aw-tertiary field-label"
             )}
           >
-            {field.label}
+            {isZipCode ? "Please enter your answer" : field.label}
           </label>
         )}
         <Input
           id={field.id}
           type={field.type}
           inputMode={inputMode}
-          placeholder={!field.label ? field.placeholder : undefined}
+          placeholder={(!field.label && !isZipCode) ? field.placeholder : undefined}
           value={typeof value === "string" || typeof value === "number" ? String(value) : ""}
           onChange={handleInputChange}
           onClick={handleInputClick}
@@ -260,10 +292,12 @@ function FloatingLabelInput({
           onBlur={() => setIsFocused(false)}
           maxLength={isZipCode ? 5 : undefined}
           className={cn(
-            "h-[58px] min-h-[58px] rounded-2xl pr-10",
-            field.label ? "pt-5 pb-1" : "",
+            "!rounded-[var(--radius-field)] h-[58px] min-h-[58px] pr-10",
+            (field.label || isZipCode) ? "pt-5 pb-1" : "",
+            isZipCode && "pl-9",
             isDateField && "pr-3 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none",
             isDateField && !hasValue && "text-transparent caret-transparent selection:bg-transparent selection:text-transparent [&::-webkit-date-and-time-value]:text-transparent [&::-webkit-datetime-edit]:text-transparent [&::-webkit-datetime-edit-fields-wrapper]:text-transparent [&::-webkit-datetime-edit-text]:text-transparent [&::-webkit-datetime-edit-day-field]:text-transparent [&::-webkit-datetime-edit-month-field]:text-transparent [&::-webkit-datetime-edit-year-field]:text-transparent",
+            "mobile-field-input field-input font-semibold tracking-[0.01em] text-aw-text",
             isValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
           )}
@@ -350,14 +384,73 @@ function YearSliderField({
   };
 
   const displayInput = inputText.trim() ? inputText : "";
+  const progressPercent = ((sliderVal - min) / (max - min)) * 100;
 
   return (
     <div className="w-full sm:w-[460px] flex flex-col gap-4">
       {field.label && (
-        <Label htmlFor={field.id} className="text-base font-medium text-foreground">
+        <Label htmlFor={field.id} className="text-base font-medium text-aw-text">
           {field.label}
         </Label>
       )}
+      
+      {/* Stepper row: minus button, value display, plus button */}
+      <div className="flex items-center justify-center gap-4">
+        <button
+          type="button"
+          onClick={handleDecrement}
+          disabled={sliderVal <= min}
+          aria-label="Decrease year"
+          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:[box-shadow:var(--focus-ring)] outline-none"
+        >
+          <Minus className="size-5 text-sg-primary-green" strokeWidth={2.5} />
+        </button>
+        
+        <div className="text-[32px] font-bold text-aw-text tracking-tight min-w-[100px] text-center">
+          {sliderVal}
+        </div>
+        
+        <button
+          type="button"
+          onClick={handleIncrement}
+          disabled={sliderVal >= max}
+          aria-label="Increase year"
+          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:[box-shadow:var(--focus-ring)] outline-none"
+        >
+          <Plus className="size-5 text-sg-primary-green" strokeWidth={2.5} />
+        </button>
+      </div>
+
+      {/* Slider track */}
+      <div className="relative w-full h-6 flex items-center">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={1}
+          value={sliderVal}
+          onChange={(e) => handleSliderChange(parseInt(e.target.value, 10))}
+          className="w-full h-2 rounded-full appearance-none cursor-pointer bg-transparent relative z-10 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-sg-primary-green [&::-webkit-slider-thumb]:shadow-[0_2px_6px_rgba(0,0,0,0.2)] [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-runnable-track]:bg-transparent [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-sg-primary-green [&::-moz-range-thumb]:border-[3px] [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_2px_6px_rgba(0,0,0,0.2)] [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-track]:bg-transparent"
+          aria-label={`${field.label || field.id} slider`}
+          style={{ background: 'transparent' }}
+        />
+        {/* Track background */}
+        <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-2 rounded-full overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-gray-200" />
+          <div 
+            className="absolute top-0 left-0 h-full bg-sg-primary-green rounded-full" 
+            style={{ width: `${progressPercent}%` }} 
+          />
+        </div>
+      </div>
+
+      {/* Min/Max labels */}
+      <div className="flex justify-between text-sm text-aw-tertiary">
+        <span>{min}</span>
+        <span>{max}</span>
+      </div>
+
+      {/* Input field */}
       <div className="relative">
         <Input
           id={field.id}
@@ -367,7 +460,7 @@ function YearSliderField({
           value={displayInput}
           onChange={(e) => handleInputChange(e.target.value)}
           className={cn(
-            "h-[58px] min-h-[58px] rounded-2xl text-lg font-semibold text-primary-main pl-4",
+            "!rounded-[var(--radius-field)] h-[58px] min-h-[58px] pl-4 mobile-field-input field-input font-semibold tracking-[0.01em] text-aw-text",
             isValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
           )}
@@ -376,45 +469,10 @@ function YearSliderField({
           aria-describedby={error ? errorId : undefined}
         />
         {isValid && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none">
-            <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
-          </div>
+          <CheckIcon className="absolute right-4 top-1/2 -translate-y-1/2 size-6 text-sg-primary-green pointer-events-none" strokeWidth={2.5} />
         )}
       </div>
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={handleDecrement}
-          disabled={sliderVal <= min}
-          aria-label="Decrease year"
-          className="size-9 shrink-0 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          <Minus className="size-4 text-primary-main" />
-        </button>
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={1}
-          value={sliderVal}
-          onChange={(e) => handleSliderChange(parseInt(e.target.value, 10))}
-          className="flex-1 h-2 rounded-full appearance-none cursor-pointer bg-gray-200 accent-primary-main [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-7 [&::-webkit-slider-thumb]:h-7 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary-main [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-moz-range-thumb]:w-7 [&::-moz-range-thumb]:h-7 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary-main [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md"
-          aria-label={`${field.label || field.id} slider`}
-        />
-        <button
-          type="button"
-          onClick={handleIncrement}
-          disabled={sliderVal >= max}
-          aria-label="Increase year"
-          className="size-9 shrink-0 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          <Plus className="size-4 text-primary-main" />
-        </button>
-      </div>
-      <div className="flex justify-between text-xs text-general-muted-foreground">
-        <span>{min}</span>
-        <span>{max}</span>
-      </div>
+
       {error && (
         <p id={errorId} className="text-sm text-red-500" role="alert" aria-live="polite">
           {error}
@@ -450,7 +508,7 @@ function DependentDropdownField({
   return (
     <div className="w-full sm:w-[460px]">
       {field.label && (
-        <Label htmlFor={field.id} className="text-base font-medium text-foreground mb-2 block">
+        <Label htmlFor={field.id} className="text-base font-medium text-aw-text mb-2 block">
           {field.label}
         </Label>
       )}
@@ -461,9 +519,9 @@ function DependentDropdownField({
           onChange={(e) => onChange(e.target.value)}
           disabled={!dependencyValue}
           className={cn(
-            "h-[58px] min-h-[58px] w-full rounded-2xl border-[3px] border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-[var(--sg-primary-green)] hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+            "h-[58px] min-h-[58px] w-full rounded-[var(--radius-field)] border border-aw-border px-3 py-2 pr-10 text-base text-aw-text outline-none shadow-[var(--field-shadow)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-aw-border-strong hover:shadow-[var(--field-shadow-hover)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
             "!bg-white",
-            "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)]",
+            "focus-visible:!border-[var(--sg-primary-green)] focus-visible:[box-shadow:var(--focus-ring)]",
             isSelectValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
           )}
@@ -494,6 +552,153 @@ function DependentDropdownField({
         </p>
       )}
     </div>
+  );
+}
+
+function RadioOptionsField({
+  field,
+  value,
+  onChange,
+  error,
+  errorId,
+  isValidValue,
+}: {
+  field: FormField;
+  value: FieldValue | undefined;
+  onChange: (v: FieldValue) => void;
+  error?: string;
+  errorId: string;
+  isValidValue: (f: FormField, v: FieldValue | undefined) => boolean;
+}) {
+  const visibleOptions = field.options?.filter((option) => !option.uiHidden) ?? [];
+  const hasIcons = visibleOptions.some((o) => o.icon);
+  const hasValue = typeof value === "string" && value !== "";
+  const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Initialize refs array and auto-focus first option
+  useEffect(() => {
+    optionRefs.current = optionRefs.current.slice(0, visibleOptions.length);
+    // Auto-focus the first option on mount
+    const timer = setTimeout(() => {
+      if (optionRefs.current[0]) {
+        optionRefs.current[0].focus();
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [visibleOptions.length]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent, currentIndex: number) => {
+      const optionsCount = visibleOptions.length;
+      let nextIndex = currentIndex;
+
+      switch (e.key) {
+        case "ArrowDown":
+        case "ArrowRight":
+          e.preventDefault();
+          e.stopPropagation();
+          nextIndex = (currentIndex + 1) % optionsCount;
+          break;
+        case "ArrowUp":
+        case "ArrowLeft":
+          e.preventDefault();
+          e.stopPropagation();
+          nextIndex = (currentIndex - 1 + optionsCount) % optionsCount;
+          break;
+        case "Enter":
+        case " ":
+          e.preventDefault();
+          e.stopPropagation();
+          const option = visibleOptions[currentIndex];
+          if (option) {
+            onChange(option.value);
+          }
+          return;
+        case "Home":
+          e.preventDefault();
+          e.stopPropagation();
+          nextIndex = 0;
+          break;
+        case "End":
+          e.preventDefault();
+          e.stopPropagation();
+          nextIndex = optionsCount - 1;
+          break;
+        default:
+          return;
+      }
+
+      const nextEl = optionRefs.current[nextIndex];
+      if (nextEl) {
+        nextEl.focus();
+      }
+    },
+    [visibleOptions, onChange]
+  );
+
+  return (
+    <RadioGroup
+      value={typeof value === "string" ? value : ""}
+      onValueChange={(v) => onChange(v)}
+      className="w-full sm:w-[460px] flex flex-col gap-2 md:gap-3"
+      aria-label={field.label || field.id}
+      aria-invalid={!!error}
+      aria-describedby={error ? errorId : undefined}
+    >
+      {visibleOptions.map((option, index) => {
+        const isSelected = value === option.value;
+        const isValid = isSelected && isValidValue(field, value);
+        const isHinted = !hasValue && index === 0;
+        const showSelected = isValid || isHinted;
+
+        return (
+          <div
+            key={option.value}
+            ref={(el) => {
+              optionRefs.current[index] = el;
+            }}
+            className={cn(
+              "border border-aw-border rounded-[var(--radius-field)] flex items-center px-4 cursor-pointer shadow-[var(--field-shadow)] hover:border-aw-border-strong hover:shadow-[var(--field-shadow-hover)] transition-[border-color,background-color,box-shadow] duration-150 ease-out relative !bg-white outline-none",
+              "focus:!border-[var(--sg-primary-green)] focus:[box-shadow:var(--focus-ring)]",
+              "focus-visible:!border-[var(--sg-primary-green)] focus-visible:[box-shadow:var(--focus-ring)]",
+              showSelected && "border-[var(--sg-primary-green)] !bg-sg-green-50 shadow-[var(--shadow-selected)] focus-visible:[box-shadow:var(--focus-ring),var(--shadow-selected)]",
+              error && "border-red-500 focus-visible:!border-red-500 focus-visible:[box-shadow:var(--focus-ring-error)]",
+              hasIcons ? "h-[66px] min-h-[66px] gap-4" : "h-[58px] min-h-[58px] justify-center"
+            )}
+            onClick={() => onChange(option.value)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            tabIndex={0}
+            role="radio"
+            aria-checked={isSelected}
+          >
+            {option.icon && (
+              <div className={cn(
+                "shrink-0 size-11 rounded-2xl flex items-center justify-center transition-colors duration-200",
+                showSelected
+                  ? "bg-sg-primary-green text-white"
+                  : "bg-sg-green-tint text-sg-primary-green"
+              )}>
+                <LucideIcon name={option.icon} className="size-5" />
+              </div>
+            )}
+            <Label
+              htmlFor={option.value}
+              className={cn(
+                "text-aw-text cursor-pointer font-[650] mobile-choice-label choice-label text-[17px] leading-[22px] md:text-[18px] md:leading-[24px]",
+                !hasIcons && "text-center"
+              )}
+            >
+              {option.label}
+            </Label>
+            {isValid && (
+              <div className="absolute right-4 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none shrink-0">
+                <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </RadioGroup>
   );
 }
 
@@ -606,7 +811,7 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
                       : currentValue.filter((id) => id !== field.id);
                     onChange(newValue);
                   }}
-                  className="h-4 w-4 border-2 border-gray-500 rounded data-[state=checked]:bg-gray-600 data-[state=checked]:border-gray-600 data-[state=checked]:text-white shadow-none outline-none focus:ring-0 focus-visible:ring-0"
+                  className="h-4 w-4 border-2 border-gray-500 rounded data-[state=checked]:bg-gray-600 data-[state=checked]:border-gray-600 data-[state=checked]:text-white shadow-none outline-none focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
                   aria-label={field.label || field.id}
                   aria-invalid={!!error}
                   aria-describedby={error ? errorId : undefined}
@@ -614,7 +819,7 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
                 {field.label && (
                   <label 
                     htmlFor={field.id}
-                    className="text-xs text-foreground cursor-pointer select-none"
+                    className="text-xs text-aw-tertiary cursor-pointer select-none"
                     onClick={() => {
                       const currentValue = Array.isArray(value) ? value : [];
                       const newValue = currentValue.includes(field.id)
@@ -642,10 +847,10 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
         return (
           <div
             className={cn(
-              "border-[3px] border-[#e5e5e5] h-[58px] min-h-[58px] rounded-lg w-full max-w-[460px] flex items-center gap-3 px-4 cursor-pointer hover:border-[var(--sg-primary-green)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative",
-              "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)] !bg-white outline-none",
-              isCheckboxValid && "border-[var(--sg-primary-green)]",
-              error && "border-red-500"
+              "border border-aw-border h-[58px] min-h-[58px] rounded-[var(--radius-field)] w-full sm:w-[460px] flex items-center gap-3 px-4 cursor-pointer shadow-[var(--field-shadow)] hover:border-aw-border-strong hover:shadow-[var(--field-shadow-hover)] transition-[border-color,background-color,box-shadow] duration-150 ease-out relative",
+              "focus-visible:!border-[var(--sg-primary-green)] focus-visible:[box-shadow:var(--focus-ring)] !bg-white outline-none",
+              isCheckboxValid && "border-[var(--sg-primary-green)] shadow-[var(--shadow-selected)] focus-visible:[box-shadow:var(--focus-ring),var(--shadow-selected)]",
+              error && "border-red-500 focus-visible:!border-red-500 focus-visible:[box-shadow:var(--focus-ring-error)]"
             )}
             onClick={() => {
               const currentValue = Array.isArray(value) ? value : [];
@@ -686,7 +891,7 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
               />
             </div>
             {field.label && (
-              <span className="text-base text-foreground leading-[1.5] tracking-[0.08px]">{field.label}</span>
+              <span className="text-base text-aw-text leading-[1.5] tracking-[0.08px]">{field.label}</span>
             )}
             {isCheckboxValid && (
               <CheckIcon className="size-5 text-[var(--sw-success-green)] pointer-events-none shrink-0 ml-auto" />
@@ -695,67 +900,15 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
         );
 
       case "radio": {
-        const visibleOptions = field.options?.filter((option) => !option.uiHidden) ?? [];
-        const hasIcons = visibleOptions.some((o) => o.icon);
         return (
-          <RadioGroup
-            value={typeof value === "string" ? value : ""}
-            onValueChange={(v) => onChange(v)}
-            className={cn(
-              "w-full gap-2 md:gap-5 md:pt-5",
-              hasIcons
-                ? "sm:w-[380px] md:w-[460px] flex flex-col"
-                : "sm:w-[380px] md:w-[650px]"
-            )}
-            aria-label={field.label || field.id}
-            aria-invalid={!!error}
-            aria-describedby={error ? errorId : undefined}
-          >
-            {visibleOptions.map((option) => {
-              const isSelected = value === option.value;
-              const isValid = isSelected && isValidValue(field, value);
-              return (
-                <div
-                  key={option.value}
-                  className={cn(
-                    "border-[3px] border-gray-200 rounded-3xl flex items-center px-4 cursor-pointer hover:border-[var(--sg-primary-green)] hover:shadow-md transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto relative !bg-white outline-none",
-                    "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)]",
-                    isValid && "border-[var(--sg-primary-green)] !bg-sg-green-50",
-                    error && "border-red-500",
-                    hasIcons ? "h-[72px] min-h-[72px] gap-4" : "h-[72px] min-h-[72px] justify-center"
-                  )}
-                  onClick={() => onChange(option.value)}
-                  onKeyDown={(e) => onKeyboardActivate(e, () => onChange(option.value))}
-                  onMouseDown={(e) => e.preventDefault()}
-                  tabIndex={0}
-                  role="radio"
-                  aria-checked={isSelected}
-                >
-                  {option.icon && (
-                    <div className={cn(
-                      "shrink-0 size-11 rounded-2xl flex items-center justify-center transition-colors duration-200",
-                      isValid
-                        ? "bg-sg-primary-green text-white"
-                        : "bg-sg-green-tint text-sg-primary-green"
-                    )}>
-                      <LucideIcon name={option.icon} className="size-5" />
-                    </div>
-                  )}
-                  <Label htmlFor={option.value} className={cn(
-                    "text-base font-bold text-sg-primary-text cursor-pointer",
-                    !hasIcons && "text-center"
-                  )}>
-                    {option.label}
-                  </Label>
-                  {isValid && (
-                    <div className="absolute right-4 size-6 rounded-full bg-sg-green-tint flex items-center justify-center pointer-events-none shrink-0">
-                      <CheckIcon className="size-3.5 text-[var(--sw-success-green)]" />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </RadioGroup>
+          <RadioOptionsField
+            field={field}
+            value={value}
+            onChange={onChange}
+            error={error}
+            errorId={errorId}
+            isValidValue={isValidValue}
+          />
         );
       }
 
@@ -782,7 +935,7 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
         return (
           <div className="w-full sm:w-[460px]">
             {field.label && (
-              <Label htmlFor={field.id} className="text-base font-medium text-foreground mb-2 block">
+              <Label htmlFor={field.id} className="text-base font-medium text-aw-text mb-2 block">
                 {field.label}
               </Label>
             )}
@@ -792,9 +945,9 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
                 value={typeof value === "string" ? value : ""}
                 onChange={(e) => onChange(e.target.value)}
                 className={cn(
-                  "h-[58px] min-h-[58px] w-full rounded-2xl border-[3px] border-[#e5e5e5] px-3 py-2 pr-10 text-base text-foreground outline-none transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-[var(--sg-primary-green)] hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+                  "h-[58px] min-h-[58px] w-full rounded-[var(--radius-field)] border border-aw-border px-3 py-2 pr-10 text-base text-aw-text outline-none shadow-[var(--field-shadow)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-aw-border-strong hover:shadow-[var(--field-shadow-hover)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
                   "!bg-white",
-                  "focus-visible:!bg-[var(--sg-primary-tint)] focus-visible:!border-[var(--sg-primary-green)]",
+                  "focus-visible:!border-[var(--sg-primary-green)] focus-visible:[box-shadow:var(--focus-ring)]",
                   isSelectValid && "border-[var(--sg-primary-green)]",
                   error && "border-red-500"
                 )}

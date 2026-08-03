@@ -20,17 +20,16 @@ function toTelHref(phone: string): string {
   return `tel:${onlyDigits}`;
 }
 
-export function Navbar() {
+export function Navbar({ scope = "global" }: { scope?: "global" | "modal" }) {
   const pathname = usePathname() || "";
   const searchParams = useSearchParams();
   const funnelIdFromQuery = searchParams.get("funnel");
   const preview = searchParams.get("preview");
   const [navbar, setNavbar] = useState<NavbarConfig>(null);
   const isAdwallRoute = pathname.startsWith("/adwall/");
+  const isFormRoute = pathname === "/form" || pathname.startsWith("/form/");
 
   useEffect(() => {
-    const isFormRoute = pathname === "/form" || pathname.startsWith("/form/");
-
     if (!isAdwallRoute && !isFormRoute) {
       setNavbar(null);
       return;
@@ -83,7 +82,7 @@ export function Navbar() {
   }, [preview]);
 
   return (
-    <div className="w-full">
+    <div className="w-full" data-navbar-scope={scope}>
       {isAdwallRoute && (
         <div className="w-full bg-aw-canvas border-b border-aw-divider">
           <div className="max-w-[var(--container-max)] mx-auto px-5 py-2 sm:px-6 sm:py-2.5">
@@ -122,7 +121,14 @@ export function Navbar() {
           </div>
 
           <div className="ml-auto flex items-center justify-end gap-4 sm:gap-6">
-            {(navbar?.tagline || navbar?.phone) && (
+            {scope === "modal" ? (
+              <AdvertiserDisclosure
+                placement="bottom"
+                align="right"
+                triggerClassName="text-white/90 font-medium text-sm hover:text-white whitespace-nowrap"
+                popoverBodyClassName="text-xs"
+              />
+            ) : (navbar?.tagline || navbar?.phone) ? (
               <div className="flex flex-col items-end text-right gap-0.5">
                 {navbar?.tagline && (
                   <div className="hidden sm:block text-xs sm:text-sm opacity-90 leading-tight text-white">
@@ -140,7 +146,7 @@ export function Navbar() {
                   </a>
                 )}
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

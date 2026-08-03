@@ -24,7 +24,7 @@ const SOCIAL_LINKS = [
 
 const MinimalFooter = () => {
   return (
-    <footer className="w-full bg-white border-t border-general-border">
+    <footer className="w-full bg-white border-t border-general-border" data-footer-scope="global">
       <div className="max-w-[var(--container-max)] mx-auto py-4">
         {/* Keep disclosures padding unchanged on mobile */}
         <div className="px-4 sm:px-0">

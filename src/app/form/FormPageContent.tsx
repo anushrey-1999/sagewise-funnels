@@ -2,13 +2,15 @@
 
 import { FormSection } from "@/components/FormSection";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormConfig } from "@/types/form";
 import { Typography } from "@/components/ui/typography";
 import { Clock, Lock, Monitor, ShieldCheck } from "lucide-react";
 import { FunnelPostContent } from "@/components/FunnelPostContent";
 import AdsWallTemplate from "@/templates/AdsWallTemplate";
 import type { AdwallConfig } from "@/types/adwall";
+import { Navbar } from "@/components/Navbar";
+import { createPortal } from "react-dom";
 
 const INFO_BAR_ICONS = {
   monitor: Monitor,
@@ -48,26 +50,53 @@ function ModalFunnelPageContent({
   funnelId: string;
   modalAdwallConfig: AdwallConfig;
 }) {
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setPortalTarget(document.body);
+  }, []);
+
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, []);
+
   return (
-    <div className="relative min-h-[90vh] w-full overflow-hidden bg-white">
-      <div className="absolute inset-0 pointer-events-none select-none" aria-hidden="true">
-        <div className="min-h-screen scale-[1.02] opacity-75 blur-sm">
-          <AdsWallTemplate config={modalAdwallConfig} disableImpressions />
-        </div>
-        <div className="absolute inset-0 bg-white/55" />
+    <>
+      {/* Backdrop content lives in normal page flow (underlay) */}
+      <div className="min-h-[90vh] w-full bg-white">
+        <AdsWallTemplate config={modalAdwallConfig} disableImpressions />
       </div>
 
-      <div className="relative z-10 flex min-h-[90vh] w-full items-start justify-center px-3 py-6 md:px-6 md:py-10">
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={formConfig.title}
-          className="w-full max-w-[940px] rounded-3xl border border-general-border bg-sg-canvas px-3 py-5 shadow-2xl md:px-6 md:py-8"
-        >
-          <FunnelFormPanel formConfig={formConfig} funnelId={funnelId} />
-        </div>
-      </div>
-    </div>
+      {/* True modal overlay lives above the entire page (incl. global navbar/footer) */}
+      {portalTarget
+        ? createPortal(
+            <div className="fixed inset-0 z-[100]">
+              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+
+              <div className="absolute inset-0 overflow-y-auto">
+                <div className="min-h-screen w-full px-3 py-6 md:px-6 md:py-10 flex items-center justify-center">
+                  <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={formConfig.title}
+                    className="w-full max-w-[680px] overflow-hidden rounded-[var(--radius-panel)] shadow-[var(--shadow-panel)]"
+                  >
+                    <Navbar scope="modal" />
+                    <div className="px-3 py-5 md:px-6 md:py-8 bg-aw-page-bg">
+                      <FunnelFormPanel formConfig={formConfig} funnelId={funnelId} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>,
+            portalTarget
+          )
+        : null}
+    </>
   );
 }
 
@@ -94,7 +123,7 @@ export function FormPageContent({
   }
 
   return (
-    <div className="flex flex-col items-start w-full bg-sg-canvas min-h-[90vh] pt-2">
+    <div className="flex flex-col items-start w-full bg-aw-page-bg min-h-[90vh] pt-2">
       {/* Main Container - Contains form, separator, and logos */}
       <div className="flex flex-col items-start w-full pb-9 px-3 md:px-6 pt-3 md:pt-5 justify-between">
         <div className=" flex flex-col w-full flex-1 justify-between ">
@@ -122,7 +151,7 @@ export function FormPageContent({
                   return (
                     <div
                       key={`${item.text}-${idx}`}
-                      className="flex items-center gap-2 text-[#6b7c7c] text-sm font-medium"
+                      className="flex items-center gap-2 text-aw-muted text-sm font-medium"
                     >
                       {isImage ? (
                         <Image
@@ -135,7 +164,7 @@ export function FormPageContent({
                       ) : Icon ? (
                         <Icon className="h-[22px] w-[22px] text-sg-primary" aria-hidden />
                       ) : null}
-                      <span className="text-general-muted-foreground text-base font-medium">{item.text}</span>
+                      <span className="text-aw-muted text-base font-medium">{item.text}</span>
                     </div>
                   );
                 })}
@@ -149,7 +178,7 @@ export function FormPageContent({
               <div className="w-full mx-auto flex flex-col gap-6 items-center px-6 md:px-0 py-7">
                 <Typography
                   variant="h3"
-                  color="text-general-foreground"
+                  color="text-aw-text"
                   className="font-semibold text-center"
                 >
                   {formConfig.providerLogos.heading ||

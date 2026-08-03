@@ -135,13 +135,13 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
     switch (block.type) {
       case "h2":
         return (
-          <h2 key={key} className="text-[30px] leading-[150%] font-semibold text-general-foreground mb-4">
+          <h2 key={key} className="text-[30px] leading-[150%] font-semibold text-aw-text mb-4">
             {block.text}
           </h2>
         );
       case "h3":
         return (
-          <h3 key={key} className="text-[16px] sm:text-[24px] font-semibold text-general-foreground mb-4">
+          <h3 key={key} className="text-[16px] sm:text-[24px] font-semibold text-aw-text mb-4">
             {block.text}
           </h3>
         );
@@ -150,7 +150,7 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
           <Html
             key={key}
             html={block.html}
-            className="text-[14px] sm:text-base text-general-foreground leading-[150%] [&_strong[data-accent='true']]:text-[#204C4B] [&_strong[data-accent='true']]:font-semibold"
+            className="text-[14px] sm:text-base text-aw-text leading-[150%] [&_strong[data-accent='true']]:text-aw-text [&_strong[data-accent='true']]:font-semibold"
           />
         );
       case "iconList":
@@ -158,10 +158,10 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
           <div key={key} className="space-y-3">
             {block.items.map((item, i) => (
               <div key={i} className="flex gap-3 items-start">
-                <Icon name={item.icon} className="h-5 w-5 text-[#8FA5A5] mt-0.5 shrink-0" />
+                <Icon name={item.icon} className="h-5 w-5 text-aw-tertiary mt-0.5 shrink-0" />
                 <Html
                   html={item.textHtml}
-                  className="text-[14px] sm:text-base text-general-foreground leading-[150%]"
+                  className="text-[14px] sm:text-base text-aw-text leading-[150%]"
                 />
               </div>
             ))}
@@ -172,8 +172,8 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
           <div key={key} className="space-y-2">
             {block.itemsHtml.map((it, i) => (
               <div key={i} className="flex gap-2 items-start">
-                <ArrowBullet className="h-4 w-4 mt-1 shrink-0 text-[#8FA5A5]" />
-                <div className="text-[14px] sm:text-base text-general-foreground leading-[150%]">
+                <ArrowBullet className="h-4 w-4 mt-1 shrink-0 text-aw-tertiary" />
+                <div className="text-[14px] sm:text-base text-aw-text leading-[150%]">
                   <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(it) }} />
                 </div>
               </div>
@@ -185,8 +185,8 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
           <div key={key} className="space-y-2">
             {block.items.map((it, i) => (
               <div key={i} className="flex gap-2 items-start">
-                <ArrowBullet className="h-4 w-4 mt-1 shrink-0 text-[#8FA5A5]" />
-                <div className="text-[14px] sm:text-base text-general-foreground leading-[150%]">
+                <ArrowBullet className="h-4 w-4 mt-1 shrink-0 text-aw-tertiary" />
+                <div className="text-[14px] sm:text-base text-aw-text leading-[150%]">
                   <span className="font-semibold">{it.term}:</span>{" "}
                   <span
                     dangerouslySetInnerHTML={{ __html: sanitizeHtml(it.html) }}
@@ -200,7 +200,7 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
         return (
           <ol key={key} className="space-y-2 pl-5 list-decimal">
             {block.itemsHtml.map((it, i) => (
-              <li key={i} className="text-[14px] sm:text-base text-general-foreground leading-[150%]">
+              <li key={i} className="text-[14px] sm:text-base text-aw-text leading-[150%]">
                 <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(it) }} />
               </li>
             ))}
@@ -211,10 +211,10 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
           <div key={key} className="space-y-3">
             {block.items.map((it, i) => (
               <div key={i} className="flex gap-3 items-start">
-                <Icon name={it.icon} className="h-5 w-5 text-[#8FA5A5] mt-0.5 shrink-0" />
+                <Icon name={it.icon} className="h-5 w-5 text-aw-tertiary mt-0.5 shrink-0" />
                 <Html
                   html={it.textHtml}
-                  className="text-[14px] sm:text-[15px] text-general-foreground leading-relaxed"
+                  className="text-[14px] sm:text-[15px] text-aw-text leading-relaxed"
                 />
               </div>
             ))}
@@ -226,17 +226,17 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
             key={key}
             className="flex gap-3 items-start rounded-lg bg-[#f5f5f5] px-4 py-3"
           >
-            <Icon name={block.icon} className="h-5 w-5 text-[#8FA5A5] mt-0.5 shrink-0" />
+            <Icon name={block.icon} className="h-5 w-5 text-aw-tertiary mt-0.5 shrink-0" />
             <Html
               html={block.html}
-              className="text-[14px] sm:text-[15px] text-general-muted-foreground leading-relaxed"
+              className="text-[14px] sm:text-[15px] text-aw-muted leading-relaxed"
             />
           </div>
         );
       case "textRow":
         return (
-          <div key={key} className="flex gap-2 items-start text-[14px] sm:text-base text-general-foreground leading-[150%]">
-            <Icon name={block.icon} className="h-4 w-4 mt-1 shrink-0 text-[#8FA5A5]" />
+          <div key={key} className="flex gap-2 items-start text-[14px] sm:text-base text-aw-text leading-[150%]">
+            <Icon name={block.icon} className="h-4 w-4 mt-1 shrink-0 text-aw-tertiary" />
             <span>
               {block.text}{" "}
               {block.linkText && block.href ? (
@@ -299,7 +299,7 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
 
       {faqs?.items?.length ? (
         <section className="space-y-4">
-          <h3 className="text-[24px] font-semibold text-black">
+          <h3 className="text-[24px] font-semibold text-aw-text">
             {faqs.heading}
           </h3>
 
@@ -307,18 +307,18 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
             {faqs.items.map((item, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
-                <div key={idx} className="border-b border-[#e5e5e5]">
+                <div key={idx} className="border-b border-aw-divider">
                   <button
                     type="button"
                     className="w-full text-left cursor-pointer py-4 flex items-center justify-between gap-4"
                     aria-expanded={isOpen}
                     onClick={() => setOpenFaqIndex((prev) => (prev === idx ? null : idx))}
                   >
-                    <span className="text-[14px] sm:text-base font-medium text-black">
+                    <span className="text-[14px] sm:text-base font-medium text-aw-text">
                       {item.q}
                     </span>
                     <ChevronDown
-                      className={`h-4 w-4 text-[#8FA5A5] transition-transform shrink-0 ${isOpen ? "rotate-180" : ""}`}
+                      className={`h-4 w-4 text-aw-tertiary transition-transform shrink-0 ${isOpen ? "rotate-180" : ""}`}
                       aria-hidden
                     />
                   </button>
@@ -334,7 +334,7 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
                         switch (b.type) {
                           case "p":
                             return (
-                              <p key={i} className="text-[14px] sm:text-base text-general-foreground leading-relaxed">
+                              <p key={i} className="text-[14px] sm:text-base text-aw-text leading-relaxed">
                                 {b.text}
                               </p>
                             );
@@ -343,8 +343,8 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
                               <div key={i} className="space-y-2">
                                 {b.items.map((it, j) => (
                                   <div key={j} className="flex gap-2 items-start">
-                                    <ArrowBullet className="h-4 w-4 mt-1 shrink-0 text-[#8FA5A5]" />
-                                    <div className="text-[14px] sm:text-base text-general-foreground leading-relaxed">
+                                    <ArrowBullet className="h-4 w-4 mt-1 shrink-0 text-aw-tertiary" />
+                                    <div className="text-[14px] sm:text-base text-aw-text leading-relaxed">
                                       {it}
                                     </div>
                                   </div>
@@ -353,7 +353,7 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
                             );
                           case "split":
                             return (
-                              <div key={i} className="space-y-2 text-[14px] sm:text-base text-foreground leading-relaxed">
+                              <div key={i} className="space-y-2 text-[14px] sm:text-base text-aw-text leading-relaxed">
                                 <div>{b.left}</div>
                                 <div>{b.right}</div>
                               </div>
@@ -373,12 +373,12 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
 
       {bottomLine ? (
         <section className="space-y-3">
-          <h3 className="text-[24px] font-semibold text-general-foreground">
+          <h3 className="text-[24px] font-semibold text-aw-text">
             {bottomLine.heading}
           </h3>
           <Html
             html={bottomLine.bodyHtml}
-            className="text-[14px] sm:text-base text-general-foreground leading-relaxed [&_a[data-scroll-top='true']]:no-underline [&_a[data-scroll-top='true']]:cursor-pointer [&_strong[data-accent='true']]:text-[#204C4B] [&_strong[data-accent='true']]:font-semibold"
+            className="text-[14px] sm:text-base text-aw-text leading-relaxed [&_a[data-scroll-top='true']]:no-underline [&_a[data-scroll-top='true']]:cursor-pointer [&_strong[data-accent='true']]:text-aw-text [&_strong[data-accent='true']]:font-semibold"
           />
         </section>
       ) : null}

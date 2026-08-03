@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react"
 import { FormConfig, FormData } from "@/types/form";
 import { DynamicFormField } from "./DynamicFormField";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowLeft, Loader2, Check } from "lucide-react";
+import { ArrowRight, ChevronLeft, Loader2, Check, Lock, ShieldCheck, ShieldEllipsis } from "lucide-react";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Loader } from "./Loader";
@@ -27,17 +27,16 @@ function ProgressBarRow({
   const clampedProgress = Math.max(0, Math.min(100, progress));
 
   return (
-    <div className="flex w-full items-center gap-3">
+    <div className="flex w-full items-center gap-4">
       {/* Back button — hidden on the first step */}
       {!isFirstStep && (
         <button
           type="button"
           onClick={onBack}
           aria-label="Go back"
-          className="flex shrink-0 items-center gap-1 text-primary-main transition-opacity hover:opacity-70 cursor-pointer"
+          className="flex shrink-0 items-center justify-center size-8 rounded-[var(--radius-field)] text-aw-tertiary cursor-pointer outline-none transition-[background-color,border-color,box-shadow] duration-150 hover:bg-gray-100 focus-visible:border focus-visible:border-aw-border-strong focus-visible:[box-shadow:var(--focus-ring)]"
         >
-          <ArrowLeft className="size-4" aria-hidden />
-          <span className="hidden sm:inline text-sm font-medium">Back</span>
+          <ChevronLeft className="size-5" strokeWidth={2} aria-hidden />
         </button>
       )}
       {/* Progress bar fills remaining space */}
@@ -956,6 +955,9 @@ export function MultiStepForm({
       return false;
     });
 
+  const isMobileInputHero =
+    stepNeedsManualContinue && currentStepData.fields.some((f) => !AUTO_ADVANCE_TYPES.has(f.type));
+
   return (
     <>
       <div className="flex w-full justify-center">
@@ -969,12 +971,22 @@ export function MultiStepForm({
       </div>
       <div className="w-full flex flex-col gap-[48px] items-center">
         <div className="w-full">
-          <div className="text-center space-y-0.5 flex flex-col justify-center items-center gap-1">
-            <h2 className="text-2xl lg:text-[40px] font-bold text-primary-main">
+          <div
+            className={cn(
+              "text-center space-y-0.5 flex flex-col justify-center items-center gap-1 hero mobile-hero",
+              isMobileInputHero && "input-step"
+            )}
+          >
+            <h1
+              className={cn(
+                "font-bold text-aw-text tracking-[-0.02em] md:tracking-[-0.025em] text-[28px] leading-[34px] md:text-[28px] md:leading-[34px]",
+                isMobileInputHero && "text-[28px] leading-[34px]"
+              )}
+            >
               {currentStepData.title}
-            </h2>
+            </h1>
             {currentStepDescription ? (
-              <p className="hidden md:block text-base text-muted-foreground">
+              <p className="font-normal text-aw-muted text-[15px] leading-[21px] md:text-[15px] md:leading-[21px]">
                 {currentStepDescription}
               </p>
             ) : null}
@@ -1013,14 +1025,14 @@ export function MultiStepForm({
                 onClick={handleNext}
                 style={firstStepButtonVars}
                 className={cn(
-                  "w-full sm:w-[460px] h-[52px] px-6 mt-1 flex items-center justify-center gap-2 rounded-full",
-                  isFirstStep && config.firstStepButton
-                    ? "bg-(--sw-first-step-cta-bg) hover:bg-(--sw-first-step-cta-hover) text-(--sw-first-step-cta-text)"
-                    : "bg-sw-cta-primary hover:bg-sw-cta-hover text-white",
+                  "w-full sm:w-[460px] h-[52px] px-6 mt-1 flex items-center justify-center gap-2 rounded-[var(--radius-cta)] focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-orange)]",
+                  "bg-cta-orange hover:bg-cta-orange-dark text-white shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)]",
                   isShaking && "animate-shake"
                 )}
               >
-                <span className="text-base font-bold leading-none">{firstStepButtonText}</span>
+                <span className="font-bold leading-none tracking-[0.01em] text-[16px] md:text-[17px] mobile-cta cta">
+                  {firstStepButtonText}
+                </span>
                 <ArrowRight className="h-[13.25px] w-[13.25px]" />
               </Button>
             )}
@@ -1028,14 +1040,14 @@ export function MultiStepForm({
             {/* Trust bar — shown on all steps except the final form step */}
             {!isLastStep && (
               <div className="w-full mt-2">
-              <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 pt-3 w-full border-t border-general-border">
-                {[
-                  "Free to check",
-                  "Secure and confidential",
-                  "No pressure to commit",
-                ].map((label) => (
-                  <span key={label} className="flex items-center gap-1.5 text-xs md:text-sm text-general-muted-foreground">
-                    <Check className="size-3.5 shrink-0 text-sg-primary-green" strokeWidth={2.5} />
+              <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 pt-3 w-full border-t border-aw-divider">
+                {([
+                  { label: "Free to check", Icon: Lock },
+                  { label: "Secure and confidential", Icon: ShieldCheck },
+                  { label: "No pressure to commit", Icon: ShieldEllipsis },
+                ] as const).map(({ label, Icon }) => (
+                  <span key={label} className="flex items-center gap-1.5 text-[14px] leading-[20px] font-semibold text-aw-muted trust">
+                    <Icon className="size-3.5 shrink-0 text-sg-primary-green" strokeWidth={2.5} />
                     {label}
                   </span>
                 ))}
@@ -1052,25 +1064,28 @@ export function MultiStepForm({
                   onClick={handleNext}
                   disabled={isSubmitting}
                   className={cn(
-                    "w-full sm:w-[460px] h-[52px] px-6 mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-full bg-sw-cta-primary hover:bg-sw-cta-hover text-white",
+                    "w-full sm:w-[460px] h-[52px] px-6 mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-[var(--radius-cta)] bg-cta-orange hover:bg-cta-orange-dark text-white focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-orange)]",
+                    "shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)]",
                     isShaking && "animate-shake"
                   )}
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                      <span className="text-base font-bold leading-none">Submitting...</span>
+                      <span className="font-bold leading-none tracking-[0.01em] text-[16px] md:text-[17px] mobile-cta cta">
+                        Submitting...
+                      </span>
                     </>
                   ) : (
                     <>
-                      <span className="text-base font-bold leading-none">
+                      <span className="font-bold leading-none tracking-[0.01em] text-[16px] md:text-[17px] mobile-cta cta">
                         {config.finalStep?.buttonText || "See Instant Matches"}
                       </span>
                       <ArrowRight className="h-[13.25px] w-[13.25px]" />
                     </>
                   )}
                 </Button>
-                <p className="text-[11px] text-[#9CA3AF] text-left w-full sm:w-[460px] leading-relaxed">
+                <p className="text-[11px] text-aw-tertiary text-left w-full sm:w-[460px] leading-relaxed">
                   {finalStepDisclaimer.includes("<a ") ? (
                     <span
                       className="[&_a]:underline [&_a]:text-inherit [&_a]:hover:opacity-90"
