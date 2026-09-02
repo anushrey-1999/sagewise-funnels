@@ -35,6 +35,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { adwallConfigSchema } from "@/lib/config-schemas";
 import { ensureMortgagePoorCreditBucket } from "@/lib/mortgage-ranking-defaults";
+import { getLenderKey } from "@/lib/lender-name";
 import { cn } from "@/lib/utils";
 import type { AdwallCard, AdwallConfig, RankingConfig } from "@/types/adwall";
 
@@ -82,10 +83,6 @@ function canEditRole(role: string): boolean {
   return role === "client_editor" || role === "internal_admin" || role === "superadmin";
 }
 
-function normalizeLenderName(value: string | undefined): string {
-  return (value ?? "").trim().toLowerCase();
-}
-
 function getMatrixRankingNumber(card: AdwallCard, rankingConfig: RankingConfig | undefined): string | undefined {
   const rankingNumbers = rankingConfig?.rankingNumbers;
   if (!rankingNumbers) return undefined;
@@ -94,8 +91,10 @@ function getMatrixRankingNumber(card: AdwallCard, rankingConfig: RankingConfig |
     const exactMatch = lenderName ? rankingNumbers[lenderName] : undefined;
     if (exactMatch !== undefined) return exactMatch;
 
-    const normalizedLenderName = normalizeLenderName(lenderName);
-    const matchedEntry = Object.entries(rankingNumbers).find(([name]) => normalizeLenderName(name) === normalizedLenderName);
+    const lenderKey = getLenderKey(lenderName);
+    if (!lenderKey) continue;
+
+    const matchedEntry = Object.entries(rankingNumbers).find(([name]) => getLenderKey(name) === lenderKey);
     if (matchedEntry) return matchedEntry[1];
   }
 

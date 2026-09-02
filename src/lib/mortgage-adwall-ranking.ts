@@ -1,5 +1,6 @@
 import type { AdwallCard, AdwallConfig, RankingCell, RankingConfig } from "@/types/adwall";
 import type { FormData } from "@/types/form";
+import { getCardLenderKey, getLenderKey } from "@/lib/lender-name";
 
 export type MortgageAdwallType = "heloc" | "refi" | "purchase";
 export type MortgageCreditBucket = "excellent" | "good" | "fair" | "poor" | "bad";
@@ -24,21 +25,6 @@ function getRankingCellRank(cell: RankingCell | undefined): number | undefined {
 
 function isRankingCellHidden(cell: RankingCell | undefined): boolean {
   return typeof cell === "object" && cell !== null && cell.isHidden === true;
-}
-
-function normalizeLenderKey(rawName: string): string {
-  const normalizedName = rawName.trim().toLowerCase();
-
-  if (normalizedName === "quicken loans") return "quicken";
-  if (normalizedName === "figure") return "figure.com";
-  if (normalizedName === "loandepot" || normalizedName === "loan depot") return "loandepot";
-  if (normalizedName === "veterans united home loans") return "veterans united";
-
-  return normalizedName;
-}
-
-function normalizeLenderName(card: Pick<AdwallCard, "advertiserName" | "heading">): string {
-  return normalizeLenderKey(card.advertiserName || card.heading);
 }
 
 export function normalizeMortgageCreditBucket(value: string | null | undefined): MortgageCreditBucket | null {
@@ -163,10 +149,15 @@ function getRankingMatrixFromConfig(
   const matrix: Record<string, RankingMatrixEntry> = {};
 
   for (const [lenderName, rankings] of Object.entries(rankingConfig.lenders)) {
+    const lenderKey = getLenderKey(lenderName);
+    // Rows that collapse to the same key are resolved top-down, matching the
+    // order the admin matrix shows them in.
+    if (!lenderKey || matrix[lenderKey]) continue;
+
     const cell = rankings[comboKey];
     const rank = getRankingCellRank(cell);
     if (rank !== undefined) {
-      matrix[normalizeLenderKey(lenderName)] = {
+      matrix[lenderKey] = {
         rank,
         isHidden: isRankingCellHidden(cell),
       };
@@ -197,11 +188,11 @@ export function sortMortgageAdwallCards<T extends AdwallCard>(
   if (!matrix) return cards;
 
   return cards
-    .filter((card) => !matrix[normalizeLenderName(card)]?.isHidden)
+    .filter((card) => !matrix[getCardLenderKey(card)]?.isHidden)
     .map((card, index) => ({
       card,
       index,
-      rank: matrix[normalizeLenderName(card)]?.rank ?? Number.POSITIVE_INFINITY,
+      rank: matrix[getCardLenderKey(card)]?.rank ?? Number.POSITIVE_INFINITY,
     }))
     .sort((a, b) => {
       if (a.rank !== b.rank) return a.rank - b.rank;

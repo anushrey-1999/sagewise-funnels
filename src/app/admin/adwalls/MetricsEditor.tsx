@@ -17,6 +17,17 @@ import { Label } from "@/components/ui/label";
 
 const DEFAULT_NEW_LENDER_RANK = 30;
 
+// The matrix scrolls inside its own container so the toolbar above it stays put.
+// Header cells pin to the top of that container; corner cells also pin
+// horizontally and must outrank the sticky lender-name and actions columns.
+const MATRIX_HEADER_CELL = "sticky top-0 z-20 bg-[#fafafa]";
+const MATRIX_HEADER_CORNER_CELL = "sticky top-0 z-30 bg-[#fafafa]";
+// Offset matches the h-8 group-label row that sits above it.
+const MATRIX_SUBHEADER_CELL = "sticky top-8 z-20 bg-[#fafafa]";
+// Collapsed table borders don't repaint under sticky cells, so the header keeps
+// its bottom rule as an inset shadow instead.
+const MATRIX_HEADER_RULE = "shadow-[inset_0_-1px_0_var(--aw-border)]";
+
 function getRankingCellRank(cell: RankingCell | undefined): number | undefined {
   if (typeof cell === "number") return cell;
   return cell?.rank;
@@ -923,8 +934,8 @@ export default function MetricsEditor({
           adwallType={adwallType}
         />
       ) : (
-        <div className="bg-white border border-general-border rounded-lg p-4">
-          <div className="flex items-center justify-between mb-4">
+        <div className="flex max-h-[calc(100vh-15rem)] flex-col bg-white border border-general-border rounded-lg p-4">
+          <div className="flex shrink-0 items-center justify-between mb-4">
             <div>
               <div className="text-sm font-medium">Lender Rankings</div>
               <div className="text-xs text-general-muted-foreground mt-1">
@@ -1015,7 +1026,7 @@ export default function MetricsEditor({
             </TooltipProvider>
         </div>
 
-        <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-xs text-blue-800">
+        <div className="mb-4 shrink-0 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-xs text-blue-800">
           <strong>Note:</strong> Rankings determine the order in which lenders appear on the adwall.
           Lower numbers appear first (1 = highest priority).
         </div>
@@ -1025,22 +1036,21 @@ export default function MetricsEditor({
             No lenders added yet. Click <span className="font-medium">Add Lender</span> to create the first one.
           </div>
         ) : (
-          <div className="border border-general-border rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
+          <div className="min-h-0 flex-1 max-h-[55vh] overflow-auto border border-general-border rounded-lg">
               <table className="w-full text-sm">
                 <thead className="bg-[#fafafa] border-b border-general-border">
                   {effectiveConfig.dimensions.length === 1 ? (
                     // Single dimension: simple header
                     <tr>
-                      <th className="sticky left-0 z-20 bg-[#fafafa] px-3 py-2 text-left font-medium text-xs whitespace-nowrap border-r border-general-border">
+                      <th className={cn(MATRIX_HEADER_CORNER_CELL, MATRIX_HEADER_RULE, "left-0 px-3 py-2 text-left font-medium text-xs whitespace-nowrap border-r border-general-border")}>
                         Lender Name
                       </th>
                       {groupedColumns[0]?.subColumns.map((subCol) => (
-                        <th key={subCol.key} className="px-3 py-2 text-center font-medium text-xs whitespace-nowrap min-w-[100px]">
+                        <th key={subCol.key} className={cn(MATRIX_HEADER_CELL, MATRIX_HEADER_RULE, "px-3 py-2 text-center font-medium text-xs whitespace-nowrap min-w-[100px]")}>
                           {subCol.label}
                         </th>
                       ))}
-                      <th className="sticky right-0 z-20 bg-[#fafafa] px-3 py-2 text-center font-medium text-xs w-[60px] border-l border-general-border">
+                      <th className={cn(MATRIX_HEADER_CORNER_CELL, MATRIX_HEADER_RULE, "right-0 px-3 py-2 text-center font-medium text-xs w-[60px] border-l border-general-border")}>
                         Actions
                       </th>
                     </tr>
@@ -1050,7 +1060,7 @@ export default function MetricsEditor({
                       <tr>
                         <th
                           rowSpan={2}
-                          className="sticky left-0 z-20 bg-[#fafafa] px-3 py-2 text-left font-medium text-xs whitespace-nowrap border-r border-general-border"
+                          className={cn(MATRIX_HEADER_CORNER_CELL, MATRIX_HEADER_RULE, "left-0 px-3 py-2 text-left font-medium text-xs whitespace-nowrap border-r border-general-border")}
                         >
                           Lender Name
                         </th>
@@ -1058,14 +1068,14 @@ export default function MetricsEditor({
                           <th
                             key={group.groupLabel}
                             colSpan={group.subColumns.length}
-                            className="px-3 py-2 text-center font-semibold text-xs border-r border-general-border"
+                            className={cn(MATRIX_HEADER_CELL, "h-8 px-3 py-2 text-center font-semibold text-xs border-r border-general-border")}
                           >
                             {group.groupLabel}
                           </th>
                         ))}
                         <th
                           rowSpan={2}
-                          className="sticky right-0 z-20 bg-[#fafafa] px-3 py-2 text-center font-medium text-xs w-[60px] border-l border-general-border"
+                          className={cn(MATRIX_HEADER_CORNER_CELL, MATRIX_HEADER_RULE, "right-0 px-3 py-2 text-center font-medium text-xs w-[60px] border-l border-general-border")}
                         >
                           Actions
                         </th>
@@ -1076,6 +1086,8 @@ export default function MetricsEditor({
                             <th
                               key={subCol.key}
                               className={cn(
+                                MATRIX_SUBHEADER_CELL,
+                                MATRIX_HEADER_RULE,
                                 "px-3 py-2 text-center font-medium text-xs whitespace-nowrap min-w-[100px]",
                                 idx === group.subColumns.length - 1 && "border-r border-general-border"
                               )}
@@ -1203,7 +1215,6 @@ export default function MetricsEditor({
                   })}
                 </tbody>
               </table>
-            </div>
           </div>
         )}
 
