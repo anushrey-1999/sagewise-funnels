@@ -235,7 +235,9 @@ export function withMortgageCreditRankings(lenders: RankingConfig["lenders"]): R
       if (comboKey.startsWith("fair:")) {
         const poorComboKey = comboKey.replace(/^fair:/, "poor:");
         const badComboKey = comboKey.replace(/^fair:/, "bad:");
-        nextRankings[poorComboKey] = rank;
+        // This helper also runs after every matrix edit. Only backfill legacy
+        // configs; never replace an explicitly configured Poor value.
+        nextRankings[poorComboKey] ??= rank;
         if (!hasLegacyPoorRankings) {
           nextRankings[badComboKey] ??= rank;
         }
