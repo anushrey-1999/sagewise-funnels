@@ -327,24 +327,13 @@
   90%       { transform: translateX(2px); }
 }
 
-@keyframes sw-loader-enter {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes sw-loader-breathe {
   0% {
     transform: scale(1);
     animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
   }
   50% {
-    transform: scale(1.08);
+    transform: scale(1.07);
     animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
   }
   100% { transform: scale(1); }
@@ -376,7 +365,7 @@
 @keyframes sw-adwall-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(32px);
   }
   to {
     opacity: 1;
@@ -393,28 +382,7 @@
   animation: shake 0.45s ease-in-out;
 }
 
-.sw-interstitial-layer {
-  opacity: 1;
-  transition: opacity 300ms ease;
-}
-
-.sw-interstitial--exiting .sw-interstitial-layer {
-  opacity: 0;
-}
-
-.sw-loader-stagger {
-  opacity: 0;
-  transform: translateY(4px);
-  animation: sw-loader-enter 320ms cubic-bezier(0.2, 0, 0.2, 1) forwards;
-}
-
-.sw-loader-stagger--word { animation-delay: 80ms; }
-.sw-loader-stagger--bar { animation-delay: 160ms; }
-.sw-loader-stagger--header { animation-delay: 200ms; }
-.sw-loader-stagger--status { animation-delay: 280ms; }
-
 .sw-loader-leaf {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));
   transform-origin: center;
   animation: sw-loader-breathe 2.2s infinite;
 }
@@ -423,8 +391,8 @@
   position: absolute;
   top: 4%;
   left: 50%;
-  width: 50px;
-  height: 87px;
+  width: 93%;
+  height: 93%;
   opacity: 0;
   border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
   background: linear-gradient(
@@ -438,24 +406,36 @@
   animation: sw-loader-shimmer-rise 2.2s ease-in-out infinite;
 }
 
-.sw-adwall-enter {
-  animation: sw-adwall-enter 400ms cubic-bezier(0.16, 1, 0.3, 1) 50ms both;
+/* Completion beat: the leaf settles and nothing moves until the pivot. */
+.sw-loader-leaf--settled,
+.sw-loader-leaf--settled .sw-loader-leaf-shimmer {
+  animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .sw-loader-stagger {
-    opacity: 1;
-    transform: none;
-    animation: none;
-  }
+.sw-loader-leaf--settled {
+  transform: scale(1);
+}
 
-  .sw-loader-leaf,
-  .sw-loader-leaf-shimmer {
+.sw-loader-leaf--settled .sw-loader-leaf-shimmer {
+  opacity: 0;
+}
+
+.sw-adwall-enter {
+  animation: sw-adwall-enter 620ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+
+/* Spatial motion is reduced, but the information timing and completion hold stay intact. */
+@media (prefers-reduced-motion: reduce) {
+  .sw-loader-leaf {
     animation: none;
   }
 
   .sw-loader-leaf-shimmer {
     display: none;
+  }
+
+  .sw-loader-status {
+    transform: none !important;
   }
 
   .sw-adwall-enter {

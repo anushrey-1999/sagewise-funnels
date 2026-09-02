@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { Loader } from "./Loader";
 import { useRouter } from "next/navigation";
 import { resolvePostSubmitRedirect, resolveRedirectOnAnswer } from "@/lib/funnel-redirect";
+import { resolveMortgageInterstitialCopy } from "@/lib/mortgage-interstitial-copy";
 import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
 import { buildAdwallRankingQueryParams } from "@/lib/adwall-ranking-query-params";
 import { useSearchParams } from "next/navigation";
@@ -935,7 +936,17 @@ export function MultiStepForm({
 
   // Show loader if on last step and button was clicked
   if (showLoader) {
-    return <Loader onComplete={handleLoaderComplete} loaderText={loaderSubheading} />;
+    const interstitialCopy =
+      config.id === "mortgage" ? resolveMortgageInterstitialCopy(formData) : undefined;
+
+    return (
+      <Loader
+        onComplete={handleLoaderComplete}
+        loaderText={loaderSubheading}
+        header={interstitialCopy?.header}
+        statusLines={interstitialCopy?.statusLines}
+      />
+    );
   }
 
   // Render form step

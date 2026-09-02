@@ -8,6 +8,7 @@ import { Loader } from "./Loader";
 import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
 import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
 import { buildAdwallRankingQueryParams } from "@/lib/adwall-ranking-query-params";
+import { resolveMortgageInterstitialCopy } from "@/lib/mortgage-interstitial-copy";
 
 interface FormSectionProps {
   config: FormConfig;
@@ -170,7 +171,19 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
   };
 
   if (isLoading) {
-    return <Loader onComplete={handleLoaderComplete} loaderText={config.finalStep?.loaderText} />;
+    const interstitialCopy =
+      funnelId === "mortgage"
+        ? resolveMortgageInterstitialCopy(submittedData || {})
+        : undefined;
+
+    return (
+      <Loader
+        onComplete={handleLoaderComplete}
+        loaderText={config.finalStep?.loaderText}
+        header={interstitialCopy?.header}
+        statusLines={interstitialCopy?.statusLines}
+      />
+    );
   }
 
   return (
