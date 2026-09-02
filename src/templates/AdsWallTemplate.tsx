@@ -238,7 +238,11 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
   }, [ctaRef]);
 
   return (
-    <div className="bg-[#FAFAF7] flex flex-col items-start min-h-screen w-full ">
+    <div
+      className={`bg-[#FAFAF7] flex min-h-screen w-full flex-col items-start ${
+        isDynamicHeader ? "sw-adwall-enter" : ""
+      }`}
+    >
       {/* Portal lender disclosures into the global footer */}
       {footerSlotEl && disclosureCards.length > 0
         ? createPortal(
