@@ -4,36 +4,60 @@ import AdsWallCards from "@/organisms/AdsWallCards";
 import PlainPageHeader from "@/organisms/PlainPageHeader";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AdwallConfig } from "@/types/adwall";
+import { AdwallCard, AdwallConfig } from "@/types/adwall";
 import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
 import ImpressionOnView from "@/components/ImpressionOnView";
 import { sortAdwallCards } from "@/lib/generic-adwall-ranking";
 import { BadgeCheck, Lock, Minus, Plus, ShieldCheck } from "lucide-react";
 import { createPortal } from "react-dom";
+import {
+  buildAdwallTemplateVars,
+  interpolateTemplate,
+  type AdwallTemplateVars,
+} from "@/lib/adwall-template-vars";
 
 interface AdsWallTemplateProps {
   config: AdwallConfig;
   resolvedCity?: string | null;
   updatedAtOverride?: string | null;
+  /** Request-time date (ISO) from the route, so server and client render identically. */
+  currentDate?: string | null;
   disableImpressions?: boolean;
 }
 
-/**
- * Interpolate variables in text template
- * Supports: {NAME}, {ZIP}, {CITY}, {MONTH}, {YEAR}
- * Legacy lowercase variables remain supported for older configs.
- */
-function interpolateTemplate(template: string, variables: Record<string, string>): string {
-  let out = template;
-  for (const [key, value] of Object.entries(variables)) {
-    out = out.replace(new RegExp(`\\{${key}\\}`, "g"), value ?? "");
+/** Card fields authors can write copy into. Links, scripts and images stay untouched. */
+const INTERPOLATED_CARD_FIELDS = [
+  "heading",
+  "description",
+  "buttonText",
+  "badgeText",
+  "logoText",
+  "logoSubtext",
+  "advertiserName",
+  "trustpilotReviews",
+  "bottomBoxHtml",
+  "minCreditScore",
+  "maxLoanAmount",
+  "aprRange",
+] as const satisfies readonly (keyof AdwallCard)[];
+
+function interpolateCard(card: AdwallCard, vars: AdwallTemplateVars): AdwallCard {
+  const next: AdwallCard = { ...card };
+
+  for (const field of INTERPOLATED_CARD_FIELDS) {
+    const value = next[field];
+    if (typeof value === "string") {
+      next[field] = interpolateTemplate(value, vars);
+    }
   }
-  out = out
-    .replace(/\{zip\}/g, variables.ZIP ?? "")
-    .replace(/\{city\}/g, variables.CITY ?? "")
-    .replace(/\{month\}/g, variables.MONTH ?? "")
-    .replace(/\{year\}/g, variables.YEAR ?? "");
-  return out;
+
+  if (Array.isArray(next.features)) {
+    next.features = next.features.map((feature) =>
+      typeof feature === "string" ? interpolateTemplate(feature, vars) : feature
+    );
+  }
+
+  return next;
 }
 
 function cleanParam(value: string | null): string | null {
@@ -93,7 +117,7 @@ function normalizeDisclosureHtml(html: string): string {
   );
 }
 
-const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpressions = false }: AdsWallTemplateProps) => {
+const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate, disableImpressions = false }: AdsWallTemplateProps) => {
   const [isDisclosureOpen, setIsDisclosureOpen] = useState(false);
   const [footerSlotEl, setFooterSlotEl] = useState<HTMLElement | null>(null);
   const searchParams = useSearchParams();
@@ -163,14 +187,19 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
     return { monthName: fallbackMonth, yearNumber: fallbackYear };
   }, [config.updatedAt, updatedAtOverride]);
 
-  // Prepare variables for interpolation
-  const templateVars = useMemo(() => ({
-    NAME: name || "",
-    ZIP: zip || "your city",
-    CITY: resolvedCity || "your city",
-    MONTH: monthName,
-    YEAR: yearNumber,
-  }), [name, zip, resolvedCity, monthName, yearNumber]);
+  // Prepare variables for interpolation. Date tokens prefer the server-provided
+  // date so server and client markup match; MONTH/YEAR keep deferring to the
+  // updatedAt string when no date is passed in.
+  const templateVars = useMemo(() => {
+    const parsed = currentDate ? new Date(currentDate) : null;
+    const now = parsed && !Number.isNaN(parsed.getTime()) ? parsed : new Date();
+
+    return {
+      ...buildAdwallTemplateVars({ name, zip, city: resolvedCity, now }),
+      MONTH: monthName,
+      YEAR: yearNumber,
+    };
+  }, [name, zip, resolvedCity, monthName, yearNumber, currentDate]);
 
   const selectedTitle = isDynamicHeader
     ? (config.dynamicTitle ?? config.title)
@@ -222,10 +251,15 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
     }));
   }, [config.id, config.rankingConfig, visibleCards]);
 
+  const personalizedCards = useMemo(
+    () => visibleCardsWithRatings.map((card) => interpolateCard(card, templateVars)),
+    [visibleCardsWithRatings, templateVars]
+  );
+
   const disclosureCards = useMemo(() => {
     // Only show Optional Footer content (Offer tile Footer / bottomBoxHtml)
-    return visibleCardsWithRatings.filter((item) => item.bottomBoxHtml);
-  }, [visibleCardsWithRatings]);
+    return personalizedCards.filter((item) => item.bottomBoxHtml);
+  }, [personalizedCards]);
 
   useEffect(() => {
     // Avoid hydration mismatch: only portal after mount.
@@ -320,7 +354,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, disableImpre
       <div className="relative z-0 flex flex-col items-center w-full px-5 sm:px-6 md:px-16 pt-4 sm:pt-0 pb-3 sm:pb-8 md:pb-12">
         <div className="w-full max-w-[1152px]">
           <div ref={containerRef} className="flex flex-col gap-4">
-            {visibleCardsWithRatings.map((item, index) => {
+            {personalizedCards.map((item, index) => {
               const { impressionScript, ...cardProps } = item;
               const card = (
                 <AdsWallCards

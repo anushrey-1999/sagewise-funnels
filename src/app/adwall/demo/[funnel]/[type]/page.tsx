@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { resolveCityFromZip } from "@/lib/geo/resolveCityFromZip";
+import { buildAdwallTemplateVars, interpolateTemplate } from "@/lib/adwall-template-vars";
 
 export const revalidate = 86400; // revalidate daily (overridden to force-dynamic when DB row exists)
 export const dynamic = "force-dynamic";
@@ -17,7 +18,12 @@ interface DemoAdwallPageProps {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata({ params }: DemoAdwallPageProps): Promise<Metadata> {
+function firstParam(value: string | string[] | undefined): string | undefined {
+  if (Array.isArray(value)) return value[0];
+  return value;
+}
+
+export async function generateMetadata({ params, searchParams }: DemoAdwallPageProps): Promise<Metadata> {
   const { funnel, type } = await params;
   const config = await getPublishedDemoAdwallConfig(funnel, type);
 
@@ -28,15 +34,22 @@ export async function generateMetadata({ params }: DemoAdwallPageProps): Promise
     };
   }
 
-  return {
-    title: config.metadata?.title || "Demo Adwall - Sagewise",
-    description: config.metadata?.description || config.subtitle,
-  };
-}
+  const sp = (await searchParams) || {};
+  const zip = firstParam(sp.zip);
+  // A personal name has no place in a page title, so {NAME} resolves to "".
+  const vars = buildAdwallTemplateVars({
+    zip,
+    city: resolveCityFromZip(zip),
+    now: new Date(),
+  });
 
-function firstParam(value: string | string[] | undefined): string | undefined {
-  if (Array.isArray(value)) return value[0];
-  return value;
+  return {
+    title: interpolateTemplate(config.metadata?.title || "Demo Adwall - Sagewise", vars),
+    description: interpolateTemplate(
+      config.metadata?.description || config.subtitle,
+      vars
+    ),
+  };
 }
 
 export default async function DemoAdwallPage({ params, searchParams }: DemoAdwallPageProps) {
@@ -54,11 +67,12 @@ export default async function DemoAdwallPage({ params, searchParams }: DemoAdwal
   }
   const zip = firstParam(sp.zip);
   const resolvedCity = resolveCityFromZip(zip);
+  const now = new Date();
   const updatedAtOverride = `Updated ${new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
-  }).format(new Date())}`;
+  }).format(now)}`;
 
   return (
     <Suspense fallback={<div className="min-h-screen bg-white" />}>
@@ -66,6 +80,7 @@ export default async function DemoAdwallPage({ params, searchParams }: DemoAdwal
         config={config}
         resolvedCity={resolvedCity}
         updatedAtOverride={updatedAtOverride}
+        currentDate={now.toISOString()}
       />
     </Suspense>
   );

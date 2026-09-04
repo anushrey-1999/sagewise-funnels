@@ -22,14 +22,72 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+import { ADWALL_MACROS, buildAdwallTemplateVars } from "@/lib/adwall-template-vars";
 
+const TEMPLATE_TOKEN_PATTERN = new RegExp(
+  `\\{(${ADWALL_MACROS.map((macro) => macro.token.slice(1, -1))
+    .sort((a, b) => b.length - a.length)
+    .join("|")})\\}`,
+  "gi"
+);
+
+/**
+ * Cosmetic tidying only: rendering matches tokens case-insensitively, so this
+ * just keeps saved copy consistently upper-cased.
+ */
 function normalizeTemplateVariables(value: string | undefined): string | undefined {
   if (value == null) return value;
-  return value
-    .replace(/\{zip\}/g, "{ZIP}")
-    .replace(/\{city\}/g, "{CITY}")
-    .replace(/\{month\}/g, "{MONTH}")
-    .replace(/\{year\}/g, "{YEAR}");
+  return value.replace(TEMPLATE_TOKEN_PATTERN, (_match, token: string) => `{${token.toUpperCase()}}`);
+}
+
+/** Card fields that accept macros, mirrored from the adwall template. */
+const TEMPLATE_CARD_FIELDS = [
+  "heading",
+  "description",
+  "features",
+  "buttonText",
+  "badgeText",
+  "logoText",
+  "logoSubtext",
+  "advertiserName",
+  "trustpilotReviews",
+  "bottomBoxHtml",
+  "minCreditScore",
+  "maxLoanAmount",
+  "aprRange",
+];
+
+const TEMPLATE_HEADER_FIELDS = [
+  "title",
+  "subtitle",
+  "staticTitle",
+  "staticSubtitle",
+  "dynamicTitle",
+  "dynamicSubtitle",
+];
+
+function MacroReference() {
+  const exampleVars = buildAdwallTemplateVars({
+    name: "Alex",
+    zip: "94110",
+    city: "San Francisco",
+  });
+
+  return (
+    <div className="rounded-md border border-general-border bg-general-muted/40 p-3">
+      <div className="text-xs font-medium">Available macros</div>
+      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-general-muted-foreground">
+        {ADWALL_MACROS.map((macro) => (
+          <span key={macro.token}>
+            <code>{macro.token}</code> → {exampleVars[macro.token.slice(1, -1)] || "—"}
+          </span>
+        ))}
+      </div>
+      <div className="mt-2 text-xs text-general-muted-foreground">
+        Date macros resolve at request time. Links and impression scripts are never rewritten.
+      </div>
+    </div>
+  );
 }
 
 function normalizeAdwallHeaderTemplates(config: AdwallConfig): AdwallConfig {
@@ -431,10 +489,13 @@ export default function AdwallConfigFormEditor(props: {
   const emitPatch = React.useCallback(
     (path: (string | number)[], value: unknown) => {
       const base = draftRef.current ?? (form.state.values as AdwallConfig);
+      const isCardField =
+        path[0] === "cards" &&
+        path.some((segment) => TEMPLATE_CARD_FIELDS.includes(String(segment)));
+      const isHeaderField =
+        path.length >= 1 && TEMPLATE_HEADER_FIELDS.includes(String(path[path.length - 1]));
       const normalizedValue =
-        typeof value === "string" &&
-        path.length >= 1 &&
-        ["title", "subtitle", "staticTitle", "staticSubtitle", "dynamicTitle", "dynamicSubtitle"].includes(String(path[path.length - 1]))
+        typeof value === "string" && (isHeaderField || isCardField)
           ? normalizeTemplateVariables(value)
           : value;
       const next = setIn(base, path, normalizedValue) as AdwallConfig;
@@ -568,6 +629,8 @@ export default function AdwallConfigFormEditor(props: {
           </div>
 
           <Separator />
+
+          <MacroReference />
 
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
@@ -705,6 +768,9 @@ export default function AdwallConfigFormEditor(props: {
 
       {props.section !== "basic" ? (
         <div className="bg-white border border-general-border rounded-lg overflow-hidden">
+          <div className="p-4 pb-0">
+            <MacroReference />
+          </div>
           <Accordion type="multiple" className="divide-y divide-general-border">
           {cards.map((card, idx) => {
             const heading = card?.heading?.trim() || `Card ${idx + 1}`;
