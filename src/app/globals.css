@@ -362,9 +362,11 @@
   }
 }
 
+/* Starts part-visible so the first painted frame already shows the offers,
+   never a blank page while the reveal runs. */
 @keyframes sw-adwall-enter {
   from {
-    opacity: 0;
+    opacity: 0.5;
     transform: translateY(32px);
   }
   to {
@@ -374,7 +376,7 @@
 }
 
 @keyframes sw-adwall-enter-reduced {
-  from { opacity: 0; }
+  from { opacity: 0.5; }
   to { opacity: 1; }
 }
 
