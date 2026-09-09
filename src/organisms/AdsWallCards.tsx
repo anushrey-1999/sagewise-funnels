@@ -31,6 +31,7 @@ function ScoreStar({ filled }: { filled: boolean }) {
 }
 
 interface AdsWallCardsProps {
+  eagerLogo?: boolean;
   ratings?: number;
   cardBg?: string;
   isGradientBorder?: boolean;
@@ -66,6 +67,7 @@ interface AdsWallCardsProps {
 }
 
 const AdsWallCards = ({
+  eagerLogo = false,
   badgeIcon,
   badgeText,
   heading,
@@ -300,7 +302,7 @@ const AdsWallCards = ({
                 className="relative overflow-hidden rounded-lg"
                 style={{ width: mobileLogoWidthPx, height: mobileLogoHeightPx }}
               >
-                <Image src={logo} alt={heading} fill className="object-contain" />
+                <Image src={logo} alt={heading} fill loading={eagerLogo ? "eager" : "lazy"} className="object-contain" />
               </div>
               {logoText && (
                 <p className="text-[10px] text-general-muted-foreground mt-1">{logoText}</p>
@@ -308,7 +310,7 @@ const AdsWallCards = ({
             </div>
           ) : creditCardImage ? (
             <div className="w-[180px] h-[120px] relative overflow-hidden rounded-lg">
-              <Image src={creditCardImage} alt={heading} fill className="object-cover" />
+              <Image src={creditCardImage} alt={heading} fill loading={eagerLogo ? "eager" : "lazy"} className="object-cover" />
             </div>
           ) : null}
         </div>
@@ -324,7 +326,7 @@ const AdsWallCards = ({
                   className="relative overflow-hidden rounded-lg flex items-center justify-center"
                   style={{ width: desktopLogoWidthPx, height: desktopLogoHeightPx }}
                 >
-                  <Image src={logo} alt={heading} fill className="object-contain" />
+                  <Image src={logo} alt={heading} fill loading={eagerLogo ? "eager" : "lazy"} className="object-contain" />
                 </div>
                 {logoText && (
                   <p className="text-[10px] text-general-muted-foreground text-center mt-1">{logoText}</p>
@@ -335,7 +337,7 @@ const AdsWallCards = ({
               </div>
             ) : creditCardImage ? (
               <div className="w-[200px] h-[130px] relative overflow-hidden rounded-lg">
-                <Image src={creditCardImage} alt={heading} fill className="object-cover" />
+                <Image src={creditCardImage} alt={heading} fill loading={eagerLogo ? "eager" : "lazy"} className="object-cover" />
               </div>
             ) : (
               <div className="w-[200px] h-[69px] rounded-lg bg-white border border-general-border flex items-center justify-center text-xs text-general-muted-foreground">

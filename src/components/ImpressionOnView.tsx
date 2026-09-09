@@ -4,6 +4,7 @@ import { ReactNode, useEffect, useRef } from "react";
 import { injectImpressionScript } from "@/lib/injectImpressionScript";
 
 interface ImpressionOnViewProps {
+  enabled?: boolean;
   impressionScript?: string;
   children: ReactNode;
   /**
@@ -19,6 +20,7 @@ interface ImpressionOnViewProps {
 const firedKeys = new Set<string>();
 
 export default function ImpressionOnView({
+  enabled = true,
   impressionScript,
   children,
   dedupeKey,
@@ -28,6 +30,7 @@ export default function ImpressionOnView({
   const hasFiredRef = useRef(false);
 
   useEffect(() => {
+    if (!enabled) return;
     if (!impressionScript) return;
     if (!ref.current) return;
 
@@ -69,7 +72,7 @@ export default function ImpressionOnView({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [impressionScript, dedupeKey]);
+  }, [enabled, impressionScript, dedupeKey]);
 
   // Wrap without affecting layout.
   return (
@@ -78,4 +81,3 @@ export default function ImpressionOnView({
     </div>
   );
 }
-

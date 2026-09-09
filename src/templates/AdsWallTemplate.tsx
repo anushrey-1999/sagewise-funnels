@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdwallCard, AdwallConfig } from "@/types/adwall";
 import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
-import ImpressionOnView from "@/components/ImpressionOnView";
+import AdwallOfferReveal from "@/components/AdwallOfferReveal";
 import { sortAdwallCards } from "@/lib/generic-adwall-ranking";
 import { BadgeCheck, Lock, Minus, Plus, ShieldCheck } from "lucide-react";
 import { createPortal } from "react-dom";
@@ -273,10 +273,13 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
 
   return (
     <div
-      className={`bg-[#FAFAF7] flex min-h-screen w-full flex-col items-start ${
-        isDynamicHeader ? "sw-adwall-enter" : ""
-      }`}
+      className="bg-[#FAFAF7] flex min-h-screen w-full flex-col items-start"
     >
+      {/* Opt in only at the two ends of the interstitial handoff. Unsupported
+          browsers still get the same bounded, layout-stable offer reveal. */}
+      {isDynamicHeader && !disableImpressions && (
+        <style>{"@view-transition { navigation: auto; }"}</style>
+      )}
       {/* Portal lender disclosures into the global footer */}
       {footerSlotEl && disclosureCards.length > 0
         ? createPortal(
@@ -364,6 +367,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
                   transactionId={transactionId}
                   extraTrackingParams={ctaTrackingParams}
                   ctaMinWidthPx={ctaMinWidthPx}
+                  eagerLogo={index < 2}
                 />
               );
 
@@ -372,14 +376,16 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
               }
 
               return (
-                <ImpressionOnView
+                <AdwallOfferReveal
                   key={index}
+                  animate={isDynamicHeader}
+                  index={index}
                   impressionScript={impressionScript}
                   dedupeKey={`${config.id}:${index}`}
                   debugLabel={item.advertiserName || item.heading}
                 >
                   {card}
-                </ImpressionOnView>
+                </AdwallOfferReveal>
               );
             })}
           </div>

@@ -362,12 +362,31 @@
   }
 }
 
-/* Starts part-visible so the first painted frame already shows the offers,
-   never a blank page while the reveal runs. */
-@keyframes sw-adwall-enter {
+/* Fade the completed interstitial snapshot over the live destination. The
+   reload still clears funnel scripts; only these two pages opt in. */
+::view-transition-group(root) {
+  animation: none;
+}
+
+::view-transition-old(root) {
+  animation: sw-interstitial-out 240ms ease-out both;
+  mix-blend-mode: normal;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@keyframes sw-interstitial-out {
+  to { opacity: 0; }
+}
+
+@keyframes sw-offer-enter {
   from {
-    opacity: 0.5;
-    transform: translateY(32px);
+    opacity: 0;
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -375,9 +394,48 @@
   }
 }
 
-@keyframes sw-adwall-enter-reduced {
-  from { opacity: 0.5; }
-  to { opacity: 1; }
+@keyframes sw-offer-skeleton-out {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* 180ms settle + up to 120ms stagger + 440ms reveal = 740ms maximum.
+   The skeleton overlays the mounted card, so no guessed heights or reflow. */
+.sw-offer-reveal[data-entering] > .sw-offer-content {
+  animation: sw-offer-enter 440ms cubic-bezier(0.22, 1, 0.36, 1) var(--offer-delay) both;
+}
+
+.sw-offer-skeleton {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px 18px;
+  border: 1.5px solid var(--color-aw-border);
+  border-radius: var(--aw-radius-card);
+  background: var(--color-aw-surface);
+  pointer-events: none;
+  animation: sw-offer-skeleton-out 220ms ease-out var(--offer-delay) both;
+}
+
+.sw-offer-skeleton-logo,
+.sw-offer-skeleton-copy > span,
+.sw-offer-skeleton-cta {
+  border-radius: 6px;
+  background: #e8ebe7;
+}
+
+.sw-offer-skeleton-logo { width: 140px; height: 48px; flex-shrink: 0; }
+.sw-offer-skeleton-copy { display: flex; flex: 1; flex-direction: column; gap: 14px; }
+.sw-offer-skeleton-copy > span { display: block; width: 90%; height: 12px; }
+.sw-offer-skeleton-copy > span:first-child { width: 65%; height: 18px; margin-bottom: 4px; }
+.sw-offer-skeleton-copy > span:last-child { width: 75%; }
+.sw-offer-skeleton-cta { width: 100%; height: 44px; flex-shrink: 0; margin-top: auto; }
+
+@media (min-width: 1024px) {
+  .sw-offer-skeleton { flex-direction: row; align-items: center; gap: 32px; }
+  .sw-offer-skeleton-logo { width: 170px; height: 64px; }
+  .sw-offer-skeleton-cta { width: 220px; margin-top: 0; }
 }
 
 .animate-shake {
@@ -422,8 +480,9 @@
   opacity: 0;
 }
 
-.sw-adwall-enter {
-  animation: sw-adwall-enter 620ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
+.sw-loader-progress {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 /* Spatial motion is reduced, but the information timing and completion hold stay intact. */
@@ -440,9 +499,22 @@
     transform: none !important;
   }
 
-  .sw-adwall-enter {
-    transform: none;
-    animation-name: sw-adwall-enter-reduced;
+  .sw-loader-progress {
+    transition: none;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  ::view-transition-old(root),
+  .sw-offer-skeleton {
+    display: none;
+  }
+
+  .sw-offer-reveal[data-entering] > .sw-offer-content {
+    animation: none;
   }
 }
 

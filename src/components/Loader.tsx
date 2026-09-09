@@ -55,6 +55,7 @@ export function Loader({
   statusLines,
 }: LoaderProps) {
   const [fillProgress, setFillProgress] = useState(0);
+  const [fillDuration, setFillDuration] = useState(0);
   const [lineIndex, setLineIndex] = useState(0);
   const [statusPhase, setStatusPhase] = useState<StatusPhase>("entering");
   const [isComplete, setIsComplete] = useState(false);
@@ -71,8 +72,6 @@ export function Loader({
 
   useEffect(() => {
     let cancelled = false;
-    let frameId = 0;
-    let progress = 0;
     const timers = new Set<ReturnType<typeof setTimeout>>();
     const mountedAt = performance.now();
 
@@ -87,32 +86,11 @@ export function Loader({
     const at = (mark: number, run: () => void) =>
       after(mark - (performance.now() - mountedAt), run);
 
-    const easeOutCubic = (value: number) => 1 - Math.pow(1 - value, 3);
-
-    const fillTo = (target: number, duration: number) => {
-      const startProgress = progress;
-      const startTime = performance.now();
-
-      const animate = (now: number) => {
-        if (cancelled) return;
-
-        const elapsed = Math.min((now - startTime) / duration, 1);
-        progress = startProgress + (target - startProgress) * easeOutCubic(elapsed);
-        setFillProgress(progress);
-
-        if (elapsed < 1) {
-          frameId = requestAnimationFrame(animate);
-        } else {
-          progress = target;
-          setFillProgress(target);
-        }
-      };
-
-      frameId = requestAnimationFrame(animate);
-    };
-
     BAR_SEGMENTS.forEach((segment) => {
-      at(segment.at, () => fillTo(segment.to, segment.duration));
+      at(segment.at, () => {
+        setFillDuration(segment.duration);
+        setFillProgress(segment.to);
+      });
     });
 
     getStatusSchedule(stepCount).forEach((mark, index) => {
@@ -142,7 +120,6 @@ export function Loader({
 
     return () => {
       cancelled = true;
-      cancelAnimationFrame(frameId);
       timers.forEach(clearTimeout);
     };
   }, [stepCount]);
@@ -155,6 +132,7 @@ export function Loader({
 
   return (
     <div className="sw-interstitial fixed inset-0 z-9999 bg-[#0D1B2A]">
+      <style>{"@view-transition { navigation: auto; }"}</style>
       <div
         className="absolute inset-0 overflow-hidden"
         style={{
@@ -191,8 +169,11 @@ export function Loader({
           {/* Four-segment progress bar */}
           <div className="mt-7 h-1 w-[min(350px,calc(100vw-48px))] overflow-hidden rounded-full bg-white/12 md:w-[520px]">
             <div
-              className="h-full rounded-full bg-white"
-              style={{ width: `${fillProgress}%` }}
+              className="sw-loader-progress h-full w-full origin-left rounded-full bg-white"
+              style={{
+                transform: `scaleX(${fillProgress / 100})`,
+                transitionDuration: `${fillDuration}ms`,
+              }}
             />
           </div>
 
