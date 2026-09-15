@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 
 import AdwallConfigFormEditor from "./adwalls/AdwallConfigFormEditor";
-import MetricsEditor from "./adwalls/MetricsEditor";
+import MetricsEditor, { PurchaseMilitaryRankingTabs } from "./adwalls/MetricsEditor";
 import {
   adminButtonPrimary,
   adminButtonSecondary,
@@ -108,12 +108,21 @@ function syncCardRankingNumbers(config: unknown): unknown {
   let nextConfig = adwallConfig;
   let changed = false;
 
-  if (nextConfig.funnelId === "mortgage" && nextConfig.rankingConfig) {
-    nextConfig = {
-      ...nextConfig,
-      rankingConfig: ensureMortgagePoorCreditBucket(nextConfig.rankingConfig),
-    };
-    changed = true;
+  if (nextConfig.funnelId === "mortgage") {
+    if (nextConfig.rankingConfig) {
+      nextConfig = {
+        ...nextConfig,
+        rankingConfig: ensureMortgagePoorCreditBucket(nextConfig.rankingConfig),
+      };
+      changed = true;
+    }
+    if (nextConfig.rankingConfigVeteranYes) {
+      nextConfig = {
+        ...nextConfig,
+        rankingConfigVeteranYes: ensureMortgagePoorCreditBucket(nextConfig.rankingConfigVeteranYes),
+      };
+      changed = true;
+    }
   }
 
   if (!Array.isArray(nextConfig.cards) || !nextConfig.rankingConfig?.rankingNumbers) return changed ? nextConfig : config;
@@ -815,37 +824,81 @@ export default function ConfigEditorClient(props: {
 
             <TabsContent value="metrics" className="mt-0">
               <div className="bg-[#fafafa] p-5">
-                <MetricsEditor
-                  rankingConfig={
-                    draftObj && typeof draftObj === "object" && "rankingConfig" in draftObj
-                      ? (draftObj as { rankingConfig?: RankingConfig }).rankingConfig ?? null
-                      : null
-                  }
-                  cards={
-                    draftObj && typeof draftObj === "object" && "cards" in draftObj && Array.isArray((draftObj as { cards?: unknown }).cards)
-                      ? ((draftObj as { cards: AdwallCard[] }).cards)
-                      : []
-                  }
-                  funnelId={
+                {(() => {
+                  const funnelId =
                     draftObj && typeof draftObj === "object" && "funnelId" in draftObj
                       ? String((draftObj as { funnelId?: unknown }).funnelId ?? "")
-                      : ""
-                  }
-                  adwallType={
+                      : "";
+                  const adwallType =
                     draftObj && typeof draftObj === "object" && "adwallType" in draftObj
                       ? String((draftObj as { adwallType?: unknown }).adwallType ?? "")
-                      : ""
+                      : "";
+                  const rankingConfig =
+                    draftObj && typeof draftObj === "object" && "rankingConfig" in draftObj
+                      ? (draftObj as { rankingConfig?: RankingConfig }).rankingConfig ?? null
+                      : null;
+                  const rankingConfigVeteranYes =
+                    draftObj && typeof draftObj === "object" && "rankingConfigVeteranYes" in draftObj
+                      ? (draftObj as { rankingConfigVeteranYes?: RankingConfig }).rankingConfigVeteranYes ??
+                        null
+                      : null;
+                  const cards =
+                    draftObj &&
+                    typeof draftObj === "object" &&
+                    "cards" in draftObj &&
+                    Array.isArray((draftObj as { cards?: unknown }).cards)
+                      ? (draftObj as { cards: AdwallCard[] }).cards
+                      : [];
+                  const isPurchaseMilitaryMatrix = funnelId === "mortgage" && adwallType === "purchase";
+
+                  if (isPurchaseMilitaryMatrix) {
+                    return (
+                      <PurchaseMilitaryRankingTabs
+                        rankingConfig={rankingConfig}
+                        rankingConfigVeteranYes={rankingConfigVeteranYes}
+                        cards={cards}
+                        funnelId={funnelId}
+                        adwallType={adwallType}
+                        onChangeNo={(next) => {
+                          const updated = syncCardRankingNumbers({
+                            ...(draftObj as object),
+                            rankingConfig: next,
+                          });
+                          draftObjRef.current = updated;
+                          hasDirtyEditsRef.current = true;
+                          setDraftObj(updated);
+                        }}
+                        onChangeYes={(next) => {
+                          const updated = syncCardRankingNumbers({
+                            ...(draftObj as object),
+                            rankingConfigVeteranYes: next,
+                          });
+                          draftObjRef.current = updated;
+                          hasDirtyEditsRef.current = true;
+                          setDraftObj(updated);
+                        }}
+                      />
+                    );
                   }
-                  onChange={(next) => {
-                    const updated = syncCardRankingNumbers({
-                      ...(draftObj as object),
-                      rankingConfig: next,
-                    });
-                    draftObjRef.current = updated;
-                    hasDirtyEditsRef.current = true;
-                    setDraftObj(updated);
-                  }}
-                />
+
+                  return (
+                    <MetricsEditor
+                      rankingConfig={rankingConfig}
+                      cards={cards}
+                      funnelId={funnelId}
+                      adwallType={adwallType}
+                      onChange={(next) => {
+                        const updated = syncCardRankingNumbers({
+                          ...(draftObj as object),
+                          rankingConfig: next,
+                        });
+                        draftObjRef.current = updated;
+                        hasDirtyEditsRef.current = true;
+                        setDraftObj(updated);
+                      }}
+                    />
+                  );
+                })()}
               </div>
             </TabsContent>
 

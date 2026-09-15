@@ -92,6 +92,8 @@ export interface AdwallConfig {
     phone?: string; // display value, e.g., "1-833-906-2737"
   };
   rankingConfig?: RankingConfig;
+  /** Purchase-only military-yes matrix. Falls back to rankingConfig at runtime when missing. */
+  rankingConfigVeteranYes?: RankingConfig;
   cards: AdwallCard[];
   disclaimers?: string;
   metadata?: {

@@ -237,6 +237,7 @@ export const adwallConfigSchema = z
       .passthrough()
       .optional(),
     rankingConfig: rankingConfigSchema.optional(),
+    rankingConfigVeteranYes: rankingConfigSchema.optional(),
     cards: z.array(adwallCardSchema).min(1),
     disclaimers: z.string().optional(),
     metadata: z

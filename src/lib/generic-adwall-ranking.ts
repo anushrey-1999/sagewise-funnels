@@ -243,6 +243,31 @@ function getRankingMatrix(
   return null;
 }
 
+export function isRankingConfigPopulated(rankingConfig: RankingConfig | null | undefined): boolean {
+  return Boolean(rankingConfig && Object.keys(rankingConfig.lenders ?? {}).length > 0);
+}
+
+/**
+ * Purchase military-yes uses rankingConfigVeteranYes when present; otherwise rankingConfig.
+ */
+export function resolveActiveRankingConfig(
+  config: AdwallConfig | null | undefined,
+  rankingParams: Record<string, string> | null | undefined
+): RankingConfig | undefined {
+  if (!config) return undefined;
+
+  const isPurchaseMilitaryYes =
+    config.funnelId === "mortgage" &&
+    config.adwallType === "purchase" &&
+    rankingParams?.rankMilitaryService === "yes";
+
+  if (isPurchaseMilitaryYes && isRankingConfigPopulated(config.rankingConfigVeteranYes)) {
+    return config.rankingConfigVeteranYes;
+  }
+
+  return config.rankingConfig;
+}
+
 /**
  * Sort adwall cards based on ranking configuration
  */

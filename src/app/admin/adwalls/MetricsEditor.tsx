@@ -1,9 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { Plus, Trash2, Download, Upload, Copy, FileDown, Eye, EyeOff } from "lucide-react";
+import { Plus, Trash2, Download, Upload, Copy, FileDown, Eye, EyeOff, X } from "lucide-react";
+import { toast } from "sonner";
 import type { AdwallCard, RankingCell, RankingConfig } from "@/types/adwall";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isRankingConfigPopulated } from "@/lib/generic-adwall-ranking";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -1362,5 +1365,169 @@ Figure,8.6,2,2,...`}
       )}
     </div>
     </TooltipProvider>
+  );
+}
+
+function cloneRankingConfig(config: RankingConfig): RankingConfig {
+  return JSON.parse(JSON.stringify(config)) as RankingConfig;
+}
+
+type PurchaseMilitaryTab = "yes" | "no";
+
+interface PurchaseMilitaryRankingTabsProps {
+  rankingConfig: RankingConfig | null | undefined;
+  rankingConfigVeteranYes: RankingConfig | null | undefined;
+  cards?: AdwallCard[];
+  funnelId: string;
+  adwallType: string;
+  onChangeNo: (next: RankingConfig) => void;
+  onChangeYes: (next: RankingConfig) => void;
+  className?: string;
+}
+
+export function PurchaseMilitaryRankingTabs({
+  rankingConfig,
+  rankingConfigVeteranYes,
+  cards,
+  funnelId,
+  adwallType,
+  onChangeNo,
+  onChangeYes,
+  className,
+}: PurchaseMilitaryRankingTabsProps) {
+  const [tab, setTab] = React.useState<PurchaseMilitaryTab>("yes");
+  const [isCopyConfirmOpen, setIsCopyConfirmOpen] = React.useState(false);
+
+  const displayYesConfig = isRankingConfigPopulated(rankingConfigVeteranYes)
+    ? rankingConfigVeteranYes
+    : rankingConfig;
+
+  const copyingToYes = tab === "yes";
+  const copySource = copyingToYes ? rankingConfig : rankingConfigVeteranYes;
+  const sourceLabel = copyingToYes ? "Military: No" : "Military: Yes";
+  const targetLabel = copyingToYes ? "Military: Yes" : "Military: No";
+
+  const requestCopy = () => {
+    if (!isRankingConfigPopulated(copySource)) {
+      toast.error(`${sourceLabel} has no lender rankings to copy yet.`);
+      return;
+    }
+    setIsCopyConfirmOpen(true);
+  };
+
+  const confirmCopy = () => {
+    if (!isRankingConfigPopulated(copySource)) {
+      setIsCopyConfirmOpen(false);
+      return;
+    }
+
+    const cloned = cloneRankingConfig(copySource as RankingConfig);
+    if (copyingToYes) onChangeYes(cloned);
+    else onChangeNo(cloned);
+    setIsCopyConfirmOpen(false);
+    toast.success(`Copied ${sourceLabel} rankings into ${targetLabel}.`);
+  };
+
+  return (
+    <Tabs
+      value={tab}
+      onValueChange={(value) => setTab(value as PurchaseMilitaryTab)}
+      className={cn("gap-3", className)}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <TabsList>
+          <TabsTrigger value="yes">Military: Yes</TabsTrigger>
+          <TabsTrigger value="no">Military: No</TabsTrigger>
+        </TabsList>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className={adminButtonSecondary}
+          onClick={requestCopy}
+        >
+          <Copy className="mr-2 h-4 w-4" />
+          {copyingToYes ? "Copy from No" : "Copy from Yes"}
+        </Button>
+      </div>
+      <p className="text-xs text-general-muted-foreground">
+        Purchase offers can rank differently based on military service. Edit each matrix separately;
+        both use the same credit score and loan amount buckets.
+      </p>
+      <TabsContent value="yes" className="mt-0">
+        <MetricsEditor
+          rankingConfig={displayYesConfig}
+          cards={cards}
+          funnelId={funnelId}
+          adwallType={adwallType}
+          onChange={onChangeYes}
+        />
+      </TabsContent>
+      <TabsContent value="no" className="mt-0">
+        <MetricsEditor
+          rankingConfig={rankingConfig}
+          cards={cards}
+          funnelId={funnelId}
+          adwallType={adwallType}
+          onChange={onChangeNo}
+        />
+      </TabsContent>
+
+      {isCopyConfirmOpen ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4 py-8"
+          onClick={() => setIsCopyConfirmOpen(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-3xl border border-general-border bg-white p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Copy ${sourceLabel} rankings`}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <h3 className="text-lg font-semibold text-primary-main">
+                Copy rankings from {sourceLabel}?
+              </h3>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Close"
+                className="rounded-full"
+                onClick={() => setIsCopyConfirmOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="mt-3 space-y-2 text-sm text-general-muted-foreground">
+              <p>
+                Every lender rank in <span className="font-medium text-general-primary">{targetLabel}</span>{" "}
+                will be replaced with the ranks from{" "}
+                <span className="font-medium text-general-primary">{sourceLabel}</span>. You can keep editing
+                afterwards.
+              </p>
+              <p>Nothing changes for visitors until you save the draft and publish.</p>
+            </div>
+
+            <div className="mt-5 flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className={adminSmallButton}
+                onClick={() => setIsCopyConfirmOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="button" size="sm" className={adminSmallButton} onClick={confirmCopy}>
+                Copy rankings
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </Tabs>
   );
 }

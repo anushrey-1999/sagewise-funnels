@@ -53,11 +53,17 @@ async function getConfigFromDb<T>(
 }
 
 function normalizeAdwallConfig(config: AdwallConfig): AdwallConfig {
-  if (config.funnelId !== "mortgage" || !config.rankingConfig) return config;
+  if (config.funnelId !== "mortgage") return config;
+  if (!config.rankingConfig && !config.rankingConfigVeteranYes) return config;
 
   return {
     ...config,
-    rankingConfig: ensureMortgagePoorCreditBucket(config.rankingConfig),
+    rankingConfig: config.rankingConfig
+      ? ensureMortgagePoorCreditBucket(config.rankingConfig)
+      : config.rankingConfig,
+    rankingConfigVeteranYes: config.rankingConfigVeteranYes
+      ? ensureMortgagePoorCreditBucket(config.rankingConfigVeteranYes)
+      : config.rankingConfigVeteranYes,
   };
 }
 

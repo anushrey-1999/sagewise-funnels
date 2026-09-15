@@ -531,9 +531,12 @@ export default function AdwallConfigFormEditor(props: {
     sanitizePathSegment(values.adwallType ?? "") || "type"
   }`;
 
-  const rankingLenderNames = draft.rankingConfig?.lenders 
-    ? Object.keys(draft.rankingConfig.lenders).sort() 
-    : [];
+  const rankingLenderNames = Array.from(
+    new Set([
+      ...Object.keys(draft.rankingConfig?.lenders ?? {}),
+      ...Object.keys(draft.rankingConfigVeteranYes?.lenders ?? {}),
+    ])
+  ).sort();
 
   const deleteCard = (idx: number) => {
     const next = cloneJson(draft) as AdwallConfig;

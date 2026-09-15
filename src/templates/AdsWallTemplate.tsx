@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdwallCard, AdwallConfig } from "@/types/adwall";
 import { useEqualCtaMinWidthPx } from "@/hooks/useEqualCtaMinWidthPx";
 import AdwallOfferReveal from "@/components/AdwallOfferReveal";
-import { sortAdwallCards } from "@/lib/generic-adwall-ranking";
+import { resolveActiveRankingConfig, sortAdwallCards } from "@/lib/generic-adwall-ranking";
 import { BadgeCheck, Lock, Minus, Plus, ShieldCheck } from "lucide-react";
 import { createPortal } from "react-dom";
 import {
@@ -217,27 +217,38 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
     return interpolateTemplate(selectedSubtitle, templateVars);
   }, [selectedSubtitle, templateVars]);
 
-  const visibleCards = useMemo(() => {
-    const cards = config.cards?.filter((item) => !item?.isHidden) ?? [];
-    
-    // Extract ranking params from URL (any param starting with "rank")
-    const rankingParams: Record<string, string> = {};
+  const rankingParams = useMemo(() => {
+    const params: Record<string, string> = {};
     for (const [key, value] of searchParams.entries()) {
       if (key.startsWith("rank") && value) {
-        rankingParams[key] = cleanParam(value) || value;
+        params[key] = cleanParam(value) || value;
       }
     }
+    return params;
+  }, [searchParams]);
 
-    // If no ranking params or no ranking config, return cards as-is
-    if (Object.keys(rankingParams).length === 0 || !config.rankingConfig) {
+  const activeRankingConfig = useMemo(
+    () => resolveActiveRankingConfig(config, rankingParams),
+    [config, rankingParams]
+  );
+
+  const rankedConfig = useMemo(
+    () => (activeRankingConfig ? { ...config, rankingConfig: activeRankingConfig } : config),
+    [activeRankingConfig, config]
+  );
+
+  const visibleCards = useMemo(() => {
+    const cards = config.cards?.filter((item) => !item?.isHidden) ?? [];
+
+    if (Object.keys(rankingParams).length === 0 || !rankedConfig.rankingConfig) {
       return cards;
     }
 
-    return sortAdwallCards(cards, config, rankingParams);
-  }, [config, searchParams]);
+    return sortAdwallCards(cards, rankedConfig, rankingParams);
+  }, [config, rankedConfig, rankingParams]);
 
   const visibleCardsWithRatings = useMemo(() => {
-    if (!config.rankingConfig) return visibleCards;
+    if (!activeRankingConfig) return visibleCards;
 
     const seedKey = [
       config.id,
@@ -249,7 +260,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
       ...card,
       ratingsNumber: ratingNumbers[index] ?? card.ratingsNumber,
     }));
-  }, [config.id, config.rankingConfig, visibleCards]);
+  }, [activeRankingConfig, config.id, visibleCards]);
 
   const personalizedCards = useMemo(
     () => visibleCardsWithRatings.map((card) => interpolateCard(card, templateVars)),
