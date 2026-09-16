@@ -289,7 +289,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
 
   return (
     <div
-      className="sw-adwall-layer bg-[#FAFAF7] flex min-h-screen w-full flex-col items-start"
+      className="sw-adwall-layer bg-surface-canvas flex min-h-screen w-full flex-col items-start"
     >
       {isDynamicHeader && !disableImpressions && (
         <div className="sw-interstitial-curtain" aria-hidden="true" />

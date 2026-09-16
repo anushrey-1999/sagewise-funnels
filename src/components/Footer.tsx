@@ -9,7 +9,7 @@ const FOOTER_LINKS = [
 
 export function Footer() {
   return (
-    <div className="w-full bg-sg-funnel-header py-4 px-4">
+    <div className="w-full bg-sg-primary py-4 px-4">
       <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-white/60">
         <span className="font-medium text-white/80">Sagewise&reg;</span>
         {FOOTER_LINKS.map((link) => (

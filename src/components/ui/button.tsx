@@ -17,6 +17,14 @@ const buttonVariants = cva(
           "border border-general-border-three shadow-sm text-general-primary",
         secondary:
           "bg-secondary-main text-general-primary",
+        ctaAmber:
+          "sw-cta sw-cta--amber focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-amber)]",
+        ctaGreen:
+          "sw-cta sw-cta--green focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]",
+        ctaCustom:
+          "sw-cta sw-cta--custom focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-amber)]",
+        adwallCtaAmber:
+          "sw-adwall-cta sw-adwall-cta--amber focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-amber)]",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",

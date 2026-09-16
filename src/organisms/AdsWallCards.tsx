@@ -394,7 +394,7 @@ const AdsWallCards = ({
             {(minCreditScore || maxLoanAmount || aprRange) && (
               <div
                 data-stats-equalize="true"
-                className="grid grid-cols-3 gap-2 lg:gap-3 w-full bg-[#f5f5f5] rounded-lg p-2.5 lg:p-3 text-center"
+                className="grid grid-cols-3 gap-2 lg:gap-3 w-full bg-surface-metric-panel rounded-lg p-2.5 lg:p-3 text-center"
                 style={statsMinWidthPx ? { minWidth: statsMinWidthPx } : undefined}
               >
                 {minCreditScore && (
@@ -459,11 +459,11 @@ const AdsWallCards = ({
             {/* CTA Buttons */}
             <div className="flex flex-col gap-2 w-full pt-2 lg:pt-0">
               <Button
-                variant="secondary"
-                className="h-[44px] sm:h-[41px] w-full rounded-[var(--aw-radius-cta)] px-3 py-0 text-[15px] font-bold text-white bg-cta-orange hover:bg-cta-orange-dark shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)] transition-[background-color,box-shadow] lg:h-[44px] lg:w-[220px] focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-orange)]"
+                variant="adwallCtaAmber"
+                className="w-full px-3 py-0 lg:w-[220px]"
                 onClick={handleButtonClick}
                 icon={MoveRight}
-                iconClass="w-4 h-4"
+                iconClass="sw-cta-icon w-4 h-4"
               >
                 {buttonText}
               </Button>
@@ -514,7 +514,7 @@ const AdsWallCards = ({
                       <span className="font-semibold text-white/90">{row.value}</span>
                     </div>
                     <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                      <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${pct}%` }} />
+                      <div className="h-full bg-score-progress rounded-full" style={{ width: `${pct}%` }} />
                     </div>
                   </div>
                 );

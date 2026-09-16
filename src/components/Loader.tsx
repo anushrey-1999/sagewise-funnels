@@ -127,11 +127,11 @@ export function Loader({
         : { opacity: 0, transform: "translateY(-7px)" };
 
   return (
-    <div className="sw-interstitial fixed inset-0 z-9999 bg-[#0D1B2A]">
+    <div className="sw-interstitial fixed inset-0 z-9999 bg-intr-top">
       <div
         className="absolute inset-0 overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #0D1B2A 0%, #1B3A5C 100%)",
+          background: "linear-gradient(135deg, var(--intr-top) 0%, var(--intr-bottom) 100%)",
         }}
       >
         <div className="absolute top-[28%] left-1/2 flex w-full max-w-[520px] -translate-x-1/2 flex-col items-center px-6">

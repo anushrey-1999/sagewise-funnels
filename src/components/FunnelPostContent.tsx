@@ -224,7 +224,7 @@ export function FunnelPostContent({ postContent }: { postContent?: PostContent }
         return (
           <div
             key={key}
-            className="flex gap-3 items-start rounded-lg bg-[#f5f5f5] px-4 py-3"
+            className="flex gap-3 items-start rounded-lg bg-surface-metric-panel px-4 py-3"
           >
             <Icon name={block.icon} className="h-5 w-5 text-aw-tertiary mt-0.5 shrink-0" />
             <Html

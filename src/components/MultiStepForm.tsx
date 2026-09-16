@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react";
-import { FormConfig, FormData } from "@/types/form";
+import { FormConfig, FormData, FormStep } from "@/types/form";
 import { DynamicFormField } from "./DynamicFormField";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, Loader2, Check, Lock, ShieldCheck, ShieldEllipsis } from "lucide-react";
@@ -24,6 +24,77 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+function isStepSkippedByAnswers(step: FormStep, data: FormData): boolean {
+  if (!step.skipIf) return false;
+
+  const conditions = Array.isArray(step.skipIf) ? step.skipIf : [step.skipIf];
+  return conditions.some((condition) => {
+    const checkStepData = data[condition.checkStepId];
+    if (!checkStepData) return false;
+
+    const fieldValue = checkStepData[condition.checkFieldId];
+    if (fieldValue === undefined || fieldValue === null) return false;
+
+    const valueToCheck = Array.isArray(fieldValue) ? fieldValue[0] : String(fieldValue);
+    return condition.whenValues.includes(valueToCheck);
+  });
+}
+
+function applyFieldChange(args: {
+  prev: FormData;
+  steps: FormConfig["steps"];
+  currentStepIndex: number;
+  fieldId: string;
+  value: string | string[] | number | boolean;
+}): FormData {
+  const { prev, steps, currentStepIndex, fieldId, value } = args;
+  const currentStep = steps[currentStepIndex];
+  if (!currentStep) return prev;
+
+  const next: FormData = {
+    ...prev,
+    [currentStep.id]: {
+      ...(prev[currentStep.id] || {}),
+      [fieldId]: value,
+    },
+  };
+
+  // Dependent dropdowns (e.g. vehicle model) are invalid once their parent changes.
+  for (const step of steps) {
+    const stepData = next[step.id];
+    if (!stepData) continue;
+
+    let changed = false;
+    const updated = { ...stepData };
+    for (const field of step.fields) {
+      if (
+        field.dependsOn?.stepId === currentStep.id &&
+        field.dependsOn.fieldId === fieldId &&
+        updated[field.id] !== undefined
+      ) {
+        delete updated[field.id];
+        changed = true;
+      }
+    }
+    if (!changed) continue;
+    if (Object.keys(updated).length === 0) {
+      delete next[step.id];
+    } else {
+      next[step.id] = updated;
+    }
+  }
+
+  // Drop later answers only when this change actually skips that step.
+  for (let i = currentStepIndex + 1; i < steps.length; i++) {
+    const laterStep = steps[i];
+    if (laterStep && isStepSkippedByAnswers(laterStep, next)) {
+      delete next[laterStep.id];
+    }
+  }
+
+  return next;
+}
+
 function ProgressBarRow({
   progress,
   onBack,
@@ -43,7 +114,7 @@ function ProgressBarRow({
           type="button"
           onClick={onBack}
           aria-label="Go back"
-          className="flex shrink-0 items-center justify-center size-8 rounded-[var(--radius-field)] text-aw-tertiary cursor-pointer outline-none transition-[background-color,border-color,box-shadow] duration-150 hover:bg-gray-100 focus-visible:border focus-visible:border-aw-border-strong focus-visible:shadow-[var(--focus-ring)]"
+          className="flex shrink-0 items-center justify-center size-8 rounded-[var(--radius-field)] text-aw-tertiary cursor-pointer outline-none transition-[background-color,border-color,box-shadow] duration-150 hover:bg-neutral-hover-soft focus-visible:border focus-visible:border-aw-border-strong focus-visible:shadow-[var(--focus-ring)]"
         >
           <ChevronLeft className="size-5" strokeWidth={2} aria-hidden />
         </button>
@@ -129,9 +200,9 @@ export function MultiStepForm({
   const firstStepButtonVars = useMemo(() => {
     if (!isFirstStep || !config.firstStepButton) return undefined;
 
-    const bg = config.firstStepButton.bgColor || "var(--sw-cta-primary)";
-    const hover = config.firstStepButton.hoverBgColor || "var(--sw-cta-hover)";
-    const text = config.firstStepButton.textColor || "#ffffff";
+    const bg = config.firstStepButton.bgColor || "var(--cta-amber)";
+    const hover = config.firstStepButton.hoverBgColor || "var(--cta-amber-dark)";
+    const text = config.firstStepButton.textColor || "var(--surface-white)";
 
     return {
       ["--sw-first-step-cta-bg" as unknown as string]: bg,
@@ -143,6 +214,21 @@ export function MultiStepForm({
   const firstStepButtonText = isFirstStep
     ? (config.firstStepButton?.text || "Continue")
     : "Continue";
+  const hasCustomFirstStepCta = isFirstStep && Boolean(config.firstStepButton);
+
+  // Detect whether the config's bgColor is a standard design-system token.
+  // If so, resolve to the proper named variant instead of ctaCustom.
+  // ctaCustom is ONLY for documented A/B tests with truly non-standard colors.
+  const firstStepBgColor = config.firstStepButton?.bgColor ?? "";
+  const isAmberToken = /cta-amber|cta-orange|sw-cta-primary/.test(firstStepBgColor);
+  const isGreenToken = /cta-green|sw-cta-green/.test(firstStepBgColor);
+  const hasTrulyCustomColor = hasCustomFirstStepCta && firstStepBgColor && !isAmberToken && !isGreenToken;
+
+  const funnelCtaVariant: "ctaCustom" | "ctaAmber" | "ctaGreen" = hasTrulyCustomColor
+    ? "ctaCustom"
+    : currentStep < 2
+      ? "ctaAmber"
+      : "ctaGreen";
 
   // Inject onLoadScript when funnel first loads
   useEffect(() => {
@@ -541,42 +627,8 @@ export function MultiStepForm({
     if (stepIndex < 0 || stepIndex >= config.steps.length) {
       return false;
     }
-    
-    const step = config.steps[stepIndex];
-    if (!step.skipIf) {
-      return false;
-    }
 
-    const conditions = Array.isArray(step.skipIf) ? step.skipIf : [step.skipIf];
-
-    // Use override data if provided, otherwise use current formData state
-    const dataToCheck = formDataOverride || formData;
-
-    // Skip if ANY condition matches
-    return conditions.some((condition) => {
-      const { checkStepId, checkFieldId, whenValues } = condition;
-
-      // Get the step data for the step we need to check
-      const checkStepData = dataToCheck[checkStepId];
-      if (!checkStepData) {
-        return false;
-      }
-
-      // Get the field value from the step we're checking
-      // This works with radio buttons (returns string), select/dropdown (returns string),
-      // and other field types
-      const fieldValue = checkStepData[checkFieldId];
-      if (fieldValue === undefined || fieldValue === null) {
-        return false;
-      }
-
-      // Convert to string for comparison (handles both string and array values)
-      // For radio and select/dropdown, this will be the selected option's value
-      const valueToCheck = Array.isArray(fieldValue) ? fieldValue[0] : String(fieldValue);
-
-      // Check if the value matches any of the skip conditions
-      return whenValues.includes(valueToCheck);
-    });
+    return isStepSkippedByAnswers(config.steps[stepIndex], formDataOverride || formData);
   };
 
   const visibleStepIndices = useMemo(() => {
@@ -791,41 +843,30 @@ export function MultiStepForm({
     
     const field = currentStepData.fields.find(f => f.id === fieldId);
     if (!field) return;
-    
-    // Update form data with new value and clear all subsequent steps' data
-    // This ensures skip conditions evaluate correctly based on current answers,
-    // not stale data from steps that should have been skipped
-    setFormData((prev) => {
-      const newFormData = { ...prev };
-      
-      // Update current step data
-      newFormData[currentStepData.id] = {
-        ...(newFormData[currentStepData.id] || {}),
-        [fieldId]: value,
-      };
-      
-      // Clear data for all steps after the current step
-      for (let i = currentStep + 1; i < config.steps.length; i++) {
-        const stepId = config.steps[i].id;
-        delete newFormData[stepId];
-      }
-      
-      return newFormData;
-    });
 
-    // Clear error for this field and clear errors for subsequent steps
+    const nextFormData = applyFieldChange({
+      prev: formData,
+      steps: config.steps,
+      currentStepIndex: currentStep,
+      fieldId,
+      value,
+    });
+    setFormData(nextFormData);
+
+    // Clear this field's error, plus errors for later steps that are now skipped.
     setErrors((prev) => {
       const newErrors = { ...prev };
       const stepErrors = { ...(newErrors[currentStepData.id] || {}) };
       delete stepErrors[fieldId];
       newErrors[currentStepData.id] = stepErrors;
-      
-      // Clear errors for all steps after the current step
+
       for (let i = currentStep + 1; i < config.steps.length; i++) {
         const stepId = config.steps[i].id;
-        delete newErrors[stepId];
+        if (!nextFormData[stepId]) {
+          delete newErrors[stepId];
+        }
       }
-      
+
       return newErrors;
     });
 
@@ -923,14 +964,7 @@ export function MultiStepForm({
             autoForwardTimeoutRef.current = null;
           }
           
-          const updatedFormData: FormData = {
-            ...formData,
-            [stepIdForCheck]: updatedStepData,
-          };
-
-          for (let i = stepAtCheck + 1; i < config.steps.length; i++) {
-            delete updatedFormData[config.steps[i].id];
-          }
+          const updatedFormData: FormData = nextFormData;
 
           const nextStepIndex = getNextStepIndex(stepAtCheck, updatedFormData);
           // Last-step submit only needs a short confirmation hold; mid-funnel
@@ -1095,19 +1129,18 @@ export function MultiStepForm({
             {!isLastStep && stepNeedsManualContinue && (
               <Button
                 type="button"
-                variant="default"
+                variant={funnelCtaVariant}
                 onClick={handleNext}
                 style={firstStepButtonVars}
                 className={cn(
-                  "w-full sm:w-[460px] h-[52px] px-6 mt-1 flex items-center justify-center gap-2 rounded-[var(--radius-cta)] focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-orange)]",
-                  "bg-cta-orange hover:bg-cta-orange-dark text-white shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)]",
+                  "w-full sm:w-[460px] mt-1",
                   isShaking && "animate-shake"
                 )}
               >
-                <span className="font-bold leading-none tracking-[0.01em] text-[16px] md:text-[17px] mobile-cta cta">
+                <span className="mobile-cta cta">
                   {firstStepButtonText}
                 </span>
-                <ArrowRight className="h-[13.25px] w-[13.25px]" />
+                <ArrowRight className="sw-cta-icon h-[13.25px] w-[13.25px]" />
               </Button>
             )}
 
@@ -1134,28 +1167,27 @@ export function MultiStepForm({
               <>
                 <Button
                   type="button"
-                  variant="default"
+                  variant={funnelCtaVariant}
                   onClick={handleNext}
                   disabled={isSubmitting}
                   className={cn(
-                    "w-full sm:w-[460px] h-[52px] px-6 mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-[var(--radius-cta)] bg-cta-orange hover:bg-cta-orange-dark text-white focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-orange)]",
-                    "shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)]",
+                    "w-full sm:w-[460px] mt-1 disabled:cursor-not-allowed disabled:opacity-50",
                     isShaking && "animate-shake"
                   )}
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                      <span className="font-bold leading-none tracking-[0.01em] text-[16px] md:text-[17px] mobile-cta cta">
+                      <span className="mobile-cta cta">
                         Submitting...
                       </span>
                     </>
                   ) : (
                     <>
-                      <span className="font-bold leading-none tracking-[0.01em] text-[16px] md:text-[17px] mobile-cta cta">
+                      <span className="mobile-cta cta">
                         {config.finalStep?.buttonText || "See Instant Matches"}
                       </span>
-                      <ArrowRight className="h-[13.25px] w-[13.25px]" />
+                      <ArrowRight className="sw-cta-icon h-[13.25px] w-[13.25px]" />
                     </>
                   )}
                 </Button>

@@ -76,7 +76,7 @@ export interface FormConfig {
     text?: string;
     /**
      * Background color for step-1 button. Prefer CSS vars like:
-     * "var(--sw-cta-primary)" to match adwall CTA styling.
+     * "var(--cta-amber)" to match adwall CTA styling.
      */
     bgColor?: string;
     /**

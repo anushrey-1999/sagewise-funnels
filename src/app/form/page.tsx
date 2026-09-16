@@ -94,7 +94,7 @@ export default async function FormPage({
               The funnel you&apos;re looking for doesn&apos;t exist. Please check the URL and try
               again.
             </p>
-            <Link href="/" className="text-sg-funnel-header hover:underline">
+            <Link href="/" className="text-sg-primary hover:underline">
               Return to Homepage
             </Link>
           </div>

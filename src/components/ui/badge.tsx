@@ -44,9 +44,9 @@ export interface BadgeProps
   extends React.ComponentProps<"span">,
     VariantProps<typeof badgeVariants> {
   asChild?: boolean;
-  bgColor?: string; // Tailwind background color class (e.g., "bg-primary-main", "bg-blue-500")
-  textColor?: string; // Tailwind text color class (e.g., "text-primary-main", "text-black")
-  borderColor?: string; // Tailwind border color class (e.g., "border-primary-main", "border-green-600")
+  bgColor?: string; // Design-system background utility (e.g., "bg-primary-main")
+  textColor?: string; // Design-system text utility (e.g., "text-general-primary")
+  borderColor?: string; // Design-system border utility (e.g., "border-general-border")
   borderRadius?: string; // Tailwind border radius class (e.g., "rounded-lg", "rounded-[8px]")
 }
 

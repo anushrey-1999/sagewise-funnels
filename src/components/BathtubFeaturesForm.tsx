@@ -41,7 +41,7 @@ export function BathtubFeaturesForm() {
       className="w-full flex flex-col items-center"
     >
 
-      <Card className="w-full border border-gray-200">
+      <Card className="w-full border border-neutral-border">
         <CardHeader className="text-center space-y-1 px-4 sm:px-5 md:px-6">
           <CardTitle className="text-[20px] sm:text-[22px] md:text-2xl font-semibold text-foreground tracking-[-0.4px] sm:tracking-[-0.44px] md:tracking-[-0.48px]">
             What walk-in bathtub features would you like?
@@ -59,7 +59,7 @@ export function BathtubFeaturesForm() {
               {(field) => (
                 <div
                   className={cn(
-                    "bg-white border border-gray-200 h-[43px] min-h-[40px] rounded-lg w-full sm:w-[380px] md:w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-gray-300 transition-colors",
+                    "bg-white border border-neutral-border h-[43px] min-h-[40px] rounded-lg w-full sm:w-[380px] md:w-[342px] flex items-center gap-3 px-4 cursor-pointer hover:border-aw-border-strong transition-colors",
                     field.state.value.includes(feature.id) && "border-sg-primary"
                   )}
                   onClick={() => {

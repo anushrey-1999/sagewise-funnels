@@ -32,7 +32,7 @@ export interface TypographyProps
   extends React.HTMLAttributes<HTMLElement>,
     VariantProps<typeof typographyVariants> {
   as?: React.ElementType;
-  color?: string; // Tailwind color class or custom color (e.g., "text-blue-500", "text-[#ff0000]")
+  color?: string; // Tailwind color class or design-system utility (e.g., "text-feedback-error")
   size?: string; // Tailwind text size class (e.g., "text-xs", "text-sm", "text-base", "text-lg", "text-xl", "text-2xl", "text-3xl", "text-4xl", "text-5xl", "text-6xl", or custom like "text-[18px]")
 }
 

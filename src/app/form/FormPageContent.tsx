@@ -174,7 +174,7 @@ export function FormPageContent({
 
           {/* Provider Logos Section - Before Footer (funnels only; configured per funnel JSON) */}
           {formConfig.providerLogos?.logos?.length ? (
-            <div className="w-full bg-[#F5F5F5]">
+            <div className="w-full bg-surface-metric-panel">
               <div className="w-full mx-auto flex flex-col gap-6 items-center px-6 md:px-0 py-7">
                 <Typography
                   variant="h3"
