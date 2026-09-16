@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { move } from "@dnd-kit/helpers";
 import { useForm } from "@tanstack/react-form";
 import { upload } from "@vercel/blob/client";
 import type { PutBlobResult } from "@vercel/blob";
@@ -20,7 +21,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
+import { OfferTilesDragProvider, SortableOfferTile } from "./SortableOfferTile";
 import { cn } from "@/lib/utils";
 import { ADWALL_MACROS, buildAdwallTemplateVars } from "@/lib/adwall-template-vars";
 
@@ -104,6 +106,17 @@ function normalizeAdwallHeaderTemplates(config: AdwallConfig): AdwallConfig {
 function cloneJson<T>(v: T): T {
   // Configs are JSON-compatible; prefer structuredClone when available.
   return typeof structuredClone === "function" ? structuredClone(v) : (JSON.parse(JSON.stringify(v)) as T);
+}
+
+function createOfferTileId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `offer-tile-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+function createOfferTileIds(count: number): string[] {
+  return Array.from({ length: Math.max(0, count) }, createOfferTileId);
 }
 
 function setIn(obj: unknown, path: (string | number)[], value: unknown): unknown {
@@ -453,6 +466,12 @@ export default function AdwallConfigFormEditor(props: {
   const parsed = React.useMemo(() => adwallConfigSchema.safeParse(props.initialDraft), [props.initialDraft]);
   const [draft, setDraft] = React.useState<AdwallConfig | null>(parsed.success ? parsed.data : null);
   const draftRef = React.useRef<AdwallConfig | null>(draft);
+  const [cardIds, setCardIds] = React.useState<string[]>(() =>
+    createOfferTileIds(parsed.success && Array.isArray(parsed.data.cards) ? parsed.data.cards.length : 0)
+  );
+  const cardIdsRef = React.useRef(cardIds);
+  cardIdsRef.current = cardIds;
+  const [openOfferIds, setOpenOfferIds] = React.useState<string[]>([]);
 
   const form = useForm({
     defaultValues: (parsed.success ? parsed.data : (undefined as unknown as AdwallConfig)),
@@ -462,8 +481,12 @@ export default function AdwallConfigFormEditor(props: {
   React.useEffect(() => {
     if (parsed.success) {
       const normalized = normalizeAdwallHeaderTemplates(parsed.data);
+      const nextIds = createOfferTileIds(Array.isArray(normalized.cards) ? normalized.cards.length : 0);
       setDraft(normalized);
       draftRef.current = normalized;
+      setCardIds(nextIds);
+      cardIdsRef.current = nextIds;
+      setOpenOfferIds([]);
       form.reset(normalized);
       props.onDraftChange(normalized);
     }
@@ -483,6 +506,16 @@ export default function AdwallConfigFormEditor(props: {
       const normalized = normalizeAdwallHeaderTemplates(reParsed.data);
       setDraft(normalized);
       draftRef.current = normalized;
+      const nextLength = Array.isArray(normalized.cards) ? normalized.cards.length : 0;
+      setCardIds((prev) => {
+        if (prev.length === nextLength) return prev;
+        const next =
+          prev.length < nextLength
+            ? [...prev, ...createOfferTileIds(nextLength - prev.length)]
+            : prev.slice(0, nextLength);
+        cardIdsRef.current = next;
+        return next;
+      });
     }
   }, [props.initialDraft]);
 
@@ -517,6 +550,24 @@ export default function AdwallConfigFormEditor(props: {
     [props]
   );
 
+  const reorderCards = React.useCallback(
+    (event: Parameters<typeof move>[1]) => {
+      const currentIds = cardIdsRef.current;
+      const nextIds = move(currentIds, event);
+      if (nextIds === currentIds) return;
+      const currentCards = Array.isArray(draftRef.current?.cards) ? draftRef.current.cards : [];
+      const byId = new Map(currentIds.map((id, index) => [id, currentCards[index]]));
+      const nextCards = nextIds.map((id) => byId.get(id)).filter((card): card is AdwallCard => !!card);
+      if (nextCards.length !== currentCards.length) return;
+      cardIdsRef.current = nextIds;
+      setCardIds(nextIds);
+      const next = cloneJson(draftRef.current) as AdwallConfig;
+      next.cards = nextCards;
+      emitNext(next);
+    },
+    [emitNext]
+  );
+
   if (!parsed.success || !draft) {
     return (
       <div className={cn("bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm", props.className)}>
@@ -541,6 +592,11 @@ export default function AdwallConfigFormEditor(props: {
   const deleteCard = (idx: number) => {
     const next = cloneJson(draft) as AdwallConfig;
     next.cards = cards.filter((_, i) => i !== idx);
+    const removedId = cardIdsRef.current[idx];
+    const nextIds = cardIdsRef.current.filter((_, i) => i !== idx);
+    cardIdsRef.current = nextIds;
+    setCardIds(nextIds);
+    setOpenOfferIds((open) => open.filter((id) => id !== removedId));
     emitNext(next);
   };
 
@@ -548,6 +604,13 @@ export default function AdwallConfigFormEditor(props: {
     const next = cloneJson(draft) as AdwallConfig;
     const copy = cloneJson(cards[idx]) as AdwallCard;
     next.cards = [...cards.slice(0, idx + 1), copy, ...cards.slice(idx + 1)];
+    const nextIds = [
+      ...cardIdsRef.current.slice(0, idx + 1),
+      createOfferTileId(),
+      ...cardIdsRef.current.slice(idx + 1),
+    ];
+    cardIdsRef.current = nextIds;
+    setCardIds(nextIds);
     emitNext(next);
   };
 
@@ -771,28 +834,36 @@ export default function AdwallConfigFormEditor(props: {
 
       {props.section !== "basic" ? (
         <div className="bg-white border border-general-border rounded-lg overflow-hidden">
-          <div className="p-4 pb-0">
+          <div className="p-4 pb-3 space-y-2">
             <MacroReference />
+            <p className="text-xs text-general-muted-foreground">
+              Drag the handle on the left to set the default offer order. This order is used when someone
+              opens the adwall directly, or when preview/live is opened without funnel ranking. Funnel
+              traffic still uses the Matrix.
+            </p>
           </div>
-          <Accordion type="multiple" className="divide-y divide-general-border">
+          <OfferTilesDragProvider onDragEnd={reorderCards}>
+            <Accordion
+              type="multiple"
+              value={openOfferIds}
+              onValueChange={setOpenOfferIds}
+              className="divide-y divide-general-border"
+            >
           {cards.map((card, idx) => {
+            const cardId = cardIds[idx] ?? `fallback-${idx}`;
             const heading = card?.heading?.trim() || `Card ${idx + 1}`;
             const badge = card?.badgeText?.trim();
             const hidden = !!card?.isHidden;
             const isMatrixRankingNumberActive = rankingLenderNames.length > 0;
 
             return (
-              <AccordionItem key={idx} value={`card-${idx}`} className="px-4">
-                <AccordionTrigger className="py-3">
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium truncate">{heading}</div>
-                    <div className="text-xs text-general-muted-foreground truncate">
-                      {badge ? badge : "—"}
-                      {hidden ? " · Hidden" : ""}
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pb-4">
+              <SortableOfferTile
+                key={cardId}
+                id={cardId}
+                index={idx}
+                heading={heading}
+                subtitle={`${badge ? badge : "—"}${hidden ? " · Hidden" : ""}`}
+              >
                   <div className="flex flex-wrap gap-2 mb-4">
                     <Button type="button" variant="outline" size="sm" className={adminSmallButton} onClick={() => duplicateCard(idx)}>
                       Duplicate
@@ -1104,11 +1175,11 @@ export default function AdwallConfigFormEditor(props: {
                       ) : null}
                     </div>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
+              </SortableOfferTile>
             );
           })}
-          </Accordion>
+            </Accordion>
+          </OfferTilesDragProvider>
         </div>
       ) : null}
     </div>

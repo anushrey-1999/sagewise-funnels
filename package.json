@@ -35,6 +35,8 @@
     "configs:sync:prod": "SEED_FORCE=1 dotenv -e .env.prod -- tsx scripts/sync-configs.ts"
   },
   "dependencies": {
+    "@dnd-kit/helpers": "^0.5.0",
+    "@dnd-kit/react": "^0.5.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-label": "^2.1.8",
