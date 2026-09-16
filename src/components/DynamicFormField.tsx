@@ -186,7 +186,7 @@ function SliderField({
           className={cn(
             "!rounded-[var(--radius-field)] h-[58px] min-h-[58px] text-lg font-semibold text-aw-text",
             prefix ? "pl-8" : "pl-4",
-            isValid && "border-[var(--sg-primary-green)]",
+            // Filled state: border stays gray per spec §04. Green border = focus only (isFocused in Input).
             error && "border-feedback-error"
           )}
           aria-label={field.label || field.placeholder || field.id}
@@ -298,7 +298,8 @@ function FloatingLabelInput({
             isDateField && "pr-3 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none",
             isDateField && !hasValue && "text-transparent caret-transparent selection:bg-transparent selection:text-transparent [&::-webkit-date-and-time-value]:text-transparent [&::-webkit-datetime-edit]:text-transparent [&::-webkit-datetime-edit-fields-wrapper]:text-transparent [&::-webkit-datetime-edit-text]:text-transparent [&::-webkit-datetime-edit-day-field]:text-transparent [&::-webkit-datetime-edit-month-field]:text-transparent [&::-webkit-datetime-edit-year-field]:text-transparent",
             "mobile-field-input field-input font-semibold tracking-[0.01em] text-aw-text",
-            isValid && "border-[var(--sg-primary-green)]",
+            // Filled state: border stays at --border (gray) per spec §04.
+            // Green border is focus-only — handled by the Input component's isFocused state.
             error && "border-feedback-error"
           )}
           required={field.required}
@@ -461,7 +462,7 @@ function YearSliderField({
           onChange={(e) => handleInputChange(e.target.value)}
           className={cn(
             "!rounded-[var(--radius-field)] h-[58px] min-h-[58px] pl-4 mobile-field-input field-input font-semibold tracking-[0.01em] text-aw-text",
-            isValid && "border-[var(--sg-primary-green)]",
+            // Filled state: border stays gray per spec §04. Green border = focus only.
             error && "border-feedback-error"
           )}
           aria-label={field.label || field.placeholder || field.id}
@@ -519,11 +520,12 @@ function DependentDropdownField({
           onChange={(e) => onChange(e.target.value)}
           disabled={!dependencyValue}
           className={cn(
-            "h-[58px] min-h-[58px] w-full rounded-[var(--radius-field)] border border-aw-border px-3 py-2 pr-10 text-base text-aw-text outline-none shadow-[var(--field-shadow)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-sg-primary-green hover:shadow-[var(--focus-ring)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+            "h-[58px] min-h-[58px] w-full rounded-[var(--radius-field)] border-[1.5px] border-aw-border px-3 py-2 pr-10 text-base text-aw-text outline-none shadow-[var(--field-shadow)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-sg-primary-green hover:shadow-[var(--focus-ring)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
             "!bg-white",
             "focus-visible:!border-[var(--sg-primary-green)] focus-visible:shadow-[var(--focus-ring)]",
             isSelectValid && "border-[var(--sg-primary-green)]",
-            error && "border-feedback-error hover:border-feedback-error hover:shadow-[var(--focus-ring-error)]"
+          // Error: red border + red ring always on (spec §04), kept on hover and focus-visible.
+            error && "border-feedback-error shadow-[var(--focus-ring-error)] hover:border-feedback-error hover:shadow-[var(--focus-ring-error)] focus-visible:shadow-[var(--focus-ring-error)]"
           )}
           required={field.required}
           aria-label={field.label || field.placeholder || field.id}
@@ -653,14 +655,20 @@ function RadioOptionsField({
               optionRefs.current[index] = el;
             }}
             className={cn(
-              "border border-aw-border rounded-[var(--radius-field)] flex items-center px-4 cursor-pointer shadow-[var(--field-shadow)] hover:border-sg-primary-green transition-[border-color,background-color,box-shadow] duration-150 ease-out relative !bg-white outline-none",
-              // Unselected hover: green border + lift. Selected keeps the green ring.
+              // Default: 1px border (spec §04 — radio chips use 1px, NOT 1.5px).
+              // Hover: border darkens to --border-strong (#BFCBC7) — NOT green, NO translateY (guide has no lift on chips).
+              // Transition: border-color + bg + box-shadow at 140ms ease (§04 spec).
+              "border border-aw-border rounded-[var(--radius-field)] flex items-center px-4 cursor-pointer shadow-[var(--field-shadow)] hover:border-aw-border-strong transition-[border-color,background-color,box-shadow] duration-[140ms] ease relative !bg-white outline-none",
+              // Unselected hover: deeper shadow (no translate — spec has none).
               !showSelected && "hover:shadow-[var(--field-shadow-hover)]",
-              // focus-visible: keyboard-only ring (Tab / arrow keys). No bare focus: rule so
-              // that programmatic .focus() calls and mouse clicks don't paint the green ring.
-              "focus-visible:!border-[var(--sg-primary-green)] focus-visible:shadow-[var(--focus-ring)]",
-              showSelected && "border-[var(--sg-primary-green)] !bg-sg-green-50 shadow-[var(--focus-ring-selected)] focus-visible:shadow-[var(--focus-ring-selected)]",
-              error && "border-feedback-error hover:border-feedback-error focus-visible:!border-feedback-error focus-visible:shadow-[var(--focus-ring-error)]",
+              // focus-visible: keyboard-only focus ring. Guide: ring only, border color unchanged by focus.
+              // No bare focus: rule so programmatic .focus() / mouse clicks don't paint the ring.
+              "focus-visible:shadow-[var(--focus-ring)]",
+              // Selected: 2px green border, green-50 bg, green glow shadow (--shadow-selected).
+              // focus-visible on selected: combined ring + glow via --focus-ring-selected.
+              showSelected && "![border-width:2px] border-[var(--sg-primary-green)] !bg-sg-green-50 shadow-[var(--shadow-selected)] focus-visible:shadow-[var(--focus-ring-selected)]",
+              // Error: red border + red ring always on (spec §04), kept on hover and focus-visible.
+              error && "border-feedback-error shadow-[var(--focus-ring-error)] hover:border-feedback-error hover:shadow-[var(--focus-ring-error)] focus-visible:border-feedback-error focus-visible:shadow-[var(--focus-ring-error)]",
               hasIcons ? "h-[66px] min-h-[66px] gap-4" : "h-[58px] min-h-[58px] justify-center"
             )}
             onClick={() => onChange(option.value)}
@@ -845,11 +853,13 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
         return (
           <div
             className={cn(
-              "border border-aw-border h-[58px] min-h-[58px] rounded-[var(--radius-field)] w-full sm:w-[460px] flex items-center gap-3 px-4 cursor-pointer shadow-[var(--field-shadow)] hover:border-sg-primary-green transition-[border-color,background-color,box-shadow] duration-150 ease-out relative",
+              // Same chip spec as radio tiles: 1px default border, hover darkens to --border-strong (NOT green), 140ms ease.
+              "border border-aw-border h-[58px] min-h-[58px] rounded-[var(--radius-field)] w-full sm:w-[460px] flex items-center gap-3 px-4 cursor-pointer shadow-[var(--field-shadow)] hover:border-aw-border-strong transition-[border-color,background-color,box-shadow] duration-[140ms] ease relative",
               !isCheckboxValid && "hover:shadow-[var(--field-shadow-hover)]",
-              "focus-visible:!border-[var(--sg-primary-green)] focus-visible:shadow-[var(--focus-ring)] !bg-white outline-none",
-              isCheckboxValid && "border-[var(--sg-primary-green)] shadow-[var(--focus-ring-selected)] focus-visible:shadow-[var(--focus-ring-selected)]",
-              error && "border-feedback-error hover:border-feedback-error focus-visible:!border-feedback-error focus-visible:shadow-[var(--focus-ring-error)]"
+              "focus-visible:shadow-[var(--focus-ring)] !bg-white outline-none",
+              isCheckboxValid && "![border-width:2px] border-[var(--sg-primary-green)] !bg-sg-green-50 shadow-[var(--shadow-selected)] focus-visible:shadow-[var(--focus-ring-selected)]",
+              // Error: red border + red ring always on (spec §04), kept on hover and focus-visible.
+              error && "border-feedback-error shadow-[var(--focus-ring-error)] hover:border-feedback-error hover:shadow-[var(--focus-ring-error)] focus-visible:border-feedback-error focus-visible:shadow-[var(--focus-ring-error)]"
             )}
             onClick={() => {
               const currentValue = Array.isArray(value) ? value : [];
@@ -944,11 +954,12 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
                 value={typeof value === "string" ? value : ""}
                 onChange={(e) => onChange(e.target.value)}
                 className={cn(
-                  "h-[58px] min-h-[58px] w-full rounded-[var(--radius-field)] border border-aw-border px-3 py-2 pr-10 text-base text-aw-text outline-none shadow-[var(--field-shadow)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-sg-primary-green hover:shadow-[var(--focus-ring)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+                  "h-[58px] min-h-[58px] w-full rounded-[var(--radius-field)] border-[1.5px] border-aw-border px-3 py-2 pr-10 text-base text-aw-text outline-none shadow-[var(--field-shadow)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-sg-primary-green hover:shadow-[var(--focus-ring)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
                   "!bg-white",
                   "focus-visible:!border-[var(--sg-primary-green)] focus-visible:shadow-[var(--focus-ring)]",
                   isSelectValid && "border-[var(--sg-primary-green)]",
-                  error && "border-feedback-error hover:border-feedback-error hover:shadow-[var(--focus-ring-error)]"
+                  // Error: red border + red ring always on (spec §04).
+                  error && "border-feedback-error shadow-[var(--focus-ring-error)] hover:border-feedback-error hover:shadow-[var(--focus-ring-error)] focus-visible:shadow-[var(--focus-ring-error)]"
                 )}
                 required={field.required}
                 aria-label={field.label || field.id}
