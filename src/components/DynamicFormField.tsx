@@ -122,7 +122,7 @@ function SliderField({
           onClick={handleDecrement}
           disabled={sliderVal <= min}
           aria-label="Decrease value"
-          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:[box-shadow:var(--focus-ring)] outline-none"
+          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:shadow-[var(--focus-ring)] outline-none"
         >
           <Minus className="size-5 text-sg-primary-green" strokeWidth={2.5} />
         </button>
@@ -136,7 +136,7 @@ function SliderField({
           onClick={handleIncrement}
           disabled={sliderVal >= max}
           aria-label="Increase value"
-          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:[box-shadow:var(--focus-ring)] outline-none"
+          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:shadow-[var(--focus-ring)] outline-none"
         >
           <Plus className="size-5 text-sg-primary-green" strokeWidth={2.5} />
         </button>
@@ -401,7 +401,7 @@ function YearSliderField({
           onClick={handleDecrement}
           disabled={sliderVal <= min}
           aria-label="Decrease year"
-          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:[box-shadow:var(--focus-ring)] outline-none"
+          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:shadow-[var(--focus-ring)] outline-none"
         >
           <Minus className="size-5 text-sg-primary-green" strokeWidth={2.5} />
         </button>
@@ -415,7 +415,7 @@ function YearSliderField({
           onClick={handleIncrement}
           disabled={sliderVal >= max}
           aria-label="Increase year"
-          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:[box-shadow:var(--focus-ring)] outline-none"
+          className="size-12 shrink-0 rounded-[var(--radius-field)] border border-sg-primary-green bg-sg-green-50 flex items-center justify-center hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-[background-color] duration-200 focus-visible:shadow-[var(--focus-ring)] outline-none"
         >
           <Plus className="size-5 text-sg-primary-green" strokeWidth={2.5} />
         </button>
@@ -521,7 +521,7 @@ function DependentDropdownField({
           className={cn(
             "h-[58px] min-h-[58px] w-full rounded-[var(--radius-field)] border border-aw-border px-3 py-2 pr-10 text-base text-aw-text outline-none shadow-[var(--field-shadow)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-aw-border-strong hover:shadow-[var(--field-shadow-hover)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
             "!bg-white",
-            "focus-visible:!border-[var(--sg-primary-green)] focus-visible:[box-shadow:var(--focus-ring)]",
+            "focus-visible:!border-[var(--sg-primary-green)] focus-visible:shadow-[var(--focus-ring)]",
             isSelectValid && "border-[var(--sg-primary-green)]",
             error && "border-red-500"
           )}
@@ -572,19 +572,13 @@ function RadioOptionsField({
 }) {
   const visibleOptions = field.options?.filter((option) => !option.uiHidden) ?? [];
   const hasIcons = visibleOptions.some((o) => o.icon);
-  const hasValue = typeof value === "string" && value !== "";
   const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Initialize refs array and auto-focus first option
+  // Keep refs array in sync with option count.
+  // Do NOT auto-focus any option on mount — focus is managed by the parent
+  // step container, which moves focus to the question heading on each step load.
   useEffect(() => {
     optionRefs.current = optionRefs.current.slice(0, visibleOptions.length);
-    // Auto-focus the first option on mount
-    const timer = setTimeout(() => {
-      if (optionRefs.current[0]) {
-        optionRefs.current[0].focus();
-      }
-    }, 100);
-    return () => clearTimeout(timer);
   }, [visibleOptions.length]);
 
   const handleKeyDown = useCallback(
@@ -648,8 +642,9 @@ function RadioOptionsField({
       {visibleOptions.map((option, index) => {
         const isSelected = value === option.value;
         const isValid = isSelected && isValidValue(field, value);
-        const isHinted = !hasValue && index === 0;
-        const showSelected = isValid || isHinted;
+        // showSelected is driven ONLY by whether this option's value matches
+        // the stored answer. Never hint or pre-style the first option.
+        const showSelected = isValid;
 
         return (
           <div
@@ -659,10 +654,11 @@ function RadioOptionsField({
             }}
             className={cn(
               "border border-aw-border rounded-[var(--radius-field)] flex items-center px-4 cursor-pointer shadow-[var(--field-shadow)] hover:border-aw-border-strong hover:shadow-[var(--field-shadow-hover)] transition-[border-color,background-color,box-shadow] duration-150 ease-out relative !bg-white outline-none",
-              "focus:!border-[var(--sg-primary-green)] focus:[box-shadow:var(--focus-ring)]",
-              "focus-visible:!border-[var(--sg-primary-green)] focus-visible:[box-shadow:var(--focus-ring)]",
-              showSelected && "border-[var(--sg-primary-green)] !bg-sg-green-50 shadow-[var(--shadow-selected)] focus-visible:[box-shadow:var(--focus-ring),var(--shadow-selected)]",
-              error && "border-red-500 focus-visible:!border-red-500 focus-visible:[box-shadow:var(--focus-ring-error)]",
+              // focus-visible: keyboard-only ring (Tab / arrow keys). No bare focus: rule so
+              // that programmatic .focus() calls and mouse clicks don't paint the green ring.
+              "focus-visible:!border-[var(--sg-primary-green)] focus-visible:shadow-[var(--focus-ring)]",
+              showSelected && "border-[var(--sg-primary-green)] !bg-sg-green-50 shadow-[var(--shadow-selected)] focus-visible:shadow-[var(--focus-ring-selected)]",
+              error && "border-red-500 focus-visible:!border-red-500 focus-visible:shadow-[var(--focus-ring-error)]",
               hasIcons ? "h-[66px] min-h-[66px] gap-4" : "h-[58px] min-h-[58px] justify-center"
             )}
             onClick={() => onChange(option.value)}
@@ -811,7 +807,7 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
                       : currentValue.filter((id) => id !== field.id);
                     onChange(newValue);
                   }}
-                  className="h-4 w-4 border-2 border-gray-500 rounded data-[state=checked]:bg-gray-600 data-[state=checked]:border-gray-600 data-[state=checked]:text-white shadow-none outline-none focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
+                  className="h-4 w-4 border-2 border-gray-500 rounded data-[state=checked]:bg-gray-600 data-[state=checked]:border-gray-600 data-[state=checked]:text-white shadow-none outline-none focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)]"
                   aria-label={field.label || field.id}
                   aria-invalid={!!error}
                   aria-describedby={error ? errorId : undefined}
@@ -848,9 +844,9 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
           <div
             className={cn(
               "border border-aw-border h-[58px] min-h-[58px] rounded-[var(--radius-field)] w-full sm:w-[460px] flex items-center gap-3 px-4 cursor-pointer shadow-[var(--field-shadow)] hover:border-aw-border-strong hover:shadow-[var(--field-shadow-hover)] transition-[border-color,background-color,box-shadow] duration-150 ease-out relative",
-              "focus-visible:!border-[var(--sg-primary-green)] focus-visible:[box-shadow:var(--focus-ring)] !bg-white outline-none",
-              isCheckboxValid && "border-[var(--sg-primary-green)] shadow-[var(--shadow-selected)] focus-visible:[box-shadow:var(--focus-ring),var(--shadow-selected)]",
-              error && "border-red-500 focus-visible:!border-red-500 focus-visible:[box-shadow:var(--focus-ring-error)]"
+              "focus-visible:!border-[var(--sg-primary-green)] focus-visible:shadow-[var(--focus-ring)] !bg-white outline-none",
+              isCheckboxValid && "border-[var(--sg-primary-green)] shadow-[var(--shadow-selected)] focus-visible:shadow-[var(--focus-ring-selected)]",
+              error && "border-red-500 focus-visible:!border-red-500 focus-visible:shadow-[var(--focus-ring-error)]"
             )}
             onClick={() => {
               const currentValue = Array.isArray(value) ? value : [];
@@ -947,7 +943,7 @@ export function DynamicFormField({ field, value, onChange, error, dependencyValu
                 className={cn(
                   "h-[58px] min-h-[58px] w-full rounded-[var(--radius-field)] border border-aw-border px-3 py-2 pr-10 text-base text-aw-text outline-none shadow-[var(--field-shadow)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out will-change-[border-color,transform] motion-reduce:transition-none motion-reduce:will-change-auto hover:border-aw-border-strong hover:shadow-[var(--field-shadow-hover)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
                   "!bg-white",
-                  "focus-visible:!border-[var(--sg-primary-green)] focus-visible:[box-shadow:var(--focus-ring)]",
+                  "focus-visible:!border-[var(--sg-primary-green)] focus-visible:shadow-[var(--focus-ring)]",
                   isSelectValid && "border-[var(--sg-primary-green)]",
                   error && "border-red-500"
                 )}

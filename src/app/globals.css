@@ -1,6 +1,21 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Cross-document opt-in so the interstitial snapshot can fade over the adwall.
+   Inline <style> tags in client trees can miss the destination's first paint. */
+@view-transition {
+  navigation: auto;
+}
+
+/* Repo-root audit HTML is not app UI. Tailwind still scans it, and class
+   examples like focus-visible:[box-shadow:var(...)] compile to invalid CSS. */
+@source not "../../BRAND_SYSTEM_COMPARISON.html";
+@source not "../../ADWALL_GUIDELINES_COMPARISON.html";
+@source not "../../funnel-compliance-audit.html";
+@source not "../../MASTER_AUDIT_REPORT.html";
+@source not "../../HOW_TO_CREATE_AN_ADWALL.md";
+@source not "../../ADWALL_DESIGN_SYSTEM_PLAN.md";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -135,12 +150,16 @@
   --focus-ring-neutral: 0 0 0 3px rgba(94,110,107,.25);
   --focus-ring-sage: 0 0 0 3px rgba(47,107,87,.22);
   --focus-ring-on-dark: 0 0 0 3px rgba(255,255,255,.55);
+  /* Combined shadow: focus-ring + selected-card glow in one variable.
+     Avoids multi-value arbitrary Tailwind classes which Turbopack cannot parse. */
+  --focus-ring-selected: 0 0 0 3px rgba(34,201,138,.35), 0 4px 12px rgba(34,201,138,.16);
 
   /* Motion tokens */
   --ease: cubic-bezier(.2,.6,.2,1);
   --dur-fast: 120ms;
   --dur-base: 160ms;
   --dur-med: 260ms;
+  --dur-step-out: 200ms;
 
   /* Legacy funnel colors */
   --sg-interstitial-bg: #0D1B2A;
@@ -333,7 +352,7 @@
     animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
   }
   50% {
-    transform: scale(1.07);
+    transform: scale(1.075);
     animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
   }
   100% { transform: scale(1); }
@@ -362,25 +381,117 @@
   }
 }
 
-/* Fade the completed interstitial snapshot over the live destination. The
-   reload still clears funnel scripts; only these two pages opt in. */
-::view-transition-group(root) {
-  animation: none;
+/* Funnel step stage: header/progress stay put; questions dissolve like the loader. */
+.sw-step-stage {
+  overflow-x: hidden;
+  width: 100%;
 }
 
-::view-transition-old(root) {
-  animation: sw-interstitial-out 240ms ease-out both;
-  mix-blend-mode: normal;
+.sw-step-panel {
+  view-transition-name: sw-funnel-step;
+}
+
+html.sw-handoff .sw-step-panel {
+  view-transition-name: none;
+}
+
+.sw-step-panel[data-step-anim] {
+  pointer-events: none;
+}
+
+.sw-step-panel[data-step-anim="exit"] {
+  animation: sw-interstitial-out 500ms cubic-bezier(.2, .6, .2, 1) both;
+}
+.sw-step-panel[data-step-anim="enter"] {
+  animation: sw-step-fade-in 500ms cubic-bezier(.2, .6, .2, 1) both;
+}
+
+.sw-interstitial--enter {
+  animation: sw-step-fade-in 500ms cubic-bezier(.2, .6, .2, 1) both;
+}
+
+@keyframes sw-step-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+html.sw-step-handoff::view-transition-old(sw-funnel-step) {
+  animation: sw-interstitial-out 500ms cubic-bezier(.2, .6, .2, 1) both;
   z-index: 1;
 }
 
+html.sw-step-handoff::view-transition-new(sw-funnel-step) {
+  animation: none;
+}
+
+/* Loader → adwall: 300ms outgoing fade against a 400ms incoming fade + 8px settle.
+   Other navigations opt in but stay instant unless the handoff classes are set. */
+::view-transition-group(root) {
+  animation: none;
+  background: #fafaf7;
+}
+
+::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 
+html.sw-handoff::view-transition-old(root) {
+  animation: sw-interstitial-out 300ms ease-out both;
+  z-index: 1;
+}
+
+html[data-sw-handoff="in"]::view-transition-new(root) {
+  animation:
+    sw-adwall-in-fade 400ms ease 50ms both,
+    sw-adwall-in-rise 400ms cubic-bezier(.16, 1, .3, 1) 50ms both;
+}
+
 @keyframes sw-interstitial-out {
+  from { opacity: 1; }
   to { opacity: 0; }
+}
+
+@keyframes sw-adwall-in-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sw-adwall-in-rise {
+  from { transform: translateY(8px); }
+  to { transform: translateY(0); }
+}
+
+/* Fallback for browsers without cross-document view transitions. */
+.sw-interstitial-curtain {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 100%);
+}
+
+html[data-sw-handoff="in"] .sw-interstitial-curtain {
+  display: block;
+  animation: sw-interstitial-out 300ms ease-out both;
+}
+
+html[data-sw-handoff="in"] .sw-adwall-layer {
+  animation:
+    sw-adwall-in-fade 400ms ease 50ms both,
+    sw-adwall-in-rise 400ms cubic-bezier(.16, 1, .3, 1) 50ms both;
+}
+
+@supports selector(::view-transition-old(root)) {
+  html[data-sw-handoff="in"] .sw-interstitial-curtain {
+    display: none;
+  }
+
+  html[data-sw-handoff="in"] .sw-adwall-layer {
+    animation: none;
+  }
 }
 
 @keyframes sw-offer-enter {
@@ -481,8 +592,7 @@
 }
 
 .sw-loader-progress {
-  transition-property: transform;
-  transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  transition: width 190ms cubic-bezier(.22, 1, .36, 1);
 }
 
 /* Spatial motion is reduced, but the information timing and completion hold stay intact. */
@@ -506,6 +616,25 @@
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none;
+  }
+
+  .sw-step-panel[data-step-anim],
+  .sw-interstitial--enter,
+  .sw-interstitial-curtain,
+  html[data-sw-handoff="in"] .sw-adwall-layer,
+  html.sw-step-handoff::view-transition-old(sw-funnel-step),
+  html.sw-step-handoff::view-transition-new(sw-funnel-step) {
+    animation: none;
+  }
+
+  html.sw-handoff::view-transition-old(root),
+  html[data-sw-handoff="in"]::view-transition-new(root) {
+    animation: sw-interstitial-out 300ms ease both;
+  }
+
+  html[data-sw-handoff="in"] .sw-adwall-layer {
+    transform: none;
+    animation: sw-adwall-in-fade 300ms ease both;
   }
 
   ::view-transition-old(root),

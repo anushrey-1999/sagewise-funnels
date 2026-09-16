@@ -8,13 +8,21 @@ import { ArrowRight, ChevronLeft, Loader2, Check, Lock, ShieldCheck, ShieldEllip
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Loader } from "./Loader";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { resolvePostSubmitRedirect, resolveRedirectOnAnswer } from "@/lib/funnel-redirect";
 import { resolveMortgageInterstitialCopy } from "@/lib/mortgage-interstitial-copy";
-import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
+import { appendQueryParams } from "@/lib/url";
 import { buildAdwallRankingQueryParams } from "@/lib/adwall-ranking-query-params";
-import { useSearchParams } from "next/navigation";
 import { injectImpressionScript } from "@/lib/injectImpressionScript";
+import { beginAdwallHandoff } from "@/lib/adwall-handoff";
+import { flushSync } from "react-dom";
+
+const STEP_FADE_MS = 500;
+
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
 function ProgressBarRow({
   progress,
@@ -35,7 +43,7 @@ function ProgressBarRow({
           type="button"
           onClick={onBack}
           aria-label="Go back"
-          className="flex shrink-0 items-center justify-center size-8 rounded-[var(--radius-field)] text-aw-tertiary cursor-pointer outline-none transition-[background-color,border-color,box-shadow] duration-150 hover:bg-gray-100 focus-visible:border focus-visible:border-aw-border-strong focus-visible:[box-shadow:var(--focus-ring)]"
+          className="flex shrink-0 items-center justify-center size-8 rounded-[var(--radius-field)] text-aw-tertiary cursor-pointer outline-none transition-[background-color,border-color,box-shadow] duration-150 hover:bg-gray-100 focus-visible:border focus-visible:border-aw-border-strong focus-visible:shadow-[var(--focus-ring)]"
         >
           <ChevronLeft className="size-5" strokeWidth={2} aria-hidden />
         </button>
@@ -68,7 +76,6 @@ export function MultiStepForm({
   onStepChange,
   isSubmitting = false,
 }: MultiStepFormProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({});
@@ -78,7 +85,14 @@ export function MultiStepForm({
   const [isShaking, setIsShaking] = useState(false);
   const autoForwardTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const checkCompleteTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const stepAnimTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentStepRef = useRef(currentStep);
+  const advancingRef = useRef(false);
+  const [stepAnim, setStepAnim] = useState<"exit" | "enter" | undefined>(undefined);
+  // Ref for the step question heading — focus moves here on every step load so
+  // that (a) screen readers announce the new question, and (b) no option card
+  // receives a spurious focus ring on mount or Back navigation.
+  const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const conversionFiredRef = useRef(false);
 
   const isFirstStep = currentStep === 0;
@@ -150,7 +164,23 @@ export function MultiStepForm({
       clearTimeout(checkCompleteTimeoutRef.current);
       checkCompleteTimeoutRef.current = null;
     }
+    // Move focus to the question heading on every step change (forward AND back).
+    // This prevents any option card from receiving a spurious focus ring on mount,
+    // and lets screen readers announce the new question immediately.
+    const headingFocusTimer = setTimeout(() => {
+      stepHeadingRef.current?.focus();
+    }, 50);
+    return () => clearTimeout(headingFocusTimer);
   }, [currentStep]);
+
+  useEffect(() => {
+    return () => {
+      if (stepAnimTimeoutRef.current) {
+        clearTimeout(stepAnimTimeoutRef.current);
+        stepAnimTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   // Initialize default field values when step loads
   useEffect(() => {
@@ -500,11 +530,8 @@ export function MultiStepForm({
       baseParams.sub5 = sub5Value;
     }
     const finalUrl = appendQueryParams(destination, baseParams);
-    if (isAbsoluteUrl(finalUrl)) {
-      window.location.assign(finalUrl);
-      return;
-    }
-    router.push(finalUrl);
+    beginAdwallHandoff();
+    window.location.assign(finalUrl);
   };
 
   // Check if a step should be skipped based on skipIf condition
@@ -609,12 +636,56 @@ export function MultiStepForm({
     return Math.max(0, prevIndex);
   };
 
+  const transitionToStep = (nextIndex: number) => {
+    if (nextIndex === currentStep || advancingRef.current) return;
+
+    if (prefersReducedMotion()) {
+      setCurrentStep(nextIndex);
+      return;
+    }
+
+    advancingRef.current = true;
+    if (stepAnimTimeoutRef.current) {
+      clearTimeout(stepAnimTimeoutRef.current);
+      stepAnimTimeoutRef.current = null;
+    }
+
+    const finish = () => {
+      advancingRef.current = false;
+    };
+
+    if (typeof document.startViewTransition === "function") {
+      document.documentElement.classList.add("sw-step-handoff");
+      const transition = document.startViewTransition(() => {
+        flushSync(() => setCurrentStep(nextIndex));
+      });
+      void transition.finished.finally(() => {
+        document.documentElement.classList.remove("sw-step-handoff");
+        finish();
+      });
+      return;
+    }
+
+    setStepAnim("exit");
+    stepAnimTimeoutRef.current = setTimeout(() => {
+      setCurrentStep(nextIndex);
+      setStepAnim("enter");
+      stepAnimTimeoutRef.current = setTimeout(() => {
+        setStepAnim(undefined);
+        stepAnimTimeoutRef.current = null;
+        finish();
+      }, STEP_FADE_MS);
+    }, STEP_FADE_MS);
+  };
+
   const triggerShake = () => {
     setIsShaking(true);
     setTimeout(() => setIsShaking(false), 450);
   };
 
   const handleNext = () => {
+    if (advancingRef.current) return;
+
     // If we're on the last step, show loader and then redirect
     if (isLastStep) {
       // Validate the last step first
@@ -653,14 +724,12 @@ export function MultiStepForm({
 
     // Get the next step index, skipping any steps that should be skipped
     const nextStepIndex = getNextStepIndex(currentStep);
-    setCurrentStep(nextStepIndex);
+    transitionToStep(nextStepIndex);
   };
 
   const handleBack = () => {
-    if (!isFirstStep) {
-      // Get the previous step index, skipping any steps that should be skipped
-      setCurrentStep((prev) => getPreviousStepIndex(prev));
-    }
+    if (isFirstStep || advancingRef.current) return;
+    transitionToStep(getPreviousStepIndex(currentStep));
   };
 
   // Check if all fields in the step are filled and valid
@@ -854,33 +923,27 @@ export function MultiStepForm({
             autoForwardTimeoutRef.current = null;
           }
           
-          // 500ms delay for better UX - gives user time to review what they typed
-          autoForwardTimeoutRef.current = setTimeout(() => {
-              // Only auto-forward if we're still on the same step (prevent skipping)
-            if (currentStepRef.current === stepAtCheck && stepDataForCheck?.id === stepIdForCheck) {
-              // Create updated form data with the current step's data for skip checking
-              // Also clear all subsequent steps' data to ensure skip conditions evaluate correctly
-              const updatedFormData: FormData = {
-                ...formData,
-                [stepIdForCheck]: updatedStepData,
-              };
-              
-              // Clear data for all steps after the current step in the updated form data
-              // This ensures skip conditions don't see stale data from steps that should be cleared
-              for (let i = stepAtCheck + 1; i < config.steps.length; i++) {
-                const stepId = config.steps[i].id;
-                delete updatedFormData[stepId];
-              }
-              
-              const nextStepIndex = getNextStepIndex(stepAtCheck, updatedFormData);
+          const updatedFormData: FormData = {
+            ...formData,
+            [stepIdForCheck]: updatedStepData,
+          };
 
+          for (let i = stepAtCheck + 1; i < config.steps.length; i++) {
+            delete updatedFormData[config.steps[i].id];
+          }
+
+          const nextStepIndex = getNextStepIndex(stepAtCheck, updatedFormData);
+          // Last-step submit only needs a short confirmation hold; mid-funnel
+          // steps keep a longer pause so the selection can be registered.
+          const delayMs = nextStepIndex >= config.steps.length ? 200 : 500;
+
+          autoForwardTimeoutRef.current = setTimeout(() => {
+            if (currentStepRef.current === stepAtCheck && stepDataForCheck?.id === stepIdForCheck && !advancingRef.current) {
               if (nextStepIndex >= config.steps.length) {
-                // On the last visible step — trigger submission directly (with deduplication)
                 if (config.finalStep?.onSubmitScript && !conversionFiredRef.current) {
                   conversionFiredRef.current = true;
                   void injectImpressionScript(config.finalStep.onSubmitScript);
                 }
-                // Ensure state has the latest step data before submitting
                 setFormData(updatedFormData);
                 if (onSubmit) {
                   onSubmit(updatedFormData);
@@ -890,11 +953,11 @@ export function MultiStepForm({
                   setShowLoader(true);
                 }
               } else {
-                setCurrentStep(Math.min(nextStepIndex, config.steps.length - 1));
+                transitionToStep(Math.min(nextStepIndex, config.steps.length - 1));
               }
             }
             autoForwardTimeoutRef.current = null;
-          }, 500);
+          }, delayMs);
         }
       };
 
@@ -934,21 +997,6 @@ export function MultiStepForm({
     }
   };
 
-  // Show loader if on last step and button was clicked
-  if (showLoader) {
-    const interstitialCopy =
-      config.id === "mortgage" ? resolveMortgageInterstitialCopy(formData) : undefined;
-
-    return (
-      <Loader
-        onComplete={handleLoaderComplete}
-        loaderText={loaderSubheading}
-        header={interstitialCopy?.header}
-        statusLines={interstitialCopy?.statusLines}
-      />
-    );
-  }
-
   // Render form step
   if (!currentStepData) return null;
 
@@ -969,6 +1017,11 @@ export function MultiStepForm({
   const isMobileInputHero =
     stepNeedsManualContinue && currentStepData.fields.some((f) => !AUTO_ADVANCE_TYPES.has(f.type));
 
+  const interstitialCopy =
+    showLoader && config.id === "mortgage"
+      ? resolveMortgageInterstitialCopy(formData)
+      : undefined;
+
   return (
     <>
       <div className="flex w-full justify-center">
@@ -980,6 +1033,13 @@ export function MultiStepForm({
           />
         </div>
       </div>
+      <div className="sw-step-stage">
+        <div
+          key={currentStep}
+          className="sw-step-panel"
+          data-step-anim={stepAnim}
+          aria-live="polite"
+        >
       <div className="w-full flex flex-col gap-[48px] items-center">
         <div className="w-full">
           <div
@@ -989,8 +1049,11 @@ export function MultiStepForm({
             )}
           >
             <h1
+              ref={stepHeadingRef}
+              tabIndex={-1}
               className={cn(
                 "font-bold text-aw-text tracking-[-0.02em] md:tracking-[-0.025em] text-[28px] leading-[34px] md:text-[28px] md:leading-[34px]",
+                "outline-none", // suppress visible focus ring on the heading itself
                 isMobileInputHero && "text-[28px] leading-[34px]"
               )}
             >
@@ -1036,7 +1099,7 @@ export function MultiStepForm({
                 onClick={handleNext}
                 style={firstStepButtonVars}
                 className={cn(
-                  "w-full sm:w-[460px] h-[52px] px-6 mt-1 flex items-center justify-center gap-2 rounded-[var(--radius-cta)] focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-orange)]",
+                  "w-full sm:w-[460px] h-[52px] px-6 mt-1 flex items-center justify-center gap-2 rounded-[var(--radius-cta)] focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-orange)]",
                   "bg-cta-orange hover:bg-cta-orange-dark text-white shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)]",
                   isShaking && "animate-shake"
                 )}
@@ -1075,7 +1138,7 @@ export function MultiStepForm({
                   onClick={handleNext}
                   disabled={isSubmitting}
                   className={cn(
-                    "w-full sm:w-[460px] h-[52px] px-6 mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-[var(--radius-cta)] bg-cta-orange hover:bg-cta-orange-dark text-white focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-orange)]",
+                    "w-full sm:w-[460px] h-[52px] px-6 mt-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-[var(--radius-cta)] bg-cta-orange hover:bg-cta-orange-dark text-white focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-orange)]",
                     "shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)]",
                     isShaking && "animate-shake"
                   )}
@@ -1110,9 +1173,17 @@ export function MultiStepForm({
             )}
           </div>
         </div>
-
-        
       </div>
+        </div>
+      </div>
+      {showLoader ? (
+        <Loader
+          onComplete={handleLoaderComplete}
+          loaderText={loaderSubheading}
+          header={interstitialCopy?.header}
+          statusLines={interstitialCopy?.statusLines}
+        />
+      ) : null}
     </>
   );
 }

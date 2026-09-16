@@ -6,25 +6,23 @@ const CYCLING_LINES = [
   "Reviewing your financial profile...",
   "Scanning rates from top lenders...",
   "Ranking your personalized offers...",
-  "Almost ready with your matches...",
 ];
 
-// Absolute marks from the Interstitial Routing & Timing Fix Spec (section 5).
-const FIRST_STATUS_AT = 400;
-const LAST_STATUS_AT = 2420;
-const COMPLETION_AT = 3180;
-const PIVOT_AT = 3600;
+const COMPLETION_STATUS = "Matches found! Loading options…";
 
+// Absolute marks from the Sept 2026 Interstitial → AdWall Production Spec.
+const STATUS_AT = [400, 1370, 2380] as const;
+const COMPLETION_AT = 2900;
+const REVEAL_AT = 3800;
 const STATUS_FADE_DURATION = 240;
-const STATUS_GAP = 80;
+const PROGRESS_DURATION = 190;
 
-// Four discrete bursts with deliberate pauses between them, never a continuous pour.
 const BAR_SEGMENTS = [
-  { at: 400, to: 25, duration: 280 },
-  { at: 1400, to: 50, duration: 260 },
-  { at: 2420, to: 75, duration: 240 },
-  { at: 2960, to: 100, duration: 220 },
-];
+  { at: 400, to: 25 },
+  { at: 1250, to: 50 },
+  { at: 2150, to: 75 },
+  { at: 2900, to: 100 },
+] as const;
 
 type StatusPhase = "entering" | "visible" | "leaving";
 
@@ -35,19 +33,6 @@ interface LoaderProps {
   statusLines?: string[];
 }
 
-/**
- * Spreads the status steps evenly across the readable window so each line gets
- * roughly a second of dwell, whatever the variant's step count.
- */
-function getStatusSchedule(count: number): number[] {
-  if (count <= 1) return [FIRST_STATUS_AT];
-
-  const spacing = (LAST_STATUS_AT - FIRST_STATUS_AT) / (count - 1);
-  return Array.from({ length: count }, (_, index) =>
-    Math.round(FIRST_STATUS_AT + index * spacing)
-  );
-}
-
 export function Loader({
   onComplete,
   loaderText = "Sit tight while we secure your free quotes.",
@@ -55,15 +40,13 @@ export function Loader({
   statusLines,
 }: LoaderProps) {
   const [fillProgress, setFillProgress] = useState(0);
-  const [fillDuration, setFillDuration] = useState(0);
   const [lineIndex, setLineIndex] = useState(0);
   const [statusPhase, setStatusPhase] = useState<StatusPhase>("entering");
   const [isComplete, setIsComplete] = useState(false);
   const onCompleteRef = useRef(onComplete);
 
   const headline = header ?? loaderText;
-  const lines = statusLines?.length ? statusLines : CYCLING_LINES;
-  // The step count is fixed for the life of the interstitial, so the schedule is built once.
+  const lines = (statusLines?.length ? statusLines : CYCLING_LINES).slice(0, STATUS_AT.length);
   const [stepCount] = useState(lines.length);
 
   useEffect(() => {
@@ -86,37 +69,48 @@ export function Loader({
     const at = (mark: number, run: () => void) =>
       after(mark - (performance.now() - mountedAt), run);
 
-    BAR_SEGMENTS.forEach((segment) => {
-      at(segment.at, () => {
-        setFillDuration(segment.duration);
-        setFillProgress(segment.to);
+    const showLine = (index: number) => {
+      setLineIndex(index);
+      setStatusPhase("entering");
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!cancelled) setStatusPhase("visible");
+        });
       });
+    };
+
+    BAR_SEGMENTS.forEach((segment) => {
+      at(segment.at, () => setFillProgress(segment.to));
     });
 
-    getStatusSchedule(stepCount).forEach((mark, index) => {
+    STATUS_AT.slice(0, stepCount).forEach((mark, index) => {
       at(mark, () => {
         if (index === 0) {
-          setLineIndex(0);
-          setStatusPhase("visible");
+          showLine(0);
           return;
         }
 
-        // Outgoing drops away, then the incoming line rises into place after the gap.
         setStatusPhase("leaving");
-        after(STATUS_FADE_DURATION, () => {
-          setLineIndex(index);
-          setStatusPhase("entering");
-          after(STATUS_GAP, () => setStatusPhase("visible"));
+        after(STATUS_FADE_DURATION, () => showLine(index));
+      });
+    });
+
+    at(COMPLETION_AT, () => {
+      setFillProgress(100);
+      setIsComplete(true);
+      setStatusPhase("leaving");
+      after(STATUS_FADE_DURATION, () => {
+        setLineIndex(stepCount);
+        setStatusPhase("entering");
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (!cancelled) setStatusPhase("visible");
+          });
         });
       });
     });
 
-    // Leaf motion settles as the bar lands on 100%, then nothing moves until the pivot.
-    at(COMPLETION_AT, () => setIsComplete(true));
-
-    // The interstitial stays fully painted until the browser swaps in the adwall
-    // document, so the completed state holds if the adwall is not ready yet.
-    at(PIVOT_AT, () => onCompleteRef.current?.());
+    at(REVEAL_AT, () => onCompleteRef.current?.());
 
     return () => {
       cancelled = true;
@@ -124,15 +118,16 @@ export function Loader({
     };
   }, [stepCount]);
 
-  // Outgoing drops away; incoming waits below and rises into place.
+  const statusText = lineIndex >= stepCount ? COMPLETION_STATUS : lines[lineIndex];
   const statusStyle =
     statusPhase === "visible"
       ? { opacity: 1, transform: "translateY(0)" }
-      : { opacity: 0, transform: "translateY(7px)" };
+      : statusPhase === "leaving"
+        ? { opacity: 0, transform: "translateY(7px)" }
+        : { opacity: 0, transform: "translateY(-7px)" };
 
   return (
     <div className="sw-interstitial fixed inset-0 z-9999 bg-[#0D1B2A]">
-      <style>{"@view-transition { navigation: auto; }"}</style>
       <div
         className="absolute inset-0 overflow-hidden"
         style={{
@@ -140,7 +135,6 @@ export function Loader({
         }}
       >
         <div className="absolute top-[28%] left-1/2 flex w-full max-w-[520px] -translate-x-1/2 flex-col items-center px-6">
-          {/* Leaf — 2.2s curated pulse synced with the shimmer, settling at completion */}
           <div
             className={`sw-loader-leaf relative h-[60px] w-[31px] md:h-[76px] md:w-[39px] ${
               isComplete ? "sw-loader-leaf--settled" : ""
@@ -161,39 +155,38 @@ export function Loader({
             <span className="sw-loader-leaf-shimmer" aria-hidden="true" />
           </div>
 
-          {/* Sagewise wordmark */}
           <span className="mt-[11px] text-[18px] font-semibold tracking-[0.06em] text-white">
             Sagewise
           </span>
 
-          {/* Four-segment progress bar */}
-          <div className="mt-7 h-1 w-[min(350px,calc(100vw-48px))] overflow-hidden rounded-full bg-white/12 md:w-[520px]">
+          <div
+            className="mt-7 h-1 w-[min(350px,calc(100vw-48px))] overflow-hidden rounded-full bg-white/12 md:w-[520px]"
+            role="progressbar"
+            aria-label={headline}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={fillProgress}
+          >
             <div
-              className="sw-loader-progress h-full w-full origin-left rounded-full bg-white"
-              style={{
-                transform: `scaleX(${fillProgress / 100})`,
-                transitionDuration: `${fillDuration}ms`,
-              }}
+              className="sw-loader-progress h-full rounded-full bg-white"
+              style={{ width: `${fillProgress}%` }}
             />
           </div>
 
-          {/* Header — still and present from frame 0 */}
           <p className="mt-8 text-center text-[22px] font-semibold tracking-[-0.018em] text-white/95 md:text-[26px]">
             {headline}
           </p>
 
-          <div className="mt-3 min-h-6">
+          <div className="mt-4 min-h-6" aria-live="polite" aria-atomic="true">
             <p
               className="sw-loader-status text-center text-[14px] font-normal tracking-[0.04em] text-white/65 transition-[opacity,transform] duration-[240ms] ease-out md:text-[16px]"
               style={statusStyle}
-              aria-live="polite"
             >
-              {lines[lineIndex]}
+              {statusText}
             </p>
           </div>
         </div>
 
-        {/* Trust row */}
         <div className="absolute bottom-8 flex w-full items-center justify-center gap-1.5 px-6 text-center">
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-white/70" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           <span className="text-[12px] text-white/60">Your information is secure.</span>

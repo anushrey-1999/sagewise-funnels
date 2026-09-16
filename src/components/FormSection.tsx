@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { MultiStepForm } from "./MultiStepForm";
 import { FormConfig, FormData } from "@/types/form";
 import { useSearchParams } from "next/navigation";
 import { Loader } from "./Loader";
 import { resolvePostSubmitRedirect } from "@/lib/funnel-redirect";
-import { appendQueryParams, isAbsoluteUrl } from "@/lib/url";
+import { appendQueryParams } from "@/lib/url";
 import { buildAdwallRankingQueryParams } from "@/lib/adwall-ranking-query-params";
 import { resolveMortgageInterstitialCopy } from "@/lib/mortgage-interstitial-copy";
+import { beginAdwallHandoff, prefetchAdwallDocument } from "@/lib/adwall-handoff";
 
 interface FormSectionProps {
   config: FormConfig;
@@ -16,83 +17,85 @@ interface FormSectionProps {
   onStepChange?: (stepIndex: number) => void;
 }
 
+function getContactFields(data: FormData) {
+  let firstName: string | undefined;
+  let lastName: string | undefined;
+  let email: string | undefined;
+  let phone: string | undefined;
+
+  const getValue = (value: string | string[] | number | boolean | undefined): string | undefined => {
+    if (value === undefined || value === null) return undefined;
+    const str = String(value).trim();
+    return str.length > 0 ? str : undefined;
+  };
+
+  for (const stepId in data) {
+    const stepData = data[stepId];
+    if (!stepData) continue;
+    if (!firstName && stepData.firstName) firstName = getValue(stepData.firstName);
+    if (!lastName && stepData.lastName) lastName = getValue(stepData.lastName);
+    if (!email && stepData.email) email = getValue(stepData.email);
+    if (!phone && stepData.phone) phone = getValue(stepData.phone);
+  }
+
+  return { firstName, lastName, email, phone };
+}
+
 export function FormSection({ config, funnelId, onStepChange }: FormSectionProps) {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedData, setSubmittedData] = useState<FormData | null>(null);
+  const saveUserPromiseRef = useRef<Promise<void>>(Promise.resolve());
+  const submittedDataRef = useRef<FormData | null>(null);
+  const handoffUrlRef = useRef<string | null>(null);
 
-  const handleFormSubmit = async (data: FormData) => {
-    try {
-      console.log("Submitting form data:", { funnelId, data });
+  const handleFormSubmit = (data: FormData) => {
+    if (isLoading || isSubmitting) return;
 
-      setSubmittedData(data);
-      setIsSubmitting(true);
+    setSubmittedData(data);
+    submittedDataRef.current = data;
+    setIsSubmitting(true);
+    // Show the interstitial immediately. The user save runs in the background
+    // during the 3.8s loader so we don't sit on the last step waiting on /api/users.
+    setIsLoading(true);
+    const handoffUrl = buildHandoffUrl(data);
+    handoffUrlRef.current = handoffUrl;
+    prefetchAdwallDocument(handoffUrl);
 
-      // Extract user details from form data
-      // The form data structure is: { [stepId]: { [fieldId]: value } }
-      // Contact fields can be in steps like "contact-info", "contact-details", etc.
-      let firstName: string | undefined;
-      let lastName: string | undefined;
-      let email: string | undefined;
-      let phone: string | undefined;
-
-      // Search through all steps to find contact fields
-      for (const stepId in data) {
-        const stepData = data[stepId];
-        if (stepData) {
-          // Extract values, converting to string and trimming whitespace
-          const getValue = (value: string | string[] | number | boolean | undefined): string | undefined => {
-            if (value === undefined || value === null) return undefined;
-            const str = String(value).trim();
-            return str.length > 0 ? str : undefined;
-          };
-
-          if (!firstName && stepData.firstName) firstName = getValue(stepData.firstName);
-          if (!lastName && stepData.lastName) lastName = getValue(stepData.lastName);
-          if (!email && stepData.email) email = getValue(stepData.email);
-          if (!phone && stepData.phone) phone = getValue(stepData.phone);
-        }
-      }
-
-      const userData = {
-        firstName: firstName || null,
-        lastName: lastName || null,
-        email: email || null,
-        phone: phone || null,
-      };
-
-      console.log("Extracted user data:", userData);
-
-      // Complete the API call before showing the loader so the request is not cancelled when we redirect
+    saveUserPromiseRef.current = (async () => {
+      const { firstName, lastName, email, phone } = getContactFields(data);
       const response = await fetch("/api/users", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: firstName || null,
+          lastName: lastName || null,
+          email: email || null,
+          phone: phone || null,
+        }),
+        keepalive: true,
       });
 
       if (!response.ok) {
         throw new Error("Failed to save user data");
       }
-
-      const user = await response.json();
-      console.log("User created:", user);
-
-      // Show loader only after user is created so redirect does not cancel the request
-      setIsSubmitting(false);
-      setIsLoading(true);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      setIsSubmitting(false);
-      setIsLoading(false);
-      alert(`There was an error submitting your form: ${error instanceof Error ? error.message : "Unknown error"}`);
-    }
+    })()
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+        setIsLoading(false);
+        alert(
+          `There was an error submitting your form: ${error instanceof Error ? error.message : "Unknown error"}`
+        );
+        throw error;
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
-  const handleLoaderComplete = () => {
-    const destination = resolvePostSubmitRedirect(config, submittedData || {});
+  const buildHandoffUrl = (formData: FormData) => {
+    const destination = resolvePostSubmitRedirect(config, formData);
     const destinationPath = destination.split("?")[0];
 
     const cleanParam = (value: string | null): string | null => {
@@ -100,24 +103,19 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
       return cleaned ? cleaned : null;
     };
 
-    // Preserve incoming tracking IDs when present (funnel -> adwall -> offer)
     const incomingS1 = cleanParam(searchParams.get("s1"));
     const incomingS2 = cleanParam(searchParams.get("s2"));
     const incomingEfTransactionId = cleanParam(searchParams.get("_ef_transaction_id"));
     const incomingS3 = cleanParam(searchParams.get("s3"));
     const incomingOid = cleanParam(searchParams.get("oid"));
 
-    // Generate IDs only if not provided on the funnel URL
     const affiliateId = incomingS1 ?? Math.random().toString(36).substring(2, 11);
     const transactionId =
       incomingS2 ?? incomingEfTransactionId ?? Math.random().toString(36).substring(2, 11);
 
-    // Extract form data for adwall personalization
-    const formData = submittedData || {};
     let firstName: string | undefined;
     let zipCode: string | undefined;
 
-    // Search through all steps to find firstName and zipCode
     for (const stepId in formData) {
       const stepData = formData[stepId];
       if (stepData) {
@@ -130,11 +128,9 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
       }
     }
 
-    // Get sub5 value for mortgage funnel (first page selection)
     let sub5Value: string | undefined;
     if (funnelId === "mortgage" && formData["loan-type"]?.loanType) {
       const loanType = String(formData["loan-type"].loanType);
-      // Map the values to the required format
       const sub5Map: Record<string, string> = {
         "refinance": "Refinance",
         "home-equity-heloc": "Home_Equity",
@@ -159,40 +155,48 @@ export function FormSection({ config, funnelId, onStepChange }: FormSectionProps
       zip: zipCode,
       ...buildAdwallRankingQueryParams(config, formData, destinationPath),
     };
-    const finalUrl = appendQueryParams(destination, params);
 
-    // Use full page redirect so the destination page has a clean document (no leftover
-    // form-injected scripts like EF.conversion that would otherwise persist with client-side nav)
-    if (isAbsoluteUrl(finalUrl)) {
-      window.location.assign(finalUrl);
+    return appendQueryParams(destination, params);
+  };
+
+  const handleLoaderComplete = async () => {
+    try {
+      await saveUserPromiseRef.current;
+    } catch {
       return;
     }
+
+    const finalUrl = handoffUrlRef.current;
+    if (!finalUrl) return;
+
+    // Full page redirect so the destination has a clean document. Reveal only
+    // after 3.8s and this save has finished, matching the production spec.
+    beginAdwallHandoff();
     window.location.assign(finalUrl);
   };
 
-  if (isLoading) {
-    const interstitialCopy =
-      funnelId === "mortgage"
-        ? resolveMortgageInterstitialCopy(submittedData || {})
-        : undefined;
-
-    return (
-      <Loader
-        onComplete={handleLoaderComplete}
-        loaderText={config.finalStep?.loaderText}
-        header={interstitialCopy?.header}
-        statusLines={interstitialCopy?.statusLines}
-      />
-    );
-  }
+  const interstitialCopy =
+    isLoading && funnelId === "mortgage"
+      ? resolveMortgageInterstitialCopy(submittedData || {})
+      : undefined;
 
   return (
-    <MultiStepForm
-      config={config}
-      onSubmit={handleFormSubmit}
-      onStepChange={onStepChange}
-      isSubmitting={isSubmitting}
-    />
+    <>
+      <MultiStepForm
+        config={config}
+        onSubmit={handleFormSubmit}
+        onStepChange={onStepChange}
+        isSubmitting={isSubmitting}
+      />
+      {isLoading ? (
+        <Loader
+          onComplete={handleLoaderComplete}
+          loaderText={config.finalStep?.loaderText}
+          header={interstitialCopy?.header}
+          statusLines={interstitialCopy?.statusLines}
+        />
+      ) : null}
+    </>
   );
 }
 

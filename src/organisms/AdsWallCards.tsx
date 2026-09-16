@@ -432,7 +432,7 @@ const AdsWallCards = ({
               </div>
               <button
                 type="button"
-              className="inline-flex items-center gap-1 text-[13px] sm:text-sm font-semibold leading-none text-aw-tertiary hover:text-aw-muted transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-sage)] rounded-[var(--aw-radius-field)]"
+              className="inline-flex items-center gap-1 text-[13px] sm:text-sm font-semibold leading-none text-aw-tertiary hover:text-aw-muted transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-sage)] rounded-[var(--aw-radius-field)]"
                 ref={scoreTriggerRef}
                 onClick={() => {
                   // Position first so first render doesn't "jump" from top-left.
@@ -460,7 +460,7 @@ const AdsWallCards = ({
             <div className="flex flex-col gap-2 w-full pt-2 lg:pt-0">
               <Button
                 variant="secondary"
-                className="h-[44px] sm:h-[41px] w-full rounded-[var(--aw-radius-cta)] px-3 py-0 text-[15px] font-bold text-white bg-cta-orange hover:bg-cta-orange-dark shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)] transition-[background-color,box-shadow] lg:h-[44px] lg:w-[220px] focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-orange)]"
+                className="h-[44px] sm:h-[41px] w-full rounded-[var(--aw-radius-cta)] px-3 py-0 text-[15px] font-bold text-white bg-cta-orange hover:bg-cta-orange-dark shadow-[var(--shadow-cta-orange)] hover:shadow-[var(--shadow-cta-orange-hover)] transition-[background-color,box-shadow] lg:h-[44px] lg:w-[220px] focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-orange)]"
                 onClick={handleButtonClick}
                 icon={MoveRight}
                 iconClass="w-4 h-4"
@@ -471,7 +471,7 @@ const AdsWallCards = ({
                 {phoneNumber ? (
                   <a
                     href={toTelHref(phoneNumber)}
-                    className="flex items-center justify-center gap-2 h-full w-full rounded-[var(--aw-radius-cta)] border border-aw-border bg-aw-surface px-3 py-0 text-[14px] font-semibold text-aw-text transition-colors hover:bg-aw-canvas focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-neutral)]"
+                    className="flex items-center justify-center gap-2 h-full w-full rounded-[var(--aw-radius-cta)] border border-aw-border bg-aw-surface px-3 py-0 text-[14px] font-semibold text-aw-text transition-colors hover:bg-aw-canvas focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-neutral)]"
                     aria-label={`Call ${phoneNumber}`}
                   >
                     <Phone className="w-3.5 h-3.5" />
@@ -562,7 +562,7 @@ const AdsWallCards = ({
                     <button
                       type="button"
                       onClick={() => setIsHowWeScoreOpen(false)}
-                      className="text-aw-muted hover:text-aw-ink-deep transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-neutral)] rounded-[var(--aw-radius-field)]"
+                      className="text-aw-muted hover:text-aw-ink-deep transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-neutral)] rounded-[var(--aw-radius-field)]"
                       aria-label="Close"
                     >
                       <X className="w-4 h-4" />

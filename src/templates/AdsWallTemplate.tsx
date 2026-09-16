@@ -273,8 +273,13 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
   }, [personalizedCards]);
 
   useEffect(() => {
-    // Avoid hydration mismatch: only portal after mount.
-    setFooterSlotEl(document.getElementById("minimal-footer-slot"));
+    if (!document.documentElement.hasAttribute("data-sw-handoff")) return;
+
+    const timeout = window.setTimeout(() => {
+      document.documentElement.removeAttribute("data-sw-handoff");
+    }, 500);
+
+    return () => window.clearTimeout(timeout);
   }, []);
 
   const { containerRef: ctaRef, ctaMinWidthPx } = useEqualCtaMinWidthPx([visibleCards]);
@@ -284,12 +289,10 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
 
   return (
     <div
-      className="bg-[#FAFAF7] flex min-h-screen w-full flex-col items-start"
+      className="sw-adwall-layer bg-[#FAFAF7] flex min-h-screen w-full flex-col items-start"
     >
-      {/* Opt in only at the two ends of the interstitial handoff. Unsupported
-          browsers still get the same bounded, layout-stable offer reveal. */}
       {isDynamicHeader && !disableImpressions && (
-        <style>{"@view-transition { navigation: auto; }"}</style>
+        <div className="sw-interstitial-curtain" aria-hidden="true" />
       )}
       {/* Portal lender disclosures into the global footer */}
       {footerSlotEl && disclosureCards.length > 0
@@ -298,7 +301,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
               <div className="rounded-[var(--aw-radius-card)] border border-general-border bg-white overflow-hidden shadow-[var(--shadow-card)]">
                 <button
                   onClick={() => setIsDisclosureOpen((v) => !v)}
-                  className="w-full h-[39px] flex items-center justify-between px-[14px] text-left focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-neutral)]"
+                  className="w-full h-[39px] flex items-center justify-between px-[14px] text-left focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-neutral)]"
                   aria-expanded={isDisclosureOpen}
                 >
                   <span className="text-[12px] font-semibold text-aw-muted">Lender Disclosures</span>
@@ -389,7 +392,7 @@ const AdsWallTemplate = ({ config, resolvedCity, updatedAtOverride, currentDate,
               return (
                 <AdwallOfferReveal
                   key={index}
-                  animate={isDynamicHeader}
+                  animate={false}
                   index={index}
                   impressionScript={impressionScript}
                   dedupeKey={`${config.id}:${index}`}

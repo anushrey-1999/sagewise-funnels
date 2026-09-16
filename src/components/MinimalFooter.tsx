@@ -77,7 +77,7 @@ const MinimalFooter = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="h-9 w-9 rounded-full bg-aw-canvas flex items-center justify-center text-aw-muted hover:text-aw-ink-deep hover:bg-aw-divider transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-neutral)]"
+                className="h-9 w-9 rounded-full bg-aw-canvas flex items-center justify-center text-aw-muted hover:text-aw-ink-deep hover:bg-aw-divider transition-colors focus-visible:ring-0 focus-visible:outline-none focus-visible:shadow-[var(--focus-ring-neutral)]"
               >
                 <Icon className="h-4 w-4" aria-hidden="true" />
               </Link>

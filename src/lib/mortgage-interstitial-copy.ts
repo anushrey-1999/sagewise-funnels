@@ -8,7 +8,7 @@ export interface InterstitialCopy {
 type MortgageInterstitialVariant = "HELOC" | "REFI" | "PURCHASE" | "SUB580";
 
 /**
- * Copy is reproduced verbatim from the Interstitial Routing & Timing Fix Spec (section 4).
+ * Copy follows the Sept 2026 Interstitial → AdWall Production Spec.
  * Below 580 is a credit-profile override that softens the curation language without
  * naming the credit band, and without changing the destination adwall.
  */
@@ -18,7 +18,7 @@ const VARIANT_COPY: Record<MortgageInterstitialVariant, InterstitialCopy> = {
     statusLines: [
       "Verifying your profile",
       "Analyzing available HELOC options…",
-      "Curating your available matches…",
+      "Curating available matches…",
     ],
   },
   REFI: {
@@ -26,7 +26,7 @@ const VARIANT_COPY: Record<MortgageInterstitialVariant, InterstitialCopy> = {
     statusLines: [
       "Verifying your profile",
       "Analyzing available refinance options…",
-      "Curating your available matches…",
+      "Curating available matches…",
     ],
   },
   PURCHASE: {
@@ -34,7 +34,7 @@ const VARIANT_COPY: Record<MortgageInterstitialVariant, InterstitialCopy> = {
     statusLines: [
       "Verifying your profile",
       "Analyzing available purchase options…",
-      "Curating your available matches…",
+      "Curating available matches…",
     ],
   },
   SUB580: {
@@ -42,7 +42,7 @@ const VARIANT_COPY: Record<MortgageInterstitialVariant, InterstitialCopy> = {
     statusLines: [
       "Verifying your profile",
       "Checking options that may fit…",
-      "Curating your available options…",
+      "Curating available options…",
     ],
   },
 };
