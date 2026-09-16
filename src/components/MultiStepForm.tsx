@@ -107,9 +107,10 @@ function ProgressBarRow({
   const clampedProgress = Math.max(0, Math.min(100, progress));
 
   return (
-    <div className="flex w-full items-center gap-4">
-      {/* Always reserve the back-button slot so the progress bar and
-          question do not jump when the control appears on step 2. */}
+    <div className="flex min-h-8 w-full items-center">
+      {/* Collapse the back control on step 1 so the bar stays full-width
+          (especially on mobile). Keep the row min-height so the question
+          does not jump when the control expands on step 2. */}
       <button
         type="button"
         onClick={onBack}
@@ -118,16 +119,16 @@ function ProgressBarRow({
         aria-hidden={isFirstStep}
         aria-label={isFirstStep ? undefined : "Go back"}
         className={cn(
-          "flex shrink-0 items-center justify-center size-8 rounded-[var(--radius-field)] text-aw-tertiary outline-none transition-[background-color,border-color,box-shadow] duration-150",
+          "flex h-8 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-field)] text-aw-tertiary outline-none transition-[width,margin,background-color,border-color,box-shadow] duration-150",
           isFirstStep
-            ? "invisible pointer-events-none"
-            : "cursor-pointer hover:bg-neutral-hover-soft focus-visible:border focus-visible:border-aw-border-strong focus-visible:shadow-[var(--focus-ring)]"
+            ? "pointer-events-none w-0"
+            : "mr-4 w-8 cursor-pointer hover:bg-neutral-hover-soft focus-visible:border focus-visible:border-aw-border-strong focus-visible:shadow-[var(--focus-ring)]"
         )}
       >
-        <ChevronLeft className="size-5" strokeWidth={2} aria-hidden />
+        <ChevronLeft className="size-5 shrink-0" strokeWidth={2} aria-hidden />
       </button>
       {/* Progress bar fills remaining space */}
-      <div className="relative h-1.5 flex-1 rounded-full">
+      <div className="relative h-1.5 min-w-0 flex-1 rounded-full">
         <div className="absolute inset-0 rounded-full bg-sg-primary-tint" />
         <div
           className="absolute bottom-0 left-0 top-0 rounded-full bg-sg-primary transition-all duration-300"
