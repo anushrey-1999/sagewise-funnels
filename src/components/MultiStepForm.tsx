@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { FormConfig, FormData, FormStep } from "@/types/form";
 import { DynamicFormField } from "./DynamicFormField";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/atoms/button";
 import { ArrowRight, ChevronLeft, Loader2, Check, Lock, ShieldCheck, ShieldEllipsis } from "lucide-react";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
@@ -108,22 +108,29 @@ function ProgressBarRow({
 
   return (
     <div className="flex w-full items-center gap-4">
-      {/* Back button — hidden on the first step */}
-      {!isFirstStep && (
-        <button
-          type="button"
-          onClick={onBack}
-          aria-label="Go back"
-          className="flex shrink-0 items-center justify-center size-8 rounded-[var(--radius-field)] text-aw-tertiary cursor-pointer outline-none transition-[background-color,border-color,box-shadow] duration-150 hover:bg-neutral-hover-soft focus-visible:border focus-visible:border-aw-border-strong focus-visible:shadow-[var(--focus-ring)]"
-        >
-          <ChevronLeft className="size-5" strokeWidth={2} aria-hidden />
-        </button>
-      )}
+      {/* Always reserve the back-button slot so the progress bar and
+          question do not jump when the control appears on step 2. */}
+      <button
+        type="button"
+        onClick={onBack}
+        disabled={isFirstStep}
+        tabIndex={isFirstStep ? -1 : undefined}
+        aria-hidden={isFirstStep}
+        aria-label={isFirstStep ? undefined : "Go back"}
+        className={cn(
+          "flex shrink-0 items-center justify-center size-8 rounded-[var(--radius-field)] text-aw-tertiary outline-none transition-[background-color,border-color,box-shadow] duration-150",
+          isFirstStep
+            ? "invisible pointer-events-none"
+            : "cursor-pointer hover:bg-neutral-hover-soft focus-visible:border focus-visible:border-aw-border-strong focus-visible:shadow-[var(--focus-ring)]"
+        )}
+      >
+        <ChevronLeft className="size-5" strokeWidth={2} aria-hidden />
+      </button>
       {/* Progress bar fills remaining space */}
       <div className="relative h-1.5 flex-1 rounded-full">
         <div className="absolute inset-0 rounded-full bg-sg-primary-tint" />
         <div
-          className="absolute bottom-0 left-0 top-0 rounded-full bg-sg-primary-green transition-all duration-300"
+          className="absolute bottom-0 left-0 top-0 rounded-full bg-sg-primary transition-all duration-300"
           style={{ width: `${clampedProgress}%` }}
         />
       </div>
@@ -205,9 +212,9 @@ export function MultiStepForm({
     const text = config.firstStepButton.textColor || "var(--surface-white)";
 
     return {
-      ["--sw-first-step-cta-bg" as unknown as string]: bg,
-      ["--sw-first-step-cta-hover" as unknown as string]: hover,
-      ["--sw-first-step-cta-text" as unknown as string]: text,
+      ["--cta-custom-bg" as unknown as string]: bg,
+      ["--cta-custom-hover" as unknown as string]: hover,
+      ["--cta-custom-text" as unknown as string]: text,
     } as CSSProperties;
   }, [config.firstStepButton, isFirstStep]);
 
@@ -1131,7 +1138,7 @@ export function MultiStepForm({
                 type="button"
                 variant={funnelCtaVariant}
                 onClick={handleNext}
-                style={firstStepButtonVars}
+                style={funnelCtaVariant === "ctaCustom" ? firstStepButtonVars : undefined}
                 className={cn(
                   "w-full sm:w-[460px] mt-1",
                   isShaking && "animate-shake"
@@ -1154,7 +1161,7 @@ export function MultiStepForm({
                   { label: "No pressure to commit", Icon: ShieldEllipsis },
                 ] as const).map(({ label, Icon }) => (
                   <span key={label} className="flex items-center gap-1.5 text-[14px] leading-[20px] font-semibold text-aw-muted trust">
-                    <Icon className="size-3.5 shrink-0 text-sg-primary-green" strokeWidth={2.5} />
+                    <Icon className="size-3.5 shrink-0 text-cta-green" strokeWidth={2.5} />
                     {label}
                   </span>
                 ))}
